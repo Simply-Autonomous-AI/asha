@@ -221,11 +221,17 @@ describe('eslint.config.mjs', () => {
 
   // Its first lint builds the three TypeScript programs the config reads types from: 1,151 ms alone on 2026-10-17, past
   // the default 5 s under a coverage run of the whole unit tier on every core — so its own bound, six times that.
+  // Under CI=true, which GitHub's runners set, typescript-eslint infers a single run and parses the file from disk, not
+  // the text given: the canary linted abort.ts as committed and found nothing (2026-10-18). Its own instance says no.
   it(
     'reports, through the real config, a floating promise (type-aware) and an all-duplicated branch (SonarJS)',
     { timeout: 30_000 },
     async () => {
-      const [result] = await eslint.lintText(
+      const canary = new ESLint({
+        cwd: ROOT,
+        overrideConfig: { languageOptions: { parserOptions: { disallowAutomaticSingleRunInference: true } } },
+      });
+      const [result] = await canary.lintText(
         'export function f(p: Promise<number>): void {\n  p.then(() => 1);\n}\n' +
           'export const g = (b: boolean): number => (b ? 1 : 1);\n',
         { filePath: join(ROOT, 'src/shared/abort.ts') },

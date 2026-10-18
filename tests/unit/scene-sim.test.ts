@@ -1151,7 +1151,10 @@ function checkRetargets(
   return retargets;
 }
 
-describe('personal space (portal-scene-chat R5c, A21)', () => {
+// Its seeded crowds step minutes of the scene: 0.6–1.7 s each alone here, up to 5.1 s on GitHub's runner under the
+// whole unit run (2026-10-18), past vitest's 5 s default once. The bound is a guard, set well above the slowest run
+// (PRINCIPLES §14.5); the assertions are unchanged.
+describe('personal space (portal-scene-chat R5c, A21)', { timeout: 20_000 }, () => {
   const measure = (t: string): number => 7 * Array.from(t).length;
   /** Each pair of drawn robots whose spaces meet, as `a~b`. */
   const meeting = (sim: SceneSim): string[] => {

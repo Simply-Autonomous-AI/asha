@@ -2125,7 +2125,9 @@ exit 2
     await chmod(join(dir, 'docker'), 0o755);
     const { spawnSync } = await import('node:child_process');
     const script = `set -eu\n${removeHomeContainers(HOME_ID, props.waitS ?? 3)}echo "containers=$containers"\n`;
-    const r = spawnSync('bash', ['-c', script], {
+    // --norc: Node gives bash a socket for stdin, which bash takes for a remote shell's and so runs ~/.bashrc even
+    // for -c; on GitHub's runner that file runs brew, which wrote to stderr without $HOME (2026-10-18).
+    const r = spawnSync('bash', ['--norc', '-c', script], {
       env: { PATH: `${dir}:/usr/bin:/bin` },
       encoding: 'utf8',
       timeout: 20_000,
@@ -2613,11 +2615,16 @@ exit 2
     await chmod(join(dir, 'docker'), 0o755);
     const { spawnSync } = await import('node:child_process');
     const { removeHomeVolumes } = await import('../../src/daemon/container-runtime/index.js');
-    const r = spawnSync('bash', ['-c', `set -eu\n${removeHomeVolumes(HOME_ID)}echo "volumes=$removed_volumes"\n`], {
-      env: { PATH: `${dir}:/usr/bin:/bin` },
-      encoding: 'utf8',
-      timeout: 20_000,
-    });
+    // --norc, as the reclaim's run above says: no ~/.bashrc in the run.
+    const r = spawnSync(
+      'bash',
+      ['--norc', '-c', `set -eu\n${removeHomeVolumes(HOME_ID)}echo "volumes=$removed_volumes"\n`],
+      {
+        env: { PATH: `${dir}:/usr/bin:/bin` },
+        encoding: 'utf8',
+        timeout: 20_000,
+      },
+    );
     const { readFile: read } = await import('node:fs/promises');
     return {
       code: r.status,

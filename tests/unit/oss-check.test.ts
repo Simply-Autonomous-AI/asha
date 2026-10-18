@@ -11,6 +11,7 @@ import {
   CLONE_COMMANDS,
   MAX_FILE_BYTES,
   TARBALL_HOLDS,
+  cloneEnv,
   runSteps,
   sizeProblems,
   tarballLacks,
@@ -31,6 +32,14 @@ describe("oss:check's decisions (oss-release R16, R30; A7, A13)", () => {
     const clone = CLONE_COMMANDS.map((c) => c.args.join(' '));
     expect(clone.filter((c) => c !== 'run build')).toEqual(ci);
     expect(clone).toContain('run build');
+  });
+
+  it("runs the clone's npm steps with CI=true, as on GitHub's runners, the rest of the environment unchanged", () => {
+    // A lint test passed here and failed in CI's first test run: typescript-eslint reads CI=true (2026-10-18).
+    const env = { PATH: '/usr/bin:/bin', HOME: '/h', CI: 'false' };
+    expect(cloneEnv(env)).toEqual({ PATH: '/usr/bin:/bin', HOME: '/h', CI: 'true' });
+    expect(cloneEnv({ PATH: '/bin' })).toEqual({ PATH: '/bin', CI: 'true' });
+    expect(env.CI).toBe('false');
   });
 
   it('names each file that is model weights or over 5 MB, and passes the rest', () => {

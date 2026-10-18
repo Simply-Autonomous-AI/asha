@@ -3,7 +3,7 @@
 // secret scans — every commit of the export and its tree (R8); no shipped file model weights or over 5 MB; then a
 // `git clone` of the export into a folder with nothing beside it, where `npm ci`, every other npm step CI runs (the
 // linters, the formatter, the typecheck, the unit and integration tests, the secret scan), the build and
-// `npm run release` run, and the release's tarball must hold what R30 names. Each
+// `npm run release` run with CI=true, as on GitHub's runners, and the release's tarball must hold what R30 names. Each
 // step's command, exit status, time and output go to the run's log, with the internal commit, whether its tree was
 // dirty, and the gitleaks, Node and npm versions; the run folder is printed.
 
@@ -90,9 +90,25 @@ export const CLONE_COMMANDS: readonly { readonly args: readonly string[]; readon
   { args: ['run', 'scan:secrets'], minutes: 15 },
 ];
 
+/**
+ * The environment the clone's npm steps run in: `env` with `CI=true`, as GitHub's runners set it. Tools read it:
+ * typescript-eslint, seeing it, parses a file from disk instead of the text it is given, and a lint test passed here
+ * and failed in CI's first test run (2026-10-18, PRINCIPLES §21).
+ */
+export function cloneEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  return { ...env, CI: 'true' };
+}
+
 /** A command run in `cwd`, bounded; its output appended to the log; a non-zero exit or a timeout throws. */
-function command(cwd: string, logFile: string, program: string, args: readonly string[], boundMs: number): string {
-  const run = spawnSync(program, args, { cwd, encoding: 'utf8', timeout: boundMs, maxBuffer: 1 << 28 });
+function command(
+  cwd: string,
+  logFile: string,
+  program: string,
+  args: readonly string[],
+  boundMs: number,
+  env?: NodeJS.ProcessEnv,
+): string {
+  const run = spawnSync(program, args, { cwd, encoding: 'utf8', timeout: boundMs, maxBuffer: 1 << 28, env });
   appendFileSync(logFile, `$ ${program} ${args.join(' ')}   (in ${cwd})\n${run.stdout}${run.stderr}\n`);
   if (run.error !== undefined) throw new Error(`${program} ${args.join(' ')}: ${run.error.message}`);
   if (run.status !== 0) throw new Error(`${program} ${args.join(' ')} exited ${String(run.status)}`);
@@ -195,15 +211,18 @@ export function ossCheck(
         return clone;
       },
     },
-    { name: 'npm ci', run: () => command(clone, logFile, 'npm', ['ci', '--no-audit', '--no-fund'], 20 * MINUTES) },
+    {
+      name: 'npm ci',
+      run: () => command(clone, logFile, 'npm', ['ci', '--no-audit', '--no-fund'], 20 * MINUTES, cloneEnv(env)),
+    },
     ...CLONE_COMMANDS.map(({ args, minutes }) => ({
       name: `npm ${args.join(' ')}`,
-      run: () => command(clone, logFile, 'npm', args, minutes * MINUTES),
+      run: () => command(clone, logFile, 'npm', args, minutes * MINUTES, cloneEnv(env)),
     })),
     {
       name: 'release',
       run: () => {
-        command(clone, logFile, 'npm', ['run', '--silent', 'release'], 30 * MINUTES);
+        command(clone, logFile, 'npm', ['run', '--silent', 'release'], 30 * MINUTES, cloneEnv(env));
         const tarball = join(clone, 'build', 'release', `v${releaseVersion}`, `asha-${releaseVersion}.tar.gz`);
         if (!existsSync(tarball)) throw new Error(`no tarball at ${tarball}`);
         const entries = spawnSync('tar', ['tzf', tarball], { encoding: 'utf8', maxBuffer: 1 << 28 }).stdout.split('\n');

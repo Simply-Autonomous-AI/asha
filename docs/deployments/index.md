@@ -97,7 +97,7 @@ asha 0.2.0 was published on 2026-10-18 with gates G1–G3 waived in part by the 
 ASHA_OSS_MARKERS=<the owner's markers file> npm run oss:check -- <commit>
 ```
 
-Every step must pass: the export, the marker scan, gitleaks over the export's history and tree, the size check, then a clone with nothing beside it — `npm ci`, every other npm step CI runs (the linters, the formatter, the typecheck, the unit and integration tests, the secret scan), the build, the release and its tarball. The run's folder, printed at the end, holds `run.log`, every step's output and exit status. Then check that `LICENSE`'s first `Required Notice:` line, the README's licence section and `package.json`'s `author` name the company as G1 filed it, that `package.json`'s `repository`, `homepage` and `bugs` name G2's organization, and re-read the plan's external facts; a mismatch is fixed here, committed, and checked again.
+Every step must pass: the export, the marker scan, gitleaks over the export's history and tree, the size check, then a clone with nothing beside it — `npm ci`, every other npm step CI runs (the linters, the formatter, the typecheck, the unit and integration tests, the secret scan), the build, the release and its tarball, each with `CI=true` as on GitHub's runners (typescript-eslint, for one, reads it). The run's folder, printed at the end, holds `run.log`, every step's output and exit status. Then check that `LICENSE`'s first `Required Notice:` line, the README's licence section and `package.json`'s `author` name the company as G1 filed it, that `package.json`'s `repository`, `homepage` and `bugs` name G2's organization, and re-read the plan's external facts; a mismatch is fixed here, committed, and checked again.
 
 **The first release:**
 
