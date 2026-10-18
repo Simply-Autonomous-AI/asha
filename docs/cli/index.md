@@ -1,6 +1,6 @@
 ---
 title: asha CLI Reference
-description: Every asha command and flag: syntax, what it does, what goes to stdout and stderr, exit codes, how the CLI finds or starts the daemon, and the environment it reads.
+description: Every asha command and flag — syntax, what it does, what goes to stdout and stderr, exit codes, how the CLI finds or starts the daemon, and the environment it reads.
 ---
 
 # Command line interface

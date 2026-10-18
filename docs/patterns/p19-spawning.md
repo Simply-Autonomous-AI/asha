@@ -1,6 +1,6 @@
 ---
 title: Dynamic Spawning Demo
-description: P19 · Dynamic spawning of workers: A lead brings a new worker online when it needs one, and calls it. Its team, how to run it, its message flow and its test.
+description: P19 · Dynamic spawning of workers — a lead brings a new worker online when it needs one, and calls it. Its team, how to run it, its message flow and its test.
 ---
 
 # P19 · Dynamic spawning of workers

@@ -1,6 +1,6 @@
 ---
 title: Hierarchical Teams Demo
-description: P7 · Hierarchical teams: A top supervisor calls sub-leads, each of which calls its own workers. Its team, how to run it, its message flow and its test.
+description: P7 · Hierarchical teams — a top supervisor calls sub-leads, each of which calls its own workers. Its team, how to run it, its message flow and its test.
 ---
 
 # P7 · Hierarchical teams

@@ -26,6 +26,12 @@ The detail behind [AGENTS.md](../AGENTS.md) §4.
   the public export leaves out (`tools/oss/manifest.json`); the plans' own
   checks, such as a status that does not match its row in the plans index, are
   `tests/unit/docs-plans.test.ts`'s.
+- **GitHub shows the Markdown too.** Front matter must be YAML (no second
+  `: ` in a value), and each diagram carries the standalone `<style>` that
+  `node --experimental-strip-types tools/docs/svg-standalone.mts` writes, run
+  after adding a diagram or changing docs.css's `svg` rules;
+  `tests/unit/docs-standalone.test.ts` checks both
+  ([conventions](../docs/project/documentation.html#diagrams)).
 - **Generated pages.** `docs/testing/agent-tests.html` is written by
   `npm run report` (`evals/report.ts`) from `tests/agents/results/*.json`, not
   by the renderer; never edit it by hand.

@@ -1,6 +1,6 @@
 ---
 title: Escalation Pattern Demo
-description: P22 · Escalation to a human (the summary): An agent that cannot finish a request does what it can, then hands the rest to the user with a summary of what it did and what is left, and takes no further action in that conversation. Its team, how to run it, its message flow and its test.
+description: P22 · Escalation to a human (the summary) — an agent that cannot finish a request does what it can, then hands the rest to the user with a summary of what it did and what is left, and takes no further action in that conversation. Its team, how to run it, its message flow and its test.
 ---
 
 # P22 · Escalation to a human (the summary)

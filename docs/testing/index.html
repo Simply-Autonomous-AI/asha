@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>asha Testing</title>
-<meta name="description" content="Every asha test suite: its config and command, what it exercises and what it fakes, its test files, its inputs and outputs, and its latest recorded result with the commit it ran from.">
+<meta name="description" content="Every asha test suite — its config and command, what it exercises and what it fakes, its test files, its inputs and outputs, and its latest recorded result with the commit it ran from.">
 <link rel="stylesheet" href="../assets/docs.css">
 </head>
 <body data-section="testing">
@@ -70,6 +70,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1232 130" role="img" aria-labelledby="gate-t gate-d">
   <title id="gate-t">The npm run check gate chain</title>
   <desc id="gate-d">Nine steps in sequence: the linter, the format check, typecheck, unit tests, integration tests, then a build and the demo selection, then a build and the agent suite, then a build and the eval, then the routing check on the eval's build. A failure at any step stops the chain.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="ga" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
   <rect class="box" x="10" y="30" width="110" height="60" rx="6"/>
   <text class="label title" x="65" y="56" text-anchor="middle">lint</text>
@@ -116,6 +130,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 250" role="img" aria-labelledby="pyr-t pyr-d">
   <title id="pyr-t">The test pyramid</title>
   <desc id="pyr-d">From the wide base to the narrow top: 484 unit tests, 41 integration tests, 35 agent-suite scenarios, and 10 end-to-end eval tests. The routing diagnostic sits beside the pyramid, outside the gate.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <path class="box" d="M60 230 H480 L440 180 H100 Z"/>
   <text class="label title" x="270" y="204" text-anchor="middle">unit · 484 tests</text>
   <text class="label small" x="270" y="220" text-anchor="middle">every collaborator injected</text>
@@ -182,6 +210,7 @@
 <tr><td><a href="../../tests/unit/docs.test.ts">docs.test.ts</a></td><td>The docs guard, <a href="#docs-guard">below</a>, which also checks that this table lists every unit test file ; the demos' videos (<code>docs/plans/demo-videos.md</code> R7, R8): each pattern page's <strong>Watch it run</strong> against its sidecar, each video and sidecar tracked and agreeing (sha256, frame size, a commit that is an ancestor of <code>HEAD</code>, its team's models today), the size bounds, the combined video against its sidecar and the catalogue, the stylesheet's video rule</td><td>37</td></tr>
 <tr><td><code>docs-plans.test.ts</code></td><td>Internal (not published, <code>docs/plans/oss-release.md</code> R2): the plans' own checks, moved from the docs guard — each plan's status and its index row, the counts the debt register and the plans index state, each Retires line against the register and the open-debt line, no gap masked as a TODO, no line with a second checkbox</td><td>5</td></tr>
 <tr><td><a href="../../tests/unit/docs-render.test.ts">docs-render.test.ts</a></td><td><code>tools/docs/render.mts</code></td><td>56</td></tr>
+<tr><td><a href="../../tests/unit/docs-standalone.test.ts">docs-standalone.test.ts</a></td><td>The docs as GitHub shows them, outside the rendered site (2026-10-18): every Markdown file the export publishes has front matter that YAML 1.1, as GitHub reads it, takes to the renderer's texts (a second <code>: </code>, and a value read as a number, a boolean or a date, each named); every docs diagram carries the standalone <code>&lt;style&gt;</code> <code>tools/docs/svg-standalone.mts</code> builds from the stylesheet, and the tool's block, placement, replacement and refusals (an svg rule it cannot copy, a var() it cannot resolve)</td><td>5</td></tr>
 <tr><td><a href="../../tests/unit/images.test.ts">images.test.ts</a></td><td><code>stageAgentImage</code>, <code>agentPackagePaths</code>; staging this repo's eleven OpenTelemetry packages, runtime files only, loadable under ESM (otel-traces A9)</td><td>12</td></tr>
 <tr><td><a href="../../tests/unit/log.test.ts">log.test.ts</a></td><td><code>JsonLinesLogger</code></td><td>9</td></tr>
 <tr><td><a href="../../tests/unit/lifetime.test.ts">lifetime.test.ts</a></td><td><code>DaemonLifetime</code> (<code>docs/plans/idle-shutdown.md</code> R1, R3, R6) on a manual schedule and a clock the test moves: the model check every <code>LIFETIME_CHECK_MS</code> or as often as a shorter bound, no second unload while one runs and a failed one logged; the idle stop one clause at a time — never without a bound, after the bound with nothing to do, not while a request or stream is open nor while the agents are busy, the clock restarting as each ends; the watched process's end; <code>end()</code> clearing every check; <code>processRunning</code> for a live pid, ESRCH and EPERM; each guard seen failing</td><td>13</td></tr>

@@ -1,6 +1,6 @@
 ---
 title: Consensus Debate Demo
-description: P23 · Iterative consensus debate: Debaters with different first answers see each other's answers round after round and revise their own, until they agree or the rounds run out; a moderator reports the outcome. Its team, how to run it, its message flow and its test.
+description: P23 · Iterative consensus debate — debaters with different first answers see each other's answers round after round and revise their own, until they agree or the rounds run out; a moderator reports the outcome. Its team, how to run it, its message flow and its test.
 ---
 
 # P23 · Iterative consensus debate

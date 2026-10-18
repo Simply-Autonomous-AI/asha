@@ -1,6 +1,6 @@
 ---
 title: Guardrail Policy Demo
-description: P16 · Guardrail / policy check: Every reply is checked by a policy agent before the user sees it; a blocked draft is revised and checked again. Its team, how to run it, its message flow and its test.
+description: P16 · Guardrail / policy check — every reply is checked by a policy agent before the user sees it; a blocked draft is revised and checked again. Its team, how to run it, its message flow and its test.
 ---
 
 # P16 · Guardrail / policy check

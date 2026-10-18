@@ -1,6 +1,6 @@
 ---
 title: asha Testing
-description: Every asha test suite: its config and command, what it exercises and what it fakes, its test files, its inputs and outputs, and its latest recorded result with the commit it ran from.
+description: Every asha test suite — its config and command, what it exercises and what it fakes, its test files, its inputs and outputs, and its latest recorded result with the commit it ran from.
 ---
 
 # Testing
@@ -90,6 +90,7 @@ Results for each are under [latest results](#results).
 | [docs.test.ts](../../tests/unit/docs.test.ts) | The docs guard, [below](#docs-guard), which also checks that this table lists every unit test file ; the demos' videos (`docs/plans/demo-videos.md` R7, R8): each pattern page's **Watch it run** against its sidecar, each video and sidecar tracked and agreeing (sha256, frame size, a commit that is an ancestor of `HEAD`, its team's models today), the size bounds, the combined video against its sidecar and the catalogue, the stylesheet's video rule | 37 |
 | `docs-plans.test.ts` | Internal (not published, `docs/plans/oss-release.md` R2): the plans' own checks, moved from the docs guard — each plan's status and its index row, the counts the debt register and the plans index state, each Retires line against the register and the open-debt line, no gap masked as a TODO, no line with a second checkbox | 5 |
 | [docs-render.test.ts](../../tests/unit/docs-render.test.ts) | `tools/docs/render.mts` | 56 |
+| [docs-standalone.test.ts](../../tests/unit/docs-standalone.test.ts) | The docs as GitHub shows them, outside the rendered site (2026-10-18): every Markdown file the export publishes has front matter that YAML 1.1, as GitHub reads it, takes to the renderer's texts (a second `: `, and a value read as a number, a boolean or a date, each named); every docs diagram carries the standalone `<style>` `tools/docs/svg-standalone.mts` builds from the stylesheet, and the tool's block, placement, replacement and refusals (an svg rule it cannot copy, a var() it cannot resolve) | 5 |
 | [images.test.ts](../../tests/unit/images.test.ts) | `stageAgentImage`, `agentPackagePaths`; staging this repo's eleven OpenTelemetry packages, runtime files only, loadable under ESM (otel-traces A9) | 12 |
 | [log.test.ts](../../tests/unit/log.test.ts) | `JsonLinesLogger` | 9 |
 | [lifetime.test.ts](../../tests/unit/lifetime.test.ts) | `DaemonLifetime` (`docs/plans/idle-shutdown.md` R1, R3, R6) on a manual schedule and a clock the test moves: the model check every `LIFETIME_CHECK_MS` or as often as a shorter bound, no second unload while one runs and a failed one logged; the idle stop one clause at a time — never without a bound, after the bound with nothing to do, not while a request or stream is open nor while the agents are busy, the clock restarting as each ends; the watched process's end; `end()` clearing every check; `processRunning` for a live pid, ESRCH and EPERM; each guard seen failing | 13 |

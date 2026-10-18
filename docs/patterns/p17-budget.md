@@ -1,6 +1,6 @@
 ---
 title: Budgets Demo
-description: P17 · Budgets and circuit breaker: A conversation that would run for ever is ended by its post or token budget, given on its message; every agent post in it afterwards is refused. A harness control, not a collaboration pattern. Its team, how to run it, its message flow and its test.
+description: P17 · Budgets and circuit breaker — a conversation that would run for ever is ended by its post or token budget, given on its message; every agent post in it afterwards is refused. A harness control, not a collaboration pattern. Its team, how to run it, its message flow and its test.
 ---
 
 # P17 · Budgets and circuit breaker

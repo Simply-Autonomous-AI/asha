@@ -1,6 +1,6 @@
 ---
 title: Orchestrator Workers Demo
-description: P5 · Orchestrator–workers: A lead splits a request into parts and gives each part to the worker whose description covers it, then combines their results. Its team, how to run it, its message flow and its test.
+description: P5 · Orchestrator–workers — a lead splits a request into parts and gives each part to the worker whose description covers it, then combines their results. Its team, how to run it, its message flow and its test.
 ---
 
 # P5 · Orchestrator–workers

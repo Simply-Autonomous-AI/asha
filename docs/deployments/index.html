@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>asha Deployments</title>
-<meta name="description" content="Running the asha daemon on your own machine: the ephemeral server that exists today, the plan for an optional persistent server on macOS, and the deferred Linux, Windows and PC plans.">
+<meta name="description" content="Running the asha daemon on your own machine — the ephemeral server that exists today, the plan for an optional persistent server on macOS, and the deferred Linux, Windows and PC plans.">
 <link rel="stylesheet" href="../assets/docs.css">
 </head>
 <body data-section="deployments">
@@ -77,6 +77,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 240" role="img" aria-labelledby="dp-eph-t dp-eph-d">
   <title id="dp-eph-t">Ephemeral daemon lifecycle</title>
   <desc id="dp-eph-d">The daemon is started either in the foreground by ./asha --server, or in the background by a CLI command that found no daemon answering, which spawns a detached ./asha --server logging to logs/server.log. At start the daemon takes daemon.lock, listens on 127.0.0.1 on port 0, and writes daemon.json with its pid and port. The CLI finds it through daemon.json and GET /v1/health. ./asha --stop sends SIGTERM; the daemon removes daemon.json, closes its listener, stops every agent and model server, and releases the lock.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="dp-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
 
   <rect class="box" x="10" y="20" width="200" height="54" rx="6"/>

@@ -1,6 +1,6 @@
 ---
 title: Checkpoint And Resume Demo
-description: P20 · Checkpoint and resume: a conversation in progress when the daemon stops is resumed after the restart and completes, and a long-running supervisor killed mid-task finishes the rest. Its team, how to run it, its message flow and its test.
+description: P20 · Checkpoint and resume — a conversation in progress when the daemon stops is resumed after the restart and completes, and a long-running supervisor killed mid-task finishes the rest. Its team, how to run it, its message flow and its test.
 ---
 
 # P20 · Checkpoint and resume

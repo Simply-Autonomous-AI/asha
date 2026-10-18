@@ -1,6 +1,6 @@
 ---
 title: Channels and Agents
-description: How asha's channels carry messages between the user and agents: handles, users, message kinds, addressing, delivery and ack, the working set, the shared channel layer agents act through, the agent SDK, and the agent container lifecycle.
+description: How asha's channels carry messages between the user and agents — handles, users, message kinds, addressing, delivery and ack, the working set, the shared channel layer agents act through, the agent SDK, and the agent container lifecycle.
 ---
 
 # Channels and agents

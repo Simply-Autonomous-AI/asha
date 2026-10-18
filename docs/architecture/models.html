@@ -46,6 +46,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 480" role="img" aria-labelledby="mp-t mp-d">
   <title id="mp-t">Model pipeline: pin, cache, serve, call</title>
   <desc id="mp-d">Left column: the catalogue entry feeds the model store, which downloads each file from Hugging Face at the pinned revision into a staging directory, checks size and sha256, and renames the directory into the content-addressed cache. Right column: the agent container calls the daemon's gateway with its bearer token; the gateway calls llama-server's OpenAI-compatible API. llama-server runs on the host with Metal and loads the weights from the cache.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="mp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
   <text class="label small" x="130" y="22" text-anchor="middle">provisioning (once per entry)</text>
   <text class="label small" x="390" y="22" text-anchor="middle">every model call</text>
@@ -115,6 +129,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 524" role="img" aria-labelledby="ms-t ms-d">
   <title id="ms-t">HuggingFaceModelStore.ensure: check, lock, then download and verify each file, promote</title>
   <desc id="ms-d">ensure computes the cache directory sha256-tree-digest from the entry's files. If it exists, the result is cached. Otherwise it takes the pid lock models/.lock: a live holder makes it throw LockHeld at once, and a dead holder's lock is cleared with lock.stale_cleared. Holding the lock it checks the directory again. Then, for each file in turn, it fetches the file from huggingface.co at the pinned revision into .staging-12-hex, bounded by 60 seconds of inactivity, and verifies that file's size and sha256 against the pin before starting the next. The first failure, in the download or the verification, throws and stops the loop, so later files are never fetched. When every file has passed, one rename promotes the staging directory to the cache directory and the result is downloaded. The staging directory is always removed and the lock released.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="ms-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
 
   <rect class="box" x="40" y="10" width="380" height="50" rx="6"/>

@@ -1,6 +1,6 @@
 ---
 title: Approval Gate Demo
-description: P15 · Human approval gate: An agent asks the user before a consequential step and takes it only on a yes. Its team, how to run it, its message flow and its test.
+description: P15 · Human approval gate — an agent asks the user before a consequential step and takes it only on a yes. Its team, how to run it, its message flow and its test.
 ---
 
 # P15 · Human approval gate

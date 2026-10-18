@@ -1,6 +1,6 @@
 ---
 title: Agent As Tool Demo
-description: P18 · Agent as tool (call and return): An agent uses another agent as a tool: it consults it, gets the answer back, and answers the user itself. Its team, how to run it, its message flow and its test.
+description: P18 · Agent as tool (call and return) — an agent uses another agent as a tool; it consults it, gets the answer back, and answers the user itself. Its team, how to run it, its message flow and its test.
 ---
 
 # P18 · Agent as tool (call and return)

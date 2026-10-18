@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Approval Gate Demo</title>
-<meta name="description" content="P15 · Human approval gate: An agent asks the user before a consequential step and takes it only on a yes. Its team, how to run it, its message flow and its test.">
+<meta name="description" content="P15 · Human approval gate — an agent asks the user before a consequential step and takes it only on a yes. Its team, how to run it, its message flow and its test.">
 <link rel="stylesheet" href="../assets/docs.css">
 </head>
 <body data-section="patterns">
@@ -54,6 +54,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 330" role="img" aria-labelledby="p15-t p15-d">
   <title id="p15-t">P15 · Human approval gate</title>
   <desc id="p15-d">p15-a: you ask clerk-1 to post an announcement; it asks you to approve the text and the conversation waits; you answer yes in that conversation; it reaches clerk-1 framed with its question; clerk-1 posts the announcement to the blackboard, then replies Posted. p15-b: you answer no, and it replies Not posted. with no post.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="p15-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
   <rect class="box" x="30" y="10" width="140" height="34" rx="5"/>
   <text class="label mono" x="100" y="32" text-anchor="middle">you</text>

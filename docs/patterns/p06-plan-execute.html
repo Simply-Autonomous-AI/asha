@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Plan And Execute Demo</title>
-<meta name="description" content="P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers: A planner writes a task ledger, runs each step through the agent that does it, records every attempt in a progress ledger with a stall count, and re-plans a step that keeps failing. Its team, how to run it, its message flow and its test.">
+<meta name="description" content="P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers — a planner writes a task ledger, runs each step through the agent that does it, records every attempt in a progress ledger with a stall count, and re-plans a step that keeps failing. Its team, how to run it, its message flow and its test.">
 <link rel="stylesheet" href="../assets/docs.css">
 </head>
 <body data-section="patterns">
@@ -54,6 +54,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 532" role="img" aria-labelledby="p06-t p06-d">
   <title id="p06-t">P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers</title>
   <desc id="p06-d">planner-1 writes the task ledger, asks half-a-1, then half-b-1 twice (both fail, stall count 1 then 2), appends plan 2 naming backup-1, asks it, and replies sunflower.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="p06-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
   <rect class="box" x="7.5" y="10" width="111" height="34" rx="5"/>
   <text class="label mono" x="63" y="32" text-anchor="middle">you</text>

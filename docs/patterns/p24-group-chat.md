@@ -1,6 +1,6 @@
 ---
 title: Managed Group Chat Demo
-description: P24 · Managed group chat: A manager chooses who speaks next, one participant at a time, each turn a call carrying the thread so far: in a fixed order (round robin), or by who holds the fact the next step needs (selector). Its team, how to run it, its message flow and its test.
+description: P24 · Managed group chat — a manager chooses who speaks next, one participant at a time, each turn a call carrying the thread so far, in a fixed order (round robin) or by who holds the fact the next step needs (selector). Its team, how to run it, its message flow and its test.
 ---
 
 # P24 · Managed group chat

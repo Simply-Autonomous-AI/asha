@@ -1,6 +1,6 @@
 ---
 title: Project History
-description: Dated records behind the asha project pages, newest first: guard proofs, corrections, and how asha was built.
+description: Dated records behind the asha project pages, newest first — guard proofs, corrections, and how asha was built.
 ---
 
 # Project history

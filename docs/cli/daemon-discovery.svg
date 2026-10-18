@@ -1,6 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 620" role="img" aria-labelledby="clidisc-t clidisc-d">
   <title id="clidisc-t">How the CLI finds, or starts, the daemon</title>
   <desc id="clidisc-d">findDaemon reads daemon.json under the harness home. No file means no daemon. A file that is not JSON, or whose pid, port or credential is missing or mistyped, is reported on stderr naming the file, exit 1. With a file, it asks GET /v1/health on 127.0.0.1 at the recorded port with the credential as a bearer token, bounded at 3 seconds. A 2xx answer means the daemon is used, with a warning on stderr if it runs a different build, except for --stop. A 401 means the file is not this daemon's: reported on stderr naming daemon.json, exit 1, and never taken as no daemon. A file with no credential is from a daemon that predates credentials: its health is asked without one, and on 2xx the CLI says so and that asha --stop replaces it, exit 1, while --stop stops it. No answer or another non-2xx answer means no daemon. With no daemon, --status and --stop print not running; a message, --launch or --watch spawn node dist/src/cli/main.js --server detached, logging to logs/server.log, then look again every 200 ms for up to 20 seconds. If found, it is used. If the new process died, the CLI looks once more, since another CLI may have won the race, and uses that daemon if found, otherwise fails with the daemon exited during startup, exit 1. After 20 seconds it fails with the daemon did not answer within 20000 ms, exit 1.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="clidisc-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
 
   <rect class="box" x="40" y="20" width="260" height="44" rx="6"/>

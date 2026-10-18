@@ -36,7 +36,7 @@ Every page under `docs/` is a Markdown source rendered to committed HTML, linked
 
 ### Writing a source
 
-- **Front matter** opens every source between two `---` lines, as plain `key: value` lines: `title` (two to four words), `description` (one sentence), and on a plan page under `docs/plans/` other than `index.md`, `template.md` and `debt.md`, a `status` of `draft`, `ready`, `in-progress` or `done`, rendered as a badge. A missing, unknown or repeated key or an invalid status fails the render, naming the file and key.
+- **Front matter** opens every source between two `---` lines, as plain `key: value` lines: `title` (two to four words), `description` (one sentence; no second `: ` in it, since GitHub reads the front matter as YAML 1.1 and shows an error above a page whose front matter is not, which [docs-standalone.test.ts](../../tests/unit/docs-standalone.test.ts) checks in every Markdown file the export publishes — every section but `plans/`, whose pages are not published and may still hold one), and on a plan page under `docs/plans/` other than `index.md`, `template.md` and `debt.md`, a `status` of `draft`, `ready`, `in-progress` or `done`, rendered as a badge. A missing, unknown or repeated key or an invalid status fails the render, naming the file and key.
 - **Exactly one `#` heading,** the page's `h1`. Before the first `##` is the header: the first paragraph becomes the `.lede`, and a raw `<div class="facts">` carries the verified date.
 - **Each `##` starts a `<section>`.** A trailing `{#id}` sets the id, else it is a slug of the text; a duplicate id fails the render. Keep an id stable once anything links to it. The renderer adds a `nav.toc` to a page with more than three `##` sections.
 - **Link pages by their `.md` source**, with any `#fragment`: `[Workflows](workflows.md#review)`; the renderer rewrites it to the `.html`. Links to code, `.svg` and external pages are unchanged.
@@ -95,7 +95,7 @@ A section index has the same shape, linking its pages from a `<div class="cards"
 
 ## Styling and the class vocabulary {#styling}
 
-- **One stylesheet,** [`docs/assets/docs.css`](../assets/docs.css), light theme only (`color-scheme: light`), no inline colours. `AGENTS.md` records its sha256, and the guard fails on a mismatch. Something new goes into the stylesheet for every page.
+- **One stylesheet,** [`docs/assets/docs.css`](../assets/docs.css), light theme only (`color-scheme: light`), no inline colours but the generated block each diagram carries for a viewer that shows it on its own ([below](#diagrams)), which never applies once a page inlines it. `AGENTS.md` records its sha256, and the guard fails on a mismatch. Something new goes into the stylesheet for every page.
 - **One exception:** the two CLI pages ([guide](../cli/guide.md), [reference](../cli/index.md)) keep their terminal-transcript styles (gutters, `td:first-child` wrapping) in a page-local `<style>` block, which would change every other page if global.
 - **Nothing from the network:** no external scripts, stylesheets, fonts or images. The font stacks name IBM Plex first and fall back to system fonts.
 - **Short:** a summary of answers after the lede, short paragraphs, tables for comparisons, code only where it matters most.
@@ -126,7 +126,8 @@ A section index has the same shape, linking its pages from a `<div class="cards"
 - **Scale with `viewBox`:** the stylesheet sets `width: 100%; height: auto`. Stay roughly 760 units wide or less, with labels of 11 px or more, so text is legible at 360 px; keep labels clear of box borders.
 - **Page-prefixed unique ids** for every `title`, `desc` and `marker` (for example `id="dc-arr"`), since diagrams are inlined.
 - **Classes:** shapes `.box`, `.box.accent` (the focus), `.box.host` (a dashed boundary, such as "your machine"), `.box.planned` (not built); text `.label`, `.label.small`, `.label.mono`, `.label.title`; lines `.edge`, `.edge.dim` (optional or planned).
-- **Arrowheads:** one `<marker>` per diagram filled `#0e6b66`, the only literal colour allowed, because markers do not inherit CSS.
+- **Arrowheads:** one `<marker>` per diagram filled `#0e6b66`, the only literal colour written by hand, because markers do not inherit CSS (the standalone block below is generated from the stylesheet).
+- **Standalone style:** GitHub, and a browser opening the `.svg`, show a diagram without the stylesheet, so its shapes drew black (2026-10-18). Each diagram carries, after its `<desc>`, a `<style>` with the stylesheet's `svg …` rules, their colours resolved and every selector under `svg:root`, so the rules apply only where the diagram is its own document, never once it is inlined in a page. [`tools/docs/svg-standalone.mts`](../../tools/docs/svg-standalone.mts) writes it, and refuses a stylesheet `svg` rule it cannot copy (one not written `svg .class { … }` on one line) or a `var()` it cannot resolve; run `node --experimental-strip-types tools/docs/svg-standalone.mts` after adding a diagram or changing those rules. [docs-standalone.test.ts](../../tests/unit/docs-standalone.test.ts) fails on a diagram whose block is missing or stale.
 
 ## Deep links to code {#links}
 

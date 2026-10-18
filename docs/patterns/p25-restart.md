@@ -1,6 +1,6 @@
 ---
 title: Supervisor Restart Demo
-description: P25 · Supervisor restart: An agent that crashes is restarted under its handle by its supervisor, and the message it held is sent to it again; past its restart intensity it is not restarted, and its conversation ends. Its team, how to run it, its message flow and its test.
+description: P25 · Supervisor restart — an agent that crashes is restarted under its handle by its supervisor, and the message it held is sent to it again; past its restart intensity it is not restarted, and its conversation ends. Its team, how to run it, its message flow and its test.
 ---
 
 # P25 · Supervisor restart

@@ -1,6 +1,6 @@
 ---
 title: Fan-Out Fan-In Demo
-description: P4 · Fan-out / fan-in (scatter-gather): One call asks many agents at once, and all their answers come back together, in one gather, to the agent that asked. Its team, how to run it, its message flow and its test.
+description: P4 · Fan-out / fan-in (scatter-gather) — one call asks many agents at once, and all their answers come back together, in one gather, to the agent that asked. Its team, how to run it, its message flow and its test.
 ---
 
 # P4 · Fan-out / fan-in (scatter-gather)

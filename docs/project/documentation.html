@@ -47,6 +47,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 866 260" role="img" aria-labelledby="dc-h-t dc-h-d">
   <title id="dc-h-t">Documentation hierarchy</title>
   <desc id="dc-h-d">docs/index.md links to eight section indexes: project, cli, portal, architecture, quality, testing, deployments and plans. Each section index links its pages directly, for example project links to workflows and documentation, testing links to the generated agent-tests page, and plans links to the template, the debt register and each plan. Each .md source is rendered to the .html next to it, and every rendered page links the one stylesheet in docs/assets.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="dc-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
 
   <rect class="box accent" x="343" y="10" width="180" height="44" rx="6"/>
@@ -103,6 +117,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 250" role="img" aria-labelledby="dc-rp-t dc-rp-d">
   <title id="dc-rp-t">From Markdown source to committed HTML</title>
   <desc id="dc-rp-d">The author edits a Markdown source, docs/section/page.md. npm run docs runs tools/docs/render.mts, which parses it with marked, inlines any .svg diagram beside it, and writes page.html next to the source. Both files are committed together. In npm test, tests/unit/docs.test.ts renders every source again in memory and compares: if a committed .html differs from its fresh render, the guard fails and names the file and the command npm run docs.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="dc-rp-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
 
   <rect class="box accent" x="10" y="40" width="160" height="80" rx="6"/>
@@ -142,7 +170,7 @@
 </figure>
 <h3 id="writing-a-source">Writing a source</h3>
 <ul>
-<li><strong>Front matter</strong> opens every source between two <code>---</code> lines, as plain <code>key: value</code> lines: <code>title</code> (two to four words), <code>description</code> (one sentence), and on a plan page under <code>docs/plans/</code> other than <code>index.md</code>, <code>template.md</code> and <code>debt.md</code>, a <code>status</code> of <code>draft</code>, <code>ready</code>, <code>in-progress</code> or <code>done</code>, rendered as a badge. A missing, unknown or repeated key or an invalid status fails the render, naming the file and key.</li>
+<li><strong>Front matter</strong> opens every source between two <code>---</code> lines, as plain <code>key: value</code> lines: <code>title</code> (two to four words), <code>description</code> (one sentence; no second <code>: </code> in it, since GitHub reads the front matter as YAML 1.1 and shows an error above a page whose front matter is not, which <a href="../../tests/unit/docs-standalone.test.ts">docs-standalone.test.ts</a> checks in every Markdown file the export publishes — every section but <code>plans/</code>, whose pages are not published and may still hold one), and on a plan page under <code>docs/plans/</code> other than <code>index.md</code>, <code>template.md</code> and <code>debt.md</code>, a <code>status</code> of <code>draft</code>, <code>ready</code>, <code>in-progress</code> or <code>done</code>, rendered as a badge. A missing, unknown or repeated key or an invalid status fails the render, naming the file and key.</li>
 <li><strong>Exactly one <code>#</code> heading,</strong> the page's <code>h1</code>. Before the first <code>##</code> is the header: the first paragraph becomes the <code>.lede</code>, and a raw <code>&lt;div class=&quot;facts&quot;&gt;</code> carries the verified date.</li>
 <li><strong>Each <code>##</code> starts a <code>&lt;section&gt;</code>.</strong> A trailing <code>{#id}</code> sets the id, else it is a slug of the text; a duplicate id fails the render. Keep an id stable once anything links to it. The renderer adds a <code>nav.toc</code> to a page with more than three <code>##</code> sections.</li>
 <li><strong>Link pages by their <code>.md</code> source</strong>, with any <code>#fragment</code>: <code>[Workflows](workflows.md#review)</code>; the renderer rewrites it to the <code>.html</code>. Links to code, <code>.svg</code> and external pages are unchanged.</li>
@@ -199,7 +227,7 @@ Prose, lists and tables in plain Markdown. Link pages by their source,
 <section id="styling">
 <h2>Styling and the class vocabulary</h2>
 <ul>
-<li><strong>One stylesheet,</strong> <a href="../assets/docs.css"><code>docs/assets/docs.css</code></a>, light theme only (<code>color-scheme: light</code>), no inline colours. <code>AGENTS.md</code> records its sha256, and the guard fails on a mismatch. Something new goes into the stylesheet for every page.</li>
+<li><strong>One stylesheet,</strong> <a href="../assets/docs.css"><code>docs/assets/docs.css</code></a>, light theme only (<code>color-scheme: light</code>), no inline colours but the generated block each diagram carries for a viewer that shows it on its own (<a href="#diagrams">below</a>), which never applies once a page inlines it. <code>AGENTS.md</code> records its sha256, and the guard fails on a mismatch. Something new goes into the stylesheet for every page.</li>
 <li><strong>One exception:</strong> the two CLI pages (<a href="../cli/guide.html">guide</a>, <a href="../cli/index.html">reference</a>) keep their terminal-transcript styles (gutters, <code>td:first-child</code> wrapping) in a page-local <code>&lt;style&gt;</code> block, which would change every other page if global.</li>
 <li><strong>Nothing from the network:</strong> no external scripts, stylesheets, fonts or images. The font stacks name IBM Plex first and fall back to system fonts.</li>
 <li><strong>Short:</strong> a summary of answers after the lede, short paragraphs, tables for comparisons, code only where it matters most.</li>
@@ -235,7 +263,8 @@ Prose, lists and tables in plain Markdown. Link pages by their source,
 <li><strong>Scale with <code>viewBox</code>:</strong> the stylesheet sets <code>width: 100%; height: auto</code>. Stay roughly 760 units wide or less, with labels of 11 px or more, so text is legible at 360 px; keep labels clear of box borders.</li>
 <li><strong>Page-prefixed unique ids</strong> for every <code>title</code>, <code>desc</code> and <code>marker</code> (for example <code>id=&quot;dc-arr&quot;</code>), since diagrams are inlined.</li>
 <li><strong>Classes:</strong> shapes <code>.box</code>, <code>.box.accent</code> (the focus), <code>.box.host</code> (a dashed boundary, such as &quot;your machine&quot;), <code>.box.planned</code> (not built); text <code>.label</code>, <code>.label.small</code>, <code>.label.mono</code>, <code>.label.title</code>; lines <code>.edge</code>, <code>.edge.dim</code> (optional or planned).</li>
-<li><strong>Arrowheads:</strong> one <code>&lt;marker&gt;</code> per diagram filled <code>#0e6b66</code>, the only literal colour allowed, because markers do not inherit CSS.</li>
+<li><strong>Arrowheads:</strong> one <code>&lt;marker&gt;</code> per diagram filled <code>#0e6b66</code>, the only literal colour written by hand, because markers do not inherit CSS (the standalone block below is generated from the stylesheet).</li>
+<li><strong>Standalone style:</strong> GitHub, and a browser opening the <code>.svg</code>, show a diagram without the stylesheet, so its shapes drew black (2026-10-18). Each diagram carries, after its <code>&lt;desc&gt;</code>, a <code>&lt;style&gt;</code> with the stylesheet's <code>svg …</code> rules, their colours resolved and every selector under <code>svg:root</code>, so the rules apply only where the diagram is its own document, never once it is inlined in a page. <a href="../../tools/docs/svg-standalone.mts"><code>tools/docs/svg-standalone.mts</code></a> writes it, and refuses a stylesheet <code>svg</code> rule it cannot copy (one not written <code>svg .class { … }</code> on one line) or a <code>var()</code> it cannot resolve; run <code>node --experimental-strip-types tools/docs/svg-standalone.mts</code> after adding a diagram or changing those rules. <a href="../../tests/unit/docs-standalone.test.ts">docs-standalone.test.ts</a> fails on a diagram whose block is missing or stale.</li>
 </ul>
 </section>
 <section id="links">

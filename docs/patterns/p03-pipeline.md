@@ -1,6 +1,6 @@
 ---
 title: Pipeline Pattern Demo
-description: P3 · Sequential pipeline: Each stage does its part and hands the result to the next; the last stage replies. Its team, how to run it, its message flow and its test.
+description: P3 · Sequential pipeline — each stage does its part and hands the result to the next; the last stage replies. Its team, how to run it, its message flow and its test.
 ---
 
 # P3 · Sequential pipeline

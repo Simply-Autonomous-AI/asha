@@ -1,6 +1,6 @@
 ---
 title: asha Architecture
-description: How asha is built: its components and data flow, the two HTTP APIs, build time and run time, the agent token, host inference, the design patterns, where state and logs live, and links to the plans.
+description: How asha is built — its components and data flow, the two HTTP APIs, build time and run time, the agent token, host inference, the design patterns, where state and logs live, and links to the plans.
 ---
 
 # Architecture

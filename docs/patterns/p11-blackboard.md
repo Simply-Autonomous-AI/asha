@@ -1,6 +1,6 @@
 ---
 title: Blackboard Demo
-description: P11 · Blackboard: Agents build the answer on the channel's shared board, each reading what others posted, and never send each other their work. Its team, how to run it, its message flow and its test.
+description: P11 · Blackboard — agents build the answer on the channel's shared board, each reading what others posted, and never send each other their work. Its team, how to run it, its message flow and its test.
 ---
 
 # P11 · Blackboard

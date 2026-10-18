@@ -1,6 +1,6 @@
 ---
 title: Plan And Execute Demo
-description: P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers: A planner writes a task ledger, runs each step through the agent that does it, records every attempt in a progress ledger with a stall count, and re-plans a step that keeps failing. Its team, how to run it, its message flow and its test.
+description: P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers — a planner writes a task ledger, runs each step through the agent that does it, records every attempt in a progress ledger with a stall count, and re-plans a step that keeps failing. Its team, how to run it, its message flow and its test.
 ---
 
 # P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers

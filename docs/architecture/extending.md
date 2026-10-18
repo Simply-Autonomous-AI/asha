@@ -1,6 +1,6 @@
 ---
 title: Extending asha
-description: How to extend asha: add a recipe, an agent image built on the agent SDK, a pinned model, a module, or an adapter behind an existing contract such as ContainerRuntime or ModelServer — with the steps, the files to touch and the tests to add.
+description: How to extend asha — add a recipe, an agent image built on the agent SDK, a pinned model, a module, or an adapter behind an existing contract such as ContainerRuntime or ModelServer, with the steps, the files to touch and the tests to add.
 ---
 
 # Extending asha

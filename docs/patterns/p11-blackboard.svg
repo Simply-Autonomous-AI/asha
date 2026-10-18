@@ -1,6 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 420" role="img" aria-labelledby="p11-t p11-d">
   <title id="p11-t">P11 · Blackboard</title>
   <desc id="p11-d">p11-a: you ask editor-1 for the shopping list; it consults contrib-a-1, contrib-b-1 and contrib-c-1 in one call; each posts its item to the channel's blackboard and answers only "posted"; editor-1 reads the board and replies with the items. p11-b: you ask planner-1 for the meeting notice; it consults note-day-1, then note-room-1, then note-time-1, one call each; note-day-1 posts "notice: meeting on Thursday"; note-room-1 and note-time-1 each read the board and post the last notice extended with their own fact; planner-1 reads the board and replies with the notice. No question or answer carries an item or a fact: they travel only through the board.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="p11-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
   <text class="label" x="20" y="24">p11-a · the shopping list</text>
   <rect class="box" x="20" y="40" width="80" height="34" rx="5"/>

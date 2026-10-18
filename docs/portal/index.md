@@ -1,6 +1,6 @@
 ---
 title: asha Portal
-description: The asha portal: a web page served by the daemon on your own machine, opened with asha --portal. Every command the CLI has, a live picture of a channel's agents saying what they do, chats, the pattern demos at a click, and each agent's telemetry; what it checks, what it reports, and what it does not protect.
+description: The asha portal — a web page served by the daemon on your own machine, opened with asha --portal. Every command the CLI has, a live picture of a channel's agents saying what they do, chats, the pattern demos at a click, and each agent's telemetry; what it checks, what it reports, and what it does not protect.
 ---
 
 # Portal user interface

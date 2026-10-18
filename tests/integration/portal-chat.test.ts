@@ -130,7 +130,16 @@ async function routeStream(page: Page, events: readonly WatchEvent[], channel = 
   );
 }
 
-async function watch(page: Page, channel: string): Promise<void> {
+/** The state a watch of a routed stream ends in: routeStream serves every event at once and closes the stream. */
+const routedEnd = (channel: string): string =>
+  `The watch of channel ${channel} ended; see the chat or its command-line view.`;
+
+/**
+ * Watches `channel` until #watch-state reads `state`. A daemon's stream stays open, so `Watching channel …` stays; a
+ * routed stream ends at once, so its watch waits for routedEnd — `Watching` lasted only until the stream closed, and a
+ * runner that looked later never saw it (v0.2.4's CI, 2026-10-18).
+ */
+async function watch(page: Page, channel: string, state = `Watching channel ${channel}.`): Promise<void> {
   await page.click('#tab-watch');
   // The button stops an open watch; a new channel is watched once it has stopped.
   if ((await page.textContent('#watch-button')) === 'Stop watching') {
@@ -139,7 +148,7 @@ async function watch(page: Page, channel: string): Promise<void> {
   }
   await page.fill('#watch-channel', channel);
   await page.click('#watch-button');
-  await page.locator('#watch-state', { hasText: `Watching channel ${channel}.` }).waitFor();
+  await page.locator('#watch-state', { hasText: state }).waitFor();
 }
 
 /** The thread's entries, each as `<class>: <text>` (the writing lines last). */
@@ -225,7 +234,7 @@ for (const name of BROWSERS) {
 
     it('the watch thread shows every class of message as its row of the table says, and who is writing (A8; R8)', async () => {
       p = await h.open(browser, 'alice', { commandLine: false, before: (page) => routeStream(page, EVERY_ROW) });
-      await watch(p.page, 'routed');
+      await watch(p.page, 'routed', routedEnd('routed'));
       await p.page.locator('#watch-thread .note.failure', { hasText: 'closed the channel stream' }).waitFor();
       const shown = await entries(p.page);
       const time = '12:34:56Z';
@@ -275,7 +284,7 @@ for (const name of BROWSERS) {
         ],
         'routed2',
       );
-      await watch(p.page, 'routed2');
+      await watch(p.page, 'routed2', routedEnd('routed2'));
       await p.page.locator('#watch-thread .note.failure', { hasText: 'closed the channel stream' }).waitFor();
       expect((await entries(p.page)).filter((e) => e.startsWith('writing:'))).toEqual([]);
       expect([p.errors, p.violations]).toEqual([[], []]);
@@ -359,7 +368,7 @@ for (const name of BROWSERS) {
         reducedMotion: true,
         before: (page) => routeStream(page, reduced),
       });
-      await watch(p.page, 'routed');
+      await watch(p.page, 'routed', routedEnd('routed'));
       await expect
         .poll(async () =>
           (await bubbles(p.page)).map((b) => `${b.handle} ${b.kind} ${b.lines.join('|')}`).sort(byCodeUnit),
@@ -404,7 +413,7 @@ for (const name of BROWSERS) {
         }),
       ];
       p = await h.open(browser, 'alice', { commandLine: false, before: (page) => routeStream(page, p5) });
-      await watch(p.page, 'routed');
+      await watch(p.page, 'routed', routedEnd('routed'));
       await expect
         .poll(async () => (await bubbles(p.page)).filter((b) => b.kind === 'work').length, {
           timeout: 5_000,

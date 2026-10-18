@@ -1,6 +1,6 @@
 ---
 title: Router Pattern Demo
-description: P2 · Router (triage): A router reads every agent's description and sends each request to the one specialist whose description covers it. Its team, how to run it, its message flow and its test.
+description: P2 · Router (triage) — a router reads every agent's description and sends each request to the one specialist whose description covers it. Its team, how to run it, its message flow and its test.
 ---
 
 # P2 · Router (triage)

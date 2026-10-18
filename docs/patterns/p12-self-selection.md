@@ -1,6 +1,6 @@
 ---
 title: Self-selection Pattern Demo
-description: P12 · Group chat, self-selection: A message goes to everyone, and each agent decides for itself whether its role covers it: the one that does answers, the others pass. Its team, how to run it, its message flow and its test.
+description: P12 · Group chat, self-selection — a message goes to everyone, and each agent decides for itself whether its role covers it; the one that does answers, the others pass. Its team, how to run it, its message flow and its test.
 ---
 
 # P12 · Group chat, self-selection

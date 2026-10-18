@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Channels and Agents</title>
-<meta name="description" content="How asha's channels carry messages between the user and agents: handles, users, message kinds, addressing, delivery and ack, the working set, the shared channel layer agents act through, the agent SDK, and the agent container lifecycle.">
+<meta name="description" content="How asha's channels carry messages between the user and agents — handles, users, message kinds, addressing, delivery and ack, the working set, the shared channel layer agents act through, the agent SDK, and the agent container lifecycle.">
 <link rel="stylesheet" href="../assets/docs.css">
 </head>
 <body data-section="architecture">
@@ -136,6 +136,20 @@ const recipients = kind === &#39;output&#39; ? [] : to !== undefined ? [to] : [.
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" role="img" aria-labelledby="cd-t cd-d">
   <title id="cd-t">A delivery's life: pending, then ack, timeout or leave</title>
   <desc id="cd-d">Channel.postToConversation creates one delivery per recipient, starts a timer of the recipient's messageTimeoutMs, stores it as pending and hands it to the agent's stream. While it is pending the agent is in the conversation's working set. It leaves the pending map in one of three ways: the agent acks it (serveAgent acks when the handler returns), the timer fires (expire logs channel.delivery_timeout and the supervisor stops the agent), or the agent leaves the channel (container exited or stream closed) and its deliveries are cleared. After each, concludeIfUnanswered runs: if nobody is working and no reply was posted, the harness posts its own output as asha and logs channel.no_reply. Then a status (or, on leave, agent_left) event carries the new working set, and the CLI's ConversationTracker settles when it is empty: exit 0 if an agent's output arrived, 1 otherwise.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="cd-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
 
   <rect class="box" x="10" y="10" width="230" height="78" rx="6"/>
@@ -392,6 +406,20 @@ The data between those lines comes from the tool, not from asha or the user. Nev
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="ff-t ff-d">
   <title id="ff-t">A file to an agent and back</title>
   <desc id="ff-d">The CLI on the Mac reads the user's file and streams it to the daemon: first POST /v1/channel/space, then POST /v1/channel/files. Under the channel's lock the daemon copies it with docker cp through the holder, a container never started, into the channel's volume, in a folder of its own. Every agent of the channel mounts the volume at /channel. An agent's reply_with_files names files in /channel; the daemon copies each out through the holder, checks it, and posts the reply with the files' ids; the CLI downloads each with GET /v1/channel/files/id and saves it under asha-files/channel/.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="ff-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
   <rect class="box" x="10" y="30" width="170" height="110" rx="6"/>
   <text class="label title" x="95" y="54" text-anchor="middle">asha (the Mac)</text>
@@ -525,6 +553,20 @@ parameters: { text: string, files: string[] }   // 1 to 10, each /channel/&lt;na
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 250" role="img" aria-labelledby="lc-t lc-d">
   <title id="lc-t">Agent lifecycle</title>
   <desc id="lc-d">An agent is launched: its image is staged and built if needed and its container started with its URL and token. It connects its channel stream and gets its handle, then posts Hi and is online. It leaves the channel when its container exits, its stream closes, it holds a delivery past its bound, or the daemon stops it. Not online within the startup bound fails the launch.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="lc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
   <rect class="box" x="10" y="40" width="160" height="80" rx="6"/>
   <text class="label title" x="90" y="64" text-anchor="middle">starting</text>
@@ -628,6 +670,20 @@ parameters: { text: string, files: string[] }   // 1 to 10, each /channel/&lt;na
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 640" role="img" aria-labelledby="cl-t cl-d">
   <title id="cl-t">A call: hewo-1 consults memo-1 and hewo-2, gets one gather, and replies to the user</title>
   <desc id="cl-d">The user's message is delivered to hewo-1, which calls consult. The daemon records the call and delivers one question to each addressee. Each callee's turn offers only reply and pass; memo-1 answers and hewo-2 passes, both through the answer route. When the last outcome is recorded, the daemon delivers one gather from asha to hewo-1, which replies to the user. hewo-1 stays in the working set while the call is open.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="cl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
   <rect class="box" x="20" y="10" width="120" height="36" rx="5"/>
   <text class="label title" x="80" y="33" text-anchor="middle">user · ./asha</text>
@@ -729,6 +785,20 @@ Their answers:
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 600" role="img" aria-labelledby="dg-t dg-d">
   <title id="dg-t">Delegation sequence: user to hewo-1 to hewo-2 to the user</title>
   <desc id="dg-d">The CLI posts the user's message addressed to hewo-1. The daemon delivers it to hewo-1, which reads the roster, asks the model, posts status ok and an internal message addressed to hewo-2, then acks. The daemon delivers the internal message to hewo-2, which asks the model, posts ok and an output reply. The daemon streams the output to the CLI, which prints it. When hewo-2 acks, nobody is working and the CLI exits 0.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="dg-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
   <rect class="box" x="20" y="10" width="120" height="36" rx="5"/>
   <text class="label title" x="80" y="33" text-anchor="middle">user · ./asha</text>

@@ -1,6 +1,6 @@
 ---
 title: asha Quality Controls
-description: The controls that keep asha correct: the typecheck, the npm run check gate, guard proofs, determinism, closed-schema definitions, pinned models, error surfacing, adversarial review, and the checklists.
+description: The controls that keep asha correct — the typecheck, the npm run check gate, guard proofs, determinism, closed-schema definitions, pinned models, error surfacing, adversarial review, and the checklists.
 ---
 
 # Quality controls

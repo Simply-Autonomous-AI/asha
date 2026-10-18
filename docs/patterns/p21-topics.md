@@ -1,6 +1,6 @@
 ---
 title: Publish Subscribe Demo
-description: P21 · Publish / subscribe (topic routing): A message posted to a topic reaches only the agents subscribed to it. Its team, how to run it, its message flow and its test.
+description: P21 · Publish / subscribe (topic routing) — a message posted to a topic reaches only the agents subscribed to it. Its team, how to run it, its message flow and its test.
 ---
 
 # P21 · Publish / subscribe (topic routing)

@@ -1,6 +1,6 @@
 ---
 title: Contract Net Demo
-description: P13 · Contract net (bidding): A manager calls for bids, awards the task to the best bidder with a second call, and reports the award. Its team, how to run it, its message flow and its test.
+description: P13 · Contract net (bidding) — a manager calls for bids, awards the task to the best bidder with a second call, and reports the award. Its team, how to run it, its message flow and its test.
 ---
 
 # P13 · Contract net (bidding)

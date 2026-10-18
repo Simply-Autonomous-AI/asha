@@ -1,6 +1,6 @@
-# asha — Autonomous Simple Harness for Agents
+<p align="center"><img src="assets/simply-autonomous-bot.png" alt="The SimplyAutonomous.AI logo: a teal robot with a lamp on its head" width="160"></p>
 
-<img src="assets/simply-autonomous-bot.png" alt="The SimplyAutonomous.AI logo: a teal robot with a lamp on its head" width="160" align="right">
+# asha — Autonomous Simple Harness for Agents
 
 ## What asha is
 
@@ -271,7 +271,9 @@ pattern, shows a real transcript and its recorded video, and says what limits it
 
 The CLI, and the portal's page in a browser, talk to the daemon over loopback HTTP. The daemon runs agent containers
 in colima and brokers every model call to llama-server on the host, which serves models from a verified cache
-downloaded from Hugging Face. The whole picture, with its diagram: [Architecture](./docs/architecture/index.md).
+downloaded from Hugging Face. The whole picture: [Architecture](./docs/architecture/index.md).
+
+![asha's components and data flow: the CLI and the portal call the daemon's control API; inside the daemon, the server hands requests to the channels and the agent supervisor, which loads definitions, stages images, starts containers in colima, downloads and verifies models, starts llama-server on the host and forwards agents' model calls through the model gateway](./docs/architecture/overview.svg)
 
 ![The portal's Watch tab on channel lab: lead-1 has asked helper-1 to check the plan, and the scene shows each robot's work, the message between them, the chat and each agent's telemetry](assets/portal-watch.png)
 

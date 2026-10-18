@@ -1,6 +1,6 @@
 ---
 title: Delegation Pattern Demo
-description: P1 · Delegation (hand-off): A lead hands a task to the agent that does it, and that agent answers the user itself. Its team, how to run it, its message flow and its test.
+description: P1 · Delegation (hand-off) — a lead hands a task to the agent that does it, and that agent answers the user itself. Its team, how to run it, its message flow and its test.
 ---
 
 # P1 · Delegation (hand-off)

@@ -1,6 +1,6 @@
 {
   "name": "asha",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
   "author": "SimplyAutonomous.AI, LLC <admin@simplyautonomous.ai>",
@@ -69,7 +69,8 @@
     "prettier": "3.9.9",
     "typescript": "6.0.3",
     "typescript-eslint": "8.71.1",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.2",
+    "yaml": "2.9.1"
   },
   "dependencies": {
     "@opentelemetry/api": "1.9.1",

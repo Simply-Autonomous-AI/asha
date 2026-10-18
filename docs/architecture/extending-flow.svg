@@ -1,6 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 350" role="img" aria-labelledby="ex-t ex-d">
   <title id="ex-t">The four ways to extend asha, step by step</title>
   <desc id="ex-d">Four rows, smallest first. A recipe: write recipes/name.json with every field, write the description other agents read and set temperature 0 if a test asserts its output, then add a Definitions test and an agent-suite scenario. An image: write images/name with main.ts, agent.ts and a copied Dockerfile, add a recipe naming it, then npm run build and add unit and agent-suite tests. A model: write catalogue/id.json pinned by revision sha, sha256 per file and licence, record every value's source and date on the Models page, then point a recipe at it and, for a chat model, run the routing eval. An adapter: justify it in writing, implement the existing contract in its module folder, then wire it in productionDependencies and map new errors in classify. Every row ends at the same gate: npm run check, the docs in the same commit, and one adversarial review.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="ex-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
 
   <!-- row labels -->

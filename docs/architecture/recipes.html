@@ -47,6 +47,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 300" role="img" aria-labelledby="rc-t rc-d">
   <title id="rc-t">A recipe and what it names</title>
   <desc id="rc-d">recipes/memory.json names the image memory, which is images/memory/ with its Dockerfile and TypeScript source, the chat model qwen3-8b-q4_k_m and the embedding model qwen3-embedding-0.6b-q8_0, each a file in catalogue/. The recipe also carries its system prompt, its bounds and chat sampling overrides.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="rc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
   <rect class="box accent" x="150" y="10" width="220" height="104" rx="6"/>
   <text class="label title" x="260" y="32" text-anchor="middle">recipes/memory.json</text>
@@ -356,6 +370,20 @@ ENTRYPOINT [&quot;node&quot;, &quot;/app/images/hello-world/src/main.js&quot;]
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -10 760 480" role="img" aria-labelledby="rl-t rl-d">
   <title id="rl-t">How a recipe, an image and catalogue entries combine at launch</title>
   <desc id="rl-d">AgentSupervisor's private launch reads the three definitions in order: the recipe, the image it names, then its chat model entry and, if set, its embedding model entry; then the recipe's documents, from its folder. Each catalogue entry goes to the model store's ensure and then the model server's ensureServing, giving an endpoint. The image directory and the compiled code in dist are staged and digested, and ensureImage builds the tag asha-image-name:digest only when that tag is missing, never replacing a tag. The supervisor keeps an agent record keyed by a new token holding the recipe, the entries and their endpoints, then creates the container asha-channel-recipe-6-hex from that exact tag, with ASHA_URL and ASHA_AGENT_TOKEN, copies the recipe's documents into its /workspace, and starts it. At run time the recipe's description goes into the roster, its prompt and full-text documents reach the agent in its welcome and go into its system prompt, messageTimeoutMs bounds each delivery, startupTimeoutMs bounds coming online, and the recipe's chat block is merged over the entry's on every chat call.</desc>
+  <style>
+  /* For a viewer showing this diagram on its own: docs/assets/docs.css, by tools/docs/svg-standalone.mts. */
+  svg:root { background: #ffffff; font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  svg:root .box { fill: #ffffff; stroke: #17211d; stroke-width: 1.2; }
+  svg:root .box.accent { fill: #e0efec; stroke: #0e6b66; }
+  svg:root .box.host { fill: #f1f4f2; stroke: #52605a; stroke-dasharray: 4 3; }
+  svg:root .box.planned { fill: #ece8f8; stroke: #5b44b0; stroke-dasharray: 4 3; }
+  svg:root .label { fill: #17211d; font-size: 13px; }
+  svg:root .label.small { font-size: 11px; fill: #52605a; }
+  svg:root .label.mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+  svg:root .label.title { font-weight: 600; }
+  svg:root .edge { stroke: #0e6b66; stroke-width: 1.5; fill: none; }
+  svg:root .edge.dim { stroke: #52605a; stroke-dasharray: 4 3; }
+  </style>
   <defs><marker id="rl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
 
     <rect class="box accent" x="10" y="24" width="235" height="62" rx="6"/>

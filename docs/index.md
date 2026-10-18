@@ -1,6 +1,6 @@
 ---
 title: asha Documentation
-description: The index of every document about asha, the SimplyAutonomous.AI agent harness: project, CLI, portal, architecture, pattern demos, quality, testing, deployments and plans.
+description: The index of every document about asha, the SimplyAutonomous.AI agent harness — project, CLI, portal, architecture, pattern demos, quality, testing, deployments and plans.
 ---
 
 # asha documentation

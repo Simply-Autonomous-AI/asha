@@ -1,6 +1,6 @@
 ---
 title: Generator Critic Demo
-description: P8 · Generator–critic loop: A writer drafts, a critic that knows a rule the writer does not critiques, and the writer revises until the critic accepts or three rounds have passed. Its team, how to run it, its message flow and its test.
+description: P8 · Generator–critic loop — a writer drafts, a critic that knows a rule the writer does not critiques, and the writer revises until the critic accepts or three rounds have passed. Its team, how to run it, its message flow and its test.
 ---
 
 # P8 · Generator–critic loop

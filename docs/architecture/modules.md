@@ -1,6 +1,6 @@
 ---
 title: Modules
-description: Extension modules — tool modules, model providers and command plugins: the manifest, install, the sandbox and its egress proxy, secrets, approvals, the audit, the meter, the memory rule, command plugins' guardrails, and what is logged.
+description: Extension modules — tool modules, model providers and command plugins; the manifest, install, the sandbox and its egress proxy, secrets, approvals, the audit, the meter, the memory rule, command plugins' guardrails, and what is logged.
 ---
 
 # Modules

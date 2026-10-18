@@ -1,6 +1,6 @@
 ---
 title: Watchdog Reassignment Demo
-description: P14 · Watchdog and reassignment: A worker that stalls is stopped when its delivery passes its bound, the call records it as timed out, and the lead gives the task to another worker. Its team, how to run it, its message flow and its test.
+description: P14 · Watchdog and reassignment — a worker that stalls is stopped when its delivery passes its bound, the call records it as timed out, and the lead gives the task to another worker. Its team, how to run it, its message flow and its test.
 ---
 
 # P14 · Watchdog and reassignment

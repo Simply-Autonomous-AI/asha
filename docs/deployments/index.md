@@ -1,6 +1,6 @@
 ---
 title: asha Deployments
-description: Running the asha daemon on your own machine: the ephemeral server that exists today, the plan for an optional persistent server on macOS, and the deferred Linux, Windows and PC plans.
+description: Running the asha daemon on your own machine — the ephemeral server that exists today, the plan for an optional persistent server on macOS, and the deferred Linux, Windows and PC plans.
 ---
 
 # Deployments

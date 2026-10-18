@@ -1,6 +1,6 @@
 ---
 title: Debate With Judge Demo
-description: P9 · Debate with a judge: Two debaters argue assigned stances over two rounds, the second answering the first; a judge gives the verdict. Its team, how to run it, its message flow and its test.
+description: P9 · Debate with a judge — two debaters argue assigned stances over two rounds, the second answering the first; a judge gives the verdict. Its team, how to run it, its message flow and its test.
 ---
 
 # P9 · Debate with a judge

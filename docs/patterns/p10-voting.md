@@ -1,6 +1,6 @@
 ---
 title: Voting Ensemble Demo
-description: P10 · Voting / ensemble: Several voters with different guidance answer the same question on their own; an aggregator counts their votes and reports the majority and the tally. Its team, how to run it, its message flow and its test.
+description: P10 · Voting / ensemble — several voters with different guidance answer the same question on their own; an aggregator counts their votes and reports the majority and the tally. Its team, how to run it, its message flow and its test.
 ---
 
 # P10 · Voting / ensemble
