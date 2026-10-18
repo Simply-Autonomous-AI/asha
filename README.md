@@ -2,6 +2,11 @@
 
 # asha — Autonomous Simple Harness for Agents
 
+![The portal's Watch tab on channel lab: lead-1 has asked helper-1 to check the plan, and the scene shows each robot's work, the message between them, the chat and each agent's telemetry](assets/portal-watch.png)
+
+*The portal's Watch tab as agents interact: `lead-1` consults `helper-1` while it plans a trip for user `bob`,
+captured by `npm run portal:screenshots`, which drives the real daemon and portal with a scripted model.*
+
 ## What asha is
 
 asha runs AI agents on your own Mac, with open-weight models served locally, and demonstrates the multi-agent
@@ -47,6 +52,14 @@ pinned by revision and checked by sha256 before it is used.
   (`npx playwright-core install --no-remove chromium-headless-shell firefox`).
 - **Tested on:** an Apple M4 Pro with 48 GiB of memory, macOS 26.5.2. No minimum memory, disk or macOS version has
   been measured.
+
+## Architecture
+
+The CLI, and the portal's page in a browser, talk to the daemon over loopback HTTP. The daemon runs agent containers
+in colima and brokers every model call to llama-server on the host, which serves models from a verified cache
+downloaded from Hugging Face. The whole picture: [Architecture](./docs/architecture/index.md).
+
+![asha's components and data flow: the CLI and the portal call the daemon's control API; inside the daemon, the server hands requests to the channels and the agent supervisor, which loads definitions, stages images, starts containers in colima, downloads and verifies models, starts llama-server on the host and forwards agents' model calls through the model gateway](./docs/architecture/overview.svg)
 
 ## The demos
 
@@ -266,19 +279,6 @@ pattern, shows a real transcript and its recorded video, and says what limits it
 - **Agent containers share one colima VM** with anything else that uses it.
 - **The docs are written for this repository's renderer:** on GitHub their callouts, fact boxes and heading ids show
   as raw Markdown. The rendered `.html` beside each page opens locally (`open docs/index.html`).
-
-## Architecture
-
-The CLI, and the portal's page in a browser, talk to the daemon over loopback HTTP. The daemon runs agent containers
-in colima and brokers every model call to llama-server on the host, which serves models from a verified cache
-downloaded from Hugging Face. The whole picture: [Architecture](./docs/architecture/index.md).
-
-![asha's components and data flow: the CLI and the portal call the daemon's control API; inside the daemon, the server hands requests to the channels and the agent supervisor, which loads definitions, stages images, starts containers in colima, downloads and verifies models, starts llama-server on the host and forwards agents' model calls through the model gateway](./docs/architecture/overview.svg)
-
-![The portal's Watch tab on channel lab: lead-1 has asked helper-1 to check the plan, and the scene shows each robot's work, the message between them, the chat and each agent's telemetry](assets/portal-watch.png)
-
-*The portal's Watch tab as agents interact: `lead-1` consults `helper-1` while it plans a trip for user `bob`,
-captured by `npm run portal:screenshots`, which drives the real daemon and portal with a scripted model.*
 
 ## Documentation
 

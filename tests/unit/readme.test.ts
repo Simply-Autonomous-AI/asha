@@ -88,13 +88,20 @@ describe('the README (oss-release R18–R21; A15–A17)', () => {
       'What asha is',
       'Why it exists',
       'Quickstart',
+      'Architecture',
       'The demos',
       'Known limits',
-      'Architecture',
       'Documentation',
       'Contributing and security',
       'Licence and model credits',
     ]);
+    // The portal's Watch-tab screenshot, with its caption, opens the README: after the title, right before the first
+    // section (the owner, 2026-10-18).
+    const shot = README.indexOf('](assets/portal-watch.png)');
+    expect(README.split('](assets/portal-watch.png)').length - 1).toBe(1);
+    expect(shot).toBeGreaterThan(README.indexOf('\n# asha — '));
+    const between = README.slice(README.indexOf('\n', shot), README.indexOf('\n## What asha is'));
+    expect(between.trim()).toMatch(/^\*The portal's Watch tab[^*]*\*$/);
     const why = section(README, 'Why it exists');
     for (const phrase of [
       'locally, with open-weight models, at no',
