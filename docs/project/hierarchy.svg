@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 866 260" role="img" aria-labelledby="dc-h-t dc-h-d">
+  <title id="dc-h-t">Documentation hierarchy</title>
+  <desc id="dc-h-d">docs/index.md links to eight section indexes: project, cli, portal, architecture, quality, testing, deployments and plans. Each section index links its pages directly, for example project links to workflows and documentation, testing links to the generated agent-tests page, and plans links to the template, the debt register and each plan. Each .md source is rendered to the .html next to it, and every rendered page links the one stylesheet in docs/assets.</desc>
+  <defs><marker id="dc-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box accent" x="343" y="10" width="180" height="44" rx="6"/>
+  <text class="label mono" x="433" y="37" text-anchor="middle">docs/index.md</text>
+
+  <rect class="box" x="10" y="100" width="98" height="40" rx="5"/><text class="label mono" x="59" y="124" text-anchor="middle">project/</text>
+  <rect class="box" x="116" y="100" width="98" height="40" rx="5"/><text class="label mono" x="165" y="124" text-anchor="middle">cli/</text>
+  <rect class="box planned" x="222" y="100" width="98" height="40" rx="5"/><text class="label mono" x="271" y="124" text-anchor="middle">portal/</text>
+  <rect class="box" x="328" y="100" width="104" height="40" rx="5"/><text class="label mono" x="380" y="124" text-anchor="middle">architecture/</text>
+  <rect class="box" x="440" y="100" width="98" height="40" rx="5"/><text class="label mono" x="489" y="124" text-anchor="middle">quality/</text>
+  <rect class="box" x="546" y="100" width="98" height="40" rx="5"/><text class="label mono" x="595" y="124" text-anchor="middle">testing/</text>
+  <rect class="box" x="652" y="100" width="98" height="40" rx="5"/><text class="label mono" x="701" y="124" text-anchor="middle">deployments/</text>
+  <rect class="box" x="758" y="100" width="98" height="40" rx="5"/><text class="label mono" x="807" y="124" text-anchor="middle">plans/</text>
+
+  <path class="edge" d="M433 54 V78 H59 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M165 78 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M271 78 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M380 78 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M433 78 H807 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M701 78 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M489 78 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M595 78 V98" marker-end="url(#dc-arr)"/>
+
+  <rect class="box" x="10" y="180" width="98" height="30" rx="4"/><text class="label small" x="59" y="199" text-anchor="middle">workflows.md</text>
+  <rect class="box" x="10" y="218" width="98" height="30" rx="4"/><text class="label small" x="59" y="237" text-anchor="middle">documentation.md</text>
+  <path class="edge" d="M59 140 V178" marker-end="url(#dc-arr)"/>
+
+  <rect class="box" x="328" y="180" width="104" height="30" rx="4"/><text class="label small" x="380" y="199" text-anchor="middle">channel, models, …</text>
+  <path class="edge" d="M380 140 V178" marker-end="url(#dc-arr)"/>
+
+  <rect class="box" x="546" y="180" width="98" height="30" rx="4"/><text class="label small" x="595" y="199" text-anchor="middle">agent-tests.html</text>
+  <text class="label small" x="595" y="226" text-anchor="middle">generated</text>
+  <path class="edge" d="M595 140 V178" marker-end="url(#dc-arr)"/>
+
+  <rect class="box" x="758" y="180" width="98" height="30" rx="4"/><text class="label small" x="807" y="199" text-anchor="middle">template, debt, …</text>
+  <path class="edge" d="M807 140 V178" marker-end="url(#dc-arr)"/>
+</svg>

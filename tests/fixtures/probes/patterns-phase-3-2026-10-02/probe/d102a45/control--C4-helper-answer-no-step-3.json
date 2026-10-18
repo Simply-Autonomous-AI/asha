@@ -1,0 +1,103 @@
+{
+  "commit": "d102a45b4059a62f100af58747d186b1be299a95",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "control/C4-helper-answer-no-step-3",
+  "control": true,
+  "change": {
+    "doc": "1. If every part of a request is a length conversion, call reply with the answers.\n2. If any part is something else, call ask_user with \"ESCALATE: done: \" and the conversions you did, then \"; left: \" and what is left, and nothing more.\n"
+  },
+  "passes": 0,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "3 metres = 300 centimetres. Also, 5 metres = 500 centimetres."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "3 metres = 300 centimetres. Also, 5 metres = 500 centimetres."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 744,
+          "completionTokens": 41
+        }
+      ],
+      "ms": 2077,
+      "board": [],
+      "requestSha256": "d8f505bf07a4937e5a36b325eb28053db1ff8eadd6364fb8e25f3a6cc16a475f",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "3 metres = 300 centimetres. Also, 5 metres = 500 centimetres."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "3 metres = 300 centimetres. Also, 5 metres = 500 centimetres."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 744,
+          "completionTokens": 41
+        }
+      ],
+      "ms": 917,
+      "board": [],
+      "requestSha256": "d8f505bf07a4937e5a36b325eb28053db1ff8eadd6364fb8e25f3a6cc16a475f",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "3 metres = 300 centimetres. Also, 5 metres = 500 centimetres."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "3 metres = 300 centimetres. Also, 5 metres = 500 centimetres."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 744,
+          "completionTokens": 41
+        }
+      ],
+      "ms": 922,
+      "board": [],
+      "requestSha256": "d8f505bf07a4937e5a36b325eb28053db1ff8eadd6364fb8e25f3a6cc16a475f",
+      "ok": false
+    }
+  ]
+}

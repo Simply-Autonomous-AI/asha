@@ -1,0 +1,133 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p18-agent-tool.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent As Tool Demo</title>
+<meta name="description" content="P18 · Agent as tool (call and return): An agent uses another agent as a tool: it consults it, gets the answer back, and answers the user itself. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Agent As Tool Demo</nav>
+<h1>P18 · Agent as tool (call and return)</h1>
+<p class="lede">An agent uses another agent as a tool: it consults it, gets the answer back, and answers the user itself.</p>
+<div class="facts"><span>written 2026-09-29</span><span>status: <span class="badge built">built</span> 2026-09-29, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/agent-tool/team.json"><code>teams/agent-tool/</code></a></span><span>test: <a href="../../tests/agents/p18-agent-tool.test.ts"><code>tests/agents/p18-agent-tool.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-2.md</code></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p18-a</code>, as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>Built: its three recorded runs with every member on <code>qwen3-8b-q4_k_m</code> passed, then one under the bound they set, at <code>c1b4069</code> (runs (<code>docs/plans/patterns-phase-2.md</code>)); moved 2026-10-10 by <code>docs/plans/demo-model-pico.md</code> R3, with its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code>: three recorded runs passed at <code>6eed097</code> with the move, then one under the bound they set at <code>8dd3a26</code> (runs (<code>evals/probes/demo-model-pico-runs-2026-10-09/README.md</code>)); its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>delegator</code> on <code>qwen3-8b-q4_k_m</code>; <code>worker</code> on <code>pico-v2-q8_0</code>.</li>
+<li>The delegator keeps the conversation: unlike delegation (P1), the worker never answers the user.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p18-agent-tool.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>pico-v2-q8_0</code> and <code>qwen3-8b-q4_k_m</code> (<a href="videos/p18-agent-tool.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 19 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when one agent must use another agent's result in its own answer — a lookup, a check, a sub-answer — and stay the one the user talks to.</p>
+<p><strong>Do not use it</strong> when the other agent can answer the user directly (delegation, P1, is one message fewer), or when several agents are needed at once (fan-out, P4).</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 294" role="img" aria-labelledby="p18-t p18-d">
+  <title id="p18-t">P18 · Agent as tool (call and return)</title>
+  <desc id="p18-d">The delegator consults worker-1 with one call; worker-1's answer goes back to the delegator only, in one gather from the harness; the delegator replies to you.</desc>
+  <defs><marker id="p18-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="95" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M95 44 V288"/>
+  <rect class="box accent" x="210" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="285" y="32" text-anchor="middle">delegator-1</text>
+  <path class="edge dim" d="M285 44 V288"/>
+  <rect class="box" x="400" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="475" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M475 44 V288"/>
+  <rect class="box accent" x="590" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="665" y="32" text-anchor="middle">worker-1</text>
+  <path class="edge dim" d="M665 44 V288"/>
+  <path class="edge" d="M95 80 H283" marker-end="url(#p18-a)"/>
+  <text class="label small" x="190" y="74" text-anchor="middle">Get worker-1 to say Hello World, then tell me…</text>
+  <text class="label small" x="293" y="114">consult (guidance step 1)</text>
+  <path class="edge" d="M285 148 H663" marker-end="url(#p18-a)"/>
+  <text class="label small" x="475" y="142" text-anchor="middle">call question: the same words</text>
+  <path class="edge" d="M665 182 H287" marker-end="url(#p18-a)"/>
+  <text class="label small" x="475" y="176" text-anchor="middle">answer: Hello World (to the caller only)</text>
+  <path class="edge" d="M475 216 H287" marker-end="url(#p18-a)"/>
+  <text class="label small" x="380" y="210" text-anchor="middle">gather: 1 answered</text>
+  <path class="edge" d="M285 250 H97" marker-end="url(#p18-a)"/>
+  <text class="label small" x="190" y="244" text-anchor="middle">output: worker-1 said: Hello World</text>
+</svg>
+<figcaption>The delegator consults worker-1 with one call; worker-1's answer goes back to the delegator only, in one gather from the harness; the delegator replies to you.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 15,000 ms since 2026-10-10, set from its three recorded runs with its sub-agents on <code>pico-v2-q8_0</code> (<code>docs/plans/demo-model-pico.md</code> R3) — the largest request, p18-a's 9,475 ms in run 3 at <code>6eed097</code> with the move, times 1.5 (14,212.5), rounded up to a whole second; the cap is 45,000 ms. <em>Before, with every member on <code>qwen3-8b-q4_k_m</code>:</em> 14,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-2.md</code> R4) — the largest request, p18-a's 8,813 ms at <code>30226b1</code>, times 1.5 (13,220), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=agent-tool
+# bound: 15000 ms
+# p18-a
+./asha to=delegator-1 user=alice message=&quot;Get worker-1 to say Hello World, then tell me yourself what it said.&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>8dd3a26</code> (clean tree), <code>docs/plans/demo-model-pico.md</code>'s fourth run (R3 (d)), with its sub-agents on <code>pico-v2-q8_0</code>, from its results file <code>p18-agent-tool.json</code> (<code>evals/probes/demo-model-pico-runs-2026-10-09/run-4/results/p19-agent-tool.json</code>): each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' tool calls as they stream — lines such as <code>› &lt;handle&gt; &lt;tool&gt;: …</code>, one fragment each (D38) — are left out here; the results file holds them. The transcript before, with every member on <code>qwen3-8b-q4_k_m</code>, is in this page's history (<code>git show 8dd3a26:docs/patterns/p18-agent-tool.md</code>).</p>
+<p><strong>p18-a</strong> — exit 0, 8,664 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=delegator-1 user=alice message=&quot;Get worker-1 to say Hello World, then tell me yourself what it said.&quot;
+› alice → delegator-1 on main: Get worker-1 to say Hello World, then tell me yourself what it said.
+› delegator-1: ok
+› internal delegator-1 → worker-1: Say: Hello World
+› internal worker-1 → delegator-1: Hello World
+› internal asha → delegator-1: Answers to delegator-1&#39;s call: 1 answered.
+› delegator-1: ok
+› output delegator-1 → alice:
+worker-1 said: Hello World
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/agent-tool/team.json"><code>teams/agent-tool/team.json</code></a>: the team — <code>delegator</code>, <code>worker</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>.</li>
+<li><code>delegator</code>: <a href="../../teams/agent-tool/delegator.json"><code>delegator.json</code></a>, its recipe, and <a href="../../teams/agent-tool/delegator.md"><code>delegator.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>worker</code>: <a href="../../teams/agent-tool/worker.json"><code>worker.json</code></a>, its recipe, and <a href="../../teams/agent-tool/worker.md"><code>worker.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><a href="../../tests/agents/p18-agent-tool.test.ts"><code>tests/agents/p18-agent-tool.test.ts</code></a>: launches the team and sends each scenario's message from this page, then asserts each scenario only through its checker, <code>P18_A</code> in <a href="../../tests/agents/patterns/phase-2.ts"><code>tests/agents/patterns/phase-2.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p18-a/pass.json"><code>tests/agents/patterns/fixtures/p18-a/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>With its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code> (demo-model-pico, 2026-10-10): its largest request took 9,475 ms in the three recorded runs and 8,664 ms in the fourth, under its bound of 15,000 ms. The limits after it were measured with every member on <code>qwen3-8b-q4_k_m</code>, before the move; one about a sub-agent was not measured again on <code>pico-v2-q8_0</code>.</li>
+<li><code>qwen3-8b-q4_k_m</code> hands a task-shaped &quot;do it, then tell me yourself&quot; request to the other agent instead of consulting it (D30); the delegator's guidance tells it to consult, as the owner directed. Run once with that guidance emptied (2026-09-29, <code>docs/plans/patterns-phase-2.md</code> A8), the delegator handed the request to worker-1 with <code>send_message</code> and worker-1 answered the user: it is the guidance that makes the difference.</li>
+<li>The delegator's guidance says to pass the user's words on word for word; in the probes it wrote them as an instruction instead, &quot;Say: Hello World&quot;, 3 of 3 — the worker answers the same. Measured in the premise probes (2026-09-29, <code>0be190f</code>), its chain of model turns took 8.7 s with cold prompts and 1.7 s warm (<code>docs/plans/patterns-phase-2.md</code>).</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p18">agent test report, P18 · Agent as tool (call and return)</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p18-agent-tool.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

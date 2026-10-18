@@ -1,0 +1,27 @@
+{
+  "id": "tasker",
+  "image": "hello-world",
+  "description": "Does one task per message, keeping the ids of the tasks it has done in tasks.json in its workspace.",
+  "prompt": "you do one task per message, keeping the ids of the tasks you have done in tasks.json.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "tasker.md",
+      "fullText": true
+    }
+  ],
+  "persist": [
+    "workspace"
+  ]
+}

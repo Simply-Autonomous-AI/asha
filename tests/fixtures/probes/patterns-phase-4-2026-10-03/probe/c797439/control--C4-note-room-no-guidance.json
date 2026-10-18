@@ -1,0 +1,276 @@
+{
+  "commit": "c79743931a18a108d9eb0944e59055b5cfa4c14c",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "control/C4-note-room-no-guidance",
+  "control": true,
+  "doc": "",
+  "dropStep": null,
+  "passes": 0,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Your message has been added to the blackboard. Let me know if you need further assistance."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "Note from note-room-1: I am here to assist with the meeting notes."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1233,
+          "completionTokens": 35
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Your message has been added to the blackboard. Let me know if you need further assistance."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1344,
+          "completionTokens": 35
+        }
+      ],
+      "ms": 4763,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday",
+          "posted": false
+        },
+        {
+          "author": "note-room-1",
+          "text": "Note from note-room-1: I am here to assist with the meeting notes.",
+          "posted": true
+        }
+      ],
+      "reply": "Your message has been added to the blackboard. Let me know if you need further assistance.",
+      "requestSha256": "a642d5868dd7906b2eaab7b693771f74eedf11371e681fb1e13e592a74f64171",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Your message has been added to the blackboard. Let me know if you need further assistance."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "Note from note-room-1: I am here to assist with the meeting notes."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1233,
+          "completionTokens": 35
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Your message has been added to the blackboard. Let me know if you need further assistance."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1344,
+          "completionTokens": 35
+        }
+      ],
+      "ms": 2036,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday",
+          "posted": false
+        },
+        {
+          "author": "note-room-1",
+          "text": "Note from note-room-1: I am here to assist with the meeting notes.",
+          "posted": true
+        }
+      ],
+      "reply": "Your message has been added to the blackboard. Let me know if you need further assistance.",
+      "requestSha256": "a642d5868dd7906b2eaab7b693771f74eedf11371e681fb1e13e592a74f64171",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Your message has been added to the blackboard. Let me know if you need further assistance."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "Note from note-room-1: I am here to assist with the meeting notes."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1233,
+          "completionTokens": 35
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Your message has been added to the blackboard. Let me know if you need further assistance."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1344,
+          "completionTokens": 35
+        }
+      ],
+      "ms": 2097,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday",
+          "posted": false
+        },
+        {
+          "author": "note-room-1",
+          "text": "Note from note-room-1: I am here to assist with the meeting notes.",
+          "posted": true
+        }
+      ],
+      "reply": "Your message has been added to the blackboard. Let me know if you need further assistance.",
+      "requestSha256": "a642d5868dd7906b2eaab7b693771f74eedf11371e681fb1e13e592a74f64171",
+      "ok": false
+    }
+  ]
+}

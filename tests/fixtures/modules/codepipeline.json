@@ -1,0 +1,11 @@
+{
+  "source": "https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_RetryStageExecution.html (read 2026-10-02): the documented sample request and response, and the documented error type StageNotRetryableException (HTTP 400) as the AWS CLI prints a service error; not recorded from a live call (D49)",
+  "retryStageExecution": {
+    "request": { "pipelineExecutionId": "3137f7cb-7cf7-EXAMPLE", "pipelineName": "MyFirstPipeline", "retryMode": "FAILED_ACTIONS", "stageName": "Staging" },
+    "response": { "pipelineExecutionId": "3137f7cb-7cf7-EXAMPLE" }
+  },
+  "error": {
+    "exitCode": 255,
+    "stderr": "\nAn error occurred (StageNotRetryableException) when calling the RetryStageExecution operation: Unable to retry. The pipeline structure or stage state might have changed while actions awaited retry, or the stage contains no failed actions.\n"
+  }
+}

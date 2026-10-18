@@ -1,0 +1,24 @@
+{
+  "id": "ping",
+  "image": "hello-world",
+  "description": "Answers every message with ping.",
+  "prompt": "you answer every message by sending ping to pong-1; you never reply to the user.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "ping.md",
+      "fullText": true
+    }
+  ]
+}

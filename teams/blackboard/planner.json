@@ -1,0 +1,25 @@
+{
+  "id": "planner",
+  "image": "hello-world",
+  "description": "Has the meeting notice written on the board, one part at a time.",
+  "prompt": "you have the meeting notice written on the blackboard, one part at a time; you never write a part yourself.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file",
+    "blackboard_read"
+  ],
+  "documents": [
+    {
+      "path": "planner.md",
+      "fullText": true
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "helper",
+  "image": "hello-world",
+  "description": "Converts lengths between metres and centimetres.",
+  "prompt": "you convert lengths between metres and centimetres; when a request also asks for anything else, you escalate it to the user as your guidance says.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file",
+    "ask_user"
+  ],
+  "documents": [
+    {
+      "path": "helper.md",
+      "fullText": true
+    }
+  ]
+}

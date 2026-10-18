@@ -1,0 +1,24 @@
+{
+  "id": "critic",
+  "image": "hello-world",
+  "description": "Checks drafts against the harbour rule.",
+  "prompt": "you check drafts against the harbour rule.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "critic.md",
+      "fullText": true
+    }
+  ]
+}

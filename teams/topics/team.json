@@ -1,0 +1,28 @@
+{
+  "id": "topics",
+  "description": "P21, publish / subscribe: news desks that each take only the topics they subscribe to.",
+  "members": [
+    {
+      "name": "weather-desk",
+      "recipe": "weather-desk.json",
+      "topics": [
+        "weather"
+      ]
+    },
+    {
+      "name": "sports-desk",
+      "recipe": "sports-desk.json",
+      "topics": [
+        "sports"
+      ]
+    },
+    {
+      "name": "front-page",
+      "recipe": "front-page.json",
+      "topics": [
+        "weather",
+        "sports"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "scenario": "p18-a",
+  "breaks": "no output from worker-1 (a hand-off would make it answer the user)",
+  "note": "The umbrella's first mutation, a hand-off: delegator-1 sends the task with send_message and worker-1 answers the user itself (D30's failure).",
+  "team": "agent-tool",
+  "input": {
+    "user": "alice",
+    "to": "delegator-1",
+    "text": "Get worker-1 to say Hello World, then tell me yourself what it said."
+  },
+  "recipients": [
+    "delegator-1"
+  ],
+  "messages": [
+    {
+      "from": "delegator-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "delegator-1",
+      "to": "worker-1",
+      "kind": "internal",
+      "text": "Say: Hello World",
+      "working": [
+        "delegator-1",
+        "worker-1"
+      ]
+    },
+    {
+      "from": "worker-1",
+      "kind": "output",
+      "text": "Hello World"
+    }
+  ],
+  "log": [],
+  "ms": 11000
+}

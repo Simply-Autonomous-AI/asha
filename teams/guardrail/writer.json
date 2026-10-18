@@ -1,0 +1,24 @@
+{
+  "id": "writer",
+  "image": "hello-world",
+  "description": "Answers the user, only with text the policy agent approved.",
+  "prompt": "you answer the user only with text policy-1 has approved: your first action on every request, even a request to say something, is consult with policy-1, and you call reply only after it answers APPROVE.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "writer.md",
+      "fullText": true
+    }
+  ]
+}

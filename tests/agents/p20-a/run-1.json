@@ -1,0 +1,1552 @@
+{
+ "source": {
+  "commit": "56b92e0e9b2afc4a9efcf544c7473fe791123393",
+  "dirty": false,
+  "run": 1,
+  "startedAt": "2026-10-03T12:45:35.700Z",
+  "note": "recorded run 1 of p20-a at 56b92e0: the message, --stop and relaunch commands from its results file (tests/agents/results/p20-resume.json as that run wrote it), the daemon log from p20-a's first daemon.started to p20-b's (fields naming host paths — home, logFile, dockerHost, dir, weights, tag, pid — left out), and teams/resume/ at that commit; the message command's transcript (parseTranscript over its stderr) added after the completion review, finding 7; the commands' stderr keeps the temporary home's log path, its macOS temporary folder written `$TMPDIR/` (oss-release R11, 2026-10-16)"
+ },
+ "commands": [
+  {
+   "label": "message",
+   "args": [
+    "--verbose",
+    "to=supervisor-1",
+    "user=alice",
+    "message=Ask worker-1 for its word and tell me."
+   ],
+   "code": 1,
+   "stdout": "No agent could answer this:\n- supervisor-1 worked on it but sent you no reply\n- worker-1 received it but said nothing\n",
+   "stderr": "› alice → supervisor-1 on main: Ask worker-1 for its word and tell me.\n› supervisor-1 consult: {\"requests\": [{\"to\": \"worker-1\", \"text\": \"What is your word?\"}]}\n› supervisor-1: ok\n› internal supervisor-1 → worker-1: What is your word?\n› supervisor-1 left the channel: channel stream closed\n› tasker-1 left the channel: channel stream closed\n› worker-1 reply: {\"text\": \"marigold\"}\n› output asha → alice:\n",
+   "ms": 8227,
+   "events": [
+    {
+     "type": "posted",
+     "from": "alice",
+     "to": "supervisor-1",
+     "text": "Ask worker-1 for its word and tell me."
+    },
+    {
+     "type": "progress",
+     "text": "supervisor-1 consult: {\"requests\": [{\"to\": \"worker-1\", \"text\": \"What is your word?\"}]}"
+    },
+    {
+     "type": "status",
+     "from": "supervisor-1",
+     "text": "ok"
+    },
+    {
+     "type": "internal",
+     "from": "supervisor-1",
+     "to": "worker-1",
+     "text": "What is your word?"
+    },
+    {
+     "type": "progress",
+     "text": "supervisor-1 left the channel: channel stream closed"
+    },
+    {
+     "type": "progress",
+     "text": "tasker-1 left the channel: channel stream closed"
+    },
+    {
+     "type": "progress",
+     "text": "worker-1 reply: {\"text\": \"marigold\"}"
+    },
+    {
+     "type": "output",
+     "from": "asha",
+     "to": "alice"
+    }
+   ]
+  },
+  {
+   "label": "stop",
+   "args": [
+    "--verbose",
+    "--stop"
+   ],
+   "code": 0,
+   "stdout": "stopped (pid 61247)\n",
+   "stderr": "",
+   "ms": 3896,
+   "events": []
+  },
+  {
+   "label": "relaunch",
+   "args": [
+    "--verbose",
+    "--launch",
+    "team=resume"
+   ],
+   "code": 0,
+   "stdout": "supervisor-1\nworker-1\ntasker-1\nworker-1's word is marigold\n",
+   "stderr": "› started the asha daemon (pid 62368); log: $TMPDIR/asha-agents-p20-resume-YgdQJ0/logs/server.log\n› member supervisor (recipe supervisor)\n› container_runtime: ready\n› model: qwen3-8b-q4_k_m cached\n› model_server: qwen3-8b-q4_k_m serving\n› image: asha-image-hello-world current\n› supervisor-1: Hi\n› supervisor-1 resumed from state saved 2026-10-03T12:45:47.502Z\n› member worker (recipe worker)\n› container_runtime: ready\n› model: qwen3-8b-q4_k_m cached\n› model_server: qwen3-8b-q4_k_m serving\n› image: asha-image-hello-world current\n› worker-1: Hi\n› member tasker (recipe tasker)\n› container_runtime: ready\n› model: qwen3-8b-q4_k_m cached\n› model_server: qwen3-8b-q4_k_m serving\n› image: asha-image-hello-world current\n› tasker-1: Hi\n› tasker-1 resumed from state saved 2026-10-03T12:45:47.505Z\n› resuming your message from 2026-10-03T12:45:42.237Z\n› supervisor-1 consult: {\"requests\": [{\"to\": \"worker-1\", \"text\": \"What is your word?\"}]}\n› supervisor-1: ok\n› internal supervisor-1 → worker-1: What is your word?\n› worker-1 reply: {\"text\": \"marigold\"}\n› internal worker-1 → supervisor-1: marigold\n› internal asha → supervisor-1: Answers to supervisor-1's call: 1 answered.\n› supervisor-1 reply: {\"text\": \"worker-1's word is marigold\"}\n› supervisor-1: ok\n› output supervisor-1 → alice:\n",
+   "ms": 14883,
+   "events": [
+    {
+     "type": "progress",
+     "text": "started the asha daemon (pid 62368); log: $TMPDIR/asha-agents-p20-resume-YgdQJ0/logs/server.log"
+    },
+    {
+     "type": "progress",
+     "text": "member supervisor (recipe supervisor)"
+    },
+    {
+     "type": "progress",
+     "text": "container_runtime: ready"
+    },
+    {
+     "type": "progress",
+     "text": "model: qwen3-8b-q4_k_m cached"
+    },
+    {
+     "type": "progress",
+     "text": "model_server: qwen3-8b-q4_k_m serving"
+    },
+    {
+     "type": "progress",
+     "text": "image: asha-image-hello-world current"
+    },
+    {
+     "type": "status",
+     "from": "supervisor-1",
+     "text": "Hi"
+    },
+    {
+     "type": "progress",
+     "text": "supervisor-1 resumed from state saved 2026-10-03T12:45:47.502Z"
+    },
+    {
+     "type": "progress",
+     "text": "member worker (recipe worker)"
+    },
+    {
+     "type": "progress",
+     "text": "container_runtime: ready"
+    },
+    {
+     "type": "progress",
+     "text": "model: qwen3-8b-q4_k_m cached"
+    },
+    {
+     "type": "progress",
+     "text": "model_server: qwen3-8b-q4_k_m serving"
+    },
+    {
+     "type": "progress",
+     "text": "image: asha-image-hello-world current"
+    },
+    {
+     "type": "status",
+     "from": "worker-1",
+     "text": "Hi"
+    },
+    {
+     "type": "progress",
+     "text": "member tasker (recipe tasker)"
+    },
+    {
+     "type": "progress",
+     "text": "container_runtime: ready"
+    },
+    {
+     "type": "progress",
+     "text": "model: qwen3-8b-q4_k_m cached"
+    },
+    {
+     "type": "progress",
+     "text": "model_server: qwen3-8b-q4_k_m serving"
+    },
+    {
+     "type": "progress",
+     "text": "image: asha-image-hello-world current"
+    },
+    {
+     "type": "status",
+     "from": "tasker-1",
+     "text": "Hi"
+    },
+    {
+     "type": "progress",
+     "text": "tasker-1 resumed from state saved 2026-10-03T12:45:47.505Z"
+    },
+    {
+     "type": "progress",
+     "text": "resuming your message from 2026-10-03T12:45:42.237Z"
+    },
+    {
+     "type": "progress",
+     "text": "supervisor-1 consult: {\"requests\": [{\"to\": \"worker-1\", \"text\": \"What is your word?\"}]}"
+    },
+    {
+     "type": "status",
+     "from": "supervisor-1",
+     "text": "ok"
+    },
+    {
+     "type": "internal",
+     "from": "supervisor-1",
+     "to": "worker-1",
+     "text": "What is your word?"
+    },
+    {
+     "type": "progress",
+     "text": "worker-1 reply: {\"text\": \"marigold\"}"
+    },
+    {
+     "type": "internal",
+     "from": "worker-1",
+     "to": "supervisor-1",
+     "text": "marigold"
+    },
+    {
+     "type": "internal",
+     "from": "asha",
+     "to": "supervisor-1",
+     "text": "Answers to supervisor-1's call: 1 answered."
+    },
+    {
+     "type": "progress",
+     "text": "supervisor-1 reply: {\"text\": \"worker-1's word is marigold\"}"
+    },
+    {
+     "type": "status",
+     "from": "supervisor-1",
+     "text": "ok"
+    },
+    {
+     "type": "output",
+     "from": "supervisor-1",
+     "to": "alice"
+    }
+   ]
+  }
+ ],
+ "daemonLog": [
+  {
+   "ts": "2026-10-03T12:45:36.715Z",
+   "level": "info",
+   "event": "daemon.started",
+   "port": 55906,
+   "version": "0.1.1",
+   "build": "09ebae2f06f0",
+   "runId": "b47fcd8c"
+  },
+  {
+   "ts": "2026-10-03T12:45:37.518Z",
+   "level": "info",
+   "event": "colima.ready",
+   "profile": "default",
+   "started": false
+  },
+  {
+   "ts": "2026-10-03T12:45:37.588Z",
+   "level": "info",
+   "event": "isolation.network_created",
+   "network": "asha-cc4912ec",
+   "bridge": "ashacc4912ec",
+   "subnets": [
+    "172.20.0.0/16"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:37.810Z",
+   "level": "info",
+   "event": "agent.isolation_ready",
+   "homeId": "cc4912ec",
+   "network": "asha-cc4912ec",
+   "hostPort": 55906,
+   "jumpFixed": false,
+   "inputJumpFixed": false,
+   "homeRulesReplaced": true,
+   "durationMs": 292
+  },
+  {
+   "ts": "2026-10-03T12:45:37.810Z",
+   "level": "info",
+   "event": "model.cache_hit",
+   "model": "qwen3-8b-q4_k_m"
+  },
+  {
+   "ts": "2026-10-03T12:45:37.949Z",
+   "level": "info",
+   "event": "model_server.launching",
+   "model": "qwen3-8b-q4_k_m"
+  },
+  {
+   "ts": "2026-10-03T12:45:38.806Z",
+   "level": "info",
+   "event": "model_server.ready",
+   "model": "qwen3-8b-q4_k_m",
+   "baseUrl": "http://127.0.0.1:55909"
+  },
+  {
+   "ts": "2026-10-03T12:45:38.985Z",
+   "level": "info",
+   "event": "image.staged",
+   "image": "hello-world",
+   "ms": 179,
+   "loadavg": [
+    7.96728515625,
+    5.0458984375,
+    3.86962890625
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:39.131Z",
+   "level": "info",
+   "event": "files.space_created",
+   "channel": "main",
+   "volume": "asha-cc4912ec-b47fcd8c-main"
+  },
+  {
+   "ts": "2026-10-03T12:45:39.140Z",
+   "level": "info",
+   "event": "agent.starting",
+   "channel": "main",
+   "recipe": "supervisor",
+   "image": "hello-world",
+   "container": "asha-main-supervisor-dbd53d",
+   "member": "supervisor",
+   "documents": [
+    "supervisor.md"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:39.370Z",
+   "level": "info",
+   "event": "channel.joined",
+   "channel": "main",
+   "handle": "supervisor-1"
+  },
+  {
+   "ts": "2026-10-03T12:45:39.371Z",
+   "level": "info",
+   "event": "agent.connected",
+   "handle": "supervisor-1",
+   "asked": "hewo",
+   "channel": "main",
+   "container": "asha-main-supervisor-dbd53d"
+  },
+  {
+   "ts": "2026-10-03T12:45:39.377Z",
+   "level": "info",
+   "event": "channel.status",
+   "channel": "main",
+   "from": "supervisor-1",
+   "conversation": null,
+   "text": "Hi"
+  },
+  {
+   "ts": "2026-10-03T12:45:39.377Z",
+   "level": "info",
+   "event": "agent.online",
+   "handle": "supervisor-1",
+   "channel": "main",
+   "container": "asha-main-supervisor-dbd53d"
+  },
+  {
+   "ts": "2026-10-03T12:45:40.139Z",
+   "level": "info",
+   "event": "colima.ready",
+   "profile": "default",
+   "started": false
+  },
+  {
+   "ts": "2026-10-03T12:45:40.380Z",
+   "level": "info",
+   "event": "agent.isolation_ready",
+   "homeId": "cc4912ec",
+   "network": "asha-cc4912ec",
+   "hostPort": 55906,
+   "jumpFixed": false,
+   "inputJumpFixed": false,
+   "homeRulesReplaced": false,
+   "durationMs": 241
+  },
+  {
+   "ts": "2026-10-03T12:45:40.381Z",
+   "level": "info",
+   "event": "model.cache_hit",
+   "model": "qwen3-8b-q4_k_m"
+  },
+  {
+   "ts": "2026-10-03T12:45:40.541Z",
+   "level": "info",
+   "event": "image.staged",
+   "image": "hello-world",
+   "ms": 160,
+   "loadavg": [
+    7.8095703125,
+    5.0615234375,
+    3.8818359375
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:40.582Z",
+   "level": "info",
+   "event": "agent.starting",
+   "channel": "main",
+   "recipe": "worker",
+   "image": "hello-world",
+   "container": "asha-main-worker-7da20d",
+   "member": "worker",
+   "documents": [
+    "worker.md"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:40.782Z",
+   "level": "info",
+   "event": "channel.joined",
+   "channel": "main",
+   "handle": "worker-1"
+  },
+  {
+   "ts": "2026-10-03T12:45:40.782Z",
+   "level": "info",
+   "event": "agent.connected",
+   "handle": "worker-1",
+   "asked": "hewo",
+   "channel": "main",
+   "container": "asha-main-worker-7da20d"
+  },
+  {
+   "ts": "2026-10-03T12:45:40.788Z",
+   "level": "info",
+   "event": "channel.status",
+   "channel": "main",
+   "from": "worker-1",
+   "conversation": null,
+   "text": "Hi"
+  },
+  {
+   "ts": "2026-10-03T12:45:40.789Z",
+   "level": "info",
+   "event": "agent.online",
+   "handle": "worker-1",
+   "channel": "main",
+   "container": "asha-main-worker-7da20d"
+  },
+  {
+   "ts": "2026-10-03T12:45:41.514Z",
+   "level": "info",
+   "event": "colima.ready",
+   "profile": "default",
+   "started": false
+  },
+  {
+   "ts": "2026-10-03T12:45:41.688Z",
+   "level": "info",
+   "event": "agent.isolation_ready",
+   "homeId": "cc4912ec",
+   "network": "asha-cc4912ec",
+   "hostPort": 55906,
+   "jumpFixed": false,
+   "inputJumpFixed": false,
+   "homeRulesReplaced": false,
+   "durationMs": 174
+  },
+  {
+   "ts": "2026-10-03T12:45:41.688Z",
+   "level": "info",
+   "event": "model.cache_hit",
+   "model": "qwen3-8b-q4_k_m"
+  },
+  {
+   "ts": "2026-10-03T12:45:41.850Z",
+   "level": "info",
+   "event": "image.staged",
+   "image": "hello-world",
+   "ms": 161,
+   "loadavg": [
+    7.8095703125,
+    5.0615234375,
+    3.8818359375
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:41.902Z",
+   "level": "info",
+   "event": "agent.starting",
+   "channel": "main",
+   "recipe": "tasker",
+   "image": "hello-world",
+   "container": "asha-main-tasker-dcde60",
+   "member": "tasker",
+   "documents": [
+    "tasker.md"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:42.115Z",
+   "level": "info",
+   "event": "channel.joined",
+   "channel": "main",
+   "handle": "tasker-1"
+  },
+  {
+   "ts": "2026-10-03T12:45:42.115Z",
+   "level": "info",
+   "event": "agent.connected",
+   "handle": "tasker-1",
+   "asked": "hewo",
+   "channel": "main",
+   "container": "asha-main-tasker-dcde60"
+  },
+  {
+   "ts": "2026-10-03T12:45:42.121Z",
+   "level": "info",
+   "event": "channel.status",
+   "channel": "main",
+   "from": "tasker-1",
+   "conversation": null,
+   "text": "Hi"
+  },
+  {
+   "ts": "2026-10-03T12:45:42.122Z",
+   "level": "info",
+   "event": "agent.online",
+   "handle": "tasker-1",
+   "channel": "main",
+   "container": "asha-main-tasker-dcde60"
+  },
+  {
+   "ts": "2026-10-03T12:45:42.122Z",
+   "level": "info",
+   "event": "team.launched",
+   "team": "resume",
+   "channel": "main",
+   "handles": [
+    "supervisor-1",
+    "worker-1",
+    "tasker-1"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:42.237Z",
+   "level": "info",
+   "event": "channel.user_online",
+   "channel": "main",
+   "user": "alice"
+  },
+  {
+   "ts": "2026-10-03T12:45:42.237Z",
+   "level": "info",
+   "event": "channel.posted",
+   "channel": "main",
+   "id": "50f64186c71cea54",
+   "conversation": "50f64186c71cea54",
+   "from": "alice",
+   "to": "supervisor-1",
+   "kind": "input",
+   "length": 38
+  },
+  {
+   "ts": "2026-10-03T12:45:42.237Z",
+   "level": "info",
+   "event": "conversation.started",
+   "channel": "main",
+   "conversation": "50f64186c71cea54",
+   "recipe": null
+  },
+  {
+   "ts": "2026-10-03T12:45:47.326Z",
+   "level": "info",
+   "event": "model.chat",
+   "handle": "supervisor-1",
+   "channel": "main",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 5068,
+   "ttfcMs": 4450,
+   "chunks": 28,
+   "promptTokens": 1869,
+   "completionTokens": 33,
+   "cachedTokens": 0,
+   "toolCalls": [
+    "consult"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:47.331Z",
+   "level": "info",
+   "event": "channel.status",
+   "channel": "main",
+   "from": "supervisor-1",
+   "conversation": "50f64186c71cea54",
+   "text": "ok"
+  },
+  {
+   "ts": "2026-10-03T12:45:47.333Z",
+   "level": "info",
+   "event": "channel.call_opened",
+   "channel": "main",
+   "conversation": "50f64186c71cea54",
+   "call": "d53142c345b5bfb9",
+   "caller": "supervisor-1",
+   "addressees": [
+    "worker-1"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:47.334Z",
+   "level": "info",
+   "event": "channel.posted",
+   "channel": "main",
+   "id": "26cc14c7315371c3",
+   "conversation": "50f64186c71cea54",
+   "from": "supervisor-1",
+   "to": "worker-1",
+   "kind": "internal",
+   "length": 18,
+   "call": "d53142c345b5bfb9",
+   "role": "question"
+  },
+  {
+   "ts": "2026-10-03T12:45:47.372Z",
+   "level": "info",
+   "event": "model.prompt_stored",
+   "model": "qwen3-8b-q4_k_m",
+   "recipe": "supervisor",
+   "ms": 46
+  },
+  {
+   "ts": "2026-10-03T12:45:47.376Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume/supervisor",
+   "generation": 1,
+   "bytes": 2560,
+   "files": 1
+  },
+  {
+   "ts": "2026-10-03T12:45:47.377Z",
+   "level": "info",
+   "event": "state.pending_kept",
+   "identity": "main/resume/supervisor",
+   "entries": 1
+  },
+  {
+   "ts": "2026-10-03T12:45:47.464Z",
+   "level": "info",
+   "event": "daemon.stop_requested",
+   "source": "signal",
+   "signal": "SIGTERM"
+  },
+  {
+   "ts": "2026-10-03T12:45:47.464Z",
+   "level": "info",
+   "event": "daemon.stopping"
+  },
+  {
+   "ts": "2026-10-03T12:45:47.472Z",
+   "level": "info",
+   "event": "agent.stopping",
+   "handle": "supervisor-1",
+   "container": "asha-main-supervisor-dbd53d",
+   "reason": "daemon stopping",
+   "mode": "drain",
+   "persisted": true
+  },
+  {
+   "ts": "2026-10-03T12:45:47.472Z",
+   "level": "info",
+   "event": "agent.stopping",
+   "handle": "worker-1",
+   "container": "asha-main-worker-7da20d",
+   "reason": "daemon stopping",
+   "mode": "drain"
+  },
+  {
+   "ts": "2026-10-03T12:45:47.473Z",
+   "level": "info",
+   "event": "agent.stopping",
+   "handle": "tasker-1",
+   "container": "asha-main-tasker-dcde60",
+   "reason": "daemon stopping",
+   "mode": "drain",
+   "persisted": true
+  },
+  {
+   "ts": "2026-10-03T12:45:47.520Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume/supervisor",
+   "generation": 2,
+   "bytes": 2560,
+   "files": 1
+  },
+  {
+   "ts": "2026-10-03T12:45:47.525Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume/tasker",
+   "generation": 1,
+   "bytes": 3072,
+   "files": 1
+  },
+  {
+   "ts": "2026-10-03T12:45:47.546Z",
+   "level": "info",
+   "event": "channel.left",
+   "channel": "main",
+   "handle": "supervisor-1",
+   "detail": "channel stream closed",
+   "abandoned": []
+  },
+  {
+   "ts": "2026-10-03T12:45:47.546Z",
+   "level": "warn",
+   "event": "channel.call_closed",
+   "channel": "main",
+   "conversation": "50f64186c71cea54",
+   "call": "d53142c345b5bfb9",
+   "caller": "supervisor-1",
+   "outcomes": [
+    {
+     "addressee": "worker-1",
+     "outcome": null
+    }
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:47.546Z",
+   "level": "info",
+   "event": "channel.left",
+   "channel": "main",
+   "handle": "tasker-1",
+   "detail": "channel stream closed",
+   "abandoned": []
+  },
+  {
+   "ts": "2026-10-03T12:45:47.667Z",
+   "level": "info",
+   "event": "agent.exited",
+   "handle": "supervisor-1",
+   "container": "asha-main-supervisor-dbd53d",
+   "code": 143
+  },
+  {
+   "ts": "2026-10-03T12:45:47.701Z",
+   "level": "info",
+   "event": "agent.exited",
+   "handle": "tasker-1",
+   "container": "asha-main-tasker-dcde60",
+   "code": 143
+  },
+  {
+   "ts": "2026-10-03T12:45:50.364Z",
+   "level": "info",
+   "event": "model.chat",
+   "handle": "worker-1",
+   "channel": "main",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 2864,
+   "ttfcMs": 2573,
+   "chunks": 14,
+   "promptTokens": 1067,
+   "completionTokens": 19,
+   "cachedTokens": 0,
+   "toolCalls": [
+    "reply"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:50.378Z",
+   "level": "info",
+   "event": "channel.no_reply",
+   "channel": "main",
+   "conversation": "50f64186c71cea54",
+   "to": "alice",
+   "agents": {
+    "supervisor-1": "worked on it but sent you no reply",
+    "worker-1": "received it but said nothing"
+   }
+  },
+  {
+   "ts": "2026-10-03T12:45:50.379Z",
+   "level": "info",
+   "event": "conversation.closed",
+   "channel": "main",
+   "conversation": "50f64186c71cea54"
+  },
+  {
+   "ts": "2026-10-03T12:45:50.382Z",
+   "level": "info",
+   "event": "channel.left",
+   "channel": "main",
+   "handle": "worker-1",
+   "detail": "channel stream closed",
+   "abandoned": []
+  },
+  {
+   "ts": "2026-10-03T12:45:50.470Z",
+   "level": "info",
+   "event": "agent.exited",
+   "handle": "worker-1",
+   "container": "asha-main-worker-7da20d",
+   "code": 143
+  },
+  {
+   "ts": "2026-10-03T12:45:50.543Z",
+   "level": "info",
+   "event": "model_server.stopped",
+   "model": "qwen3-8b-q4_k_m"
+  },
+  {
+   "ts": "2026-10-03T12:45:51.139Z",
+   "level": "info",
+   "event": "isolation.reclaimed",
+   "homeId": "cc4912ec",
+   "rules": 2,
+   "containers": 1,
+   "network": true,
+   "volumes": 1,
+   "networks": 0
+  },
+  {
+   "ts": "2026-10-03T12:45:51.139Z",
+   "level": "info",
+   "event": "files.space_removed",
+   "volumes": 1
+  },
+  {
+   "ts": "2026-10-03T12:45:51.140Z",
+   "level": "info",
+   "event": "daemon.stopped"
+  },
+  {
+   "ts": "2026-10-03T12:45:51.996Z",
+   "level": "info",
+   "event": "isolation.reclaimed",
+   "homeId": "cc4912ec",
+   "rules": 0,
+   "containers": 0,
+   "network": false,
+   "volumes": 0,
+   "networks": 0
+  },
+  {
+   "ts": "2026-10-03T12:45:52.034Z",
+   "level": "info",
+   "event": "daemon.started",
+   "port": 55938,
+   "version": "0.1.1",
+   "build": "09ebae2f06f0",
+   "runId": "bca4f89a"
+  },
+  {
+   "ts": "2026-10-03T12:45:52.957Z",
+   "level": "info",
+   "event": "colima.ready",
+   "profile": "default",
+   "started": false
+  },
+  {
+   "ts": "2026-10-03T12:45:53.023Z",
+   "level": "info",
+   "event": "isolation.network_created",
+   "network": "asha-cc4912ec",
+   "bridge": "ashacc4912ec",
+   "subnets": [
+    "172.20.0.0/16"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:53.246Z",
+   "level": "info",
+   "event": "agent.isolation_ready",
+   "homeId": "cc4912ec",
+   "network": "asha-cc4912ec",
+   "hostPort": 55938,
+   "jumpFixed": false,
+   "inputJumpFixed": false,
+   "homeRulesReplaced": true,
+   "durationMs": 288
+  },
+  {
+   "ts": "2026-10-03T12:45:53.246Z",
+   "level": "info",
+   "event": "model.cache_hit",
+   "model": "qwen3-8b-q4_k_m"
+  },
+  {
+   "ts": "2026-10-03T12:45:53.317Z",
+   "level": "info",
+   "event": "model_server.launching",
+   "model": "qwen3-8b-q4_k_m"
+  },
+  {
+   "ts": "2026-10-03T12:45:54.139Z",
+   "level": "info",
+   "event": "model_server.ready",
+   "model": "qwen3-8b-q4_k_m",
+   "baseUrl": "http://127.0.0.1:55942"
+  },
+  {
+   "ts": "2026-10-03T12:45:54.313Z",
+   "level": "info",
+   "event": "image.staged",
+   "image": "hello-world",
+   "ms": 174,
+   "loadavg": [
+    6.8359375,
+    4.943359375,
+    3.853515625
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:54.440Z",
+   "level": "info",
+   "event": "files.space_created",
+   "channel": "main",
+   "volume": "asha-cc4912ec-bca4f89a-main"
+  },
+  {
+   "ts": "2026-10-03T12:45:54.441Z",
+   "level": "warn",
+   "event": "state.pending_found",
+   "identity": "main/resume/supervisor",
+   "entries": 1,
+   "savedAt": "2026-10-03T12:45:42.237Z"
+  },
+  {
+   "ts": "2026-10-03T12:45:54.442Z",
+   "level": "info",
+   "event": "agent.starting",
+   "channel": "main",
+   "recipe": "supervisor",
+   "image": "hello-world",
+   "container": "asha-main-supervisor-3b1bcc",
+   "member": "supervisor",
+   "documents": [
+    "supervisor.md"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:54.639Z",
+   "level": "info",
+   "event": "channel.joined",
+   "channel": "main",
+   "handle": "supervisor-1"
+  },
+  {
+   "ts": "2026-10-03T12:45:54.639Z",
+   "level": "info",
+   "event": "agent.connected",
+   "handle": "supervisor-1",
+   "asked": "hewo",
+   "channel": "main",
+   "container": "asha-main-supervisor-3b1bcc"
+  },
+  {
+   "ts": "2026-10-03T12:45:54.646Z",
+   "level": "info",
+   "event": "channel.status",
+   "channel": "main",
+   "from": "supervisor-1",
+   "conversation": null,
+   "text": "Hi"
+  },
+  {
+   "ts": "2026-10-03T12:45:54.646Z",
+   "level": "info",
+   "event": "agent.online",
+   "handle": "supervisor-1",
+   "channel": "main",
+   "container": "asha-main-supervisor-3b1bcc"
+  },
+  {
+   "ts": "2026-10-03T12:45:54.646Z",
+   "level": "info",
+   "event": "agent.resumed",
+   "identity": "main/resume/supervisor",
+   "handle": "supervisor-1",
+   "savedAt": "2026-10-03T12:45:47.502Z",
+   "generation": 2,
+   "bytes": 2560,
+   "files": 1,
+   "imageChanged": false
+  },
+  {
+   "ts": "2026-10-03T12:45:55.366Z",
+   "level": "info",
+   "event": "colima.ready",
+   "profile": "default",
+   "started": false
+  },
+  {
+   "ts": "2026-10-03T12:45:55.543Z",
+   "level": "info",
+   "event": "agent.isolation_ready",
+   "homeId": "cc4912ec",
+   "network": "asha-cc4912ec",
+   "hostPort": 55938,
+   "jumpFixed": false,
+   "inputJumpFixed": false,
+   "homeRulesReplaced": false,
+   "durationMs": 176
+  },
+  {
+   "ts": "2026-10-03T12:45:55.543Z",
+   "level": "info",
+   "event": "model.cache_hit",
+   "model": "qwen3-8b-q4_k_m"
+  },
+  {
+   "ts": "2026-10-03T12:45:55.705Z",
+   "level": "info",
+   "event": "image.staged",
+   "image": "hello-world",
+   "ms": 162,
+   "loadavg": [
+    6.4482421875,
+    4.89404296875,
+    3.84228515625
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:55.750Z",
+   "level": "info",
+   "event": "agent.starting",
+   "channel": "main",
+   "recipe": "worker",
+   "image": "hello-world",
+   "container": "asha-main-worker-880045",
+   "member": "worker",
+   "documents": [
+    "worker.md"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:55.960Z",
+   "level": "info",
+   "event": "channel.joined",
+   "channel": "main",
+   "handle": "worker-1"
+  },
+  {
+   "ts": "2026-10-03T12:45:55.960Z",
+   "level": "info",
+   "event": "agent.connected",
+   "handle": "worker-1",
+   "asked": "hewo",
+   "channel": "main",
+   "container": "asha-main-worker-880045"
+  },
+  {
+   "ts": "2026-10-03T12:45:55.967Z",
+   "level": "info",
+   "event": "channel.status",
+   "channel": "main",
+   "from": "worker-1",
+   "conversation": null,
+   "text": "Hi"
+  },
+  {
+   "ts": "2026-10-03T12:45:55.967Z",
+   "level": "info",
+   "event": "agent.online",
+   "handle": "worker-1",
+   "channel": "main",
+   "container": "asha-main-worker-880045"
+  },
+  {
+   "ts": "2026-10-03T12:45:56.681Z",
+   "level": "info",
+   "event": "colima.ready",
+   "profile": "default",
+   "started": false
+  },
+  {
+   "ts": "2026-10-03T12:45:56.920Z",
+   "level": "info",
+   "event": "agent.isolation_ready",
+   "homeId": "cc4912ec",
+   "network": "asha-cc4912ec",
+   "hostPort": 55938,
+   "jumpFixed": false,
+   "inputJumpFixed": false,
+   "homeRulesReplaced": false,
+   "durationMs": 239
+  },
+  {
+   "ts": "2026-10-03T12:45:56.920Z",
+   "level": "info",
+   "event": "model.cache_hit",
+   "model": "qwen3-8b-q4_k_m"
+  },
+  {
+   "ts": "2026-10-03T12:45:57.088Z",
+   "level": "info",
+   "event": "image.staged",
+   "image": "hello-world",
+   "ms": 167,
+   "loadavg": [
+    6.4482421875,
+    4.89404296875,
+    3.84228515625
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:57.135Z",
+   "level": "info",
+   "event": "agent.starting",
+   "channel": "main",
+   "recipe": "tasker",
+   "image": "hello-world",
+   "container": "asha-main-tasker-87cb97",
+   "member": "tasker",
+   "documents": [
+    "tasker.md"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:57.337Z",
+   "level": "info",
+   "event": "channel.joined",
+   "channel": "main",
+   "handle": "tasker-1"
+  },
+  {
+   "ts": "2026-10-03T12:45:57.337Z",
+   "level": "info",
+   "event": "agent.connected",
+   "handle": "tasker-1",
+   "asked": "hewo",
+   "channel": "main",
+   "container": "asha-main-tasker-87cb97"
+  },
+  {
+   "ts": "2026-10-03T12:45:57.344Z",
+   "level": "info",
+   "event": "channel.status",
+   "channel": "main",
+   "from": "tasker-1",
+   "conversation": null,
+   "text": "Hi"
+  },
+  {
+   "ts": "2026-10-03T12:45:57.344Z",
+   "level": "info",
+   "event": "agent.online",
+   "handle": "tasker-1",
+   "channel": "main",
+   "container": "asha-main-tasker-87cb97"
+  },
+  {
+   "ts": "2026-10-03T12:45:57.344Z",
+   "level": "info",
+   "event": "agent.resumed",
+   "identity": "main/resume/tasker",
+   "handle": "tasker-1",
+   "savedAt": "2026-10-03T12:45:47.505Z",
+   "generation": 1,
+   "bytes": 3072,
+   "files": 1,
+   "imageChanged": false
+  },
+  {
+   "ts": "2026-10-03T12:45:57.344Z",
+   "level": "info",
+   "event": "team.launched",
+   "team": "resume",
+   "channel": "main",
+   "handles": [
+    "supervisor-1",
+    "worker-1",
+    "tasker-1"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:45:57.344Z",
+   "level": "info",
+   "event": "channel.posted",
+   "channel": "main",
+   "id": "2ebfd511c2befd90",
+   "conversation": "2ebfd511c2befd90",
+   "from": "alice",
+   "to": "supervisor-1",
+   "kind": "input",
+   "length": 38,
+   "redelivered": true
+  },
+  {
+   "ts": "2026-10-03T12:45:57.357Z",
+   "level": "info",
+   "event": "state.redelivered",
+   "identity": "main/resume/supervisor",
+   "originalMessage": "50f64186c71cea54"
+  },
+  {
+   "ts": "2026-10-03T12:46:02.441Z",
+   "level": "info",
+   "event": "model.chat",
+   "handle": "supervisor-1",
+   "channel": "main",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 5076,
+   "ttfcMs": 4457,
+   "chunks": 28,
+   "promptTokens": 1887,
+   "completionTokens": 33,
+   "cachedTokens": 0,
+   "toolCalls": [
+    "consult"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:46:02.446Z",
+   "level": "info",
+   "event": "channel.status",
+   "channel": "main",
+   "from": "supervisor-1",
+   "conversation": "2ebfd511c2befd90",
+   "text": "ok"
+  },
+  {
+   "ts": "2026-10-03T12:46:02.450Z",
+   "level": "info",
+   "event": "channel.call_opened",
+   "channel": "main",
+   "conversation": "2ebfd511c2befd90",
+   "call": "c3132d22e9d07a75",
+   "caller": "supervisor-1",
+   "addressees": [
+    "worker-1"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:46:02.450Z",
+   "level": "info",
+   "event": "channel.posted",
+   "channel": "main",
+   "id": "ada7b0b837d91e89",
+   "conversation": "2ebfd511c2befd90",
+   "from": "supervisor-1",
+   "to": "worker-1",
+   "kind": "internal",
+   "length": 18,
+   "call": "c3132d22e9d07a75",
+   "role": "question"
+  },
+  {
+   "ts": "2026-10-03T12:46:02.495Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume/supervisor",
+   "generation": 3,
+   "bytes": 2560,
+   "files": 1
+  },
+  {
+   "ts": "2026-10-03T12:46:02.497Z",
+   "level": "info",
+   "event": "state.pending_kept",
+   "identity": "main/resume/supervisor",
+   "entries": 1
+  },
+  {
+   "ts": "2026-10-03T12:46:04.940Z",
+   "level": "info",
+   "event": "model.prompt_stored",
+   "model": "qwen3-8b-q4_k_m",
+   "recipe": "supervisor",
+   "ms": 2498
+  },
+  {
+   "ts": "2026-10-03T12:46:05.343Z",
+   "level": "info",
+   "event": "model.chat",
+   "handle": "worker-1",
+   "channel": "main",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 2887,
+   "ttfcMs": 2597,
+   "chunks": 14,
+   "promptTokens": 1067,
+   "completionTokens": 19,
+   "cachedTokens": 0,
+   "toolCalls": [
+    "reply"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:46:05.349Z",
+   "level": "info",
+   "event": "channel.posted",
+   "channel": "main",
+   "id": "af1d949274bb4fbc",
+   "conversation": "2ebfd511c2befd90",
+   "from": "worker-1",
+   "to": "supervisor-1",
+   "kind": "internal",
+   "length": 8,
+   "call": "c3132d22e9d07a75",
+   "role": "answer"
+  },
+  {
+   "ts": "2026-10-03T12:46:05.349Z",
+   "level": "info",
+   "event": "channel.call_outcome",
+   "channel": "main",
+   "conversation": "2ebfd511c2befd90",
+   "call": "c3132d22e9d07a75",
+   "addressee": "worker-1",
+   "outcome": "answered",
+   "ms": 2899
+  },
+  {
+   "ts": "2026-10-03T12:46:05.349Z",
+   "level": "info",
+   "event": "channel.call_gathered",
+   "channel": "main",
+   "conversation": "2ebfd511c2befd90",
+   "call": "c3132d22e9d07a75",
+   "caller": "supervisor-1",
+   "counts": {
+    "answered": 1,
+    "passed": 0,
+    "timed_out": 0,
+    "left": 0,
+    "unanswered": 0
+   },
+   "ms": 2899
+  },
+  {
+   "ts": "2026-10-03T12:46:05.349Z",
+   "level": "info",
+   "event": "channel.posted",
+   "channel": "main",
+   "id": "e778cd7e5fbc2c77",
+   "conversation": "2ebfd511c2befd90",
+   "from": "asha",
+   "to": "supervisor-1",
+   "kind": "internal",
+   "length": 43,
+   "call": "c3132d22e9d07a75",
+   "role": "gather"
+  },
+  {
+   "ts": "2026-10-03T12:46:05.380Z",
+   "level": "info",
+   "event": "model.prompt_stored",
+   "model": "qwen3-8b-q4_k_m",
+   "recipe": "worker",
+   "ms": 37
+  },
+  {
+   "ts": "2026-10-03T12:46:06.109Z",
+   "level": "info",
+   "event": "model.chat",
+   "handle": "supervisor-1",
+   "channel": "main",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 741,
+   "ttfcMs": 303,
+   "chunks": 20,
+   "promptTokens": 1901,
+   "completionTokens": 25,
+   "cachedTokens": 1841,
+   "toolCalls": [
+    "reply"
+   ]
+  },
+  {
+   "ts": "2026-10-03T12:46:06.113Z",
+   "level": "info",
+   "event": "channel.status",
+   "channel": "main",
+   "from": "supervisor-1",
+   "conversation": "2ebfd511c2befd90",
+   "text": "ok"
+  },
+  {
+   "ts": "2026-10-03T12:46:06.116Z",
+   "level": "info",
+   "event": "channel.posted",
+   "channel": "main",
+   "id": "3b326daa84fc5ff0",
+   "conversation": "2ebfd511c2befd90",
+   "from": "supervisor-1",
+   "to": "alice",
+   "kind": "output",
+   "length": 27
+  },
+  {
+   "ts": "2026-10-03T12:46:06.150Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume/supervisor",
+   "generation": 4,
+   "bytes": 2560,
+   "files": 1
+  },
+  {
+   "ts": "2026-10-03T12:46:06.162Z",
+   "level": "info",
+   "event": "state.pending_settled",
+   "identity": "main/resume/supervisor",
+   "entries": 1
+  },
+  {
+   "ts": "2026-10-03T12:46:06.250Z",
+   "level": "info",
+   "event": "daemon.stop_requested",
+   "source": "signal",
+   "signal": "SIGTERM"
+  },
+  {
+   "ts": "2026-10-03T12:46:06.250Z",
+   "level": "info",
+   "event": "daemon.stopping"
+  },
+  {
+   "ts": "2026-10-03T12:46:06.256Z",
+   "level": "info",
+   "event": "agent.stopping",
+   "handle": "supervisor-1",
+   "container": "asha-main-supervisor-3b1bcc",
+   "reason": "daemon stopping",
+   "mode": "drain",
+   "persisted": true
+  },
+  {
+   "ts": "2026-10-03T12:46:06.256Z",
+   "level": "info",
+   "event": "agent.stopping",
+   "handle": "worker-1",
+   "container": "asha-main-worker-880045",
+   "reason": "daemon stopping",
+   "mode": "drain"
+  },
+  {
+   "ts": "2026-10-03T12:46:06.257Z",
+   "level": "info",
+   "event": "agent.stopping",
+   "handle": "tasker-1",
+   "container": "asha-main-tasker-87cb97",
+   "reason": "daemon stopping",
+   "mode": "drain",
+   "persisted": true
+  },
+  {
+   "ts": "2026-10-03T12:46:06.277Z",
+   "level": "info",
+   "event": "channel.left",
+   "channel": "main",
+   "handle": "worker-1",
+   "detail": "channel stream closed",
+   "abandoned": []
+  },
+  {
+   "ts": "2026-10-03T12:46:06.299Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume/tasker",
+   "generation": 2,
+   "bytes": 3072,
+   "files": 1
+  },
+  {
+   "ts": "2026-10-03T12:46:06.304Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume/supervisor",
+   "generation": 5,
+   "bytes": 2560,
+   "files": 1
+  },
+  {
+   "ts": "2026-10-03T12:46:06.324Z",
+   "level": "info",
+   "event": "channel.left",
+   "channel": "main",
+   "handle": "tasker-1",
+   "detail": "channel stream closed",
+   "abandoned": []
+  },
+  {
+   "ts": "2026-10-03T12:46:06.324Z",
+   "level": "info",
+   "event": "channel.left",
+   "channel": "main",
+   "handle": "supervisor-1",
+   "detail": "channel stream closed",
+   "abandoned": []
+  },
+  {
+   "ts": "2026-10-03T12:46:06.389Z",
+   "level": "info",
+   "event": "agent.exited",
+   "handle": "worker-1",
+   "container": "asha-main-worker-880045",
+   "code": 143
+  },
+  {
+   "ts": "2026-10-03T12:46:06.420Z",
+   "level": "info",
+   "event": "agent.exited",
+   "handle": "tasker-1",
+   "container": "asha-main-tasker-87cb97",
+   "code": 143
+  },
+  {
+   "ts": "2026-10-03T12:46:06.453Z",
+   "level": "info",
+   "event": "agent.exited",
+   "handle": "supervisor-1",
+   "container": "asha-main-supervisor-3b1bcc",
+   "code": 143
+  },
+  {
+   "ts": "2026-10-03T12:46:06.534Z",
+   "level": "info",
+   "event": "model_server.stopped",
+   "model": "qwen3-8b-q4_k_m"
+  },
+  {
+   "ts": "2026-10-03T12:46:07.239Z",
+   "level": "info",
+   "event": "isolation.reclaimed",
+   "homeId": "cc4912ec",
+   "rules": 2,
+   "containers": 1,
+   "network": true,
+   "volumes": 1,
+   "networks": 0
+  },
+  {
+   "ts": "2026-10-03T12:46:07.239Z",
+   "level": "info",
+   "event": "files.space_removed",
+   "volumes": 1
+  },
+  {
+   "ts": "2026-10-03T12:46:07.240Z",
+   "level": "info",
+   "event": "daemon.stopped"
+  },
+  {
+   "ts": "2026-10-03T12:46:08.044Z",
+   "level": "info",
+   "event": "isolation.reclaimed",
+   "homeId": "cc4912ec",
+   "rules": 0,
+   "containers": 0,
+   "network": false,
+   "volumes": 0,
+   "networks": 0
+  }
+ ],
+ "team": {
+  "supervisor.json": "{\n  \"id\": \"supervisor\",\n  \"image\": \"hello-world\",\n  \"description\": \"Asks worker-1 for its word and tells the user.\",\n  \"prompt\": \"you ask worker-1 for its word and tell the user what it is.\",\n  \"model\": \"qwen3-8b-q4_k_m\",\n  \"startupTimeoutMs\": 60000,\n  \"messageTimeoutMs\": 60000,\n  \"chat\": {\n    \"temperature\": 0\n  },\n  \"tools\": [\n    \"list_files\",\n    \"read_file\",\n    \"write_file\",\n    \"append_file\"\n  ],\n  \"documents\": [\n    {\n      \"path\": \"supervisor.md\",\n      \"fullText\": true\n    }\n  ],\n  \"persist\": [\n    \"workspace\"\n  ]\n}\n",
+  "supervisor.md": "1. When the user writes to you asking for worker-1's word (a message with the line \"The user wrote to you:\"), call consult, never send_message: one request, to worker-1, exactly: What is your word? Do this also when the message says it was sent before the harness restarted: worker-1's answer is never kept, so ask again.\n2. When worker-1's answer comes back (a message that starts \"You consulted\"), call reply with \"worker-1's word is \" followed by its answer, and nothing else.\n",
+  "tasker.json": "{\n  \"id\": \"tasker\",\n  \"image\": \"hello-world\",\n  \"description\": \"Does one task per message, keeping the ids of the tasks it has done in tasks.json in its workspace.\",\n  \"prompt\": \"you do one task per message, keeping the ids of the tasks you have done in tasks.json.\",\n  \"model\": \"qwen3-8b-q4_k_m\",\n  \"startupTimeoutMs\": 60000,\n  \"messageTimeoutMs\": 60000,\n  \"chat\": {\n    \"temperature\": 0\n  },\n  \"tools\": [\n    \"list_files\",\n    \"read_file\",\n    \"write_file\",\n    \"append_file\"\n  ],\n  \"documents\": [\n    {\n      \"path\": \"tasker.md\",\n      \"fullText\": true\n    }\n  ],\n  \"persist\": [\n    \"workspace\"\n  ]\n}\n",
+  "tasker.md": "1. When the user writes to you \"do task <id>\", call read_file with the path \"tasks.json\": it holds the ids of the tasks already done; if it does not exist, none is. A message sent again after the harness restarted may already be done: this step says whether it is.\n2. If the task id is not among them, call write_file with the path \"tasks.json\" and a JSON array of the ids already done with this task's id added at the end: with none done yet, \"do task 7\" writes [7]. If it is already among them, write nothing.\n3. Call reply with \"done task \" and the id, and nothing more.\n",
+  "team.json": "{\n  \"id\": \"resume\",\n  \"description\": \"P20, checkpoint and resume: a supervisor waiting on its call to a worker when the daemon stops is resumed after the restart and answers the user with no message sent again (p20-a); a long-running tasker keeps the tasks it has done in its saved workspace and, killed mid-task, finishes the rest after its relaunch (p20-b).\",\n  \"members\": [\n    {\n      \"name\": \"supervisor\",\n      \"recipe\": \"supervisor.json\"\n    },\n    {\n      \"name\": \"worker\",\n      \"recipe\": \"worker.json\"\n    },\n    {\n      \"name\": \"tasker\",\n      \"recipe\": \"tasker.json\"\n    }\n  ]\n}\n",
+  "worker.json": "{\n  \"id\": \"worker\",\n  \"image\": \"hello-world\",\n  \"description\": \"Holds a word.\",\n  \"prompt\": \"you hold a word, and say it when asked.\",\n  \"model\": \"qwen3-8b-q4_k_m\",\n  \"startupTimeoutMs\": 60000,\n  \"messageTimeoutMs\": 60000,\n  \"chat\": {\n    \"temperature\": 0\n  },\n  \"tools\": [\n    \"list_files\",\n    \"read_file\",\n    \"write_file\",\n    \"append_file\"\n  ],\n  \"documents\": [\n    {\n      \"path\": \"worker.md\",\n      \"fullText\": true\n    }\n  ]\n}\n",
+  "worker.md": "1. When supervisor-1 asks for your word, call reply with exactly: marigold\n"
+ }
+}

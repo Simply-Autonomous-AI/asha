@@ -1,0 +1,33 @@
+{
+  "pattern": "P1",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:14:41.833Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p01-delegation",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 20920,
+  "bytes": 1132256,
+  "sha256": "cad18e6ab1030b8d96d4d1630da8eaf4bdbf5c643a4c6386aaeff54ff18a7e9e",
+  "frames": 414,
+  "framesPerSecond": 19.8,
+  "longestGapMs": 101,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P1 · Delegation (hand-off)",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5053,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p01-a",
+      "outcome": "pass"
+    }
+  ]
+}

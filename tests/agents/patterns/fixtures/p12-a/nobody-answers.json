@@ -1,0 +1,36 @@
+{
+  "scenario": "p12-a",
+  "breaks": "the command exits 0",
+  "note": "translator-1 passes too: the harness answers, exit 1.",
+  "team": "self-select",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Please translate 'good morning' into French."
+  },
+  "recipients": [
+    "greeter-1",
+    "translator-1"
+  ],
+  "messages": [
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "pass: I only say words I am asked to say",
+      "working": [
+        "translator-1"
+      ]
+    },
+    {
+      "from": "translator-1",
+      "kind": "status",
+      "text": "pass: not mine"
+    },
+    {
+      "from": "asha",
+      "kind": "output",
+      "text": "No agent could answer this:\n- greeter-1 passed: not mine\n- translator-1 passed: not mine"
+    }
+  ],
+  "ms": 3000
+}

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 532" role="img" aria-labelledby="p06-t p06-d">
+  <title id="p06-t">P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers</title>
+  <desc id="p06-d">planner-1 writes the task ledger, asks half-a-1, then half-b-1 twice (both fail, stall count 1 then 2), appends plan 2 naming backup-1, asks it, and replies sunflower.</desc>
+  <defs><marker id="p06-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="7.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="63" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M63 44 V526"/>
+  <rect class="box accent" x="134.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="190" y="32" text-anchor="middle">planner-1</text>
+  <path class="edge dim" d="M190 44 V526"/>
+  <rect class="box" x="261.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="317" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M317 44 V526"/>
+  <rect class="box accent" x="387.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="443" y="32" text-anchor="middle">half-a-1</text>
+  <path class="edge dim" d="M443 44 V526"/>
+  <rect class="box accent" x="514.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="570" y="32" text-anchor="middle">half-b-1</text>
+  <path class="edge dim" d="M570 44 V526"/>
+  <rect class="box accent" x="641.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="697" y="32" text-anchor="middle">backup-1</text>
+  <path class="edge dim" d="M697 44 V526"/>
+  <path class="edge" d="M63 80 H188" marker-end="url(#p06-a)"/>
+  <text class="label small" x="127" y="74" text-anchor="middle">What is the password?</text>
+  <text class="label small" x="198" y="114">write_file task-ledger.md</text>
+  <path class="edge" d="M190 148 H441" marker-end="url(#p06-a)"/>
+  <text class="label small" x="317" y="142" text-anchor="middle">(step 1, attempt 1)</text>
+  <path class="edge" d="M443 182 H192" marker-end="url(#p06-a)"/>
+  <text class="label small" x="317" y="176" text-anchor="middle">sun</text>
+  <text class="label small" x="198" y="216">read ledgers, append progress</text>
+  <path class="edge" d="M190 250 H568" marker-end="url(#p06-a)"/>
+  <text class="label small" x="380" y="244" text-anchor="middle">(step 2, attempt 1)</text>
+  <path class="edge" d="M570 284 H192" marker-end="url(#p06-a)"/>
+  <text class="label small" x="380" y="278" text-anchor="middle">ERROR (stalls 1)</text>
+  <path class="edge" d="M190 318 H568" marker-end="url(#p06-a)"/>
+  <text class="label small" x="380" y="312" text-anchor="middle">(step 2, attempt 2)</text>
+  <path class="edge" d="M570 352 H192" marker-end="url(#p06-a)"/>
+  <text class="label small" x="380" y="346" text-anchor="middle">ERROR (stalls 2)</text>
+  <text class="label small" x="198" y="386">append plan 2: backup-1</text>
+  <path class="edge" d="M190 420 H695" marker-end="url(#p06-a)"/>
+  <text class="label small" x="444" y="414" text-anchor="middle">(plan 2, step 2, attempt 3)</text>
+  <path class="edge" d="M697 454 H192" marker-end="url(#p06-a)"/>
+  <text class="label small" x="444" y="448" text-anchor="middle">flower</text>
+  <path class="edge" d="M190 488 H65" marker-end="url(#p06-a)"/>
+  <text class="label small" x="127" y="482" text-anchor="middle">output: sunflower</text>
+</svg>

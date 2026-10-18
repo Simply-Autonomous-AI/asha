@@ -1,0 +1,115 @@
+{
+  "scenario": "p25-b",
+  "breaks": "the conversation ends with the error event restart_limit naming worker-1 (channel.conversation_ended)",
+  "note": "The conversation is never ended: no channel.conversation_ended and no error event; the harness answers instead.",
+  "team": "restart",
+  "input": {
+    "user": "alice",
+    "to": "worker-1",
+    "text": "Please say: Hello World."
+  },
+  "recipients": [
+    "worker-1"
+  ],
+  "messages": [
+    {
+      "log": {
+        "level": "error",
+        "event": "agent.exited_unexpectedly",
+        "handle": "worker-1",
+        "container": "asha-main-worker-bbbbbb",
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "warn",
+        "event": "agent.restarting",
+        "handle": "worker-1",
+        "attempt": 1,
+        "max": 2,
+        "withinMs": 60000,
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "agent.starting",
+        "channel": "main",
+        "recipe": "worker",
+        "image": "hello-world",
+        "member": "worker",
+        "container": "asha-main-worker-cccccc"
+      }
+    },
+    {
+      "log": {
+        "level": "error",
+        "event": "agent.exited_unexpectedly",
+        "handle": "worker-1",
+        "container": "asha-main-worker-cccccc",
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "warn",
+        "event": "agent.restarting",
+        "handle": "worker-1",
+        "attempt": 2,
+        "max": 2,
+        "withinMs": 60000,
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "agent.starting",
+        "channel": "main",
+        "recipe": "worker",
+        "image": "hello-world",
+        "member": "worker",
+        "container": "asha-main-worker-dddddd"
+      }
+    },
+    {
+      "log": {
+        "level": "error",
+        "event": "agent.exited_unexpectedly",
+        "handle": "worker-1",
+        "container": "asha-main-worker-dddddd",
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "error",
+        "event": "agent.restart_limit",
+        "handle": "worker-1",
+        "restarts": 2,
+        "withinMs": 60000
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "channel.left",
+        "channel": "main",
+        "handle": "worker-1",
+        "detail": "restart limit reached",
+        "abandoned": [
+          "c1"
+        ]
+      }
+    },
+    {
+      "from": "asha",
+      "kind": "output",
+      "text": "No agent could answer this:\n- worker-1 left the channel before replying (restart limit reached)",
+      "working": []
+    }
+  ],
+  "ms": 3000
+}

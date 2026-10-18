@@ -1,0 +1,31 @@
+{
+  "scenario": "p12-c",
+  "breaks": "the command exits 1",
+  "note": "translator-1 answers anyway: exit 0.",
+  "team": "self-select",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Please book me a flight to Paris."
+  },
+  "recipients": [
+    "greeter-1",
+    "translator-1"
+  ],
+  "messages": [
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "pass: not mine",
+      "working": [
+        "translator-1"
+      ]
+    },
+    {
+      "from": "translator-1",
+      "kind": "output",
+      "text": "Je ne peux pas."
+    }
+  ],
+  "ms": 2500
+}

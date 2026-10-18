@@ -1,0 +1,146 @@
+{
+  "commit": "1161e2983ed4e002563968326a13660eaec586f9",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p16-a/clerk-yes",
+  "control": false,
+  "change": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Posted."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "Office closed Friday."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1473,
+          "completionTokens": 22
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Posted."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1558,
+          "completionTokens": 18
+        }
+      ],
+      "ms": 1286,
+      "board": [
+        "Office closed Friday."
+      ],
+      "requestSha256": "df92a087d6a13deb0aec1f5dc890597a9a0bbe23981e3afe8d161e445d49c9cf",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Posted."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "Office closed Friday."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1473,
+          "completionTokens": 22
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Posted."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1558,
+          "completionTokens": 18
+        }
+      ],
+      "ms": 1230,
+      "board": [
+        "Office closed Friday."
+      ],
+      "requestSha256": "df92a087d6a13deb0aec1f5dc890597a9a0bbe23981e3afe8d161e445d49c9cf",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Posted."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "Office closed Friday."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1473,
+          "completionTokens": 22
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Posted."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1558,
+          "completionTokens": 18
+        }
+      ],
+      "ms": 1239,
+      "board": [
+        "Office closed Friday."
+      ],
+      "requestSha256": "df92a087d6a13deb0aec1f5dc890597a9a0bbe23981e3afe8d161e445d49c9cf",
+      "ok": true
+    }
+  ]
+}

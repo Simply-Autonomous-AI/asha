@@ -1,0 +1,110 @@
+{
+  "commit": "a9567ca9b7d7eb9cdec133f9a1120e105cdccc77",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p21-a/worker-call",
+  "control": false,
+  "doc": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "marigold"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "marigold"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1067,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 2879,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "marigold",
+      "requestSha256": "1053ce6bc332f3279507c4020a52df7225df577454e95f18fc33df492605b8e6",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "marigold"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "marigold"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1067,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 436,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "marigold",
+      "requestSha256": "1053ce6bc332f3279507c4020a52df7225df577454e95f18fc33df492605b8e6",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "marigold"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "marigold"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1067,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 433,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "marigold",
+      "requestSha256": "1053ce6bc332f3279507c4020a52df7225df577454e95f18fc33df492605b8e6",
+      "ok": true
+    }
+  ]
+}

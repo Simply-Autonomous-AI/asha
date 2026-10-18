@@ -1,0 +1,82 @@
+{
+  "commit": "1161e2983ed4e002563968326a13660eaec586f9",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "control/C1-clerk-first-no-guidance",
+  "control": true,
+  "change": {
+    "doc": ""
+  },
+  "passes": 0,
+  "attempts": [
+    {
+      "calls": null,
+      "problem": "first round recorded",
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "Office closed Friday."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1272,
+          "completionTokens": 22
+        }
+      ],
+      "ms": 3354,
+      "board": [],
+      "requestSha256": "c08115e3384c1600515ff31498d488146f68a271577a079d6fc9730061bf7470",
+      "ok": false
+    },
+    {
+      "calls": null,
+      "problem": "first round recorded",
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "Office closed Friday."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1272,
+          "completionTokens": 22
+        }
+      ],
+      "ms": 504,
+      "board": [],
+      "requestSha256": "c08115e3384c1600515ff31498d488146f68a271577a079d6fc9730061bf7470",
+      "ok": false
+    },
+    {
+      "calls": null,
+      "problem": "first round recorded",
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "Office closed Friday."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1272,
+          "completionTokens": 22
+        }
+      ],
+      "ms": 503,
+      "board": [],
+      "requestSha256": "c08115e3384c1600515ff31498d488146f68a271577a079d6fc9730061bf7470",
+      "ok": false
+    }
+  ]
+}

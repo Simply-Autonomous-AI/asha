@@ -1,0 +1,101 @@
+{
+  "commit": "d102a45b4059a62f100af58747d186b1be299a95",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p22-b/sports-desk",
+  "control": false,
+  "change": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "sports-desk-1 noted: The home team won."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "sports-desk-1 noted: The home team won."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1789,
+          "completionTokens": 28
+        }
+      ],
+      "ms": 4716,
+      "board": [],
+      "requestSha256": "adc623babb8cbd0fccab06e091c4ef6fac61f4478886dd925c76dd80d9fb904e",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "sports-desk-1 noted: The home team won."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "sports-desk-1 noted: The home team won."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1789,
+          "completionTokens": 28
+        }
+      ],
+      "ms": 650,
+      "board": [],
+      "requestSha256": "adc623babb8cbd0fccab06e091c4ef6fac61f4478886dd925c76dd80d9fb904e",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "sports-desk-1 noted: The home team won."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "sports-desk-1 noted: The home team won."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1789,
+          "completionTokens": 28
+        }
+      ],
+      "ms": 652,
+      "board": [],
+      "requestSha256": "adc623babb8cbd0fccab06e091c4ef6fac61f4478886dd925c76dd80d9fb904e",
+      "ok": true
+    }
+  ]
+}

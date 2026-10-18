@@ -1,0 +1,101 @@
+{
+  "commit": "d102a45b4059a62f100af58747d186b1be299a95",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p16-b/clerk-no",
+  "control": false,
+  "change": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Not posted."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Not posted."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 890,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 508,
+      "board": [],
+      "requestSha256": "b311a7baab3d8feb02d01d68b8ebbafc4e026207728bd2ee962ba7472334eabe",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Not posted."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Not posted."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 890,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 430,
+      "board": [],
+      "requestSha256": "b311a7baab3d8feb02d01d68b8ebbafc4e026207728bd2ee962ba7472334eabe",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Not posted."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Not posted."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 890,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 429,
+      "board": [],
+      "requestSha256": "b311a7baab3d8feb02d01d68b8ebbafc4e026207728bd2ee962ba7472334eabe",
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "pattern": "P6",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:20:35.598Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p06-plan-execute",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 47960,
+  "bytes": 2836978,
+  "sha256": "aff68e19a3d6df5c363ab78cfd58922f572cd0dfc4b2b47da640794455ef7cf3",
+  "frames": 956,
+  "framesPerSecond": 19.9,
+  "longestGapMs": 109,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5058,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p06-a",
+      "outcome": "pass"
+    }
+  ]
+}

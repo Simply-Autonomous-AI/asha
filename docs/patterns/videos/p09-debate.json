@@ -1,0 +1,32 @@
+{
+  "pattern": "P9",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:24:51.922Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p09-debate",
+  "models": [
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 32320,
+  "bytes": 2249256,
+  "sha256": "f050438d147df3add57f3aec61f232d3a0d10dfcd5d5bd9a6855988e80cde605",
+  "frames": 647,
+  "framesPerSecond": 20,
+  "longestGapMs": 64,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P9 · Debate with a judge",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5026,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p09-a",
+      "outcome": "pass"
+    }
+  ]
+}

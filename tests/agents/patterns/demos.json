@@ -1,0 +1,152 @@
+[
+  {
+    "pattern": "P1",
+    "team": "delegation",
+    "page": "docs/patterns/p01-delegation.md",
+    "suite": "tests/agents/p01-delegation.test.ts"
+  },
+  {
+    "pattern": "P2",
+    "team": "router",
+    "page": "docs/patterns/p02-router.md",
+    "suite": "tests/agents/p02-router.test.ts"
+  },
+  {
+    "pattern": "P3",
+    "team": "pipeline",
+    "page": "docs/patterns/p03-pipeline.md",
+    "suite": "tests/agents/p03-pipeline.test.ts"
+  },
+  {
+    "pattern": "P12",
+    "team": "self-select",
+    "page": "docs/patterns/p12-self-selection.md",
+    "suite": "tests/agents/p12-self-selection.test.ts"
+  },
+  {
+    "pattern": "P22",
+    "team": "escalation",
+    "page": "docs/patterns/p22-escalation.md",
+    "suite": "tests/agents/p22-escalation.test.ts"
+  },
+  {
+    "pattern": "P18",
+    "team": "agent-tool",
+    "page": "docs/patterns/p18-agent-tool.md",
+    "suite": "tests/agents/p18-agent-tool.test.ts"
+  },
+  {
+    "pattern": "P4",
+    "team": "rainbow",
+    "page": "docs/patterns/p04-fan-out.md",
+    "suite": "tests/agents/p04-fan-out.test.ts"
+  },
+  {
+    "pattern": "P5",
+    "team": "orchestrator",
+    "page": "docs/patterns/p05-orchestrator-workers.md",
+    "suite": "tests/agents/p05-orchestrator-workers.test.ts"
+  },
+  {
+    "pattern": "P10",
+    "team": "vote",
+    "page": "docs/patterns/p10-voting.md",
+    "suite": "tests/agents/p10-voting.test.ts"
+  },
+  {
+    "pattern": "P9",
+    "team": "debate",
+    "page": "docs/patterns/p09-debate.md",
+    "suite": "tests/agents/p09-debate.test.ts"
+  },
+  {
+    "pattern": "P23",
+    "team": "consensus",
+    "page": "docs/patterns/p23-consensus.md",
+    "suite": "tests/agents/p23-consensus.test.ts"
+  },
+  {
+    "pattern": "P24",
+    "team": "group-chat",
+    "page": "docs/patterns/p24-group-chat.md",
+    "suite": "tests/agents/p24-group-chat.test.ts"
+  },
+  {
+    "pattern": "P8",
+    "team": "critic-loop",
+    "page": "docs/patterns/p08-critic-loop.md",
+    "suite": "tests/agents/p08-critic-loop.test.ts"
+  },
+  {
+    "pattern": "P16",
+    "team": "guardrail",
+    "page": "docs/patterns/p16-guardrail.md",
+    "suite": "tests/agents/p16-guardrail.test.ts"
+  },
+  {
+    "pattern": "P13",
+    "team": "contract-net",
+    "page": "docs/patterns/p13-contract-net.md",
+    "suite": "tests/agents/p13-contract-net.test.ts"
+  },
+  {
+    "pattern": "P6",
+    "team": "plan-execute",
+    "page": "docs/patterns/p06-plan-execute.md",
+    "suite": "tests/agents/p06-plan-execute.test.ts"
+  },
+  {
+    "pattern": "P14",
+    "team": "watchdog",
+    "page": "docs/patterns/p14-watchdog.md",
+    "suite": "tests/agents/p14-watchdog.test.ts"
+  },
+  {
+    "pattern": "P25",
+    "team": "restart",
+    "page": "docs/patterns/p25-restart.md",
+    "suite": "tests/agents/p25-restart.test.ts"
+  },
+  {
+    "pattern": "P17",
+    "team": "budget",
+    "page": "docs/patterns/p17-budget.md",
+    "suite": "tests/agents/p17-budget.test.ts"
+  },
+  {
+    "pattern": "P21",
+    "team": "topics",
+    "page": "docs/patterns/p21-topics.md",
+    "suite": "tests/agents/p21-topics.test.ts"
+  },
+  {
+    "pattern": "P15",
+    "team": "approval",
+    "page": "docs/patterns/p15-approval.md",
+    "suite": "tests/agents/p15-approval.test.ts"
+  },
+  {
+    "pattern": "P19",
+    "team": "spawner",
+    "page": "docs/patterns/p19-spawning.md",
+    "suite": "tests/agents/p19-spawning.test.ts"
+  },
+  {
+    "pattern": "P7",
+    "team": "hierarchy",
+    "page": "docs/patterns/p07-hierarchy.md",
+    "suite": "tests/agents/p07-hierarchy.test.ts"
+  },
+  {
+    "pattern": "P11",
+    "team": "blackboard",
+    "page": "docs/patterns/p11-blackboard.md",
+    "suite": "tests/agents/p11-blackboard.test.ts"
+  },
+  {
+    "pattern": "P20",
+    "team": "resume",
+    "page": "docs/patterns/p20-resume.md",
+    "suite": "tests/agents/p20-resume.test.ts"
+  }
+]

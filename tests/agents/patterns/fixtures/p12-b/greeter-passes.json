@@ -1,0 +1,36 @@
+{
+  "scenario": "p12-b",
+  "breaks": "exactly one output, from greeter-1, matching /^hello,? world\\.?$/i",
+  "note": "greeter-1 passes on the work its role covers.",
+  "team": "self-select",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Please say: Hello World."
+  },
+  "recipients": [
+    "greeter-1",
+    "translator-1"
+  ],
+  "messages": [
+    {
+      "from": "translator-1",
+      "kind": "status",
+      "text": "pass: not mine",
+      "working": [
+        "greeter-1"
+      ]
+    },
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "pass: not mine"
+    },
+    {
+      "from": "asha",
+      "kind": "output",
+      "text": "No agent could answer this:\n- greeter-1 passed: not mine\n- translator-1 passed: not mine"
+    }
+  ],
+  "ms": 3000
+}

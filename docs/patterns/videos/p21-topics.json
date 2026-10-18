@@ -1,0 +1,36 @@
+{
+  "pattern": "P21",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:38:25.687Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p21-topics",
+  "models": [
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 24960,
+  "bytes": 1480170,
+  "sha256": "9f10ca9df86c2997948748da2bf8a6de53dcbfd83411498df053b21d6d500907",
+  "frames": 500,
+  "framesPerSecond": 20,
+  "longestGapMs": 61,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P21 · Publish / subscribe (topic routing)",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5060,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p21-a",
+      "outcome": "pass"
+    },
+    {
+      "id": "p21-b",
+      "outcome": "pass"
+    }
+  ]
+}

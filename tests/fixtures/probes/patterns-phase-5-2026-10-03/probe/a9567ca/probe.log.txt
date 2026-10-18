@@ -1,0 +1,11 @@
+3/3 p21-a/supervisor-first [5084, 786, 783 ms]: consult {"requests":[{"to":"worker-1","text":"What is your word?"}]}
+3/3 p21-a/worker-call [2879, 436, 433 ms]: reply {"text":"marigold"}
+3/3 p21-a/supervisor-gather [746, 584, 585 ms]: reply {"text":"worker-1's word is marigold"}
+3/3 p21-a/supervisor-resent [920, 767, 763 ms]: consult {"requests":[{"to":"worker-1","text":"What is your word?"}]}
+0/3 (control, expected to fail) control/C1-supervisor-gather-unanswered [712, 558, 557 ms]: reply {"text":"worker-1's word is no answer"}
+0/3 (control, expected to fail) control/C2-worker-no-guidance [2536, 503, 506 ms]: reply {"text":"my word is 'secret'"}
+3/3 p21-b/tasker-task-1 [6601, 1959, 1977 ms]: read_file {"path":"tasks.json"} => write_file {"path":"tasks.json","content":"[1]"} => reply {"text":"done task 1"}
+3/3 p21-b/tasker-task-2 [2018, 2026, 2032 ms]: read_file {"path":"tasks.json"} => write_file {"path":"tasks.json","content":"[1,2]"} => reply {"text":"done task 2"}
+3/3 p21-b/tasker-resent-3 [2152, 2086, 2104 ms]: read_file {"path":"tasks.json"} => write_file {"path":"tasks.json","content":"[1,2,3]"} => reply {"text":"done task 3"}
+3/3 p21-b/tasker-resent-4 [2143, 2146, 2149 ms]: read_file {"path":"tasks.json"} => write_file {"path":"tasks.json","content":"[1,2,3,4]"} => reply {"text":"done task 4"}
+EXIT=0

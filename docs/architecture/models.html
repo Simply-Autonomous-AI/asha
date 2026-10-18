@@ -1,0 +1,576 @@
+<!doctype html>
+<!-- Generated from docs/architecture/models.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asha Models</title>
+<meta name="description" content="How asha pins, downloads, verifies, caches, serves and calls its open-weight models, which model each recipe uses and why, with every pinned value's source and the date it was read.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="architecture">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha Architecture</a> / asha Models</nav>
+<h1>Models</h1>
+<p class="lede">Every model is pinned by a catalogue entry, verified into a content-addressed cache, served on the host by llama.cpp's <code>llama-server</code>, and reached only through the daemon's gateway.</p>
+<div class="facts"><span>verified 2026-09-27</span><span>pinned values read 2026-09-26</span><span>recurring cost: $0 (local inference)</span><span>migrated from <code>docs/models.md</code> on 2026-09-27.</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>A catalogue entry is the pin: a repo, a 40-hex revision, and a size and sha256 for every file.</li>
+<li>Files are downloaded into a staging directory and each is verified as soon as it arrives; the first bad file stops the download and the cache is untouched. One rename promotes a complete download.</li>
+<li>One <code>llama-server</code> per model on 127.0.0.1, each requiring a key only the daemon holds (<code>model-server.key</code>, <code>0600</code>), which the gateway sends. The gateway returns failures as data: <code>timeout</code>, <code>unavailable</code>, <code>upstream_error</code>, <code>bad_response</code>, <code>truncated</code>.</li>
+<li>A chat is streamed from the model server, bounded by inactivity (a 55 s queue bound and a 22 s idle bound, set from measurements), and its output published as it is generated: <code>model_delta</code> and <code>model_done</code> on the conversation's stream and the channel watch.</li>
+<li><code>memory</code> uses <code>qwen3-8b-q4_k_m</code>: 18 of the 19 original routing cases (at <code>d8350f0</code> and again at <code>cb63366</code>, llama.cpp 0.5.0); no smaller model passes more than 16. <code>hello-world</code> used it too until the owner moved it to <code>pico-v2-q8_0</code> on 2026-10-12.</li>
+<li>Embeddings use <code>qwen3-embedding-0.6b-q8_0</code>, apache-2.0 declared only in its model card.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#pipeline">The pipeline, end to end</a></li>
+<li><a href="#download">Download and verification</a></li>
+<li><a href="#serving">Serving on the host</a></li>
+<li><a href="#gateway">Calling a model: the gateway</a></li>
+<li><a href="#choice">Which model <code>hello-world</code> uses, and why</a></li>
+<li><a href="#pinned">Pinned models</a></li>
+<li><a href="#providers">Hosted models: providers</a></li>
+<li><a href="#adding">Adding a model</a></li>
+</ol>
+</nav>
+<section id="pipeline">
+<h2>The pipeline, end to end</h2>
+<p>At launch, <a href="../../src/daemon/agents/index.ts"><code>AgentSupervisor</code></a> (its private <code>launch</code>) loads the recipe's chat model entry, has the store <code>ensure</code> it is cached and the server <code>ensureServing</code> it, repeats both for any <code>embeddingModel</code>, and only then builds the image and starts the container. The catalogue entry (<code>catalogue/&lt;id&gt;.json</code>) <em>is</em> the pin (AGENTS.md §3).</p>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 480" role="img" aria-labelledby="mp-t mp-d">
+  <title id="mp-t">Model pipeline: pin, cache, serve, call</title>
+  <desc id="mp-d">Left column: the catalogue entry feeds the model store, which downloads each file from Hugging Face at the pinned revision into a staging directory, checks size and sha256, and renames the directory into the content-addressed cache. Right column: the agent container calls the daemon's gateway with its bearer token; the gateway calls llama-server's OpenAI-compatible API. llama-server runs on the host with Metal and loads the weights from the cache.</desc>
+  <defs><marker id="mp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <text class="label small" x="130" y="22" text-anchor="middle">provisioning (once per entry)</text>
+  <text class="label small" x="390" y="22" text-anchor="middle">every model call</text>
+
+  <rect class="box" x="10" y="34" width="240" height="66" rx="6"/>
+  <text class="label title" x="130" y="56" text-anchor="middle">catalogue/&lt;id&gt;.json</text>
+  <text class="label mono" x="130" y="74" text-anchor="middle">repo · revision (sha)</text>
+  <text class="label mono" x="130" y="90" text-anchor="middle">files[path, size, sha256]</text>
+
+  <rect class="box accent" x="10" y="130" width="240" height="112" rx="6"/>
+  <text class="label title" x="130" y="152" text-anchor="middle">model store</text>
+  <text class="label mono" x="130" y="170" text-anchor="middle">GET …/resolve/&lt;revision&gt;/&lt;path&gt;</text>
+  <text class="label mono" x="130" y="188" text-anchor="middle">→ .staging-&lt;random&gt;/</text>
+  <text class="label small" x="130" y="206" text-anchor="middle">size + sha256 checked per file</text>
+  <text class="label mono" x="130" y="226" text-anchor="middle">rename → sha256-&lt;tree&gt;/</text>
+
+  <rect class="box" x="10" y="272" width="240" height="56" rx="6"/>
+  <text class="label title" x="130" y="294" text-anchor="middle">model cache</text>
+  <text class="label mono" x="130" y="314" text-anchor="middle">models/sha256-&lt;tree digest&gt;/</text>
+
+  <rect class="box" x="270" y="34" width="240" height="66" rx="6"/>
+  <text class="label title" x="390" y="56" text-anchor="middle">agent container</text>
+  <text class="label mono" x="390" y="74" text-anchor="middle">HarnessClient.chat / embed</text>
+  <text class="label small" x="390" y="90" text-anchor="middle">Bearer ASHA_AGENT_TOKEN</text>
+
+  <rect class="box accent" x="270" y="130" width="240" height="112" rx="6"/>
+  <text class="label title" x="390" y="152" text-anchor="middle">daemon gateway</text>
+  <text class="label mono" x="390" y="170" text-anchor="middle">/agent/v1/model/chat</text>
+  <text class="label mono" x="390" y="188" text-anchor="middle">/agent/v1/model/embed</text>
+  <text class="label small" x="390" y="206" text-anchor="middle">merges sampling, bounds the call</text>
+  <text class="label small" x="390" y="226" text-anchor="middle">failures → {ok:false, reason}</text>
+
+  <rect class="box host" x="110" y="372" width="300" height="92" rx="6"/>
+  <text class="label title" x="260" y="396" text-anchor="middle">llama-server (host, Metal)</text>
+  <text class="label mono" x="260" y="416" text-anchor="middle">one process per model · 127.0.0.1:&lt;port&gt;</text>
+  <text class="label mono" x="260" y="434" text-anchor="middle">/v1/chat/completions</text>
+  <text class="label mono" x="260" y="452" text-anchor="middle">/v1/embeddings</text>
+
+  <path class="edge" d="M130 100 V128" marker-end="url(#mp-a)"/>
+  <path class="edge" d="M130 242 V270" marker-end="url(#mp-a)"/>
+  <path class="edge" d="M130 328 V370" marker-end="url(#mp-a)"/>
+  <text class="label small" x="136" y="354">loads weights</text>
+  <path class="edge" d="M390 100 V128" marker-end="url(#mp-a)"/>
+  <path class="edge" d="M390 242 V370" marker-end="url(#mp-a)"/>
+  <text class="label small" x="396" y="306">OpenAI-compatible</text>
+  <text class="label small" x="396" y="322">HTTP, bounded</text>
+</svg>
+<figcaption>Agents reach <code>llama-server</code> only through the gateway (AGENTS.md §3): the one seam where routing, limits and logging live. Enforced twice: every llama-server requires a key only the daemon holds, and an agent container can reach no host port but the daemon's (<a href="index.html#host-inference">Architecture, reaching the host</a>).</figcaption>
+</figure>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Step</th><th>Code</th><th>Contract</th></tr></thead>
+<tbody>
+<tr><td>Pin</td><td><a href="../../src/daemon/definitions/index.ts"><code>src/daemon/definitions/index.ts</code></a> — <code>parseCatalogueEntry</code>, <code>Definitions.chatModel</code>, <code>Definitions.embeddingModel</code></td><td><code>CatalogueEntry</code> (<a href="recipes.html#catalogue">spec</a>)</td></tr>
+<tr><td>Download, verify, cache</td><td><a href="../../src/daemon/model-store/index.ts"><code>src/daemon/model-store/index.ts</code></a> — <code>HuggingFaceModelStore</code>, <code>treeDigest</code></td><td><code>ModelStore</code></td></tr>
+<tr><td>Serve</td><td><a href="../../src/daemon/model-server/index.ts"><code>src/daemon/model-server/index.ts</code></a> — <code>LlamaCppServer</code></td><td><code>ModelServer</code></td></tr>
+<tr><td>Call</td><td><a href="../../src/daemon/model-gateway/index.ts"><code>src/daemon/model-gateway/index.ts</code></a> — <code>chatCompletion</code>, <code>embeddings</code>; <a href="../../src/daemon/agents/index.ts"><code>src/daemon/agents/index.ts</code></a> — <code>AgentSupervisor.chat</code>, <code>AgentSupervisor.embed</code>, <code>parseChatRequest</code>, <code>parseEmbedRequest</code></td><td><a href="../../src/shared/protocol.ts"><code>src/shared/protocol.ts</code></a></td></tr>
+<tr><td>Wiring</td><td><a href="../../src/daemon/compose.ts"><code>src/daemon/compose.ts</code></a> — <code>productionDependencies</code></td><td>the composition root</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="download">
+<h2>Download and verification</h2>
+<p><code>HuggingFaceModelStore.ensure(entry)</code> is the only writer of the model cache (AGENTS.md §3), and follows PRINCIPLES §13: write to a name nobody else holds, promote on success.</p>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 524" role="img" aria-labelledby="ms-t ms-d">
+  <title id="ms-t">HuggingFaceModelStore.ensure: check, lock, then download and verify each file, promote</title>
+  <desc id="ms-d">ensure computes the cache directory sha256-tree-digest from the entry's files. If it exists, the result is cached. Otherwise it takes the pid lock models/.lock: a live holder makes it throw LockHeld at once, and a dead holder's lock is cleared with lock.stale_cleared. Holding the lock it checks the directory again. Then, for each file in turn, it fetches the file from huggingface.co at the pinned revision into .staging-12-hex, bounded by 60 seconds of inactivity, and verifies that file's size and sha256 against the pin before starting the next. The first failure, in the download or the verification, throws and stops the loop, so later files are never fetched. When every file has passed, one rename promotes the staging directory to the cache directory and the result is downloaded. The staging directory is always removed and the lock released.</desc>
+  <defs><marker id="ms-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="40" y="10" width="380" height="50" rx="6"/>
+  <text class="label title" x="230" y="30" text-anchor="middle">1 dir = models/sha256-&lt;treeDigest&gt;/</text>
+  <text class="label small" x="230" y="48" text-anchor="middle">exists? A directory that exists is complete</text>
+
+  <rect class="box" x="40" y="90" width="380" height="50" rx="6"/>
+  <text class="label title" x="230" y="110" text-anchor="middle">2 acquirePidLock(models/.lock)</text>
+  <text class="label small" x="230" y="128" text-anchor="middle">a dead holder's lock is cleared: lock.stale_cleared</text>
+
+  <rect class="box" x="40" y="170" width="380" height="36" rx="6"/>
+  <text class="label title" x="230" y="193" text-anchor="middle">3 dir exists now? (checked again under the lock)</text>
+
+  <!-- the per-file loop -->
+  <rect class="box host" x="14" y="228" width="420" height="178" rx="8"/>
+  <text class="label small" x="24" y="244">4 for each file, in order</text>
+
+  <rect class="box accent" x="40" y="252" width="380" height="60" rx="6"/>
+  <text class="label title" x="230" y="270" text-anchor="middle">4a download it</text>
+  <text class="label mono" x="230" y="287" text-anchor="middle">GET …/&lt;repo&gt;/resolve/&lt;revision&gt;/&lt;path&gt;</text>
+  <text class="label mono" x="230" y="303" text-anchor="middle">→ .staging-&lt;12 hex&gt;/ (wx, hashed as it streams)</text>
+
+  <rect class="box accent" x="40" y="340" width="380" height="50" rx="6"/>
+  <text class="label title" x="230" y="360" text-anchor="middle">4b verify it: bytes = size, sha256 = pin</text>
+  <text class="label small" x="230" y="378" text-anchor="middle">before the next file starts</text>
+
+  <path class="edge" d="M230 312 V338" marker-end="url(#ms-a)"/>
+  <path class="edge" d="M40 365 H28 V282 H38" marker-end="url(#ms-a)"/>
+  <text class="label small" x="46" y="330">next file</text>
+
+  <rect class="box" x="40" y="436" width="380" height="50" rx="6"/>
+  <text class="label title" x="230" y="456" text-anchor="middle">5 rename(staging, dir)</text>
+  <text class="label small" x="230" y="474" text-anchor="middle">one atomic promotion</text>
+
+  <path class="edge" d="M230 60 V88" marker-end="url(#ms-a)"/>
+  <text class="label small" x="238" y="79">no</text>
+  <path class="edge" d="M230 140 V168" marker-end="url(#ms-a)"/>
+  <path class="edge" d="M230 206 V250" marker-end="url(#ms-a)"/>
+  <text class="label small" x="238" y="222">no</text>
+  <path class="edge" d="M230 406 V434" marker-end="url(#ms-a)"/>
+  <text class="label small" x="238" y="425">every file passed</text>
+
+  <!-- outcomes -->
+  <rect class="box" x="500" y="10" width="250" height="50" rx="6"/>
+  <text class="label title" x="625" y="30" text-anchor="middle">cached</text>
+  <text class="label mono" x="625" y="48" text-anchor="middle">model.cache_hit</text>
+  <path class="edge" d="M420 35 H498" marker-end="url(#ms-a)"/>
+  <text class="label small" x="458" y="29" text-anchor="middle">yes</text>
+  <path class="edge" d="M420 188 H460 V50 H498" marker-end="url(#ms-a)"/>
+  <text class="label small" x="440" y="182" text-anchor="middle">yes</text>
+
+  <rect class="box" x="500" y="90" width="250" height="50" rx="6"/>
+  <text class="label title" x="625" y="110" text-anchor="middle">LockHeld, at once</text>
+  <text class="label small" x="625" y="128" text-anchor="middle">a live holder: it never waits</text>
+  <path class="edge" d="M420 115 H498" marker-end="url(#ms-a)"/>
+
+  <rect class="box" x="500" y="252" width="250" height="60" rx="6"/>
+  <text class="label title" x="625" y="270" text-anchor="middle">ModelFetchFailed</text>
+  <text class="label mono" x="625" y="287" text-anchor="middle">http_status · network</text>
+  <text class="label mono" x="625" y="303" text-anchor="middle">stalled (60 s no bytes)</text>
+  <path class="edge" d="M420 282 H498" marker-end="url(#ms-a)"/>
+
+  <rect class="box" x="500" y="340" width="250" height="50" rx="6"/>
+  <text class="label mono" x="625" y="360" text-anchor="middle">ModelFetchFailed size_mismatch</text>
+  <text class="label mono" x="625" y="378" text-anchor="middle">ModelDigestMismatch (never retried)</text>
+  <path class="edge" d="M420 365 H498" marker-end="url(#ms-a)"/>
+
+  <text class="label small" x="625" y="414" text-anchor="middle">either failure stops the loop:</text>
+  <text class="label small" x="625" y="428" text-anchor="middle">later files are never fetched</text>
+
+  <rect class="box" x="500" y="436" width="250" height="50" rx="6"/>
+  <text class="label title" x="625" y="456" text-anchor="middle">downloaded</text>
+  <text class="label mono" x="625" y="474" text-anchor="middle">model.downloaded</text>
+  <path class="edge" d="M420 461 H498" marker-end="url(#ms-a)"/>
+
+  <text class="label small" x="14" y="512">in finally blocks: the staging directory is always removed (steps 4–5), and the lock always released (steps 3–5)</text>
+</svg>
+<figcaption>Each file is downloaded and then verified before the next starts; a failure on the right stops the loop and leaves the cache untouched. Only a staging directory whose every file passed is renamed into place.</figcaption>
+</figure>
+<ol>
+<li><strong>Address by content.</strong> The cache directory is <code>&lt;modelsDir&gt;/sha256-&lt;tree digest&gt;/</code> (by default <code>models/sha256-&lt;tree digest&gt;/</code>), the sha256 of the sorted <code>path\0sha256\n</code> lines of the entry's files (<code>treeDigest</code>). A directory that exists is complete: a cache hit (<code>model.cache_hit</code>, status <code>cached</code>).</li>
+<li><strong>Lock.</strong> <code>&lt;modelsDir&gt;/.lock</code>, a pid lock (<a href="../../src/daemon/process/pid-lock.ts"><code>src/daemon/process/pid-lock.ts</code></a>, <code>acquirePidLock</code>). A dead holder's lock is cleared (<code>lock.stale_cleared</code>); a live holder's makes it throw <code>LockHeld</code> at once. With the lock, the store checks the cache again.</li>
+<li><strong>For each file in turn,</strong> fetch <code>https://huggingface.co/&lt;repo&gt;/resolve/&lt;revision&gt;/&lt;path&gt;</code> into <code>&lt;modelsDir&gt;/.staging-&lt;12 hex&gt;/</code> (opened with <code>wx</code>, hashed as it streams; <code>model.file_downloading</code>), then verify it: the byte count must equal the pinned <code>size</code> (else <code>size_mismatch</code>) and the sha256 the pinned <code>sha256</code> (else <code>ModelDigestMismatch</code>, fatal, never retried). No bytes for <code>stallTimeoutMs</code> (60,000 ms in <code>productionDependencies</code>) aborts as <code>stalled</code>.</li>
+<li><strong>Promote</strong> with one <code>rename(staging, dir)</code> (<code>model.downloaded</code>, status <code>downloaded</code>). The staging directory is removed in a <code>finally</code>, success or not.</li>
+</ol>
+<p class="pre-label">src/daemon/model-store/index.ts — treeDigest</p><pre><code>/** sha256 over the sorted `path\0sha256\n` lines of an entry&#39;s files. */
+export function treeDigest(files: readonly CatalogueFile[]): string {
+  const lines = [...files]
+    .sort((a, b) =&gt; (a.path &lt; b.path ? -1 : a.path &gt; b.path ? 1 : 0))
+    .map((f) =&gt; `${f.path}\0${f.sha256}\n`)
+    .join(&#39;&#39;);
+  return createHash(&#39;sha256&#39;).update(lines).digest(&#39;hex&#39;);
+}
+</code></pre>
+<p class="pre-label">src/daemon/model-store/index.ts — HuggingFaceModelStore.ensure (staging and promotion)</p><pre><code>const staging = join(this.props.modelsDir, `.staging-${randomBytes(6).toString(&#39;hex&#39;)}`);
+try {
+  for (const file of entry.files) {
+    await this.download(entry, file, join(staging, file.path));
+  }
+  await rename(staging, dir);
+} finally {
+  await rm(staging, { recursive: true, force: true });
+}
+</code></pre>
+<div class="table-wrap"><table>
+<thead><tr><th>Error</th><th>When</th><th>Wire reason</th></tr></thead>
+<tbody>
+<tr><td><code>ModelFetchFailed</code> <code>http_status</code></td><td>non-2xx, or no body</td><td rowspan="4"><code>model_fetch</code> (<code>classify</code> in <a href="../../src/daemon/agents/index.ts"><code>src/daemon/agents/index.ts</code></a>)</td></tr>
+<tr><td><code>ModelFetchFailed</code> <code>stalled</code> / <code>network</code></td><td>no bytes for the stall bound / any other fetch error (with <code>cause</code>)</td></tr>
+<tr><td><code>ModelFetchFailed</code> <code>size_mismatch</code>, <code>ModelDigestMismatch</code></td><td>the file is not the pinned file</td></tr>
+<tr><td><code>LockHeld</code></td><td>another live process holds <code>.lock</code></td></tr>
+</tbody>
+</table></div><div class="callout warning">
+<p class="callout-title">The code and its comment disagree</p>
+<p>A comment in <code>ensure</code> says &quot;another process may have completed the same download while we waited&quot;, but <code>acquirePidLock</code> never waits: it throws <code>LockHeld</code> when the holder is alive. The holder's pid is checked with <code>isAlive</code>, so a second <code>ensure</code> in the <em>same</em> daemon during a download also gets <code>LockHeld</code>.</p>
+<p><span class="todo">TODO: confirm whether concurrent downloads in one daemon are meant to fail with LockHeld, and correct either the code or the comment</span></p>
+</div>
+<p>The <code>files</code> list is validated before any download: relative paths only, no pickle formats (<code>.bin</code>, <code>.pt</code>, <code>.pth</code>, <code>.pkl</code>, <code>.ckpt</code>), no duplicates, and <code>weights</code> must be one of them (<a href="recipes.html#catalogue">catalogue spec</a>).</p>
+</section>
+<section id="serving">
+<h2>Serving on the host</h2>
+<p>Models run on the host because colima's VM has no Metal GPU (<a href="index.html#host-inference">why</a>); a container reaches them as <code>host.docker.internal</code> (<code>ColimaRuntime.hostAddress</code>).</p>
+<ul>
+<li><strong>One server per model.</strong> <code>LlamaCppServer.ensureServing(entry, cached)</code> runs one <code>llama-server</code> per catalogue entry and reuses it for every agent that needs it.</li>
+<li><strong>The binary.</strong> Before the first launch, <code>ensureHostTool</code> (<a href="../../src/daemon/host-tools/index.ts"><code>src/daemon/host-tools/index.ts</code></a>) runs <code>llama-server --version</code>, and if that fails, <code>brew install llama.cpp</code>. Installed here: 0.5.0 (build 11146, <code>7fe450e19</code>): Homebrew upgraded it from build 8130 on 2026-09-27 (Cellar install receipt; <code>llama-server --version</code>). It changed forced tool calls (<a href="#gateway">gateway</a>).</li>
+</ul>
+<p class="pre-label">src/daemon/model-server/index.ts — LlamaCppServer.ensureServing (arguments)</p><pre><code>[
+  &#39;--model&#39;, cached.weightsPath,
+  &#39;--alias&#39;, entry.id,
+  &#39;--host&#39;, &#39;127.0.0.1&#39;,
+  &#39;--port&#39;, &#39;0&#39;,
+  // A chat model: CHAT_SLOTS (4) slots, each with the catalogue&#39;s context (debt D17) …
+  ...(entry.kind === &#39;chat&#39;
+    ? [&#39;--parallel&#39;, String(CHAT_SLOTS), &#39;--ctx-size&#39;, String(CHAT_SLOTS * entry.serve.contextSize)]
+    : [&#39;--ctx-size&#39;, String(entry.serve.contextSize)]),
+  // Every route that reaches the model requires the key; /health stays open, for the readiness poll.
+  &#39;--api-key-file&#39;, this.props.keyFile,
+  // A chat model needs its chat template for tool calls, and the prefill that forced tool calls rely on
+  // (the gateway&#39;s toolCallStart), set here because LLAMA_ARG_PREFILL_ASSISTANT in the user&#39;s environment
+  // could turn the default off. An embedding model is served for /v1/embeddings only, pooled as its model
+  // card says, with a batch as big as its context.
+  ...(entry.kind === &#39;chat&#39;
+    ? [&#39;--jinja&#39;, &#39;--prefill-assistant&#39;, ...CHAT_CACHE_ARGS]
+    : [&#39;--embeddings&#39;, &#39;--pooling&#39;, entry.serve.pooling, &#39;--ubatch-size&#39;, String(entry.serve.contextSize)]),
+]
+</code></pre>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Aspect</th><th>How</th></tr></thead>
+<tbody>
+<tr><td>Slots and context</td><td>A chat model's server runs 4 slots (<code>CHAT_SLOTS</code>), each with its own <code>serve.contextSize</code> tokens: <code>--parallel 4 --ctx-size 4×contextSize</code>, which llama.cpp 0.5.0 serves with a KV cache per slot (<code>n_ctx_slot = 8192, kv_unified = &#39;false&#39;</code> in its log). Until 2026-09-27 it passed only <code>--ctx-size</code>, and 0.5.0 then made 4 auto slots share one unified pool of that size: four concurrent turns of 2,127 prompt tokens all failed with HTTP 500 &quot;Context size has been exceeded&quot;, and all four succeed now (≈20.6 s), measured that day on <code>qwen3-8b-q4_k_m</code> with the daemon's flags (D17). The cost is memory: that server's resident size went from 6.2 GB to 9.8 GB. An embedding model's server keeps one context of <code>serve.contextSize</code>.</td></tr>
+<tr><td>Prompt cache</td><td>A chat model's server gets <code>CHAT_CACHE_ARGS</code>: <code>--cache-prompt --cache-ram 8192 --cache-idle-slots --cache-reuse 0 --slot-prompt-similarity 0.10</code>, each explicit so <code>LLAMA_ARG_CACHE_PROMPT</code>, <code>LLAMA_ARG_CACHE_RAM</code>, <code>LLAMA_ARG_CACHE_IDLE_SLOTS</code> or <code>LLAMA_ARG_CACHE_REUSE</code> in the user's environment cannot change caching (the arguments win: probe A5, records (<code>evals/probes/prompt-prefix-2026-09-28/README.md</code>)) and a llama.cpp upgrade cannot move the slot-selection threshold. What 0.5.0 does with them (llama.cpp <code>tools/server/</code> at <code>7fe450e19</code>, read 2026-09-28): a slot keeps the longest common prefix of its previous prompt and the new one and processes only the rest; a request goes to the idle slot whose cached prompt shares the longest prefix with it when that exceeds 10 % of the prompt, else the least recently used; a slot's state is saved to a host-memory store of up to <code>CHAT_CACHE_RAM_MIB</code> (8,192 MiB, the owner's answer of 2026-09-28, decision <code>model-server-memory</code> (a)) and restored to another slot. <code>--cache-reuse 0</code> keeps chunk reuse off: it would shift KV computed under another agent's handle or another user's memory into a prompt. Agents' requests are ordered to share a prefix so these hit (<a href="channel.html#prefix">the shared prefix</a>). Prompt caching can change greedy output, since logits are not bit-identical between batch sizes (llama.cpp README); see <a href="../quality/index.html#determinism">determinism</a>. A recipe's or catalogue entry's <code>chat</code> may not set the per-request fields that change caching or slot choice — <code>cache_prompt</code>, <code>n_cache_reuse</code>, <code>id_slot</code>, <code>message_delimiters</code> (<code>CACHING_FIELDS</code> in <a href="../../src/daemon/definitions/index.ts"><code>src/daemon/definitions/index.ts</code></a>) — and fails to load if it does.</td></tr>
+<tr><td>Prompt store</td><td>After a recipe's first answered chat call on a chat model's server, the daemon asks that server once to store its idle slots' prompts (<code>storePromptOnce</code> in <a href="../../src/daemon/agents/index.ts"><code>src/daemon/agents/index.ts</code></a>, <code>storeIdlePrompts</code> in <a href="../../src/daemon/model-gateway/index.ts"><code>src/daemon/model-gateway/index.ts</code></a>): <code>POST /tokenize</code> <code>{&quot;content&quot;: &quot;.&quot;}</code> (no special tokens), then <code>POST /completion</code> with those token ids as the prompt and <code>&quot;n_predict&quot;: 1</code>, each with the key and a bound of <code>PROMPT_STORE_BOUND_MS</code> (the chat queue bound, 55,000 ms). It is not awaited by the call that triggered it, not sent once the daemon is stopping, and abandoned when the stop begins, which then waits for it to end (<a href="../../tests/unit/daemon-stop.test.ts"><code>tests/unit/daemon-stop.test.ts</code></a>, <code>tests/unit/agents.test.ts</code>; over HTTP, <code>tests/integration/daemon.test.ts</code>). Why (D44, <code>docs/plans/prompt-prefix.md</code>, amendment 2): 0.5.0 saves idle slots to the host store only when a task starts (<code>--cache-idle-slots</code>), and one agent after another of a recipe all take the slot holding the shared prefix, so that slot is never idle when a task starts and the store stays empty; the first time two agents call at once, the second lands on an empty slot and computes its whole prompt (measured 2026-09-29: 1,923 tokens in 4.6 s), and the first, batched with it, waits as long. The request's prompt shares no first token with any chat prompt, so it goes to the least recently used slot — an empty one while there is one — and the warm slot, idle, is saved; a later request on an empty slot restores the prefix from the store. It is a token array because a text prompt gets BOS on a model that adds one: Ministral 3's GGUF sets <code>tokenizer.ggml.add_bos_token</code>, and a text &quot;.&quot; then shared BOS with the warm slot (1 of 2 tokens, over the 10 % threshold), took that slot, and left the store empty again (measured 2026-09-29; <code>tokenize_mixed</code> adds BOS only when the prompt's first element is text, llama.cpp <code>tools/server/server-common.cpp</code> at <code>7fe450e19</code>). Logged: <code>model.prompt_stored</code> (<code>model</code>, <code>recipe</code>, <code>ms</code>) once the server has answered — which says the task ran, not what was saved —, <code>model.prompt_store_abandoned</code> (warning) when the stop began first, or <code>model.prompt_store_failed</code> at error level with its <code>reason</code> (<code>timeout</code>, <code>unavailable</code>, <code>upstream_error</code>, <code>bad_response</code>, or <code>internal</code> for a harness defect); never retried.</td></tr>
+<tr><td>Port</td><td><code>--port 0</code>; the base URL is read from the output line announcing <code>listening on http://127.0.0.1:&lt;port&gt;</code> (<code>LISTENING</code>: 0.5.0 prints <code>llama_server: listening on …</code>, build 8130 printed <code>main: server is listening on … - starting the main loop</code>; both match).</td></tr>
+<tr><td>Readiness</td><td><code>GET /health</code>, which needs no key (below), every 250 ms (each bounded at 2,000 ms) until 2xx, within <code>readyTimeoutMs</code> (120,000 ms). An exit before healthy, or the deadline, throws <code>ModelServerFailed</code> with the log tail and kills the child with <code>SIGKILL</code>. Wire reason: <code>model_server</code>.</td></tr>
+<tr><td>Model name</td><td><code>--alias</code> is the catalogue id; <code>ModelEndpoint</code> is <code>{baseUrl, model, apiKey}</code>.</td></tr>
+<tr><td>API key</td><td>32 bytes from the CSPRNG, hex (64 characters), made by each <code>LlamaCppServer</code> (one per daemon start) on the first model it serves and shared by every server it starts. It is written by <code>writePrivateFile</code> (a new <code>0600</code> file under a unique name, renamed into place) to <code>&lt;home&gt;/model-server.key</code> — an absolute path, the home resolved (<code>harnessPaths</code> in <a href="../../src/shared/paths.ts"><code>src/shared/paths.ts</code></a>, since debt-paydown R13), so it names one home on every server's command line — passed as <code>--api-key-file</code> (never <code>--api-key</code>, which <code>ps</code> would show), sent by the gateway as <code>Authorization: Bearer &lt;key&gt;</code>, and removed by <code>stopAll</code>. The server is launched with <code>LLAMA_API_KEY</code> set empty: a value in the user's environment would add a second key the server accepts. <code>evals/routing/run.ts</code> does the same with a key file in its work directory.</td></tr>
+<tr><td>Logs</td><td><code>&lt;home&gt;/logs/model-server-&lt;id&gt;.log</code>. Events: <code>model_server.launching</code>, <code>model_server.ready</code> (with llama-server's <code>pid</code> and its watch's <code>watchPid</code>), <code>model_server.unloaded_idle</code> and <code>model_server.reloaded</code> (<a href="#idle">idle unload</a>), <code>model_server.exited</code> (a warning when unasked), <code>model_server.stopped_idle</code> (a server no agent needed, after a channel's stop), <code>model_server.spawn_failed</code>, <code>model_server.stopped</code>; the start's sweep (below): <code>model_server.orphan_stopped</code>, <code>model_server.orphan_survived</code>.</td></tr>
+<tr><td>Stop</td><td><code>stopAll()</code> sends <code>SIGTERM</code> — to the <a href="#watch">watch</a>, which passes one on — then <code>SIGKILL</code>, to the watch's whole group, after a 10,000 ms grace, and waits too for any <a href="#idle">idle unload</a> still under way. After <a href="channel.html#channel-stop">one channel's stop</a>, <code>stopIdle(inUse)</code> stops the same way each server whose model no agent holds — launching, online or restarting (<code>modelsInUse</code> in <a href="../../src/daemon/agents/index.ts"><code>src/daemon/agents/index.ts</code></a>) — and no call holds, logged <code>model_server.stopped_idle</code>: a server still starting is awaited first, and the holders are read again just before it is stopped, so a launch that took the model meanwhile keeps it. A later launch that needs the model starts its server again.</td></tr>
+<tr><td><span id="orphans">A killed daemon's servers</span></td><td>A daemon killed with SIGKILL (or one that crashed) cannot stop its servers itself. Since 2026-10-15 the <a href="#watch">watch</a> each runs under ends them; before it they lived on, re-parented to <code>launchd</code> (D13, now paid), and one whose watch was killed too still does. So every start, after the container runtime's reclaim and before the server listens, runs <code>LlamaCppServer.reclaimOrphans</code> (<code>startDaemon</code> in <a href="../../src/daemon/compose.ts"><code>src/daemon/compose.ts</code></a>; debt-paydown R12, R13): <code>ps -axww -o pid=,ppid=,command=</code> (2,000 ms bound; 22–24 ms for 830 processes, probe P4), then exactly the processes whose command's first word is <code>llama-server</code> and which name <code> --api-key-file &lt;this home&#39;s absolute key file&gt;</code> followed by a space or the end — the daemon lock guarantees no live daemon of this home owns one. All are sent SIGTERM at once; those left at 3,000 ms are listed again, and only those still selected get SIGKILL — a pid that ended and was taken by another process meanwhile is never signalled (no call in flight is worth finishing: their daemon is dead); each that ends is logged <code>model_server.orphan_stopped</code> at warn (<code>pid</code>, <code>signal</code>, <code>ms</code>), and one still alive 1,000 ms later, or one this user may not signal (<code>EPERM</code>), <code>model_server.orphan_survived</code> at error, and the start goes on; then the stale key file is removed. A failed <code>ps</code> fails the start (<code>daemon.orphan_sweep_failed</code>, the lock released). With no orphan it adds one <code>ps</code>: about 25 ms; at most 8 s (two <code>ps</code> of 2 s, 3 s, 1 s). Never selected: a <code>llama-server</code> with no key file (one started before control-api-auth), another home's, a relative key path, another program naming the key path. <strong>Missed, never mis-selected</strong> (the completion review's finding 13): an orphan of this home whose command spells the home another way — through a symbolic link (<code>/tmp/x</code> and <code>/private/tmp/x</code> share one lock but not one text), or with characters <code>ps</code> re-encodes under the C locale — and a <code>llama-server</code> installed at a path holding a space; such an orphan is left running, as before the sweep. Tests: <a href="../../tests/unit/model-server-orphans.test.ts"><code>tests/unit/model-server-orphans.test.ts</code></a> (each selection clause), <a href="../../tests/eval/lifecycle.eval.test.ts"><code>tests/eval/lifecycle.eval.test.ts</code></a> (a real daemon and its server's watch both SIGKILLed, the server stopped by the next start).</td></tr>
+<tr><td><span id="watch">The watch</span></td><td>Every <code>llama-server</code> runs under <code>WATCH_SCRIPT</code> (<a href="../../src/daemon/process/launcher.ts"><code>src/daemon/process/launcher.ts</code></a>, <code>dieWithParent</code>; <code>docs/plans/idle-shutdown.md</code> R5), a <code>/bin/dash</code> (<code>WATCH_SHELL</code>) the daemon starts as its own process group — not <code>/bin/sh</code>, which on macOS is bash 3.2: sent a burst of 30 stop signals on a loaded Mac, 9 of 240 bash watches died by a signal (SIGSEGV, mostly) before passing the stop on and 6 hung, leaving 8 servers running, against none of 240 under dash (2026-10-16, <code>evals/probes/watch-shell-2026-10-16/</code>) — whose standard input is a pipe only the daemon holds and never writes. The watch starts llama-server with no standard input, prints <code>asha-watch: pid &lt;n&gt;</code> (llama-server's own pid) as its first line, and waits. <strong>The daemon gone</strong> — however it ended, SIGKILL included, the kernel closes its end of the pipe — or <strong>a stop</strong> (SIGTERM, SIGINT or SIGHUP to the watch): one SIGTERM to llama-server at once, then SIGKILL 8 s later if it still runs, so it is gone within 10 s; the watch exits with its status and ends its helpers. Exactly one SIGTERM, because llama.cpp 0.5.0 takes a second as <em>&quot;Received second interrupt, terminating immediately.&quot;</em> (<code>libllama-server-impl.dylib</code>, read 2026-10-15): the daemon signals the watch alone, and only a SIGKILL goes to the whole group. No pid is polled: the watch is llama-server's parent, so its pid cannot be reused while the watch waits on it. A stop before llama-server has started means it never starts (exit 143); one in the instant between its fork and its exec can be lost, and the SIGKILL ends it. A watch that does not lead its own process group refuses to run (exit 125). A server is not ready until its pid is named: <code>model_server.ready</code> logs <code>pid</code> (llama-server's, what the <a href="#orphans">sweep</a> selects) and <code>watchPid</code>. Tests: <a href="../../tests/unit/process-watch.test.ts"><code>tests/unit/process-watch.test.ts</code></a> (real processes: a stand-in daemon SIGKILLed, one SIGTERM, the SIGKILL timer, a burst of 30 stop signals to 16 watches at once, each guard seen failing), <a href="../../tests/eval/lifecycle.eval.test.ts"><code>tests/eval/lifecycle.eval.test.ts</code></a> (a real daemon SIGKILLed, its llama-server gone within 10 s).</td></tr>
+<tr><td><span id="idle">Idle unload</span></td><td>A model server with no call holding it whose last call ended — or, never called, which became ready — <code>ASHA_MODEL_IDLE_MS</code> ago (default 900,000, 15 minutes) is stopped by the daemon's <a href="index.html#lifetime">lifetime</a> check, <code>model_server.unloaded_idle</code> (<code>model</code>, <code>idleMs</code>), freeing its 5–13 GB. Every chat and embedding call takes a lease on its model for its whole duration (<code>lease</code>; <code>onLeased</code> in <a href="../../src/daemon/agents/index.ts"><code>src/daemon/agents/index.ts</code></a>), so a held server is never unloaded — nor stopped by <code>stopIdle</code> — and a model unloaded since its agent launched is started again by the next call, logged <code>model_server.reloaded</code> with the <code>ms</code> it waited. That wait is inside the call's first-chunk bound, the queue bound (55,000 ms, <a href="#streaming">below</a>): a reload took 0.6–15.2 s on this Mac, median 1.6 s (record (<code>evals/probes/idle-shutdown-2026-10-15/reload-times.json</code>)), and the queue's longest recorded first chunk 32.7 s, so the daemon's bound still ends an agent's call, naming its cause, before the SDK's 60 s. A wait the agent's exit or its request closing cuts short ends the call as either would a call that reached its model; a lease that comes after is released at once, and a start that fails after is logged <code>model.start_failed</code>. The prompt store holds the very server its call reached (<code>holdServer</code>, by server number, which a restart on the same port does not reuse) and never starts one: that server gone, the store is skipped, <code>model.prompt_store_skipped</code>.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>What the key covers</strong> on the installed llama-server 0.5.0 (build 11146, <code>7fe450e19</code>), run 2026-09-27 with <code>--api-key-file</code> on <code>Qwen3-Embedding-0.6B-Q8_0.gguf</code> (status with no key / the key / a wrong key): <code>GET /health</code> and <code>GET /v1/health</code> 200/200/200, open to anyone; <code>GET /v1/models</code>, <code>GET /models</code>, <code>GET /props</code> and <code>GET /slots</code> 401/200/401; <code>POST /v1/embeddings</code> 401 without the key, 200 with it; <code>POST /v1/chat/completions</code> 401 without it. The key never appeared in <code>ps</code> or in the server's log (only <code>unauthorized: Invalid API Key</code> lines per refusal). With <code>LLAMA_API_KEY=&lt;value&gt;</code> in its environment the server also accepted that value; with it set empty it accepted only the file's key. The plan (<code>docs/plans/control-api-auth.md</code>) recorded build 8130 leaving <code>/v1/models</code> and <code>/models</code> open and logging the key's last four characters; 0.5.0 does neither.</p>
+<p>A CUDA build for a PC is <span class="badge planned">planned: pc-cuda</span> (the pc-cuda plan (<code>docs/plans/pc-cuda.md</code>); <a href="extending.html#adapter">adding an adapter</a>).</p>
+</section>
+<section id="gateway">
+<h2>Calling a model: the gateway</h2>
+<p>An agent calls <code>POST /agent/v1/model/chat</code> or <code>POST /agent/v1/model/embed</code> with its bearer token (<code>HarnessClient.chat</code>, <code>HarnessClient.embed</code> in <a href="../../src/agent-sdk/index.ts"><code>src/agent-sdk/index.ts</code></a>; an unknown token gets 401). The daemon validates the body (<code>parseChatRequest</code> / <code>parseEmbedRequest</code>, closed; a <code>requireToolCall</code> chat must not end with an assistant turn, since the prefill opens one) and makes one call to that agent's model server, with the server's key as <code>Authorization: Bearer &lt;apiKey&gt;</code> (<code>ModelEndpoint.apiKey</code>); only the daemon holds the key, so the gateway is the only way in. A chat is <strong>streamed</strong> from the model server and its output published as it is generated (<a href="#streaming">below</a>); the agent still receives one whole answer.</p>
+<ul>
+<li><strong>Chat.</strong> <code>{messages, maxTokens, tools?, requireToolCall?}</code>: <code>maxTokens</code> an integer in 1..4096, at most 16 tools, and <code>requireToolCall: true</code> needs <code>tools</code>, is sent as <code>tool_choice: &quot;required&quot;</code>, and opens the assistant turn with the entry's <code>toolCallStart</code> (why: the warning below) — unless thinking is on (<a href="#thinking">below</a>). Sampling is <code>chatDefaults: { ...record.entry.chat, ...record.recipe.chat }</code> (the recipe wins). The merge is shallow: a recipe that sets <code>chat_template_kwargs</code> replaces the entry's whole object, not key by key. The harness's own fields — <code>model</code>, <code>messages</code>, <code>max_tokens</code>, <code>tools</code>, <code>tool_choice</code>, <code>stream: true</code>, <code>stream_options: {include_usage: true}</code>, <code>return_progress: true</code> — are written after, so no definition can set them. Returns <code>{ok: true, text, toolCalls}</code> to the agent; tool-call arguments are parsed from JSON and every call must carry an id. Beside it the daemon gets the stream's figures (<code>ChatStats</code> in <a href="../../src/daemon/model-gateway/index.ts"><code>src/daemon/model-gateway/index.ts</code></a>): the usage chunk's <code>prompt_tokens</code>, <code>completion_tokens</code> and <code>prompt_tokens_details.cached_tokens</code>, the time to the first output, and the chunks received; the agent never sees them.</li>
+<li><strong>Embeddings.</strong> <code>{texts, purpose}</code>: 1..64 non-empty strings, <code>purpose</code> <code>&quot;query&quot;</code> or <code>&quot;document&quot;</code>; a recipe with no <code>embeddingModel</code> gets a 400. A <code>query</code> is written with the entry's <code>embed.queryTemplate</code> (<code>{text}</code> replaced); a <code>document</code> is sent as it is. One vector per input, each exactly <code>embed.dimensions</code> long, placed by the server's <code>index</code>, not by position. Not streamed (embeddings are not incremental); bounded by the daemon's <code>chatTimeoutMs</code>, <code>AGENT_CHAT_TIMEOUT_MS</code> (60,000 ms), wall clock.</li>
+</ul>
+<p class="pre-label">src/daemon/model-gateway/index.ts — chatCompletion (the request body)</p><pre><code>const prefill = props.request.requireToolCall === true &amp;&amp; !thinking;
+const body = {
+  ...props.chatDefaults,
+  model: props.endpoint.model,
+  messages: [...props.request.messages.map(toOpenAi), ...(prefill ? [{ role: &#39;assistant&#39;, content: props.toolCallStart }] : [])],
+  max_tokens: props.request.maxTokens,
+  ...(props.request.tools === undefined ? {} : { tools: props.request.tools }),
+  ...(props.request.requireToolCall === true ? { tool_choice: &#39;required&#39; } : {}),
+  stream: true,
+  stream_options: { include_usage: true },
+  return_progress: true,
+};
+</code></pre>
+<h3 id="streaming">The stream, and its bounds</h3>
+<p>llama-server answers a chat as server-sent events: <code>data: &lt;json&gt;</code> chunks — <code>prompt_progress</code> chunks while it reads the prompt, output chunks (<code>choices[0].delta</code>: <code>reasoning_content</code>, <code>content</code>, or a fragment of a tool call's arguments, the first naming the call's id and function), exactly one chunk with a <code>finish_reason</code>, one usage chunk with <code>choices: []</code> — then <code>data: [DONE]</code> (<code>StreamReader</code> in <a href="../../src/daemon/model-gateway/index.ts"><code>src/daemon/model-gateway/index.ts</code></a>). The gateway assembles it into the same <code>ChatResponse</code> the whole answer would give. A stream short of that — no <code>[DONE]</code>, no finish chunk, no usage chunk or one without all three counts, anything after <code>[DONE]</code>, a line that is not SSE data or not JSON — is <code>bad_response</code>, never a shorter answer; a chunk reporting an error is <code>upstream_error</code>.</p>
+<p>A chat is bounded by <strong>inactivity, not wall clock</strong>: every <code>data:</code> chunk of the stream, progress chunks included, is activity; a comment is not — llama-server writes a <code>:</code> ping every 30 s by default (<code>--sse-ping-interval</code>, per <code>llama-server --help</code> on 0.5.0, build 11146, read by the code review of 2026-09-29), and a ping must not keep a stalled call alive. <em>(Corrected 2026-09-29, before merge: this said every network read was activity, and the code did so; the review found a ping would then reset the bounds.)</em> A throw from the daemon's own delta sink is a harness defect, re-thrown (<code>DeltaSinkFailed</code>, answered 500 and logged <code>http.handler_failed</code>), never reported as a model failure.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Bound</th><th>Value</th><th>Fails the call <code>timeout</code> when</th></tr></thead>
+<tbody>
+<tr><td>Queue bound, <code>CHAT_QUEUE_BOUND_MS</code></td><td>55,000 ms</td><td>no chunk arrives within it of sending the request: the call waiting for a slot and its prompt</td></tr>
+<tr><td>Idle bound, <code>CHAT_IDLE_BOUND_MS</code></td><td>22,000 ms</td><td>no chunk arrives within it of the previous one</td></tr>
+</tbody>
+</table>
+</div>
+<p>Each is twice the largest value of its kind across every recorded measurement, rounded up to a whole second; the queue bound is then capped at the SDK's bound less 5 s, so for an agent's call the daemon's bound fires first and names the cause. <strong>Measured</strong> twice on 2026-09-29, at clean commits <code>e241518</code> and <code>6cafba3</code>, on an Apple M4 Pro with 48 GiB, llama-server 0.5.0 (b11146), <code>qwen3-8b-q4_k_m</code> with 4 slots: ten concurrent calls of 1,174 prompt tokens and one of 5,925, each with <code>return_progress</code> — the last first chunk at 31,774 and 32,670 ms (the eleventh call waiting for a slot), the longest gap inside a stream 5,531 and 5,411 ms (<code>evals/probes/model-streaming-2026-09-29/measure-e241518.json</code>, <code>evals/probes/model-streaming-2026-09-29/measure.json</code>, <code>evals/probes/model-streaming-2026-09-29/measure.mjs</code>). The plan reviewer's capture of 2026-09-27 saw a gap of 11 s with other llama-servers sharing the GPU (<code>docs/plans/model-streaming.md</code>, capture 5; no committed record, kept because it can only widen the bound), so the idle bound is 22,000 ms; the queue bound's rule gives 66,000 ms, capped to 55,000. <em>(Corrected 2026-09-29: until these measurements the bounds were a provisional 54,000 and 22,000 ms, from capture 5 alone.)</em> Eleven calls on four slots is near capacity (D19): a burst whose wait for a slot passes 55 s fails <code>timeout</code>, naming the queue bound. The routing eval, which has no SDK bound, sends one call at a time. The upper limits stay: the SDK's <code>chatTimeoutMs</code>, <code>AGENT_CHAT_TIMEOUT_MS</code> (60,000 ms), bounds a call as the agent sees it, and the recipe's <code>messageTimeoutMs</code> the whole turn; a call longer than 60 s is cut by the SDK by design, since the reply targets are 4,000 and 5,000 ms at p95 (<code>docs/plans/enterprise-targets.md</code>). The agent suite fails any chat call over 75 % of the SDK's bound (<a href="../testing/index.html#agents">Testing</a>).</p>
+<p>When the agent's own request closes before the answer (its bound passed), the daemon aborts the model server's request, freeing the slot, and the call ends <code>timeout</code> with the detail <code>the agent&#39;s request closed before the answer</code>. When the calling agent's container has exited, the call ends at once as <code>unavailable</code>, <code>abandoned: the calling agent exited</code>, and is logged <code>model.call_abandoned</code> at warn; so is a call whose request closed while the daemon is stopping its agent, since the container's exit and its connection closing come in either order. Whatever ends a call, the model server's request ends with it.</p>
+<h3 id="deltas">Deltas</h3>
+<p>While a chat streams, each piece of output goes to the conversation it belongs to — derived from the call's validated <code>traceparent</code> (<code>AgentRecord.conversations</code>, filled beside <code>record.traces</code> in <code>connect</code>), never from the agent — as a <code>model_delta</code> event <code>{handle, conversation, call, seq, part, text}</code>: <code>call</code> is the call's <code>asha.chat</code> span id, <code>seq</code> counts from 0 per call, <code>part</code> is <code>thinking</code>, <code>text</code> or <code>tool_args</code> (with <code>index</code> and <code>name</code>). Then one <code>model_done</code> <code>{handle, conversation, call, outcome}</code>, <code>ok</code> or the failure reason, published from a <code>finally</code>, so exactly once per call and after its last delta. Both go to the conversation's stream and to every watcher of the agent's channel (<a href="channel.html#deltas">Channels and agents</a>); a call refused before the model server's request (a trace that is no conversation delivered to the agent, or a tool outside its own) publishes nothing. No log record carries delta text.</p>
+<h3 id="thinking">Thinking</h3>
+<p>Whether a model thinks is a recipe setting, off by default: thinking is on only when the merged <code>chat.chat_template_kwargs.enable_thinking</code> is exactly <code>true</code>. Every Qwen3 entry sets it <code>false</code>; no recipe in <code>recipes/</code> turns it on. When it is on, the gateway sends no <code>toolCallStart</code> prefill (with the prefill the model does not think), streams <code>reasoning_content</code> as <code>part: thinking</code> (it is never part of the reply text), and a required call cut by <code>finish_reason: length</code> is <code>truncated</code> with a detail that says whether the cut came while thinking. Without the prefill a forced call may again follow free text (the warning below), so a recipe turns thinking on only after the routing eval and the timing targets are re-run with it on (model-streaming A7).</p>
+<p>Expected failures come back as <code>{ok: false, reason, detail}</code> (PRINCIPLES §11), never as exceptions, from <code>ModelFailureReason</code> in <a href="../../src/shared/protocol.ts"><code>src/shared/protocol.ts</code></a>:</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Reason</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>timeout</code></td><td>a chat's queue or idle bound passed, or the agent's request closed first; an embedding's <code>chatTimeoutMs</code> passed, its body's reading included</td></tr>
+<tr><td><code>unavailable</code></td><td>the model server could not be reached, or cut the connection mid-body; or the calling agent exited (<code>abandoned:</code>)</td></tr>
+<tr><td><code>upstream_error</code></td><td>it answered non-2xx (up to 500 characters of its body), or its stream reported an error</td></tr>
+<tr><td><code>bad_response</code></td><td>2xx with an unusable body: a stream short of complete, not JSON, malformed tool calls, a usage chunk without the three counts; for an embedding, wrong vector count or size</td></tr>
+<tr><td><code>truncated</code></td><td>a tool call was required and no complete one came: the output reached <code>maxTokens</code> first (<code>finish_reason: &quot;length&quot;</code>), with no call, with a call whose arguments were cut off, or while thinking</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout warning">
+<p class="callout-title"><code>tool_choice: &quot;required&quot;</code> no longer forces the call first</p>
+<p>Since llama.cpp <a href="https://github.com/ggml-org/llama.cpp/pull/22654">PR #22654</a> (merged 2026-05-04, commit <code>a4701c98f</code>; in 0.5.0, not in 8130; read 2026-09-27), a forced call may follow free text; <code>qwen3-8b</code> at temperature 0 then sometimes wrote text to the token limit with no call. So a chat entry's <code>toolCallStart</code> (Qwen3: <code>&quot;&lt;tool_call&gt;\n&quot;</code>) is sent as the start of the assistant turn, which begins the call. That needs llama-server's assistant prefill, on by default in both builds; the daemon passes <code>--prefill-assistant</code> so the environment cannot turn it off. This page said <code>required</code> forced the call; see <a href="history.html#forced-calls-correction">history</a>.</p>
+</div>
+<div class="callout note">
+<p class="callout-title">Correction, 2026-09-29</p>
+<p>This page said &quot;With the prefill a recipe's <code>enable_thinking: true</code> is skipped silently, since the turn starts inside the call&quot;. Since model-streaming, a recipe that turns thinking on gets no prefill, and thinks (<a href="#thinking">above</a>); the statement was true of the gateway before it.</p>
+</div>
+<div class="callout note">
+<p class="callout-title">Correction, 2026-09-27</p>
+<p>A response whose body was cut off, or timed out, while it was read made <code>response.text()</code> throw, so the call ended in a 500 (<code>http.handler_failed</code>) rather than as data. The otel-traces work found it: every model call must end its <code>asha.chat</code> span with a reason. The gateway now returns <code>unavailable</code> or <code>timeout</code> (tests: &quot;failures from the model server&quot; and &quot;an embedding body the model server cuts off&quot; in <a href="../../tests/unit/model-gateway.test.ts"><code>tests/unit/model-gateway.test.ts</code></a>).</p>
+</div>
+<h3 id="model-logs">Log records</h3>
+<p>The supervisor logs each call: <code>model.chat</code> / <code>model.embed</code> at info, <code>model.chat_failed</code> / <code>model.embed_failed</code> at error, with handle, channel, model and duration (<a href="index.html#logs">the 3am query</a>). A chat's record also carries the stream's figures (since model-streaming, 2026-09-29): <code>ttfcMs</code> (from sending the request to the first chunk of output, progress chunks excluded), <code>chunks</code>, <code>promptTokens</code>, <code>completionTokens</code> and <code>cachedTokens</code> — <code>null</code> where the stream did not get that far. A <code>model.chat</code> also carries <code>toolCalls</code> (since 2026-09-29): the names of the tools the model called in that response, in order — never their arguments — so which tools a turn used can be read outside the agent (the agent suite's <code>two-models</code> scenario reads it; <code>AgentSupervisor.chat</code> in <a href="../../src/daemon/agents/index.ts"><code>src/daemon/agents/index.ts</code></a>). <code>model.chat_failed</code>'s error keeps its detail, which can hold up to 200 characters of the model's output. Each call is also an <code>asha.chat</code> or <code>asha.embed</code> span, which ends with the call's reason when it fails (<a href="index.html#traces">traces</a>).</p>
+</section>
+<section id="choice">
+<h2>Which model <code>hello-world</code> uses, and why</h2>
+<div class="callout decision">
+<p class="callout-title">Decision</p>
+<p><em>2026-10-12, the owner:</em> <code>hello-world</code> uses <strong><code>pico-v2-q8_0</code></strong> (commit <code>8671911</code>, &quot;Switch hello world to pico model.&quot;); <code>memory</code> stays on <code>qwen3-8b-q4_k_m</code>, and so does the gate's routing step, which names its model. The agent suite and the eval had not yet run <code>hello-world</code> on it (2026-10-12). What follows is why both used <code>qwen3-8b-q4_k_m</code> until then, measured on it.</p>
+<p><em>2026-10-14, the owner, when the first gate on it failed four hello-world scenarios:</em> <em>&quot;Do not move hello-world back to Qwen - it is fine if the routing agent uses Qwen, but the responder agents should use Pico V2.&quot;</em> So <code>hello-router</code> (the <code>hello-world</code> image and prompt on <code>qwen3-8b-q4_k_m</code>) is the agent suites' router — the agent that hands work on or consults others — and <code>hello-world</code>, on <code>pico-v2-q8_0</code>, every responder. And the same day: <em>&quot;ministral-3-8b-instruct-2512-q4_k_m model should never be used for anything. Anything using that should be switched to Pico V2.&quot;</em> Its catalogue entry and <code>ministral-hello</code> are removed (<a href="#ministral-3-8b">below</a>).</p>
+<p><em>2026-10-15, the owner:</em> a suite or demo whose agents must behave a particular way gets a one-shot example in its own recipe, not in a shared one: <code>suite-multi-agent-responder</code>, on <code>pico-v2-q8_0</code>, is the multi-agent suite's responder (<a href="recipes.html#recipe">Recipes</a>).</p>
+<p><code>memory</code> uses, and <code>hello-world</code> used until 2026-10-12, <strong><code>qwen3-8b-q4_k_m</code></strong>. It passes 18 of the 19 original routing cases (at <code>cb63366</code>) and 17 of the 22 of the measure before agent calls (at <code>09394b2</code>); no smaller model passes more. Under agent-calls' 28-case measure it passed 24 with the first wording (<code>4b2da6b</code>), and at most 26 over the three wordings tried; with the 29-case measure and the wording shipped since 2026-09-29 (agent-calls' variant 2 on the shared prefix, <code>9b6559d</code>) it passes 27 of 29 cases and 19 of the 20 held-out ones, in two identical runs — below 3/3 only <code>call-and-return</code> and <code>held-self-task-have</code> (the task-shaped requests, D30) and <code>forged-identity</code> (<a href="../testing/index.html#routing">Testing, routing</a>); the other models have not been run on it. <em>2026-09-29:</em> <code>forged-identity</code> was removed from the measure, applying the owner's answer (<code>docs/plans/agent-calls.md</code>, answered, item 2), so on today's 28 cases those runs pass 27, below 3/3 only the task-shaped <code>call-and-return</code>.</p>
+</div>
+<p><strong>The routing eval</strong> (<a href="../../evals/routing/run.ts"><code>evals/routing/run.ts</code></a>, cases in <a href="../../evals/routing/cases.ts"><code>evals/routing/cases.ts</code></a>, <code>npm run eval:routing</code>) measures each chat model's routing choices; since 2026-09-29 the gate's last step, <code>npm run eval:routing:gate</code>, runs it on <code>qwen3-8b-q4_k_m</code> and fails on any case below 3/3 but those taken out as D30 (AGENTS.md §2; <code>docs/plans/agent-calls.md</code> R18). <em>Corrected 2026-09-29: this said it is &quot;a diagnostic, not part of the gate&quot;, true until agent-calls added the step.</em> Each case gives one hello-world agent one message and names the action the channel instructions call for. It runs the real request builder (<code>helloWorldTurn</code>) through the real model store, llama-server and gateway, 3 times per model; a case passes when all 3 do. Results, with their commit, are in <code>evals/routing/results/&lt;model&gt;.json</code>.</p>
+<h3 id="the-last-run-of-every-model-commit-09394b2-clean-tree-llama-cpp-0-5-0-22-cases">The last run of every model: commit <code>09394b2</code> (clean tree), llama.cpp 0.5.0, 22 cases</h3>
+<div class="stats"><div class="stat"><b>14/22</b><span>0.6B</span></div><div class="stat"><b>16/22</b><span>1.7B</span></div><div class="stat"><b>11/22</b><span>4B</span></div><div class="stat"><b>17/22</b><span>8B</span></div></div><p><em>Since 2026-09-29, <code>evals/routing/results/qwen3-8b-q4_k_m.json</code> holds agent-calls A6's second run at <code>9b6559d</code> (29 cases and the held-out set; the first run is in <code>repeat/</code>), so for 8B the figures below are the file as committed in <code>d9158f7</code>, in git history.</em> Read on 2026-09-27 from <code>evals/routing/results/*.json</code>, committed in <code>d9158f7</code> (fields <code>commit</code>, <code>dirty</code>, <code>llamaServer</code>, <code>ranAt</code>, <code>passed</code>, <code>results[].passes</code>): all four at <code>09394b2</code>, <code>dirty: false</code>, <code>ranAt</code> 2026-09-27T22:38–22:41Z, <code>llamaServer</code> <code>version: 0.5.0 (build 11146, commit 7fe450e19)</code>, with the tool-call prefill and <code>--prefill-assistant</code>. Sampling in every file: temperature 0, top_p 0.8, top_k 20, min_p 0, presence_penalty 1.5, thinking off. <strong>The measure changed at <code>3924e27</code></strong> (<code>docs/plans/channel-instructions.md</code>, R14): every case from an agent carries the <code>replyTo</code> its sender would set, <code>delegate</code> and <code>delegate-by-role</code> also expect the delegating message to say its response goes to the user, and three cases were added. The shipped <code>send_message</code> cannot say that yet, so <code>delegate</code> and <code>delegate-by-role</code> fail on every model under this measure although their destination and text are as before; on the 19 original cases scored as before (<code>cb63366</code>, committed in <code>8ed2099</code>) the models pass 13, 16, 13 and 18. Earlier: <a href="history.html#routing-942eb7e"><code>942eb7e</code>, in history</a>.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Case — the expected action</th><th>0.6B</th><th>1.7B</th><th>4B</th><th>8B</th></tr></thead>
+<tbody>
+<tr><td><code>solo-answer</code> — alone; a user request to everyone → reply to the user</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>solo-addressed</code> — alone; a request to the agent → reply</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>addressed-answer</code> — a request to the agent → reply</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>broadcast-answer</code> — another agent present; a request to everyone → reply</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>delegate</code> — &quot;have hewo-2 do it&quot; → the task, as an instruction, to hewo-2</td><td>0/3</td><td>0/3</td><td>0/3</td><td>0/3</td></tr>
+<tr><td><code>delegated</code> — a task from an agent → the result to the user</td><td>3/3</td><td>3/3</td><td>0/3</td><td>3/3</td></tr>
+<tr><td><code>delegated-bare</code> — bare words from an agent → said to the user</td><td>3/3</td><td>3/3</td><td>0/3</td><td>3/3</td></tr>
+<tr><td><code>delegate-by-role</code> — &quot;the agent that translates&quot; → found with <code>list_agents</code>, sent the task</td><td>0/3</td><td>0/3</td><td>0/3</td><td>0/3</td></tr>
+<tr><td><code>claim</code> — an agent asks who can take a task it can do → tells the asker it will</td><td>0/3</td><td>3/3</td><td>0/3</td><td>3/3</td></tr>
+<tr><td><code>ignore-agent-request</code> — an agent's request outside the role → no action</td><td>0/3</td><td>0/3</td><td>0/3</td><td>3/3</td></tr>
+<tr><td><code>ignore-user-request</code> — a user's request outside the role → no action</td><td>0/3</td><td>3/3</td><td>0/3</td><td>3/3</td></tr>
+<tr><td><code>solo-greeting</code> — alone; a greeting to everyone → reply</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>solo-greeting-addressed</code> — alone; a greeting to the agent → reply</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>solo-question</code> — alone; a question about the agent → reply</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>solo-other-words</code> — alone; &quot;say other words&quot; → those words</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>multi-greeting</code> — another agent present; a greeting to everyone → reply</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>multi-greeting-addressed</code> — another agent present; a greeting to the agent → reply</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>multi-question</code> — another agent present; a question to the agent → reply</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>agent-question</code> — a question from another agent → answer that agent</td><td>0/3</td><td>0/3</td><td>0/3</td><td>0/3</td></tr>
+<tr><td><code>ask-for-self</code> — the user: find out from another agent and tell me yourself → ask it, <code>replyTo</code> sender</td><td>0/3</td><td>0/3</td><td>0/3</td><td>0/3</td></tr>
+<tr><td><code>ask-for-user</code> — the user: ask another agent something → ask it, <code>replyTo</code> user</td><td>0/3</td><td>0/3</td><td>0/3</td><td>0/3</td></tr>
+<tr><td><code>delegated-question</code> — a task written as a question from an agent, <code>replyTo</code> user → the result to the user</td><td>3/3</td><td>3/3</td><td>0/3</td><td>3/3</td></tr>
+<tr><td><strong>cases passed</strong></td><td><strong>14/22</strong></td><td><strong>16/22</strong></td><td><strong>11/22</strong></td><td><strong>17/22</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>On 8B, <code>agent-question</code> and the two sender-side cases fail, and <code>delegate</code> and <code>delegate-by-role</code> fail only on the <code>replyTo</code> the measure now expects; everything else passes, <code>delegated-question</code> included. <code>claim</code> passes on 8B on its destination only: it is graded by where the message goes, and the 8B model sends the asker the task back (&quot;Say: Hello World&quot;) rather than saying it will take it.</p>
+<p><strong>What 3/3 records.</strong> The recipe decodes at temperature 0, so a case's three attempts are three greedy decodes of the same request, and in most runs they are identical. They are not three independent samples: across the committed results, in every case whose attempts differed, the first attempt differed and the second and third agreed. A result is therefore confirmed by a second run with <code>llama-server</code> started again, not by the three attempts alone (the analysis (<code>docs/plans/channel-instructions.md</code>)).</p>
+<p><strong>The 8B model on its own, since the version and requests are recorded.</strong> Re-run at <code>b8873a3</code> and again at <code>14e9997</code>, each from a clean tree and a fresh <code>llama-server</code> (<code>version: 0.5.0 (build 11146, commit 7fe450e19)</code>, recorded in each file): 18/19 both times, <code>agent-question</code> 0/3, and every case's request sha256, action and pass reason identical between the two runs. All four models were re-run at <code>cb63366</code>, from a clean tree, with the same scores as at <code>d8350f0</code> (13, 16, 13 and 18, <code>8ed2099</code>). Eight changes to the channel layer were measured against this baseline and none fixed <code>agent-question</code> without breaking another routing case or an agent-suite scenario — the seventh, in which the sender says where the response goes, passed every case it was for (<code>agent-question</code>, <code>ask-for-self</code>, <code>ask-for-user</code>, <code>delegated-question</code>, 21/22, <code>2862c70</code>) but sent <code>delegate</code>'s task as the bare words; the eighth, the same code with that parameter reworded, failed <code>delegate</code> the same way and also <code>ask-for-user</code>, 0/3 (20/22, <code>74858b5</code>); the fix is left to <code>docs/plans/agent-calls.md</code>; each is recorded, with its results commit, in <code>docs/plans/channel-instructions.md</code>, variants tried.</p>
+<div class="callout note">
+<p class="callout-title">Corrected 2026-09-27</p>
+<p>This paragraph said the seventh and eighth variants &quot;passed everything they were for&quot;. That was true of the seventh only. The eighth failed <code>ask-for-user</code> 0/3 — each attempt asked <code>hewo-2</code> with <code>replyTo</code> <code>&quot;sender&quot;</code> where the user's request wants <code>&quot;user&quot;</code> (read from <code>evals/routing/results/qwen3-8b-q4_k_m.json</code> at <code>74858b5</code>, run at <code>d9617a1</code>, clean). The two variants were summarised together from the seventh's result; the channel-instructions completion review found it.</p>
+</div>
+<p><strong>Why the cases pass or fail</strong> (written 2026-09-27 from every committed results file; the full analysis, with the evidence for each point, is the <code>docs/plans/channel-instructions.md</code> diagnosis):</p>
+<ul>
+<li><em>Since agent-calls (2026-09-27) an agent's question arrives as a call and <code>agent-question</code> passes 3/3 on 8B, the six held-out call questions too (A6's two runs at <code>9b6559d</code>); what follows is why it failed before.</em> <code>agent-question</code> failed 0/3 on 8B in every recorded run of the text shipped until then, always by answering the user with a correct description of the role; the answer is right and only its destination is wrong. Rewording the instructions and the <code>reply</code> description never moved it. Only the framing of the message did: framed as from an agent that a question is answered to, 8B answered <code>hewo-2</code>, but it then also sent results back to whichever agent the frame named — every delegated task's (variant 1), or, with the frame applied only to messages ending in &quot;?&quot;, a delegated task written as a question (variant 6, which failed the agent suite's memory delegation scenario).</li>
+<li><code>ignore-user-request</code> passes on 8B by a direct match: the role names translation among the work it cannot do. It began to pass after an unrelated line was added, so it sits close to its decision boundary.</li>
+<li><code>ignore-agent-request</code> passes on 8B by looking up the roster and finding no agent whose description covers translation.</li>
+</ul>
+</section>
+<section id="pinned">
+<h2>Pinned models</h2>
+<p>Full values are in <code>catalogue/</code>; this section records where each came from and when it was read (PRINCIPLES §12). Field specifications: <a href="recipes.html#catalogue">Recipes and configuration</a>.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Entry</th><th>Used by</th><th>Weights size</th></tr></thead>
+<tbody>
+<tr><td><a href="#qwen3-8b"><code>qwen3-8b-q4_k_m</code></a></td><td><code>memory</code>; <code>hello-router</code>, since 2026-10-14; <code>hello-world</code> until 2026-10-12</td><td>5,027,783,488 bytes</td></tr>
+<tr><td><a href="#ministral-3-8b"><code>ministral-3-8b-instruct-2512-q4_k_m</code></a></td><td>nothing: removed from the catalogue 2026-10-14 (the owner); <code>ministral-hello</code> until then</td><td>5,198,911,904 bytes</td></tr>
+<tr><td><a href="#pico-v2"><code>pico-v2-q8_0</code></a></td><td><code>hello-world</code>, since 2026-10-12 (the owner, <code>8671911</code>); <code>suite-multi-agent-responder</code>, since 2026-10-15; the sub-agents of 18 pattern demos, since 2026-10-10 (<code>docs/plans/demo-model-pico.md</code>)</td><td>9,028,871,552 bytes</td></tr>
+<tr><td><a href="#qwen3-embedding"><code>qwen3-embedding-0.6b-q8_0</code></a></td><td><code>memory</code> (embeddings)</td><td>639,150,592 bytes</td></tr>
+<tr><td><a href="#qwen3-1.7b-4b"><code>qwen3-1.7b-q8_0</code>, <code>qwen3-4b-q4_k_m</code></a></td><td>routing eval only</td><td>1,834,426,016 / 2,497,280,256 bytes</td></tr>
+<tr><td><a href="#qwen3-0.6b"><code>qwen3-0.6b-q8_0</code></a></td><td>routing eval only (the first slice's model)</td><td>639,446,688 bytes</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="qwen3-8b"><code>qwen3-8b-q4_k_m</code></h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Field</th><th>Value</th><th>Source, read 2026-09-26</th></tr></thead>
+<tbody>
+<tr><td>Repo, revision</td><td><code>Qwen/Qwen3-8B-GGUF</code> @ <code>7c41481f57cb95916b40956ab2f0b139b296d974</code></td><td><code>https://huggingface.co/api/models/Qwen/Qwen3-8B-GGUF</code> → <code>sha</code></td></tr>
+<tr><td>Weights</td><td><code>Qwen3-8B-Q4_K_M.gguf</code>, 5,027,783,488 bytes, sha256 <code>d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785</code></td><td>same API, <code>siblings[].lfs.sha256</code>; re-computed from the download — identical</td></tr>
+<tr><td><code>LICENSE</code></td><td>apache-2.0; sha256 <code>5de36594c10839788a8c589443a8ef9d8b8d17c65a1b5807206ae037fc36c6bd</code>, byte-identical to the 0.6B repo's</td><td>the file at the pinned revision</td></tr>
+<tr><td>Sampling, <code>serve.contextSize</code></td><td>the non-thinking values given for <a href="#qwen3-0.6b">0.6B</a>; <code>8192</code></td><td>this model's own card, § Best Practices — same text as the 0.6B card</td></tr>
+</tbody>
+</table>
+</div>
+<p class="pre-label">catalogue/qwen3-8b-q4_k_m.json</p><pre><code>{
+  &quot;kind&quot;: &quot;chat&quot;,
+  &quot;id&quot;: &quot;qwen3-8b-q4_k_m&quot;,
+  &quot;repo&quot;: &quot;Qwen/Qwen3-8B-GGUF&quot;,
+  &quot;revision&quot;: &quot;7c41481f57cb95916b40956ab2f0b139b296d974&quot;,
+  &quot;weights&quot;: &quot;Qwen3-8B-Q4_K_M.gguf&quot;,
+  &quot;files&quot;: [
+    { &quot;path&quot;: &quot;Qwen3-8B-Q4_K_M.gguf&quot;, &quot;size&quot;: 5027783488,
+      &quot;sha256&quot;: &quot;d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785&quot; },
+    { &quot;path&quot;: &quot;LICENSE&quot;, &quot;size&quot;: 11544,
+      &quot;sha256&quot;: &quot;5de36594c10839788a8c589443a8ef9d8b8d17c65a1b5807206ae037fc36c6bd&quot; }
+  ],
+  &quot;license&quot;: {
+    &quot;id&quot;: &quot;apache-2.0&quot;,
+    &quot;source&quot;: &quot;https://huggingface.co/Qwen/Qwen3-8B-GGUF/blob/7c41481f57cb95916b40956ab2f0b139b296d974/LICENSE&quot;,
+    &quot;verified&quot;: &quot;2026-09-26&quot;
+  },
+  &quot;serve&quot;: { &quot;contextSize&quot;: 8192 },
+  &quot;chat&quot;: {
+    &quot;temperature&quot;: 0.7, &quot;top_p&quot;: 0.8, &quot;top_k&quot;: 20, &quot;min_p&quot;: 0, &quot;presence_penalty&quot;: 1.5,
+    &quot;chat_template_kwargs&quot;: { &quot;enable_thinking&quot;: false }
+  },
+  &quot;toolCallStart&quot;: &quot;&lt;tool_call&gt;\n&quot;
+}
+</code></pre>
+<h3 id="qwen3-1.7b-4b"><code>qwen3-1.7b-q8_0</code> and <code>qwen3-4b-q4_k_m</code></h3><p>Pinned the same way for the routing eval. Both are apache-2.0 with the identical <code>LICENSE</code> (sha256 <code>5de36594…a36c6bd</code>) and the same sampling guidance, read 2026-09-26; sizes and digests copied from <code>catalogue/</code> on 2026-09-27.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Entry</th><th>Repo @ revision</th><th>Weights</th></tr></thead>
+<tbody>
+<tr><td><code>qwen3-1.7b-q8_0</code></td><td><code>Qwen/Qwen3-1.7B-GGUF</code> @ <code>90862c4b9d2787eaed51d12237eafdfe7c5f6077</code></td><td><code>Qwen3-1.7B-Q8_0.gguf</code>, 1,834,426,016 bytes, sha256 <code>061b54daade076b5d3362dac252678d17da8c68f07560be70818cace6590cb1a</code></td></tr>
+<tr><td><code>qwen3-4b-q4_k_m</code></td><td><code>Qwen/Qwen3-4B-GGUF</code> @ <code>bc640142c66e1fdd12af0bd68f40445458f3869b</code></td><td><code>Qwen3-4B-Q4_K_M.gguf</code>, 2,497,280,256 bytes, sha256 <code>7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="qwen3-0.6b"><code>qwen3-0.6b-q8_0</code></h3><p>The first slice's model, now used only by the routing eval. Its reply measurements are in <a href="history.html#evidence-2026-09-26">history</a>.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Field</th><th>Value</th><th>Source, read 2026-09-26</th></tr></thead>
+<tbody>
+<tr><td>Repo, revision</td><td><code>Qwen/Qwen3-0.6B-GGUF</code> @ <code>23749fefcc72300e3a2ad315e1317431b06b590a</code></td><td><code>https://huggingface.co/api/models/Qwen/Qwen3-0.6B-GGUF</code> → <code>sha</code></td></tr>
+<tr><td>Weights</td><td><code>Qwen3-0.6B-Q8_0.gguf</code>, 639,446,688 bytes, sha256 <code>9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031</code></td><td>same API, <code>siblings[].size</code> and <code>siblings[].lfs.sha256</code>; re-computed from the download with <code>shasum -a 256</code> — identical</td></tr>
+<tr><td>Licence</td><td><code>apache-2.0</code>; <code>LICENSE</code> sha256 <code>5de36594c10839788a8c589443a8ef9d8b8d17c65a1b5807206ae037fc36c6bd</code>, 11,544 bytes</td><td>card front matter and the <code>LICENSE</code> file at the pinned revision (Apache License 2.0 text), hashed by us: not an LFS file, so the API gives only a git blob id</td></tr>
+<tr><td>Sampling (<code>chat</code>)</td><td><code>temperature 0.7, top_p 0.8, top_k 20, min_p 0, presence_penalty 1.5</code></td><td>card § Best Practices, non-thinking mode; <code>presence_penalty 1.5</code> is its advice for quantized models</td></tr>
+<tr><td>Thinking off</td><td><code>chat_template_kwargs: {enable_thinking: false}</code></td><td>card § Switching Between Thinking and Non-Thinking Mode; re-verified against <code>llama-server</code> 0.5.0 (build 11146, <code>7fe450e19</code>) with <code>--jinja</code> on 2026-09-27: no reasoning returned (reply <code>&quot;Hello world! 🌟&quot;</code>, sampled), while <code>enable_thinking: true</code> returns it; first verified on build 8130</td></tr>
+<tr><td><code>serve.contextSize</code></td><td><code>8192</code></td><td>our choice: the model supports 40,960 (the repo's <code>params</code> file); a small context keeps the KV cache small, and hello-world needs well under 100 tokens</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="qwen3-embedding"><code>qwen3-embedding-0.6b-q8_0</code></h3>
+<p>Turns text into vectors for the memory agent's search (<a href="memory.html">Agent memory</a>). A second <code>llama-server</code> serves it with <code>--embeddings --pooling last --ubatch-size 8192</code>, reached only through <code>POST /agent/v1/model/embed</code>.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>What</th><th>Value</th><th>Source (read 2026-09-26)</th></tr></thead>
+<tbody>
+<tr><td>Repo, revision</td><td><code>Qwen/Qwen3-Embedding-0.6B-GGUF</code> @ <code>370f27d7550e0def9b39c1f16d3fbaa13aa67728</code></td><td><code>https://huggingface.co/api/models/Qwen/Qwen3-Embedding-0.6B-GGUF</code> → <code>sha</code></td></tr>
+<tr><td>Weights</td><td><code>Qwen3-Embedding-0.6B-Q8_0.gguf</code>, 639,150,592 bytes, sha256 <code>06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439</code></td><td>same API, <code>siblings[].lfs.sha256</code>; matches the download hashed with <code>shasum -a 256</code></td></tr>
+<tr><td>Licence</td><td><code>apache-2.0</code> in the card's metadata. <strong>No LICENSE file</strong> exists in this repo or in <code>Qwen/Qwen3-Embedding-0.6B</code>, so the card (<code>README.md</code>, 11,889 bytes, sha256 <code>5dc596e802ce79342678281d42ec4b98fbee2fee241758df330cdc35cc15d29f</code>) is pinned as the licence record</td><td>the API's <code>siblings</code> list and <code>cardData.license</code>. Accepted by the owner, 2026-09-26 (AGENTS.md §3)</td></tr>
+<tr><td>Serving flags</td><td><code>--embedding --pooling last -ub 8192</code></td><td>the card's &quot;llama.cpp&quot; section; this machine's <code>llama-server --help</code> lists <code>--embedding, --embeddings</code>, <code>--pooling {none,mean,cls,last,rank}</code> and <code>-ub, --ubatch-size</code></td></tr>
+<tr><td>Query format</td><td><code>Instruct: {task}\nQuery:{query}</code>; documents take no instruction</td><td><code>Qwen/Qwen3-Embedding-0.6B</code> card, <code>get_detailed_instruct</code>, at revision <code>97b0c614</code></td></tr>
+<tr><td>Dimensions</td><td>1024</td><td>the card, &quot;Embedding Dimension: Up to 1024&quot;</td></tr>
+<tr><td>Chosen over</td><td>EmbeddingGemma-300m (its Gemma Terms of Use isn't a permissive licence), nomic-embed-text-v1.5 (English only; kept as the fallback), bge-m3 and nomic-embed-text-v2-moe</td><td>the 2026-09-26 comparison, on this machine's <code>llama-server</code></td></tr>
+</tbody>
+</table>
+</div>
+<p class="pre-label">catalogue/qwen3-embedding-0.6b-q8_0.json — serve and embed</p><pre><code>&quot;serve&quot;: {
+  &quot;contextSize&quot;: 8192,
+  &quot;pooling&quot;: &quot;last&quot;
+},
+&quot;embed&quot;: {
+  &quot;dimensions&quot;: 1024,
+  &quot;queryTemplate&quot;: &quot;Instruct: Given a message sent to an assistant, retrieve the memories about this user that help answer it\nQuery:{text}&quot;
+}
+</code></pre>
+<h3 id="ministral-3-8b"><code>ministral-3-8b-instruct-2512-q4_k_m</code> (removed)</h3>
+<div class="callout note">
+<p class="callout-title">Note</p>
+<p><strong>Removed 2026-10-14.</strong> The owner: <em>&quot;ministral-3-8b-instruct-2512-q4_k_m model should never be used for anything. Anything using that should be switched to Pico V2.&quot;</em> Its catalogue entry and the recipe <code>ministral-hello</code> are gone, and the agent-tools suite's second model is <code>hello-router</code>'s Qwen3 8B, beside <code>hello-world</code>'s Pico-V2. A copy already in a Mac's model cache is not removed by this change. The gateway's unit tests keep their recorded Ministral 3 streams as parser fixtures, since Pico-V2 writes its calls the same way (<code>[TOOL_CALLS]</code>). What follows is the record as pinned.</p>
+</div>
+<p>Mistral AI's Ministral 3 8B Instruct, the second chat model, so agents on one channel can run different model families (the owner chose the family and approved the pick, 2026-09-27; <code>docs/plans/agent-tools.md</code>). The recipe <code>ministral-hello</code> runs the <code>hello-world</code> image on it. Its own <code>llama-server</code> serves it beside the Qwen3 8B one; each agent's calls go to its own recipe's model's server.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>What</th><th>Value</th><th>Source (read 2026-09-27)</th></tr></thead>
+<tbody>
+<tr><td>Repo, revision</td><td><code>mistralai/Ministral-3-8B-Instruct-2512-GGUF</code> @ <code>0102285ad796bd99af90f58de616092e5630e970</code> (last modified 2026-01-15), not gated</td><td><code>https://huggingface.co/api/models/mistralai/Ministral-3-8B-Instruct-2512-GGUF/revision/0102285ad796bd99af90f58de616092e5630e970?blobs=true</code> → <code>sha</code>, <code>gated</code>, <code>lastModified</code></td></tr>
+<tr><td>Weights</td><td><code>Ministral-3-8B-Instruct-2512-Q4_K_M.gguf</code>, 5,198,911,904 bytes, sha256 <code>33e7a72cf5e6e2cfc2f2847075acc013d68bba023e35310cef86b5cf8fdca761</code> (the vision projector is not downloaded: agents exchange text only)</td><td>the same API, <code>siblings[].lfs</code>; downloaded 2026-09-27 by the model store, which verified size and sha256 (78 s), and matched by <code>shasum -a 256</code></td></tr>
+<tr><td>Licence</td><td><code>apache-2.0</code> in the card's <code>license:</code> field and its &quot;License&quot; section. <strong>No LICENSE file</strong> in the repository, so the card (<code>README.md</code>, 3,165 bytes, sha256 <code>edf52a7d939a3a7368258e3d81a2c7224134e04a22f820ad6d97ec213be20fd5</code>) is pinned as the licence record</td><td>the same API's <code>cardData.license</code> and <code>siblings</code>; the file downloaded at the revision and hashed. The owner's rule of 2026-09-26 (AGENTS.md §3)</td></tr>
+<tr><td>Serving</td><td><code>serve.contextSize</code> 8192 (the model's <code>context_length</code> is 262,144: the Qwen3 entries' size, so both servers fit beside colima on this 48 GiB Apple M4 Pro); <code>chat</code> exactly <code>{&quot;temperature&quot;: 0}</code>, below the card's recommended 0.1; <code>toolCallStart</code> <code>[TOOL_CALLS]</code></td><td>the GGUF metadata (<code>architecture</code> <code>mistral3</code>); the card; the <code>chat_template</code> in the API response, which writes a call as <code>[TOOL_CALLS]&lt;name&gt;[ARGS]&lt;json&gt;</code></td></tr>
+<tr><td>Verified serving</td><td>loads in <code>llama-server</code> 0.5.0 (build 11146, commit <code>7fe450e19</code>); a required tool call is parsed through the pre-filled <code>[TOOL_CALLS]</code>, and a second round with tool results in context is accepted by the chat template (it rejects user and plain assistant messages that do not alternate)</td><td><code>tests/agents/tools.test.ts</code> (A9, A10), 2026-09-27</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="pico-v2"><code>pico-v2-q8_0</code></h3>
+<p>Pico V2 (<code>OculusMindAI/OculusMind-ToolCall-8B-v2</code>), a tool-calling fine-tune of Ministral 3 8B (a rank-8 LoRA). The owner asked on 2026-10-07 that the agent demos run on it, and on 2026-10-08 narrowed that to the demos' sub-agents where a demo passes with them on it (<code>docs/plans/demo-model-pico.md</code>). Its own <code>llama-server</code> serves it beside the Qwen3 8B one, as for <code>ministral-3-8b-instruct-2512-q4_k_m</code>.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>What</th><th>Value</th><th>Source (read 2026-10-09)</th></tr></thead>
+<tbody>
+<tr><td>Repo, revision</td><td><code>OculusMindAI/OculusMind-ToolCall-8B-v2</code> @ <code>3a3d1b36fbfd397e67545786057b0e335a8efffc</code> (last modified 2026-10-08T05:09:18Z), public, not gated. <strong>Renamed:</strong> the address the owner gave on 2026-10-08 was the repository's earlier name; by 2026-10-09 05:22 UTC that name redirects here, and the card's title calls the model Pico V2. The entry names the repository by its current name, so a download does not rely on the redirect; the files at the pinned revision are the ones read on 2026-10-08, byte for byte (the same sizes and sha256). <code>main</code> has moved on to <code>b7791d34fe18f9c346235a07400b358f030f18e5</code> (2026-10-09T00:13:54Z), changing the card, the Ollama notes and NOTICE, not the GGUF: the pin stays on <code>3a3d1b36</code></td><td>the Hub's model API at the earlier name and this revision (<code>https://huggingface.co/api/models/&lt;earlier name&gt;/revision/3a3d1b36fbfd397e67545786057b0e335a8efffc?blobs=true</code>, followed to the new name) → <code>id</code>, <code>sha</code>, <code>gated</code>, <code>lastModified</code>; the card at both revisions</td></tr>
+<tr><td>Weights</td><td><code>gguf/Q8_0/model-q8_0.gguf</code>, 9,028,871,552 bytes, sha256 <code>fe76fb07e5ca7351171bcd94838129514f8ad9bfc0a4e84ac6d9c247b33e1c56</code>. The card says its BF16 and Q4_K_M GGUFs were built and withheld because they loop; its no-loop claim covers Q8_0 only</td><td>the same API, <code>siblings[].lfs</code>; downloaded 2026-10-08 by the model store, which verified size and sha256</td></tr>
+<tr><td>Licence</td><td><code>apache-2.0</code> in the card, and a LICENSE file at the revision, 11,347 bytes, sha256 <code>fccc764ff9f6234f79d44e8ddd800356b3660250969c2f4c8f70b5adcba0f02c</code>: the Apache License 2.0. A NOTICE file, 15,479 bytes, sha256 <code>d7adb7f766497eaa9ce093de49f37e6373408f2fbb836bbdfb42629c8e07527d</code>, which any redistribution carries; both are pinned files of the entry, so the cache keeps them with the weights. Its base, <code>mistralai/Ministral-3-8B-Instruct-2512-BF16</code>, declares <code>apache-2.0</code></td><td>both files downloaded at the revision on 2026-10-09 and hashed; the owner's rule of 2026-09-26 (AGENTS.md §3)</td></tr>
+<tr><td>Serving</td><td><code>serve.contextSize</code> 8192, as the other chat entries; <code>chat</code> exactly <code>{&quot;temperature&quot;: 0}</code>; <code>toolCallStart</code> <code>[TOOL_CALLS]</code> (its template writes a call as <code>[TOOL_CALLS]&lt;name&gt;[ARGS]&lt;json&gt;</code>, with no call id)</td><td>the chat template at the revision; the premise probe (<code>evals/probes/demo-model-pico-2026-10-08/README.md</code>)</td></tr>
+<tr><td>Verified serving</td><td>loads in <code>llama-server</code> 0.5.0 (build 11146, commit <code>7fe450e19</code>); through the chat endpoint the harness uses, every round of its routing runs (531) came back as a structured tool call</td><td>the premise probe (<code>evals/probes/demo-model-pico-2026-10-08/README.md</code>), 2026-10-08</td></tr>
+<tr><td>Used by</td><td>the sub-agents of 18 pattern demos (P1–P8, P10–P15, P17, P18, P20, P25); their routers, and the other 7 demos, stay on <code>qwen3-8b-q4_k_m</code>. Each passed three recorded runs with the move and one under its bound; P23 passed its scenarios too, but was kept because the Mac's free memory fell below 20 % during its suite (R6)</td><td><code>docs/plans/demo-model-pico.md</code>'s runs, 2026-10-10</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Memory with both servers</strong> (demo-model-pico R6). A demo with a router and sub-agents runs both servers in one daemon. Sampled every 5 s during the move's four recorded runs, 2026-10-10: three at <code>6eed097</code> with the move applied, and the fourth at <code>8dd3a26</code>, clean (runs (<code>evals/probes/demo-model-pico-runs-2026-10-09/README.md</code>)).</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Measure</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td><code>qwen3-8b-q4_k_m</code>'s server, resident at its peak</td><td>10.53 GiB</td></tr>
+<tr><td><code>pico-v2-q8_0</code>'s server, resident at its peak</td><td>14.43 GiB</td></tr>
+<tr><td>The largest pair sampled within 5 s</td><td>24.58 GiB (10.16 + 14.41)</td></tr>
+<tr><td>The Mac's free memory at its lowest</td><td>19 % once, in the second run, during P23's suite; 25–26 % in the others</td></tr>
+</tbody>
+</table>
+</div>
+<p>Against these stand the worst cases the probes bound: each server's measured peak on the routing workload (17.9 GiB for <code>pico-v2-q8_0</code>, 14.9 GiB for <code>qwen3-8b-q4_k_m</code>), each prompt store's 8 GiB cap, and colima's 8 GiB VM. The Mac measured has 48 GiB.</p>
+</section>
+<section id="providers">
+<h2>Hosted models: providers</h2>
+<p>A recipe may name a hosted model in place of a local one: <code>&quot;model&quot;: &quot;&lt;module&gt;/&lt;name&gt;&quot;</code>, a model a <a href="modules.html#kinds">ModelProvider</a> module declares. The agent's code does not change — its chat and embed calls go through the same routes — but the daemon sends them to the provider's container (<a href="../../src/daemon/modules/provider.ts"><code>providerChat</code>, <code>providerEmbed</code></a>) instead of <code>llama-server</code>: no download, no <code>model</code> or <code>model_server</code> launch phase, no tool-call prefill, no <code>return_progress</code>, no prompt-store request. A request that requires a tool call names <code>requireToolCall</code>, which the provider sends as the vendor's own forced tool choice; the stream keeps the gateway's bounds (55 s to the first chunk, 22 s between chunks) and events, and the vendor's token usage settles the <a href="modules.html#cost">meter</a>. A recipe naming a hosted model is cloud-granted: every prompt leaves the machine, so it is never used by an image that keeps memory (<a href="modules.html#memory">memory</a>).</p>
+<p><strong>Pinning a hosted model</strong> (extension-modules R20; AGENTS.md §3 for hosted models): the manifest names the vendor's exact model id as its card gives it, and the schema refuses an alias that moves (<code>latest</code>), an inference profile (a <code>us.</code>, <code>eu.</code>, <code>apac.</code> or <code>global.</code> prefix) and an ARN; it records the card's URL and launch date, the prices with their source and date, and the vendor's terms and data-retention policy, each by URL and date read. The docs guard fails once a price was read more than 90 days before the day it runs. Before any live chat, the opt-in live check reads the model's lifecycle state and refuses anything but <code>ACTIVE</code>. The one hosted model so far is <a href="modules-bedrock.html"><code>bedrock/ministral</code></a>, <code>mistral.ministral-3-8b-instruct</code> — the same family as the local <code>ministral-3-8b-instruct-2512-q4_k_m</code>, so a local and a hosted run compare like for like.</p>
+</section>
+<section id="adding">
+<h2>Adding a model</h2>
+<ol>
+<li>Read the model's API record for the <strong>exact revision</strong>: <code>curl -s &#39;https://huggingface.co/api/models/&lt;repo&gt;/revision/&lt;sha&gt;?blobs=true&#39;</code>. Take the revision sha, and each file's size and <code>lfs.sha256</code>.</li>
+<li>For files that are not LFS (licence, config, tokenizer JSON), download them at that revision and compute the sha256 yourself.</li>
+<li>Read the licence <strong>at that revision</strong>, for that repo (PRINCIPLES §12). It must be commercially permissive; with no licence file, the card declaring it is pinned as the licence record (AGENTS.md §3).</li>
+<li>Write <code>catalogue/&lt;id&gt;.json</code>, and add a section here with every value's source and date.</li>
+<li>Point a recipe's <code>model</code> (or <code>embeddingModel</code>) at the id; run <code>npm run check</code>. For a chat model meant to replace <code>qwen3-8b-q4_k_m</code>, also run the routing eval — <code>npm run build &amp;&amp; node dist/evals/routing/run.js [model-id ...]</code>, usage from the header of <a href="../../evals/routing/run.ts"><code>evals/routing/run.ts</code></a> — and commit its result file.</li>
+</ol>
+<p>The rules, files and tests: <a href="extending.html#model">Extending asha — add a model</a>. Earlier routing runs and corrections to this page: <a href="history.html#routing-942eb7e">history</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/architecture/models.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

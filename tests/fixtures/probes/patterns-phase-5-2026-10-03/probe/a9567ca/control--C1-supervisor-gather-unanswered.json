@@ -1,0 +1,110 @@
+{
+  "commit": "a9567ca9b7d7eb9cdec133f9a1120e105cdccc77",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "control/C1-supervisor-gather-unanswered",
+  "control": true,
+  "doc": null,
+  "passes": 0,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "worker-1's word is no answer"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "worker-1's word is no answer"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1900,
+          "completionTokens": 24
+        }
+      ],
+      "ms": 712,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "worker-1's word is no answer",
+      "requestSha256": "503b7c0b826f825c923a122f4afa80ce60f6eb295fe9b3d9c3ecab82edfbd500",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "worker-1's word is no answer"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "worker-1's word is no answer"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1900,
+          "completionTokens": 24
+        }
+      ],
+      "ms": 558,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "worker-1's word is no answer",
+      "requestSha256": "503b7c0b826f825c923a122f4afa80ce60f6eb295fe9b3d9c3ecab82edfbd500",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "worker-1's word is no answer"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "worker-1's word is no answer"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1900,
+          "completionTokens": 24
+        }
+      ],
+      "ms": 557,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "worker-1's word is no answer",
+      "requestSha256": "503b7c0b826f825c923a122f4afa80ce60f6eb295fe9b3d9c3ecab82edfbd500",
+      "ok": false
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 396" role="img" aria-labelledby="p14-t p14-d">
+  <title id="p14-t">P14 · Watchdog and reassignment</title>
+  <desc id="p14-d">lead-1 consults stuck-1, which calls hold and never answers; after 15 s its delivery expires, it is stopped, and the gather says timed out; lead-1 consults backup-1 with the same text and replies with its answer.</desc>
+  <defs><marker id="p14-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="8" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="76" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M76 44 V390"/>
+  <rect class="box accent" x="160" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="228" y="32" text-anchor="middle">lead-1</text>
+  <path class="edge dim" d="M228 44 V390"/>
+  <rect class="box" x="312" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="380" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M380 44 V390"/>
+  <rect class="box accent" x="464" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="532" y="32" text-anchor="middle">stuck-1</text>
+  <path class="edge dim" d="M532 44 V390"/>
+  <rect class="box accent" x="616" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="684" y="32" text-anchor="middle">backup-1</text>
+  <path class="edge dim" d="M684 44 V390"/>
+  <path class="edge" d="M76 80 H226" marker-end="url(#p14-a)"/>
+  <text class="label small" x="152" y="74" text-anchor="middle">Please get someone to say Hello World.</text>
+  <path class="edge" d="M228 114 H530" marker-end="url(#p14-a)"/>
+  <text class="label small" x="380" y="108" text-anchor="middle">the same words</text>
+  <text class="label small" x="540" y="148">hold: never returns</text>
+  <text class="label small" x="540" y="182">15 s: delivery_timeout, stopped</text>
+  <path class="edge" d="M380 216 H230" marker-end="url(#p14-a)"/>
+  <text class="label small" x="304" y="210" text-anchor="middle">gather: 1 timed out</text>
+  <path class="edge" d="M228 250 H682" marker-end="url(#p14-a)"/>
+  <text class="label small" x="456" y="244" text-anchor="middle">the same words</text>
+  <path class="edge" d="M684 284 H230" marker-end="url(#p14-a)"/>
+  <text class="label small" x="456" y="278" text-anchor="middle">Hello World</text>
+  <path class="edge" d="M380 318 H230" marker-end="url(#p14-a)"/>
+  <text class="label small" x="304" y="312" text-anchor="middle">gather: 1 answered</text>
+  <path class="edge" d="M228 352 H78" marker-end="url(#p14-a)"/>
+  <text class="label small" x="152" y="346" text-anchor="middle">output: Hello World</text>
+</svg>

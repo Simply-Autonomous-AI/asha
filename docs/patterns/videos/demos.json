@@ -1,0 +1,206 @@
+{
+  "commit": "052981b2dda03abe6154107de000f93081c0f3e4",
+  "dirty": false,
+  "startedAt": "2026-10-17T00:32:48.099Z",
+  "runFolder": "<tmp>/asha-reel-AFzHfL",
+  "parts": [
+    {
+      "pattern": "P1",
+      "video": "p01-delegation.webm",
+      "sha256": "cad18e6ab1030b8d96d4d1630da8eaf4bdbf5c643a4c6386aaeff54ff18a7e9e",
+      "cardMs": 6250,
+      "endedAt": "2026-10-17T00:33:10.513Z"
+    },
+    {
+      "pattern": "P2",
+      "video": "p02-router.webm",
+      "sha256": "ba6417bd8ab3935999bb177ed2a573b1d9133bbf7a9db7aa8ba2ba5ecd453b1e",
+      "cardMs": 5050,
+      "endedAt": "2026-10-17T00:33:36.184Z"
+    },
+    {
+      "pattern": "P3",
+      "video": "p03-pipeline.webm",
+      "sha256": "6501ef80451aea24a6f84becdcfef62009076855a85e7f56c522c75e970c4cf2",
+      "cardMs": 5800,
+      "endedAt": "2026-10-17T00:33:57.431Z"
+    },
+    {
+      "pattern": "P4",
+      "video": "p04-fan-out.webm",
+      "sha256": "67e56534e561e54ca8d76bb1ace3c514207acf06b7f4971c7fead82dc308ded4",
+      "cardMs": 4900,
+      "endedAt": "2026-10-17T00:34:34.849Z"
+    },
+    {
+      "pattern": "P5",
+      "video": "p05-orchestrator-workers.webm",
+      "sha256": "49140854b8f31a60c8fcb0665b7260a4a8ce89b1c0da7db9df8971fd387a7410",
+      "cardMs": 4600,
+      "endedAt": "2026-10-17T00:34:56.961Z"
+    },
+    {
+      "pattern": "P6",
+      "video": "p06-plan-execute.webm",
+      "sha256": "aff68e19a3d6df5c363ab78cfd58922f572cd0dfc4b2b47da640794455ef7cf3",
+      "cardMs": 7450,
+      "endedAt": "2026-10-17T00:35:31.412Z"
+    },
+    {
+      "pattern": "P7",
+      "video": "p07-hierarchy.webm",
+      "sha256": "e1ba1262fe57aec82977c52d3a4ad1d9c382d40841ae21d49fc7f34bdbf5cd52",
+      "cardMs": 3550,
+      "endedAt": "2026-10-17T00:36:02.458Z"
+    },
+    {
+      "pattern": "P8",
+      "video": "p08-critic-loop.webm",
+      "sha256": "5ead5d47680384c0e89af59e43bcfea757996c44ffb723c491bfbfa27ae63ea6",
+      "cardMs": 5500,
+      "endedAt": "2026-10-17T00:36:28.517Z"
+    },
+    {
+      "pattern": "P9",
+      "video": "p09-debate.webm",
+      "sha256": "f050438d147df3add57f3aec61f232d3a0d10dfcd5d5bd9a6855988e80cde605",
+      "cardMs": 4450,
+      "endedAt": "2026-10-17T00:36:52.157Z"
+    },
+    {
+      "pattern": "P10",
+      "video": "p10-voting.webm",
+      "sha256": "60ea99b97af3627c3294a66ce726205bc32368ac4cfb9d5c008251a45f00c190",
+      "cardMs": 5050,
+      "endedAt": "2026-10-17T00:37:15.365Z"
+    },
+    {
+      "pattern": "P11",
+      "video": "p11-blackboard.webm",
+      "sha256": "0f7b4eba23b3e5f252669777aab35c5e2db8079e9ced1d1bbf259f9c1f998c83",
+      "cardMs": 7300,
+      "endedAt": "2026-10-17T00:37:58.127Z"
+    },
+    {
+      "pattern": "P12",
+      "video": "p12-self-selection.webm",
+      "sha256": "ba1dda61fd9d9ed55954b3948083d8646df89949a83e03751492b7afca63c777",
+      "cardMs": 5950,
+      "endedAt": "2026-10-17T00:38:18.158Z"
+    },
+    {
+      "pattern": "P13",
+      "video": "p13-contract-net.webm",
+      "sha256": "9d8fce409c770f0a45fdf3046687ccdc27f018a95939a95fa0963a9b1294b7aa",
+      "cardMs": 4600,
+      "endedAt": "2026-10-17T00:38:41.490Z"
+    },
+    {
+      "pattern": "P14",
+      "video": "p14-watchdog.webm",
+      "sha256": "63887261d76523798b625627f559b277df3417cfb853c349272da6596070c9de",
+      "cardMs": 5800,
+      "endedAt": "2026-10-17T00:39:09.821Z"
+    },
+    {
+      "pattern": "P15",
+      "video": "p15-approval.webm",
+      "sha256": "66b6ca243593cf11a86a633966267e6ec9829ff47559e5abc048ceead8927d12",
+      "cardMs": 4600,
+      "endedAt": "2026-10-17T00:39:24.859Z"
+    },
+    {
+      "pattern": "P16",
+      "video": "p16-guardrail.webm",
+      "sha256": "768eb204b2785242860a931c5f443532149becbf25d4bb4c698d5618ab8fcc3c",
+      "cardMs": 4750,
+      "endedAt": "2026-10-17T00:39:43.955Z"
+    },
+    {
+      "pattern": "P17",
+      "video": "p17-budget.webm",
+      "sha256": "440425403fdf424f7f6b5e06802ec0d4b56ce2575214f1e31713a09bb3139697",
+      "cardMs": 6850,
+      "endedAt": "2026-10-17T00:40:07.517Z"
+    },
+    {
+      "pattern": "P18",
+      "video": "p18-agent-tool.webm",
+      "sha256": "61d5eca48553ac7efc6144a5b7b2623fef5ef03f4ceca1497cc3aa9e6242e39b",
+      "cardMs": 5050,
+      "endedAt": "2026-10-17T00:40:25.145Z"
+    },
+    {
+      "pattern": "P19",
+      "video": "p19-spawning.webm",
+      "sha256": "6c088f894ade8a8af357c327b096bcbb5499ff9fdaf3d154a535aaa25ee3fd2a",
+      "cardMs": 4750,
+      "endedAt": "2026-10-17T00:40:43.474Z"
+    },
+    {
+      "pattern": "P20",
+      "video": "p20-resume.webm",
+      "sha256": "ccb35a86ae079c529285447c5fa240f233de4f9343f2aea658aa9d3fb5360c01",
+      "cardMs": 8000,
+      "endedAt": "2026-10-17T00:41:32.567Z"
+    },
+    {
+      "pattern": "P21",
+      "video": "p21-topics.webm",
+      "sha256": "9f10ca9df86c2997948748da2bf8a6de53dcbfd83411498df053b21d6d500907",
+      "cardMs": 3700,
+      "endedAt": "2026-10-17T00:41:51.767Z"
+    },
+    {
+      "pattern": "P22",
+      "video": "p22-escalation.webm",
+      "sha256": "76fe8bb6e52ab6c45d7e8204e4f752f3d64f7234cebd3b3641652e3ab2af38d6",
+      "cardMs": 7600,
+      "endedAt": "2026-10-17T00:42:09.019Z"
+    },
+    {
+      "pattern": "P23",
+      "video": "p23-consensus.webm",
+      "sha256": "fe91a6aed6791b905e5c60ab4ee90ce1de957a9813a3b69be11d89292124c1d9",
+      "cardMs": 5950,
+      "endedAt": "2026-10-17T00:42:38.299Z"
+    },
+    {
+      "pattern": "P24",
+      "video": "p24-group-chat.webm",
+      "sha256": "89f26461fb23715097552111a782cb99d90da213a2a79ab6e8683a77933a4f2c",
+      "cardMs": 7150,
+      "endedAt": "2026-10-17T00:43:07.278Z"
+    }
+  ],
+  "durationMs": 626800,
+  "bytes": 38186557,
+  "sha256": "0950fb28d8da5dbf9f5dcf547962b2d5bbe53a8e996d3ed95802e65ffdb8cc36",
+  "frames": 17145,
+  "framesPerSecond": 27.4,
+  "longestGapMs": 65,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "playbackRate": 2,
+  "opening": {
+    "lines": [
+      "ASHA - Autonomous Simple Harness for Agents",
+      "Demo: Multi-Agent Orchestration Patterns",
+      "SimplyAutonomous.AI"
+    ],
+    "ms": 5300
+  },
+  "ending": {
+    "lines": [
+      "ASHA - Autonomous Simple Harness for Agents",
+      "SimplyAutonomous.AI"
+    ],
+    "ms": 5000
+  },
+  "holdMs": 3000,
+  "leftOut": [
+    "P25"
+  ]
+}

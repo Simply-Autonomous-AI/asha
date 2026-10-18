@@ -1,0 +1,145 @@
+{
+  "scenario": "p17-a",
+  "breaks": "every error-level record is declared: exactly one, channel.conversation_ended",
+  "note": "The declared record is missing: channel.conversation_ended logged at warn.",
+  "team": "budget",
+  "input": {
+    "user": "alice",
+    "to": "ping-1",
+    "text": "Start."
+  },
+  "recipients": [
+    "ping-1"
+  ],
+  "messages": [
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "log": {
+        "level": "warn",
+        "event": "channel.conversation_ended",
+        "channel": "main",
+        "conversation": "c1",
+        "reason": "budget_exceeded",
+        "detail": "conversation c1 reached its budget of 8 agent posts"
+      }
+    },
+    {
+      "error": {
+        "reason": "budget_exceeded",
+        "detail": "conversation c1 reached its budget of 8 agent posts"
+      }
+    }
+  ],
+  "ms": 15000
+}

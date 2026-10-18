@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="sys-t sys-d">
+  <title id="sys-t">asha system overview</title>
+  <desc id="sys-d">The asha CLI, and the portal's page in a browser, talk to the daemon over loopback HTTP. The daemon runs agent containers in colima and brokers every model call to llama-server on the host, which serves models from a verified cache downloaded from Hugging Face.</desc>
+  <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box host" x="10" y="10" width="740" height="310" rx="10"/>
+  <text class="label small" x="24" y="30">your machine (everything binds to 127.0.0.1)</text>
+
+  <rect class="box" x="30" y="60" width="130" height="60" rx="6"/>
+  <text class="label title" x="95" y="86" text-anchor="middle">./asha</text>
+  <text class="label small" x="95" y="104" text-anchor="middle">CLI · src/cli</text>
+
+  <rect class="box" x="30" y="150" width="130" height="60" rx="6"/>
+  <text class="label title" x="95" y="176" text-anchor="middle">Portal</text>
+  <text class="label small" x="95" y="194" text-anchor="middle">browser page · src/portal</text>
+
+  <rect class="box accent" x="230" y="50" width="230" height="170" rx="6"/>
+  <text class="label title" x="345" y="74" text-anchor="middle">daemon · src/daemon</text>
+  <text class="label small" x="345" y="98" text-anchor="middle">channels · handles · delivery</text>
+  <text class="label small" x="345" y="118" text-anchor="middle">agent supervisor · tokens</text>
+  <text class="label small" x="345" y="138" text-anchor="middle">model gateway (every model call)</text>
+  <text class="label small" x="345" y="158" text-anchor="middle">model store · model server</text>
+  <text class="label small" x="345" y="178" text-anchor="middle">log facade → daemon.jsonl</text>
+  <text class="label small" x="345" y="204" text-anchor="middle">recipes · images · catalogue</text>
+
+  <rect class="box" x="530" y="40" width="200" height="110" rx="6"/>
+  <text class="label title" x="630" y="62" text-anchor="middle">colima VM</text>
+  <rect class="box" x="545" y="74" width="80" height="60" rx="4"/>
+  <text class="label mono" x="585" y="100" text-anchor="middle">hewo-1</text>
+  <text class="label small" x="585" y="118" text-anchor="middle">agent</text>
+  <rect class="box" x="637" y="74" width="80" height="60" rx="4"/>
+  <text class="label mono" x="677" y="100" text-anchor="middle">memo-1</text>
+  <text class="label small" x="677" y="118" text-anchor="middle">agent</text>
+
+  <rect class="box" x="530" y="180" width="200" height="60" rx="6"/>
+  <text class="label title" x="630" y="206" text-anchor="middle">llama-server (host)</text>
+  <text class="label small" x="630" y="224" text-anchor="middle">Metal · OpenAI-compatible</text>
+
+  <rect class="box" x="230" y="255" width="230" height="50" rx="6"/>
+  <text class="label title" x="345" y="277" text-anchor="middle">model cache</text>
+  <text class="label small" x="345" y="294" text-anchor="middle">models/sha256-&lt;digest&gt;/ (verified)</text>
+
+  <path class="edge" d="M160 90 H228" marker-end="url(#a1)"/>
+  <text class="label small" x="194" y="84" text-anchor="middle">/v1</text>
+  <path class="edge" d="M160 180 H228" marker-end="url(#a1)"/>
+  <text class="label small" x="194" y="174" text-anchor="middle">/v1</text>
+  <path class="edge" d="M460 100 H528" marker-start="url(#a1)" marker-end="url(#a1)"/>
+  <text class="label small" x="494" y="94" text-anchor="middle">/agent/v1</text>
+  <path class="edge" d="M460 190 H528" marker-end="url(#a1)"/>
+  <text class="label small" x="494" y="184" text-anchor="middle">chat</text>
+  <path class="edge" d="M345 220 V253" marker-end="url(#a1)"/>
+  <path class="edge" d="M630 240 V280 H462" marker-end="url(#a1)"/>
+  <text class="label small" x="630" y="298" text-anchor="middle">loads weights</text>
+</svg>

@@ -1,0 +1,122 @@
+{
+  "scenario": "p05-a",
+  "breaks": "one call, lead-1 → exactly worker-a-1, worker-b-1 and worker-c-1, one question each",
+  "note": "lead-1 consults only two workers.",
+  "team": "orchestrator",
+  "input": {
+    "user": "alice",
+    "to": "lead-1",
+    "text": "Please do three things: translate 'thank you' into French, add 17 and 25, and say Hello World."
+  },
+  "recipients": [
+    "lead-1"
+  ],
+  "messages": [
+    {
+      "from": "lead-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "lead-1",
+      "to": "worker-a-1",
+      "kind": "internal",
+      "text": "Translate 'thank you' into French.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "lead-1",
+        "worker-a-1"
+      ]
+    },
+    {
+      "from": "lead-1",
+      "to": "worker-b-1",
+      "kind": "internal",
+      "text": "Add 17 and 25.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "lead-1",
+        "worker-b-1"
+      ]
+    },
+    {
+      "from": "worker-b-1",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "42",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "worker-a-1",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "Merci",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "Answers to lead-1's call: 2 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "lead-1",
+      "kind": "output",
+      "text": "Merci\n42\nHello World"
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "lead-1",
+      "addressees": [
+        "worker-a-1",
+        "worker-b-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "lead-1",
+      "counts": {
+        "answered": 2,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    }
+  ],
+  "ms": 13000
+}

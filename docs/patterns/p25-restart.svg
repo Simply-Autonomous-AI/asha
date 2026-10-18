@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" role="img" aria-labelledby="p25-t p25-d">
+  <title id="p25-t">P25 · Supervisor restart</title>
+  <desc id="p25-d">p25-a: the user asks worker-1, whose container is paused, then killed; the harness restarts it under the same handle and sends the message again, framed as sent before the restart; worker-1 replies Hello World. p25-b: each restarted container is killed as it starts; after two restarts in a minute the third exit is the limit, and the conversation ends restart_limit.</desc>
+  <defs><marker id="p25-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="8" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="76" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M76 44 V424"/>
+  <rect class="box" x="240" y="10" width="200" height="34" rx="5"/>
+  <text class="label mono" x="340" y="32" text-anchor="middle">asha (supervisor)</text>
+  <path class="edge dim" d="M340 44 V424"/>
+  <rect class="box accent" x="560" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="628" y="32" text-anchor="middle">worker-1</text>
+  <path class="edge dim" d="M628 44 V424"/>
+  <text class="label small" x="16" y="66">p25-a</text>
+  <path class="edge" d="M76 84 H626" marker-end="url(#p25-a)"/>
+  <text class="label small" x="352" y="78" text-anchor="middle">Please say: Hello World. (held: the container is paused)</text>
+  <text class="label small" x="640" y="112">killed: exit 137</text>
+  <text class="label small" x="350" y="136">agent.exited_unexpectedly; member suspended</text>
+  <text class="label small" x="350" y="158">agent.restarting, attempt 1</text>
+  <path class="edge" d="M340 176 H626" marker-end="url(#p25-a)"/>
+  <text class="label small" x="484" y="170" text-anchor="middle">new container rejoins as worker-1</text>
+  <path class="edge" d="M340 206 H626" marker-end="url(#p25-a)"/>
+  <text class="label small" x="484" y="200" text-anchor="middle">the same message again, restarted</text>
+  <path class="edge" d="M628 236 H78" marker-end="url(#p25-a)"/>
+  <text class="label small" x="352" y="230" text-anchor="middle">output: Hello World.</text>
+  <text class="label small" x="16" y="270">p25-b</text>
+  <path class="edge" d="M76 288 H626" marker-end="url(#p25-a)"/>
+  <text class="label small" x="352" y="282" text-anchor="middle">Please say: Hello World. (paused, then killed)</text>
+  <text class="label small" x="350" y="314">agent.restarting 1, 2: each container killed as it starts</text>
+  <text class="label small" x="350" y="338">third exit: agent.restart_limit</text>
+  <path class="edge" d="M340 362 H78" marker-end="url(#p25-a)"/>
+  <text class="label small" x="208" y="356" text-anchor="middle">error: restart_limit</text>
+  <text class="label small" x="350" y="392">worker-1 leaves the channel</text>
+</svg>

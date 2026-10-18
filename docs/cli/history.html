@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- Generated from docs/cli/history.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLI History</title>
+<meta name="description" content="Dated corrections to the asha CLI pages, newest first.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="cli">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha CLI Reference</a> / CLI History</nav>
+<h1>CLI history</h1>
+<p class="lede">Claims the <a href="guide.html">CLI guide</a> and <a href="index.html">reference</a> once made that turned out wrong, kept with what is true instead.</p>
+<div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li><code>--status</code>, <code>--stop</code>, <code>--help</code>, the <code>--server</code> banner and <code>--watch</code> lines all print to stdout, not only replies and handles.</li>
+<li>The guide's <code>--status</code> transcripts predate the build fingerprint; today's output is in the <a href="index.html#status">reference</a>.</li>
+</ul>
+</div>
+</header>
+<section id="stdout">
+<h2>2026-09-27: more than replies go to stdout</h2>
+<p><strong>Correction.</strong> The guide said that only a reply and a launched handle ever go to standard output. That is true of a message and of <code>--launch</code>, but not of the other commands: <code>--status</code>, <code>--stop</code>, <code>--help</code>, the <code>--server</code> banner, and each message line of <code>--watch</code> also print to standard output (see <code>status</code>, <code>stop</code>, <code>watch</code> and <code>server</code> in <a href="../../src/cli/commands.ts">src/cli/commands.ts</a>). The guide's transcripts colour those lines as progress; the text itself is unchanged. The <a href="index.html#streams">reference</a> lists the stream of every line.</p>
+</section>
+<section id="status-build">
+<h2>2026-09-27: <code>--status</code> now reports the build</h2>
+<p><strong>Correction.</strong> The guide's <code>--status</code> transcripts were captured before the daemon reported its build. Today the first line also carries <code>build &lt;fingerprint&gt;, started &lt;ISO time&gt;</code>, and when the running daemon was built from different code than your <code>./asha</code>, a <code>⚠</code> warning comes first on stderr. A real run from 2026-09-27 is in the <a href="index.html#status">reference</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/cli/history.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

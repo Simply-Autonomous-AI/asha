@@ -1,0 +1,36 @@
+{
+  "scenario": "p12-b",
+  "breaks": "the request completes within the pattern's bound",
+  "note": "The request took one millisecond more than its page's bound (patterns-phase-1 R4, A4).",
+  "team": "self-select",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Please say: Hello World."
+  },
+  "recipients": [
+    "greeter-1",
+    "translator-1"
+  ],
+  "messages": [
+    {
+      "from": "translator-1",
+      "kind": "status",
+      "text": "pass: not a translation",
+      "working": [
+        "greeter-1"
+      ]
+    },
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "greeter-1",
+      "kind": "output",
+      "text": "Hello World."
+    }
+  ],
+  "ms": "bound+1"
+}

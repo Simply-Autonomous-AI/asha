@@ -1,0 +1,220 @@
+{
+  "scenario": "p09-a",
+  "breaks": "exactly one output, from judge-1, after the second gather, starting \"Verdict: FOR\" or \"Verdict: AGAINST\" and naming optimist-1 and sceptic-1",
+  "note": "The umbrella's third mutation: the verdict names one debater.",
+  "team": "debate",
+  "input": {
+    "user": "alice",
+    "to": "judge-1",
+    "text": "Judge the motion: The town should build a second bridge."
+  },
+  "recipients": [
+    "judge-1"
+  ],
+  "messages": [
+    {
+      "from": "judge-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "judge-1",
+      "to": "optimist-1",
+      "kind": "internal",
+      "text": "Round 1. Motion: The town should build a second bridge.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "judge-1",
+        "optimist-1"
+      ]
+    },
+    {
+      "from": "judge-1",
+      "to": "sceptic-1",
+      "kind": "internal",
+      "text": "Round 1. Motion: The town should build a second bridge.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "judge-1",
+        "sceptic-1"
+      ]
+    },
+    {
+      "from": "optimist-1",
+      "to": "judge-1",
+      "kind": "internal",
+      "text": "A second bridge cuts traffic and joins both halves of the town.\nSTANCE: FOR",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "judge-1"
+      ]
+    },
+    {
+      "from": "sceptic-1",
+      "to": "judge-1",
+      "kind": "internal",
+      "text": "A second bridge costs millions and harms the river.\nSTANCE: AGAINST",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "judge-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "judge-1",
+      "kind": "internal",
+      "text": "Answers to judge-1's call: 2 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "judge-1"
+      ]
+    },
+    {
+      "from": "judge-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "judge-1",
+      "to": "optimist-1",
+      "kind": "internal",
+      "text": "Round 2. Motion: The town should build a second bridge. optimist-1 said: A second bridge cuts traffic and joins both halves of the town.\nSTANCE: FOR. sceptic-1 said: A second bridge costs millions and harms the river.\nSTANCE: AGAINST.",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "judge-1",
+        "optimist-1"
+      ]
+    },
+    {
+      "from": "judge-1",
+      "to": "sceptic-1",
+      "kind": "internal",
+      "text": "Round 2. Motion: The town should build a second bridge. optimist-1 said: A second bridge cuts traffic and joins both halves of the town.\nSTANCE: FOR. sceptic-1 said: A second bridge costs millions and harms the river.\nSTANCE: AGAINST.",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "judge-1",
+        "sceptic-1"
+      ]
+    },
+    {
+      "from": "sceptic-1",
+      "to": "judge-1",
+      "kind": "internal",
+      "text": "The river cannot be rebuilt once it is harmed.\nSTANCE: AGAINST",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "judge-1"
+      ]
+    },
+    {
+      "from": "optimist-1",
+      "to": "judge-1",
+      "kind": "internal",
+      "text": "Less traffic every day is worth a one-off cost.\nSTANCE: FOR",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "judge-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "judge-1",
+      "kind": "internal",
+      "text": "Answers to judge-1's call: 2 answered.",
+      "call": {
+        "id": "k2",
+        "role": "gather"
+      },
+      "working": [
+        "judge-1"
+      ]
+    },
+    {
+      "from": "judge-1",
+      "kind": "output",
+      "text": "Verdict: FOR. optimist-1's case wins."
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "judge-1",
+      "addressees": [
+        "optimist-1",
+        "sceptic-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "judge-1",
+      "counts": {
+        "answered": 2,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k2",
+      "caller": "judge-1",
+      "addressees": [
+        "optimist-1",
+        "sceptic-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k2",
+      "caller": "judge-1",
+      "counts": {
+        "answered": 2,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    }
+  ],
+  "ms": 20000
+}

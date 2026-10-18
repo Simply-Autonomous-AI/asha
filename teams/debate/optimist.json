@@ -1,0 +1,24 @@
+{
+  "id": "optimist",
+  "image": "hello-world",
+  "description": "Argues for the motion, from its benefits.",
+  "prompt": "you argue for the motion, from its benefits.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "optimist.md",
+      "fullText": true
+    }
+  ]
+}

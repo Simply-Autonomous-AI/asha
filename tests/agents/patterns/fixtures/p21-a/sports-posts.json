@@ -1,0 +1,64 @@
+{
+  "scenario": "p21-a",
+  "breaks": "sports-desk-1 receives nothing and posts nothing in the conversation",
+  "note": "sports-desk-1 posts in the conversation: it got the message after all.",
+  "team": "topics",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Rain expected tomorrow.",
+    "topic": "weather"
+  },
+  "recipients": [
+    "weather-desk-1",
+    "front-page-1"
+  ],
+  "messages": [
+    {
+      "from": "weather-desk-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "weather-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "weather-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "sports-desk-1",
+      "kind": "status",
+      "text": "pass: not my topic",
+      "working": [
+        "weather-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "weather-desk-1",
+      "kind": "output",
+      "text": "weather-desk-1 noted: Rain expected tomorrow.",
+      "working": [
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "output",
+      "text": "front-page-1 noted: Rain expected tomorrow.",
+      "working": []
+    }
+  ],
+  "ms": 6000,
+  "deliveries": [
+    "weather-desk-1",
+    "front-page-1"
+  ]
+}

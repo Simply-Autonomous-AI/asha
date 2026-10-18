@@ -1,0 +1,225 @@
+{
+  "commit": "c79743931a18a108d9eb0944e59055b5cfa4c14c",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p11-b/planner-first",
+  "control": false,
+  "doc": null,
+  "dropStep": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "consult",
+          "arguments": {
+            "requests": [
+              {
+                "to": "note-day-1",
+                "text": "Add your part to the notice on the blackboard."
+              }
+            ]
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "consult",
+              "arguments": {
+                "requests": [
+                  {
+                    "to": "note-day-1",
+                    "text": "Add your part to the notice on the blackboard."
+                  }
+                ]
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2101,
+          "completionTokens": 40
+        }
+      ],
+      "ms": 6170,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        }
+      ],
+      "reply": null,
+      "requestSha256": "ab33325a2f650b0c310b0626f8b503187c28b18218e564b457e282b4889d8888",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "consult",
+          "arguments": {
+            "requests": [
+              {
+                "to": "note-day-1",
+                "text": "Add your part to the notice on the blackboard."
+              }
+            ]
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "consult",
+              "arguments": {
+                "requests": [
+                  {
+                    "to": "note-day-1",
+                    "text": "Add your part to the notice on the blackboard."
+                  }
+                ]
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2101,
+          "completionTokens": 40
+        }
+      ],
+      "ms": 937,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        }
+      ],
+      "reply": null,
+      "requestSha256": "ab33325a2f650b0c310b0626f8b503187c28b18218e564b457e282b4889d8888",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "consult",
+          "arguments": {
+            "requests": [
+              {
+                "to": "note-day-1",
+                "text": "Add your part to the notice on the blackboard."
+              }
+            ]
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "consult",
+              "arguments": {
+                "requests": [
+                  {
+                    "to": "note-day-1",
+                    "text": "Add your part to the notice on the blackboard."
+                  }
+                ]
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2101,
+          "completionTokens": 40
+        }
+      ],
+      "ms": 948,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        }
+      ],
+      "reply": null,
+      "requestSha256": "ab33325a2f650b0c310b0626f8b503187c28b18218e564b457e282b4889d8888",
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+<!doctype html>
+<!-- Generated from docs/index.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asha Documentation</title>
+<meta name="description" content="The index of every document about asha, the SimplyAutonomous.AI agent harness: project, CLI, portal, architecture, pattern demos, quality, testing, deployments and plans.">
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body data-section="home">
+<main>
+<header class="page">
+<nav class="crumbs">asha Documentation</nav>
+<h1>asha documentation</h1>
+<p class="lede">asha, the Autonomous Simple Harness for Agents, runs AI agents in local containers on open-weight models served on your own machine. This is the index of everything written about it.</p>
+<div class="facts"><span>index verified 2026-10-10</span><span>asha 0.1.1</span><span>open locally: <code>open docs/index.html</code></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Agents talk on named channels and reach a model only through the harness (diagram below).</li>
+<li>Every page is linked here or from its section index; <code>tests/unit/docs.test.ts</code> fails otherwise.</li>
+<li>Pages are Markdown sources rendered by <code>npm run docs</code> under the <a href="project/documentation.html">documentation contract</a>.</li>
+<li>To start, build once and run <code>./asha --portal</code>: it starts the server if none is running, and opens the portal (<a href="#start">Start here</a>).</li>
+</ul>
+</div>
+</header>
+<section id="start">
+<h2>Start here</h2>
+<p>Build once, then open the <a href="portal/index.html">portal</a>: <code>--portal</code> starts the server — the asha daemon, which runs the agents and their model servers — if none is running, and opens the portal in your browser. It needs macOS on Apple Silicon with Homebrew installed (<a href="deployments/index.html#prerequisites">prerequisites</a>).</p>
+<pre><code class="language-sh">npm install &amp;&amp; npm run build   # build time, once
+./asha --portal                # → portal: http://127.0.0.1:&lt;port&gt;/ , opened in your default browser
+</code></pre>
+<p>In the portal, <strong>Watch</strong> shows a channel's agents as a robot crew beside its chat, and <strong>Run demo</strong> runs a <a href="patterns/index.html">pattern demo</a> there; the <a href="portal/index.html#demo">portal page</a> says which cannot run from it. <code>./asha --portal user=alice</code> opens it as the user <code>alice</code>; by default it is your login name, as a user ID. The server keeps running until <code>./asha --stop</code>, or <strong>Stop the daemon…</strong> in the portal's <strong>Status</strong> view.</p>
+<h3 id="server">Run the server yourself</h3>
+<p>To keep the server in a terminal and read its log as it runs:</p>
+<pre><code class="language-sh">./asha --server    # the server in the foreground; its log on this terminal; Ctrl-C stops it
+</code></pre>
+<p>Then, in another terminal:</p>
+<pre><code class="language-sh">./asha --status    # → running: pid …, port …, version …
+./asha --portal    # opens the portal on that server
+./asha --stop      # stops the server and every agent on every channel
+</code></pre>
+<p>The server listens on <code>127.0.0.1</code> only. Every command is in the <a href="cli/index.html">command line interface</a>; how the server runs is in <a href="deployments/index.html">Deployments</a>.</p>
+<h3 id="cli">From the command line</h3>
+<pre><code class="language-sh">./asha recipe=hello-world message=&quot;Please say: Hello World.&quot;   # → Hello World.
+./asha --watch                                                  # everything on the channel
+./asha --stop
+</code></pre>
+</section>
+<section id="system">
+<h2>The system on one page</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="sys-t sys-d">
+  <title id="sys-t">asha system overview</title>
+  <desc id="sys-d">The asha CLI, and the portal's page in a browser, talk to the daemon over loopback HTTP. The daemon runs agent containers in colima and brokers every model call to llama-server on the host, which serves models from a verified cache downloaded from Hugging Face.</desc>
+  <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box host" x="10" y="10" width="740" height="310" rx="10"/>
+  <text class="label small" x="24" y="30">your machine (everything binds to 127.0.0.1)</text>
+
+  <rect class="box" x="30" y="60" width="130" height="60" rx="6"/>
+  <text class="label title" x="95" y="86" text-anchor="middle">./asha</text>
+  <text class="label small" x="95" y="104" text-anchor="middle">CLI · src/cli</text>
+
+  <rect class="box" x="30" y="150" width="130" height="60" rx="6"/>
+  <text class="label title" x="95" y="176" text-anchor="middle">Portal</text>
+  <text class="label small" x="95" y="194" text-anchor="middle">browser page · src/portal</text>
+
+  <rect class="box accent" x="230" y="50" width="230" height="170" rx="6"/>
+  <text class="label title" x="345" y="74" text-anchor="middle">daemon · src/daemon</text>
+  <text class="label small" x="345" y="98" text-anchor="middle">channels · handles · delivery</text>
+  <text class="label small" x="345" y="118" text-anchor="middle">agent supervisor · tokens</text>
+  <text class="label small" x="345" y="138" text-anchor="middle">model gateway (every model call)</text>
+  <text class="label small" x="345" y="158" text-anchor="middle">model store · model server</text>
+  <text class="label small" x="345" y="178" text-anchor="middle">log facade → daemon.jsonl</text>
+  <text class="label small" x="345" y="204" text-anchor="middle">recipes · images · catalogue</text>
+
+  <rect class="box" x="530" y="40" width="200" height="110" rx="6"/>
+  <text class="label title" x="630" y="62" text-anchor="middle">colima VM</text>
+  <rect class="box" x="545" y="74" width="80" height="60" rx="4"/>
+  <text class="label mono" x="585" y="100" text-anchor="middle">hewo-1</text>
+  <text class="label small" x="585" y="118" text-anchor="middle">agent</text>
+  <rect class="box" x="637" y="74" width="80" height="60" rx="4"/>
+  <text class="label mono" x="677" y="100" text-anchor="middle">memo-1</text>
+  <text class="label small" x="677" y="118" text-anchor="middle">agent</text>
+
+  <rect class="box" x="530" y="180" width="200" height="60" rx="6"/>
+  <text class="label title" x="630" y="206" text-anchor="middle">llama-server (host)</text>
+  <text class="label small" x="630" y="224" text-anchor="middle">Metal · OpenAI-compatible</text>
+
+  <rect class="box" x="230" y="255" width="230" height="50" rx="6"/>
+  <text class="label title" x="345" y="277" text-anchor="middle">model cache</text>
+  <text class="label small" x="345" y="294" text-anchor="middle">models/sha256-&lt;digest&gt;/ (verified)</text>
+
+  <path class="edge" d="M160 90 H228" marker-end="url(#a1)"/>
+  <text class="label small" x="194" y="84" text-anchor="middle">/v1</text>
+  <path class="edge" d="M160 180 H228" marker-end="url(#a1)"/>
+  <text class="label small" x="194" y="174" text-anchor="middle">/v1</text>
+  <path class="edge" d="M460 100 H528" marker-start="url(#a1)" marker-end="url(#a1)"/>
+  <text class="label small" x="494" y="94" text-anchor="middle">/agent/v1</text>
+  <path class="edge" d="M460 190 H528" marker-end="url(#a1)"/>
+  <text class="label small" x="494" y="184" text-anchor="middle">chat</text>
+  <path class="edge" d="M345 220 V253" marker-end="url(#a1)"/>
+  <path class="edge" d="M630 240 V280 H462" marker-end="url(#a1)"/>
+  <text class="label small" x="630" y="298" text-anchor="middle">loads weights</text>
+</svg>
+<figcaption>Agents never reach a model directly: every model call goes through the daemon's gateway, authenticated by the agent's token. Details: <a href="architecture/index.html">Architecture</a>.</figcaption>
+</figure>
+</section>
+<section id="contents">
+<h2>Contents</h2>
+<ol>
+<li><a href="project/index.html">Project details</a> — what asha is, its rules, licence and terms<ol>
+<li><a href="project/workflows.html">Workflows</a> — planning, coding, testing, docs, owner decisions, review, checklists</li>
+<li><a href="project/documentation.html">Documentation contract</a> — how these pages are written and guarded</li>
+</ol>
+</li>
+<li><a href="cli/index.html">Command line interface</a> — every <code>asha</code> command, with examples<ol>
+<li><a href="cli/guide.html">CLI guide with real output</a> — a fresh install and a warm run, transcribed</li>
+</ol>
+</li>
+<li><a href="portal/index.html">Portal user interface</a> — <code>asha --portal</code>: every command in the browser, the channel as a robot crew, each agent's telemetry</li>
+<li><a href="architecture/index.html">Architecture</a> — components, interactions, where the code lives<ol>
+<li><a href="architecture/channel.html">Channels and agents</a> — handles, delivery, addressing, the SDK, container lifecycle</li>
+<li><a href="architecture/models.html">Models</a> — pins, download and verification, serving, the gateway</li>
+<li><a href="architecture/recipes.html">Recipes and configuration</a> — recipe, image and catalogue specifications</li>
+<li><a href="architecture/memory.html">Agent memory</a> — the four memory tiers of the <code>memory</code> recipe</li>
+<li><a href="architecture/extending.html">Extending asha</a> — adding a recipe, team, image, model or adapter</li>
+</ol>
+</li>
+<li><a href="patterns/index.html">Pattern demos</a> — the 26 multi-agent patterns, 25 built as a team to run, a test and a page; each one's status</li>
+<li><a href="quality/index.html">Quality controls</a> — static analysis, the gate, guards, review</li>
+<li><a href="testing/index.html">Testing</a> — the suites, what each covers, latest results<ol>
+<li><a href="testing/agent-tests.html">Agent test report</a> — each agent-suite test's transcript (generated)</li>
+</ol>
+</li>
+<li><a href="deployments/index.html">Deployments</a> — the ephemeral on-premises server, and the persistent-server plans</li>
+<li>Plans (<code>docs/plans/index.md</code>) — all future work as specifications with a status<ol>
+<li>Plan template (<code>docs/plans/template.md</code>) — the sections every plan must have</li>
+<li>Debt register (<code>docs/plans/debt.md</code>) — known shortcuts and defects, and the plans that pay them off</li>
+</ol>
+</li>
+</ol>
+<div class="callout note">
+<p class="callout-title">Changing this repo?</p>
+<p>Human or agent, read the rules first: <a href="../AGENTS.md">AGENTS.md</a> and <a href="../PRINCIPLES.md">PRINCIPLES.md</a>.</p>
+</div>
+</section>
+<footer class="page"><span>Source: <code>docs/index.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

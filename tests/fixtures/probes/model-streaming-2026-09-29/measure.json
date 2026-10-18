@@ -1,0 +1,110 @@
+{
+  "commit": "6cafba36f1f3c2ffd795a9d06055d145abd33be6",
+  "dirty": false,
+  "measuredAt": "2026-09-29T14:57:33.975Z",
+  "machine": {
+    "chip": "Apple M4 Pro",
+    "memoryBytes": 51539607552
+  },
+  "llamaServer": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "model": "qwen3-8b-q4_k_m",
+  "slots": 4,
+  "calls": [
+    {
+      "call": 0,
+      "promptTokens": 1174,
+      "chunks": 46,
+      "firstChunkMs": 13,
+      "longestGapMs": 4652,
+      "totalMs": 14047
+    },
+    {
+      "call": 1,
+      "promptTokens": 1174,
+      "chunks": 47,
+      "firstChunkMs": 7323,
+      "longestGapMs": 3460,
+      "totalMs": 19586
+    },
+    {
+      "call": 2,
+      "promptTokens": 1174,
+      "chunks": 47,
+      "firstChunkMs": 2671,
+      "longestGapMs": 4650,
+      "totalMs": 16866
+    },
+    {
+      "call": 3,
+      "promptTokens": 1174,
+      "chunks": 49,
+      "firstChunkMs": 2671,
+      "longestGapMs": 4651,
+      "totalMs": 22314
+    },
+    {
+      "call": 4,
+      "promptTokens": 1174,
+      "chunks": 47,
+      "firstChunkMs": 14057,
+      "longestGapMs": 5411,
+      "totalMs": 48768
+    },
+    {
+      "call": 5,
+      "promptTokens": 1174,
+      "chunks": 31,
+      "firstChunkMs": 16882,
+      "longestGapMs": 2729,
+      "totalMs": 27047
+    },
+    {
+      "call": 6,
+      "promptTokens": 1174,
+      "chunks": 31,
+      "firstChunkMs": 19597,
+      "longestGapMs": 2726,
+      "totalMs": 29760
+    },
+    {
+      "call": 7,
+      "promptTokens": 1174,
+      "chunks": 33,
+      "firstChunkMs": 22327,
+      "longestGapMs": 2730,
+      "totalMs": 32657
+    },
+    {
+      "call": 8,
+      "promptTokens": 1174,
+      "chunks": 55,
+      "firstChunkMs": 27060,
+      "longestGapMs": 5410,
+      "totalMs": 50671
+    },
+    {
+      "call": 9,
+      "promptTokens": 1174,
+      "chunks": 46,
+      "firstChunkMs": 29772,
+      "longestGapMs": 5411,
+      "totalMs": 50364
+    },
+    {
+      "call": 10,
+      "promptTokens": 5925,
+      "chunks": 51,
+      "firstChunkMs": 32670,
+      "longestGapMs": 5410,
+      "totalMs": 50671
+    }
+  ],
+  "max": {
+    "firstChunkMs": 32670,
+    "longestGapMs": 5411
+  },
+  "bounds": {
+    "queueMs": 66000,
+    "idleMs": 11000
+  }
+}

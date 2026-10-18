@@ -1,0 +1,47 @@
+{
+  "runtimeCalls": [
+    "reclaim",
+    "pruneImages",
+    "ensureReady <daemon-port>",
+    "createVolume asha-<homeId>-<run>-main",
+    "volumeLabel asha-<homeId>-<run>-main asha.space",
+    "createHolder asha-<homeId>-<run>-main-files asha-image-greeter-image:8b74a62341a0f0cbc4f6d4f77606c81080452876047f0db2ed8722a58d0ba63b asha-<homeId>-<run>-main",
+    "copyIn asha-<homeId>-<run>-main-files",
+    "copyIn asha-<homeId>-<run>-main-files input ended, end blocks present",
+    "copyIn asha-<homeId>-<run>-main-files exit 0",
+    "copyOut asha-<homeId>-<run>-main-files /channel",
+    "start asha-main-greeter-<suffix>",
+    "stop asha-main-greeter-<suffix> drain 70",
+    "reclaim"
+  ],
+  "images": [
+    "asha-image-greeter-image"
+  ],
+  "starts": [
+    {
+      "image": "asha-image-greeter-image:8b74a62341a0f0cbc4f6d4f77606c81080452876047f0db2ed8722a58d0ba63b",
+      "env": {
+        "ASHA_AGENT_TOKEN": "<token>",
+        "ASHA_URL": "http://127.0.0.1:<daemon-port>"
+      }
+    }
+  ],
+  "served": [
+    "tiny-model"
+  ],
+  "modelRequests": [
+    {
+      "url": "/v1/chat/completions",
+      "body": "{\"temperature\":0,\"chat_template_kwargs\":{\"enable_thinking\":false},\"model\":\"tiny-model\",\"messages\":[{\"role\":\"system\",\"content\":\"You are hewo-1, an agent in a chat shared by the user and no other agents.\\nYour role: you greet whoever asks.\\n\\nAnswer every message with a tool call: reply to answer the user, or pass to take no action.\\n- A message written to you is yours to act on.\\n- Every answer or result for the user goes through reply, even when the request came to everyone, or reached you as a task from another agent. The user sees nothing else.\\n- Only take on work your role covers. If your role does not cover it, call pass.\\n- A question about you or your role is always yours to answer, with your role exactly as given above.\"},{\"role\":\"user\",\"content\":\"The user wrote to you:\\nPlease say: Hello World.\"},{\"role\":\"assistant\",\"content\":\"<tool_call>\\n\"}],\"max_tokens\":1024,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"reply\",\"description\":\"Answer the user. The user sees only replies, so every answer or result goes here — whoever asked, and whoever the message was written to.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"text\":{\"type\":\"string\",\"description\":\"The answer, as the user will read it\"}},\"required\":[\"text\"]}}},{\"type\":\"function\",\"function\":{\"name\":\"list_agents\",\"description\":\"List the other agents online on this channel, with what each one does, to decide which agent to ask. Returns JSON: [{handle, recipe, description}].\",\"parameters\":{\"type\":\"object\",\"properties\":{}}}},{\"type\":\"function\",\"function\":{\"name\":\"pass\",\"description\":\"Take no action on this message: it is not something your role covers, or nothing is needed from you.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"reason\":{\"type\":\"string\",\"description\":\"Why, in a few words\"}},\"required\":[\"reason\"]}}}],\"tool_choice\":\"required\",\"stream\":true,\"stream_options\":{\"include_usage\":true},\"return_progress\":true}"
+    },
+    {
+      "url": "/tokenize",
+      "body": "{\"content\":\".\"}"
+    },
+    {
+      "url": "/completion",
+      "body": "{\"prompt\":[13],\"n_predict\":1}"
+    }
+  ],
+  "reply": "hewo-1\nHello World!\n"
+}

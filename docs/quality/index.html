@@ -1,0 +1,376 @@
+<!doctype html>
+<!-- Generated from docs/quality/index.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asha Quality Controls</title>
+<meta name="description" content="The controls that keep asha correct: the typecheck, the npm run check gate, guard proofs, determinism, closed-schema definitions, pinned models, error surfacing, adversarial review, and the checklists.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="quality">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / asha Quality Controls</nav>
+<h1>Quality controls</h1>
+<p class="lede">What stops a defect from reaching a commit. Human review is optional (PRINCIPLES §21), so these controls have to catch defects on their own.</p>
+<div class="facts"><span>verified 2026-09-27; the linter and formatter 2026-10-12, in the gate 2026-10-14</span><span>gate: <code>npm run check</code></span><span>linter: ESLint, typescript-eslint and SonarJS, and Prettier, the gate's first two links</span><span>sources: tsconfig.json, eslint.config.mjs, .prettierrc.json, package.json, AGENTS.md, src/daemon/log.ts</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li><code>npm run check</code> is the gate: lint, format check, typecheck, unit, integration, demo selection, agents, eval, routing, stopping at the first failure. Nothing is done until it is green.</li>
+<li>The typecheck is strict, TypeScript is pinned at 6.0.3, and Node APIs stop at 22.13; a test proves each strict setting.</li>
+<li>ESLint (type-checked typescript-eslint and SonarJS, every rule on but four design exemptions) and Prettier run as <code>npm run lint</code> and <code>npm run format:check</code>, the gate's first two links since 2026-10-14 (<code>docs/plans/lint-format.md</code>).</li>
+<li>A guard counts only once it has been seen to fail.</li>
+<li>Definitions are closed schemas, models are pinned by sha, every failure lands in one JSON log, and every remote call is bounded.</li>
+<li>Every change gets one adversarial review and must pass the <a href="../project/workflows.html#checklists">checklists</a>.</li>
+</ul>
+</div>
+<div class="stats"><div class="stat"><b>9</b><span>links in the gate</span></div><div class="stat"><b>6.0.3</b><span>TypeScript, pinned exactly</span></div><div class="stat"><b>20 min</b><span>bound per agent or eval test</span></div></div></header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#static">Static analysis</a></li>
+<li><a href="#gate">The gate</a></li>
+<li><a href="#guard-proofs">Guard proofs</a></li>
+<li><a href="#offline">The gate stays offline</a></li>
+<li><a href="#determinism">Determinism</a></li>
+<li><a href="#definitions">Closed-schema definitions</a></li>
+<li><a href="#pins">Pinned, verified models</a></li>
+<li><a href="#errors">Error surfacing</a></li>
+<li><a href="#review">Adversarial review and checklists</a></li>
+</ol>
+</nav>
+<section id="static">
+<h2>Static analysis</h2>
+<h3 id="typecheck">TypeScript typecheck <span class="badge built">built</span></h3>
+<p><code>npm run typecheck</code> runs <code>tsc --noEmit -p tsconfig.json</code> with TypeScript <code>6.0.3</code> over <code>src/</code> (less <code>src/portal/</code>), <code>images/*/src/</code>, <code>evals/</code>, <code>tools/</code> (the <code>.mts</code> files, such as <code>tools/docs/render.mts</code>), <code>tests/</code> and the Vitest configs; then <code>tsc --noEmit -p tsconfig.portal.json</code> over the <a href="../portal/index.html">portal</a>'s page, <code>src/portal/</code>, and the shared modules it loads, with ES2024 and the DOM library and no Node types (<code>&quot;types&quot;: []</code>), so a Node global such as <code>Buffer</code> in any module the page loads fails the check (<code>docs/plans/portal.md</code> R15); then <code>tsc --noEmit -p tsconfig.dom-tests.json</code> over the unit tests of the page's browser modules (<code>tests/**/*.dom.test.ts</code>) and their fakes (<a href="../../tests/helpers/fake-dom.ts"><code>fake-dom.ts</code></a>, <a href="../../tests/helpers/fake-canvas.ts"><code>fake-canvas.ts</code></a>), with the DOM library and Node's types both, which <code>tsconfig.json</code> leaves out so no Node module may name a DOM type. <code>npm run build</code> compiles the first two, the page into <code>dist/portal-build/</code>. Settings in <a href="../../tsconfig.json">tsconfig.json</a>, which <a href="../../tsconfig.portal.json">tsconfig.portal.json</a> repeats but for its library and types:</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Option</th><th>Value</th><th>Effect</th></tr></thead>
+<tbody>
+<tr><td><code>strict</code></td><td><code>true</code></td><td>All strict-family checks, including <code>strictNullChecks</code> and <code>noImplicitAny</code></td></tr>
+<tr><td><code>noUnusedLocals</code>, <code>noUnusedParameters</code></td><td><code>true</code></td><td>Unused locals and parameters are errors</td></tr>
+<tr><td><code>noImplicitReturns</code></td><td><code>true</code></td><td>Every path of a returning function returns</td></tr>
+<tr><td><code>noFallthroughCasesInSwitch</code></td><td><code>true</code></td><td>No silent fall-through between <code>case</code>s</td></tr>
+<tr><td><code>noUncheckedIndexedAccess</code></td><td><code>true</code></td><td><code>a[i]</code>, <code>record[key]</code> may be <code>undefined</code> and must be checked</td></tr>
+<tr><td><code>noImplicitOverride</code></td><td><code>true</code></td><td>An override needs the <code>override</code> keyword</td></tr>
+<tr><td><code>allowUnreachableCode</code>, <code>allowUnusedLabels</code></td><td><code>false</code></td><td>Unreachable code and unused labels are errors</td></tr>
+<tr><td><code>verbatimModuleSyntax</code></td><td><code>true</code></td><td>Type-only imports say <code>import type</code>, so emitted imports are exactly the written ones</td></tr>
+<tr><td><code>skipLibCheck</code></td><td><code>true</code></td><td>Dependencies' declaration files are not checked</td></tr>
+<tr><td><code>target</code> / <code>lib</code></td><td><code>ES2024</code> / <code>ES2024</code>, <code>ES2025.Iterator</code>, <code>ES2025.Collection</code></td><td>Stops at what Node 22 runs: ES2025's iterator helpers and Set methods are in Node 22; <code>Promise.try</code>, <code>Float16Array</code>, <code>RegExp.escape</code> are not. <code>dist/</code> was byte-identical to the <code>ES2022</code> build on 2026-09-27</td></tr>
+<tr><td><code>module</code></td><td><code>nodenext</code></td><td>Node ESM semantics for ES-module, CommonJS and dual packages</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>The Node API floor:</strong> <code>@types/node</code> is <code>~22.13.0</code>, the floor of <code>engines</code>, so callable Node APIs stop at 22.13; the docs guard asserts both. It is the lowest the toolchain accepts: <code>engines</code> is the intersection of the ranges Vitest 5.0.2 declares, <code>^22.12.0 || ^24.0.0 || &gt;=26.0.0</code>, and ESLint 10.12.0, <code>^20.19.0 || ^22.13.0 || &gt;=24</code> — <code>^22.13.0 || ^24.0.0 || &gt;=26.0.0</code> (<code>docs/plans/lint-format.md</code> R10 (b), since 2026-10-14; before it, Vitest's range alone and a 22.12 floor) — and Vite 8.3.1 requires <code>@types/node</code> <code>^20.19.0 || &gt;=22.12.0</code> (each from its installed <code>package.json</code>, read 2026-10-14).</p>
+<div class="callout warning">
+<p class="callout-title">Warning</p>
+<p>A newer <code>@types/node</code> declares APIs this floor lacks, such as <code>Float16Array</code> (Node 24) and <code>registerHooks</code> from <code>node:module</code> (Node 22.15). Those would typecheck and then throw at run time. One already does: <code>@types/node</code> 22.13.17 declares <code>findPackageJSON</code> (its own <code>@since v23.2.0, v22.14.0</code>), which is <code>undefined</code> on Node 22.13.1 — the only declaration in the package past 22.13.0 (its <code>@since</code> tags, read 2026-10-14). Nothing here calls it.</p>
+</div>
+<h4 id="why-typescript-6-0-3-not-7-x">Why TypeScript 6.0.3, not 7.x</h4>
+<div class="callout decision">
+<p class="callout-title">The owner, 2026-09-27 (debt D7)</p>
+<p>TypeScript stays on 6.0.3, because TypeScript 7.0 has no stable compiler API.</p>
+</div>
+<ul>
+<li>7.0 &quot;does not ship with an API&quot;; the team expects &quot;TypeScript 7.1 to ship with a new (and different) API&quot; (<a href="https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/">Announcing TypeScript 7.0</a>, 2026-07-08, read 2026-09-27). The <code>typescript@7.0.2</code> main entry exports only the version; its API is under <code>typescript/unstable/*</code> (its <code>exports</code> map, read 2026-09-27).</li>
+<li>Tools on the stable API do not run on 7.0: typescript-eslint 8.70.1 peers <code>&gt;=4.8.4 &lt;6.1.0</code>, TypeDoc 0.28.20 <code>5.0.x … 6.0.x</code> (npm registry, read 2026-09-27). Since 2026-10-12 typescript-eslint 8.71.1 runs the <a href="#lint">linter</a> (its peer range, read that day, still <code>&gt;=4.8.4 &lt;6.1.0</code>); TypeDoc is not installed.</li>
+</ul>
+<div class="callout note">
+<p class="callout-title">Note</p>
+<p>Earlier corrections, measurements and guard proofs: <a href="history.html">History</a>.</p>
+</div>
+<h4 id="not-enabled">Not enabled</h4>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Option</th><th>Errors here (2026-09-27)</th><th>Why it stays off</th></tr></thead>
+<tbody>
+<tr><td><code>exactOptionalPropertyTypes</code></td><td>0</td><td>It checks call sites against third-party declarations; in <code>web</code> it fails on <code>aws-cdk-lib</code>'s own types (<code>Bucket</code> is not assignable to <code>IBucket</code>). Broad package compatibility is the owner's stated priority (2026-09-27)</td></tr>
+<tr><td><code>erasableSyntaxOnly</code></td><td>61, all TS1294 on constructor parameter properties</td><td>Matters only if the repo runs <code>.ts</code> directly with Node's type stripping</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="how-the-settings-are-guarded">How the settings are guarded</h4>
+<p><a href="../../tests/unit/tsconfig.test.ts">tests/unit/tsconfig.test.ts</a> runs real <code>tsc</code> with this <code>tsconfig.json</code>: one canary per option from <code>strict</code> (its <code>noImplicitAny</code> and <code>strictNullChecks</code>) through <code>verbatimModuleSyntax</code>, each reporting exactly one expected error; one clean canary using ES2024 and Node 22's ES2025 parts; and three pinning the API ceiling (<code>Promise.try</code> and <code>RegExp.escape</code> outside <code>lib</code>, <code>Float16Array</code> outside <code>@types/node</code>, <code>registerHooks</code> outside its floor — <code>findPackageJSON</code> until 2026-10-14, when the 22.13 floor's <code>@types/node</code> turned out to declare it, <a href="#typecheck">above</a>). <code>target</code> and <code>skipLibCheck</code> are not guarded. The build (<a href="../../tsconfig.build.json">tsconfig.build.json</a>) extends these settings and emits <code>src</code>, <code>images</code> and <code>evals</code> to <code>dist/</code>.</p>
+<h3 id="lint">Linter <span class="badge built">built</span></h3>
+<p><code>npm run lint</code> runs ESLint 10.12.0 as <code>eslint --max-warnings 0 .</code>, with the configuration in <a href="../../eslint.config.mjs">eslint.config.mjs</a>; <code>npm run lint:fix</code> applies the rules' own fixes. The first link of <a href="#gate">the gate</a> since 2026-10-14, about 36 s on this Mac: when it was added on 2026-10-12 the tree held 6,316 findings in 315 of the 396 files it reads, and the <code>docs/plans/lint-format.md</code> plan fixed every one in the code, the configuration unchanged (its R6). Check a file you write or rewrite before the gate does: <code>npx eslint &lt;file&gt;</code>.</p>
+<ul>
+<li><strong>The rules.</strong> Three presets, every rule on at <code>error</code> with its own options: ESLint's <code>recommended</code> (<code>@eslint/js</code> 10.0.1); typescript-eslint 8.71.1's <code>strictTypeChecked</code>, which reads types from the three programs <code>npm run typecheck</code> checks (<code>tsconfig.json</code>, <code>tsconfig.portal.json</code> and <code>tsconfig.dom-tests.json</code>) and so finds a promise nobody awaits, a condition that is always true, a value printed as <code>[object Object]</code>; and SonarJS's <code>recommended</code> (<code>eslint-plugin-sonarjs</code> 4.2.2), the bug and code-smell rules of SonarQube's JavaScript analyzer, among them cognitive complexity, duplicated branches and super-linear regular expressions. Plain JavaScript, which neither program holds, gets the rules that need no types.</li>
+<li><strong>What it reads.</strong> Every tracked <code>.ts</code>, <code>.mts</code>, <code>.cts</code>, <code>.js</code>, <code>.mjs</code> and <code>.cjs</code> file but the dated probes under <code>evals/probes/</code>, which stay as they ran, and the copies of them under <code>tests/fixtures/probes/</code> that shipped tests read (<code>tests/fixtures/README.md</code>; Prettier skips <code>tests/fixtures/agent-results/</code> too); nothing in what <code>.gitignore</code> or <code>.git/info/exclude</code> keeps out (dependencies, build output, <code>.claude/</code>, <code>.qa/</code>).</li>
+<li><strong>No exemption in the code.</strong> <code>noInlineConfig</code> makes an <code>eslint-disable</code> comment inert and reports it, and <code>--max-warnings 0</code> fails on that report; an exemption lives only in <code>eslint.config.mjs</code>, with its reason. There are four, each where the rule's demand contradicts the design:</li>
+</ul>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Rule</th><th>Off in</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td><code>sonarjs/no-os-command-from-path</code></td><td>everywhere</td><td>asha and its tools run the owner's own <code>git</code>, <code>npm</code>, <code>brew</code>, <code>ps</code> and <code>open</code> from <code>PATH</code>, as a shell would; an absolute path differs between Homebrew prefixes and machines</td></tr>
+<tr><td><code>sonarjs/no-hardcoded-ip</code></td><td>everywhere</td><td>The addresses are the design: the egress proxy's private-range blocklist, colima's host gateway (<code>HOST_GATEWAY</code>) and the TEST-NET resolver agents are given (<a href="../architecture/index.html">Architecture</a>)</td></tr>
+<tr><td><code>sonarjs/publicly-writable-directories</code></td><td><code>tests/</code></td><td>A <code>/tmp</code> path in a test is a path inside an agent's container, or one of the suites' lock files, which live in <code>/tmp</code> by design (<a href="../../rules/gate-and-tests.md">rules/gate-and-tests.md</a>)</td></tr>
+<tr><td><code>sonarjs/todo-tag</code></td><td><code>tools/docs/render.mts</code>, <code>tests/unit/docs-plans.test.ts</code></td><td>They implement and test the docs' gap marker, so they name it (the test moved from <code>docs.test.ts</code> with the plans' checks, 2026-10-16)</td></tr>
+</tbody>
+</table>
+</div>
+<p>A new exemption is the owner's decision (<code>docs/plans/lint-format.md</code> R2).</p>
+<p><strong>Licences.</strong> All MIT, but <code>eslint-plugin-sonarjs</code> and the <code>@sonarsource/analyzer-commons-configurations</code> it depends on, LGPL-3.0-only (their <code>package.json</code>, read 2026-10-12). They are development dependencies, run and never shipped: the <code>node_modules/</code> a release and the agent images carry comes from <code>npm ci --omit=dev</code> (<a href="../../tools/agent-packages/build.mts"><code>tools/agent-packages/build.mts</code></a>).</p>
+<p><strong>Node.</strong> ESLint 10.12.0 declares Node <code>^20.19.0 || ^22.13.0 || &gt;=24</code> (npm registry, read 2026-10-12), above the 22.12.0 floor <code>engines</code> had; since 2026-10-14 <code>engines</code> is the intersection of that and Vitest's range, and <code>@types/node</code> its floor (<a href="#typecheck">the Node API floor</a>, <code>docs/plans/lint-format.md</code> R10 (b)).</p>
+<h3 id="unused">Unused code <span class="badge built">built</span></h3>
+<p><code>npm run lint:unused</code> runs knip 6.39.0 (ISC, pinned exactly in <code>package.json</code>) over the whole repository: it fails on a file nothing imports, an export or an exported type nothing imports, an export made twice, and a dependency nothing uses — what ESLint and tsc cannot see, since each reads one file at a time, so to them an export is always used. Its entry points beyond those its plugins find (vitest's, ESLint's and Prettier's configs, <code>package.json</code>'s scripts) are named in <a href="../../knip.jsonc"><code>knip.jsonc</code></a>, each with why: the images' processes, the reference modules, the harness images' processes, the portal's page, the eval report, and the paused decider until the owner's record on it is answered; the dated probes and the fixtures' copies are left out. A type kept for the HTTP API's clients though no harness code names it carries <code>@public</code> (five, in <code>src/shared/protocol.ts</code>). The gate's link after <code>npm run lint</code>, and a CI step, since 2026-10-17 (the owner's question of that day: why the reviews kept finding exports nothing imports). Its first run removed 81 exports' and 35 types' <code>export</code>, and the code those left unused. Proven by <code>tests/unit/lint-format.test.ts</code>: knip over a small project fails naming an unused export, and passes once it is used.</p>
+<h3 id="format">Formatter <span class="badge built">built</span></h3>
+<p><code>npm run format:check</code> runs Prettier 3.9.9 as <code>prettier --check .</code>, and <code>npm run format</code> as <code>prettier --write .</code>. <a href="../../.prettierrc.json">.prettierrc.json</a> sets two things: a 120-column line, and single quotes, the code's own style (37,337 lines of code held a single quote and 2,679 a double, 2026-10-12); the rest is Prettier's default. It checks exactly the files the linter reads, and no other kind: <a href="../../.prettierignore">.prettierignore</a> says why Markdown, JSON, HTML, CSS and YAML stay as written. The gate's second link since 2026-10-14, about 5 s: 355 files were unformatted on 2026-10-12, formatted in one commit that <code>.git-blame-ignore-revs</code> names (<code>docs/plans/lint-format.md</code> R7); <code>npx prettier --check &lt;file&gt;</code> checks one.</p>
+<h3 id="lint-guard">How the linter and formatter are guarded</h3>
+<p><a href="../../tests/unit/lint-format.test.ts">tests/unit/lint-format.test.ts</a> compares the configuration ESLint resolves for every linted file with the bare presets: any rule switched off, set to <code>warn</code> or given other options fails, naming the file and rule, unless it is that file's exemption. It also checks the inline-comment settings, which files each tool reads (every tracked code file, none of the probes, nothing in the folders git keeps out), the four scripts' exact commands and Prettier's settings, and runs canaries through the real configuration: a floating promise (a type-aware rule), a duplicated branch (SonarJS), an <code>eslint-disable</code> comment, and an unformatted line. Each check was seen failing on 2026-10-12, the files restored after each (<code>docs/plans/lint-format.md</code> A1). That both run first, before the typecheck, is asserted by the unit test of the gate's order, &quot;is the gate's last step …&quot; in <a href="../../tests/unit/routing.test.ts">tests/unit/routing.test.ts</a>, seen failing on 2026-10-14 with each removed from <code>check</code> (lint-format A6).</p>
+</section>
+<section id="gate">
+<h2>The gate</h2>
+<p><code>npm run check</code> is the whole gate; the repo has no deploy path (<a href="../../AGENTS.md">AGENTS.md</a> §2). Its links are joined by <code>&amp;&amp;</code>.</p>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1504 210" role="img" aria-labelledby="qc-gate-t qc-gate-d">
+  <title id="qc-gate-t">The npm run check gate chain</title>
+  <desc id="qc-gate-d">Eleven links run in order: the linter (ESLint, every rule an error, no warning allowed), the unused-code check (knip: a file, an export or a dependency nothing uses), the format check (Prettier), typecheck (tsc), the secret scan (gitleaks over a copy of the tracked files), unit tests (tests/unit, all collaborators injected), integration tests (tests/integration, the real daemon HTTP server with a fake runtime and model server), the demo selection (a build, then demos:select writes selection.json from git), the agent suite (build, then real agents in colima on the real model), the eval (build, then the ./asha CLI end to end with exact replies), and the routing check on the eval's build. Any failure stops the chain, and the gate is red.</desc>
+  <defs><marker id="qc-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="10" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="68" y="56" text-anchor="middle">lint</text>
+  <text class="label mono" x="68" y="76" text-anchor="middle">eslint</text>
+  <text class="label small" x="68" y="96" text-anchor="middle">every rule an error</text>
+
+  <rect class="box" x="146" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="204" y="56" text-anchor="middle">unused</text>
+  <text class="label mono" x="204" y="76" text-anchor="middle">knip</text>
+  <text class="label small" x="204" y="96" text-anchor="middle">what nothing</text>
+  <text class="label small" x="204" y="110" text-anchor="middle">imports or uses</text>
+
+  <rect class="box" x="282" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="340" y="56" text-anchor="middle">format</text>
+  <text class="label mono" x="340" y="76" text-anchor="middle">prettier --check</text>
+  <text class="label small" x="340" y="96" text-anchor="middle">the code files</text>
+
+  <rect class="box" x="418" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="476" y="56" text-anchor="middle">typecheck</text>
+  <text class="label mono" x="476" y="76" text-anchor="middle">tsc --noEmit</text>
+  <text class="label small" x="476" y="96" text-anchor="middle">strict</text>
+
+  <rect class="box" x="554" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="612" y="56" text-anchor="middle">secrets</text>
+  <text class="label mono" x="612" y="76" text-anchor="middle">scan:secrets</text>
+  <text class="label small" x="612" y="96" text-anchor="middle">gitleaks, the</text>
+  <text class="label small" x="612" y="110" text-anchor="middle">tracked files</text>
+
+  <rect class="box" x="690" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="748" y="56" text-anchor="middle">unit</text>
+  <text class="label mono" x="748" y="76" text-anchor="middle">tests/unit</text>
+  <text class="label small" x="748" y="96" text-anchor="middle">all injected</text>
+
+  <rect class="box" x="826" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="884" y="56" text-anchor="middle">integration</text>
+  <text class="label mono" x="884" y="76" text-anchor="middle">tests/integration</text>
+  <text class="label small" x="884" y="96" text-anchor="middle">real HTTP, fakes</text>
+
+  <rect class="box" x="962" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="1020" y="56" text-anchor="middle">select</text>
+  <text class="label mono" x="1020" y="76" text-anchor="middle">demos:select</text>
+  <text class="label small" x="1020" y="96" text-anchor="middle">git → selection</text>
+  <text class="label small" x="1020" y="110" text-anchor="middle">.json</text>
+
+  <rect class="box accent" x="1098" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="1156" y="56" text-anchor="middle">agents</text>
+  <text class="label mono" x="1156" y="76" text-anchor="middle">tests/agents</text>
+  <text class="label small" x="1156" y="96" text-anchor="middle">real containers</text>
+  <text class="label small" x="1156" y="110" text-anchor="middle">+ real model</text>
+
+  <rect class="box accent" x="1234" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="1292" y="56" text-anchor="middle">eval</text>
+  <text class="label mono" x="1292" y="76" text-anchor="middle">tests/eval</text>
+  <text class="label small" x="1292" y="96" text-anchor="middle">./asha end to end</text>
+  <text class="label small" x="1292" y="110" text-anchor="middle">exact replies</text>
+
+  <rect class="box accent" x="1370" y="30" width="124" height="90" rx="6"/>
+  <text class="label title" x="1432" y="56" text-anchor="middle">routing</text>
+  <text class="label mono" x="1432" y="76" text-anchor="middle">eval:routing:gate</text>
+  <text class="label small" x="1432" y="96" text-anchor="middle">on the eval's build</text>
+
+  <path class="edge" d="M126 75 H144" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M262 75 H280" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M398 75 H416" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M534 75 H552" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M670 75 H688" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M806 75 H824" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M942 75 H960" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M1078 75 H1096" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M1214 75 H1232" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M1350 75 H1368" marker-end="url(#qc-arr)"/>
+
+  <path class="edge dim" d="M68 120 V160 H1432 V122"/>
+  <text class="label small" x="820" y="180" text-anchor="middle">any link fails → the chain stops, the gate is red: fix the root cause, re-run (PRINCIPLES §8)</text>
+  <text class="label small" x="1156" y="140" text-anchor="middle">select, agents and eval each build dist/ first</text>
+</svg>
+<figcaption>From <a href="../../package.json">package.json</a>: <code>npm run lint &amp;&amp; npm run lint:unused &amp;&amp; npm run format:check &amp;&amp; npm run typecheck &amp;&amp; npm run scan:secrets &amp;&amp; npm test &amp;&amp; npm run test:integration &amp;&amp; npm run build &amp;&amp; npm run demos:select &amp;&amp; npm run test:agents &amp;&amp; npm run eval &amp;&amp; npm run eval:routing:gate</code>. What each suite covers, and the demo selection: <a href="../testing/index.html#selection">Testing</a>. (<em>Corrected 2026-09-29: this showed five links; the routing step joined on 2026-09-29 and the selection with <code>docs/plans/demo-selector.md</code>. The linter and the formatter joined as the first two on 2026-10-14, <code>docs/plans/lint-format.md</code> R10; the secret scan after the typecheck on 2026-10-16, <code>docs/plans/oss-release.md</code> R5; the unused-code check after the linter on 2026-10-17.</em>)</figcaption>
+</figure>
+<ul>
+<li><p><strong>The secret scan</strong> (<code>npm run scan:secrets</code>, after the typecheck since 2026-10-16, <code>docs/plans/oss-release.md</code> R5): gitleaks 8.30.1 or later below 9, with its default rules only, over a temporary copy of exactly the tracked files; a finding is printed by file, line and rule, never its value, and fails the gate (<a href="../../tools/oss/secrets.mts"><code>tools/oss/secrets.mts</code></a>). Proven: the secret fakes of <code>files-secrets.test.ts</code> before their fix gave two findings, and the scan made to return none failed four of <a href="../../tests/unit/secret-scan.test.ts"><code>secret-scan.test.ts</code></a>'s cases.</p>
+</li>
+<li><p><strong>The shipped-file guard</strong> (<a href="../../tests/unit/shipped-files.test.ts"><code>shipped-files.test.ts</code></a>, in <code>npm test</code>, R11): no file the public export ships holds a home folder's path, a <code>.claude/</code> path, a machine's temporary folder, a path into a home folder's Documents, Desktop or Downloads, or a private address but the allowed ones, each with its reason. Proven by a planted home path and address in <code>docs/index.md</code>, and by the probe copy it caught.</p>
+</li>
+<li><p><strong>The marker scan</strong> (<code>npm run oss:scan-markers -- &lt;dir&gt;</code>, R9; run by <code>npm run oss:check</code>, not by the gate): the private values the owner keeps in a file outside every repository, none of them printed; <a href="../../tests/unit/marker-scan.test.ts"><code>marker-scan.test.ts</code></a> plants each kind in each place.</p>
+</li>
+<li><p><strong>The demo selection</strong> (<code>npm run demos:select</code>, <a href="../testing/index.html#selection">Testing</a>): before the agent suite, it records which pattern demos the change since the last green gate touches, three repeats for those and one for the rest, and fails closed — a path it cannot place, or a base it cannot trust, selects every demo; a git command that fails stops the gate.</p>
+</li>
+<li><p><strong>Bounds are guards:</strong> 20 minutes per agent or eval test (<code>testTimeout: 1_200_000</code>), because a cold run downloads a 5 GB model. Hitting one is a failure, not a flake (PRINCIPLES §14.5).</p>
+</li>
+<li><p><strong>Agent files run one at a time</strong> (<code>fileParallelism: false</code>): each starts its own daemon, and two would load the model twice.</p>
+</li>
+<li><p><strong>Never bypassed:</strong> no <code>.skip</code>, no retries, no subset in place of the gate (PRINCIPLES §8).</p>
+</li>
+</ul>
+</section>
+<section id="guard-proofs">
+<h2>Guard proofs</h2>
+<p>A guard is trusted only after it has been seen to fail: break what it guards, watch the test go red naming the offender, restore (PRINCIPLES §3). The records: the compiler-settings guard and the architecture-era guards on <a href="history.html#tsconfig-proof">History</a>, the <a href="../project/documentation.html#guard">docs guard</a> on <a href="../project/history.html#guard-proofs">Project history</a>.</p>
+<p>The release guards (<a href="../../tests/unit/release.test.ts"><code>tests/unit/release.test.ts</code></a>) are recorded on the <code>docs/plans/brew-install.md</code> plan (A9, A11), each broken once in <code>tools/release/</code> and restored:</p>
+<ul>
+<li><strong>The release script</strong> refuses a dirty tree, a <code>HEAD</code> not at the tag, a missing tag and an existing release, and ships exactly the nine entries: committed files only, plus the build and the agent packages' runtime files, which since <code>d231ad0</code> come from a clean offline <code>npm ci</code> of the lockfile, never from the checkout's <code>node_modules/</code> — since 2026-10-03 the build's own, <code>dist/agent-packages/</code> (<code>docs/plans/debt-paydown.md</code> R10, R11), the release running no <code>npm ci</code> of its own; it refuses when the npm cache lacks a locked package or the lockfile marks an agent package dev. <em>Corrected 2026-09-27 (unreviewed-changes review): this said it refused &quot;a <code>node_modules/</code> that is not the lockfile's&quot;; until <code>d231ad0</code> only each package's version was compared, and a stray <code>.DS_Store</code> or <code>.env</code> inside a locked package's folder shipped. Staging an image still copies from the checkout (D22).</em> <code>d231ad0</code>'s proofs: on the old script &quot;builds…&quot; failed listing <code>node_modules/dep/.DS_Store</code> and <code>.env</code> and, without them, the edited <code>index.js</code>. The install's <code>--loglevel=error</code> and <code>--no-dry-run</code> (added after <code>d231ad0</code>'s review found that <code>npm run --silent release</code> silenced the cache-miss refusal into a bare stack trace) are guarded by the &quot;… under npm run --silent --dry-run&quot; tests, each of which failed with its flag removed. Each check was removed once and its test failed. Staging from the checkout instead of <code>git archive</code> failed &quot;builds…&quot;, naming <code>images/.DS_Store</code> and <code>images/agent/node_modules/evil/x.js</code>.</li>
+<li><strong>The generated formula</strong> is compared as exact text, so removing <code>assert_match</code>, a <code>depends_on</code> or the <code>node</code> wrapper fails &quot;builds…&quot;.</li>
+<li><strong>No install-mode branch in <code>src/</code>:</strong> <code>grep -rnE &#39;HOMEBREW|homebrew|Cellar|brew --prefix|libexec&#39; src</code> must find nothing but one excepted line, <code>src/daemon/decider/layout.ts</code>'s <code>DECIDER_PYTHON</code> (Homebrew's Python 3.14 named by its path), matched by file and exact text — the owner's answer to decision <code>release-guard-decider-python</code>, (a), 2026-10-11. A scratch <code>// libexec</code> line made it fail, naming the line; on 2026-10-11 a new Homebrew path elsewhere in <code>src/</code>, the excepted line changed, and the excepted line removed each made it fail.</li>
+</ul>
+<p>The control-api-auth guards (the credential, <code>Host</code> and <code>Origin</code> checks, refusal logging, the CLI's handling of <code>daemon.json</code>, the model server key, the source guard <a href="../../tests/unit/secrets-guard.test.ts"><code>tests/unit/secrets-guard.test.ts</code></a>, container confinement and the credential canary) are recorded on the <code>docs/plans/control-api-auth.md</code> plan, each broken once and restored; the evals among them (A6, A10, A15) were broken in a build and run against the real VM.</p>
+<p>The routing gate step (<code>docs/plans/agent-calls.md</code> A10, R18), 2026-09-29: <strong>its place in the gate</strong> (&quot;is the gate's last step …&quot; in <a href="../../tests/unit/routing.test.ts"><code>tests/unit/routing.test.ts</code></a>) failed with the step dropped from <code>check</code> and with a build added to it (and, in the completion review's own copy, with <code>--out</code> set to <code>evals/routing/results</code> and with <code>--gate</code> removed); <strong>the step itself</strong> exited 1 naming the ask-for-yourself cases with <code>consult</code> taken out of an agent's tools (records (<code>evals/probes/agent-calls-2026-09-29/README.md</code>), <code>a10-proof/</code>).</p>
+<p>The prompt-prefix guards (plan (<code>docs/plans/prompt-prefix.md</code>), steps 5, 6 and 9), each broken once in the worktree and restored, 2026-09-28:</p>
+<ul>
+<li><strong>The shared prefix</strong> (A1, &quot;the shared prefix …&quot; in <a href="../../tests/unit/agent-sdk.test.ts"><code>tests/unit/agent-sdk.test.ts</code></a> and <a href="../../tests/unit/memory/agent.test.ts"><code>tests/unit/memory/agent.test.ts</code></a>): with the handle put back in line 1 of the system message, the others-only <code>to</code> enum restored, and the <code># Memory</code> section appended to the system message again, each failed naming the agents whose system message or tools differ. The routing leak guard failed with a routing case's text put in <code>identityLine</code>.</li>
+<li><strong>The cache arguments and reserved keys</strong> (A5): the exact-arguments test in <a href="../../tests/unit/model-server.test.ts"><code>tests/unit/model-server.test.ts</code></a> failed with <code>CHAT_CACHE_ARGS</code> removed; the definitions tests failed with the <code>CACHING_FIELDS</code> check removed.</li>
+<li><strong>The token counts</strong> (A6): with the gateway's usage check removed, the four <code>bad_response</code> tests in <a href="../../tests/unit/model-gateway.test.ts"><code>tests/unit/model-gateway.test.ts</code></a> and the supervisor's test in <a href="../../tests/unit/agents.test.ts"><code>tests/unit/agents.test.ts</code></a> failed; with <code>modelCalls</code> no longer parsing the counts, its two tests in <a href="../../tests/unit/agent-transcript.test.ts"><code>tests/unit/agent-transcript.test.ts</code></a> failed.</li>
+<li><strong>The margin check</strong> (A9, &quot;the agent suite's margin check, through finishSuite&quot;): with the bound read as 0 every fixture failed; with the check removed from <code>finishSuite</code> the 45,001 ms and 60,002 ms fixtures passed and their tests failed.</li>
+<li><strong>The cache-hit count</strong> (R13, &quot;memory-crowd's cache-hit count&quot;): with the threshold raised to 95 %, or the <code>since</code> filter dropped, its test failed. In the real suite, with <code>--cache-prompt</code> changed to <code>--no-cache-prompt</code> at <code>60ab222</code>, memory-crowd's ask-all failed &quot;prompt-cache hits among the ten first calls: expected 0 to be greater than or equal to 6&quot;, and the margin check failed naming five calls over 45,000 ms and the other <code>llama-server</code>s, the owner's key file path left out (records (<code>evals/probes/prompt-prefix-2026-09-28/README.md</code>), <code>scenarios/proof-no-cache/</code>).</li>
+<li><strong>The greeting's cache hits</strong> (D44, <code>docs/plans/prompt-prefix.md</code>, amendment 2): with the prompt-store request taken out at <code>2191078</code>, multi-agent <code>greeting</code> failed &quot;first calls served 90 % or more from the prompt cache: expected [ 'hewo-2' ] to deeply equal [ 'hewo-1', 'hewo-2' ]&quot; in 5,465 ms. The request's unit tests failed under each of six mutations — the call removed (7 tests), sent on every call (3), sent while stopping (1), not abandoned at the stop (1), not waited for (1), a text prompt in place of the token ids (3) (records (<code>evals/probes/d44-2026-09-29/README.md</code>), <code>proof-no-store/</code> and <code>unit-proofs/</code>).</li>
+<li><strong>The amended identity line</strong> (R1, R5 as amended 2026-09-29, amendment (<code>docs/plans/prompt-prefix.md</code>)): with a lone agent's identity line restored and the old wording, 10 tests of <code>agent-sdk.test.ts</code> and <code>memory/agent.test.ts</code> failed (at <code>8896cb6</code>); with a handle put back in the identity line, 7 (at <code>590cb96</code>), among them &quot;an identity line names the agent and no other agent …&quot;.</li>
+<li><strong>The tool sequence of <code>two-models</code></strong> (<code>docs/plans/agent-tools.md</code> correction 9): with <code>model.chat</code>'s <code>toolCalls</code> emptied, &quot;names in model.chat the tools the model called …&quot; in <code>tests/unit/agents.test.ts</code> failed; in the real suite at <code>590cb96</code>, with &quot;then read it back with read_file&quot; taken out of the scenario's message, it failed &quot;hewo-1: expected [ 'write_file', 'reply' ] to deeply equal [ 'write_file', 'read_file', 'reply' ]&quot;.</li>
+</ul>
+<p>The agent-persistence guards (plan (<code>docs/plans/agent-persistence.md</code>)), 2026-09-29, each proven by a failing case kept in the suite, so the proof re-runs with every <code>npm test</code>:</p>
+<ul>
+<li><strong>No user ID or container output in a failure record</strong> (A15, <a href="../../tests/unit/log-privacy-guard.test.ts"><code>tests/unit/log-privacy-guard.test.ts</code></a>): the TypeScript compiler parses every <code>.ts</code> under <code>src/</code> and <code>images/</code>; planted calls — a warn with <code>user</code>, an error whose fields come from a <code>const</code> holding <code>user</code>, the memory image's <code>logError</code> with <code>user</code>, an error embedding <code>logTail(</code>, a warn embedding a one-shot's <code>stderr</code>, R9's <code>state.redelivered</code> with <code>text</code> and <code>state.pending_found</code> with <code>user</code>, and an error spreading fields it cannot read — each fail naming the file, line and event; a field set it cannot read is allowed only when listed by hand with its reason, and a listed site that no longer exists fails too.</li>
+<li><strong>The daemon does not reach into an image's code</strong> (A16, same file): a planted import of <code>images/…</code> and a planted <code>scopeKey</code> fail naming the line; the daemon's own <code>src/daemon/images/</code> module passes.</li>
+<li><strong>Committed results name only invented users</strong> (A14, <code>tests/unit/agent-results-users.test.ts</code>): a planted result naming <code>olga</code> — as a <code>user=</code> argument, an event's <code>from</code> and <code>to</code>, and in the report's HTML — fails naming each place.</li>
+<li><strong>A checkpoint's bound holds whatever hangs</strong> (R10, &quot;(5b)&quot; and &quot;a checkpoint still running at T+35 s …&quot; in <a href="../../tests/unit/persistence-stop.test.ts"><code>tests/unit/persistence-stop.test.ts</code></a>): with the race against the abort signal disabled in <a href="../../src/daemon/agents/persisted.ts"><code>src/daemon/agents/persisted.ts</code></a>, both failed (the stop hung on a write that never returned); restored, both pass.</li>
+</ul>
+<p>The extension-modules guards (plan (<code>docs/plans/extension-modules.md</code>)), 2026-10-02, each broken once in the checkout and restored:</p>
+<ul>
+<li><strong>The reference modules</strong> (<a href="../../tests/unit/reference-modules.test.ts"><code>tests/unit/reference-modules.test.ts</code></a>): with a byte appended to <code>modules/tavily/index.mjs</code>, a <code>node_modules/</code> folder in <code>modules/bedrock/</code>, and a file holding <code>tvly-</code> in <code>modules/aws_cli/</code>, four tests failed naming each.</li>
+<li><strong>The contract suite</strong> (<a href="../../tests/helpers/module-contract.ts"><code>tests/helpers/module-contract.ts</code></a>): with <code>tavily</code> putting its key in the request body, six tests failed naming the body; with its endpoint's host changed, the fake refused it as a host the manifest does not list. It found, on its first run, the module runtime answering a provider with <code>unknown_tool</code> and <code>module_unavailable</code>, neither a provider's reason; fixed.</li>
+<li><strong>The module host</strong> (<a href="../../tests/unit/modules-host.test.ts"><code>tests/unit/modules-host.test.ts</code></a>): with <code>MAX_RESTARTS</code> 4, the 1 MiB line check <code>&gt;=</code>, and an extra variable in a module's environment, three tests failed.</li>
+<li><strong>The meter, the launch checks, the plugin runner, the approved turn and <code>--approve</code></strong>: the cap check <code>&gt;=</code> and no month roll-over (3 failed); the message bound one millisecond loose and the memory rule removed (2); the hard-link check, the redaction and the cut removed (each failed, the hard link once its refusal's text was pinned — the descriptor's own identity check had caught it with another message); <code>decide()</code> and <code>channelTurn</code> running own tools for an approved message (3); <code>--approve</code>'s bound at <code>timeoutMs</code> + 9,000, its arguments printed raw, and any answer beginning <code>y</code> accepted (3).</li>
+<li><strong>Found by the integration tests and fixed</strong> (<a href="../../tests/integration/modules.test.ts"><code>tests/integration/modules.test.ts</code></a>): an approved call in flight at the daemon's stop was never audited (the stop now waits 1 s after the reclaim); a budget refusal and a corrupt meter were each logged twice, so R35's query found two lines for one event (re-adding the second line fails its test); two approvals of one id at once could both pass the first check.</li>
+<li><strong>With modules unused</strong> (<a href="../../tests/integration/modules-unused.test.ts"><code>tests/integration/modules-unused.test.ts</code></a>): with a Docker version check added to the start, the comparison with the base commit's recording failed naming <code>engineVersion</code>.</li>
+<li><strong>The offline gate</strong> (<a href="../../tests/unit/network-sites.test.ts"><code>tests/unit/network-sites.test.ts</code></a>): a <code>fetch</code> added in <code>src/daemon/</code> failed naming the file and symbol; run without the suites' setup file, the <code>192.0.2.1</code> test failed, so the guard is what refuses it. The plugin base's unpacker (<a href="../../tests/unit/plugin-unzip.test.ts"><code>tests/unit/plugin-unzip.test.ts</code></a>) failed with its climb-out check removed. Since 2026-10-17 (code review R1-SECURITY-001) <code>unzip.mjs</code> also refuses, naming the entry, a link whose target is absolute or resolves outside <code>&lt;into-dir&gt;</code>, and an entry written through, or replacing, a link an earlier entry made, each with a test of its own.</li>
+</ul>
+<p>The portal guards (plan (<code>docs/plans/portal.md</code>)), 2026-10-02, each broken once in the checkout and restored (records (<code>evals/probes/portal-build-2026-10-02/README.md</code>)):</p>
+<ul>
+<li><strong>The page's sources</strong> (A3, <a href="../../tests/unit/portal-guards.test.ts"><code>tests/unit/portal-guards.test.ts</code></a>): nothing loaded from the network and nothing rendered as markup under <code>portal/</code> and <code>src/portal/</code> — a remote URL, <code>@import</code>, <code>url()</code>, <code>innerHTML</code>, <code>outerHTML</code>, <code>insertAdjacentHTML</code>, <code>document.write</code>, <code>eval</code>, <code>new Function</code>, an inline script, an <code>on*=</code> attribute, <code>localStorage</code>, <code>document.cookie</code> — each kind failing on a fixture kept in the suite, naming the file and the kind.</li>
+<li><strong>The modules the page loads</strong> (A16, same file): the allow-list is exactly what <code>app.js</code> loads; none reaches a <code>node:</code> import — failed on <code>protocol.ts</code> (<code>evals/probes/portal-build-2026-10-02/a16-proof-protocol.out.txt</code>) before <code>traceIdFor</code> moved to <code>trace-id.ts</code>; a page module that decodes a stream, switches on a stream event or calls <code>fetch(</code> outside <code>client.ts</code> fails on fixtures kept in the suite; one definition of each line printer; a Node global in a page module fails <code>npm run typecheck</code> (<code>evals/probes/portal-build-2026-10-02/a16-proof-buffer.out.txt</code>), since <code>tsconfig.portal.json</code> has no Node types.</li>
+<li><strong>The secret scan</strong> (A21, <a href="../../tests/unit/files-secrets.test.ts"><code>tests/unit/files-secrets.test.ts</code></a>): with no bytes held back, the split test failed for 742 of 822 (<code>evals/probes/portal-build-2026-10-02/a21-proof-held-back.out.txt</code>) offsets and chunk sizes.</li>
+<li><strong>Ten more, each broken once</strong> (records (<code>evals/probes/portal-build-2026-10-02/guard-proofs.out.txt</code>)): a foreign <code>Origin</code> let through on <code>POST /v1/stop</code> (control-api-auth's A7 loop failed); the policy header dropped (A2 failed for all 24 files); eleven reports a window (R6); a second stop request run (R14); six robots below 600 px (A10); an agent's own spans counted (A11); a reply rendered as markup (A14); no drain after a refusal (A22: the page waited out its bound); the credential printed with <code>--portal</code>'s address (A1); the page not applying the deny list's names (A20).</li>
+</ul>
+<p><span class="todo">TODO: there is no single register of guard proofs. Other proofs made after 2026-09-26 are recorded only in commit messages, if at all. Decide where proofs are recorded, and link it here.</span></p>
+<p><strong>Guards proposed by reviews, not implemented.</strong> Each is a check a reviewer named as the one that would have caught a finding earliest (PRINCIPLES §21); whether to build it is the lead's decision.</p>
+<ul>
+<li><span class="todo">TODO: a docs-guard rule in </span><a href="../../tests/unit/docs.test.ts"><code>tests/unit/docs.test.ts</code></a> that fails when a plan whose status is <code>done</code> has an acceptance criterion that is neither ticked (<code>- [x]</code>) nor marked <em>Withdrawn</em>, naming the plan and the criterion. Proposed by the unreviewed-changes review, 2026-09-27, after <code>docs/plans/channel-instructions.md</code> was marked done with A2 unticked and unwithdrawn; it extends the rule proposed by that plan's completion review (a done plan with a requirement neither proven nor withdrawn).</li>
+</ul>
+<p>The debt-paydown guards (plan (<code>docs/plans/debt-paydown.md</code>)), 2026-10-03, each broken once and restored, each failing naming its offender:</p>
+<ul>
+<li><strong>Only agent containers carry the DNS flags</strong> (A1, <a href="../../tests/unit/container-runtime.test.ts"><code>tests/unit/container-runtime.test.ts</code></a>): R1's flags taken out of <code>start</code> failed &quot;the agent create&quot;; <code>--dns</code> added to the holder's create failed &quot;the holder create&quot;.</li>
+<li><strong>No address of a private network in the agent tests</strong> (A5, <code>tests/unit/agent-addresses.test.ts</code>): a planted <code>192.168.1.10</code> in <code>tests/agents/egress.test.ts</code> and <code>10.1.2.3</code> in <code>tests/agents/results/egress.json</code> failed it, naming <code>egress.test.ts:160</code> and <code>egress.json:2</code>.</li>
+<li><strong>Every command plugin's signature verified by its own key</strong> (A6, <a href="../../tests/unit/plugin-signatures.test.ts"><code>tests/unit/plugin-signatures.test.ts</code></a>): it failed on the AWS CLI manifest as it was (&quot;not verified&quot;), on one naming another fingerprint, and — after the completion review tied it to the verification run — on an archive re-pinned to another sha256, each naming <code>modules/aws_cli/module.json</code>.</li>
+<li><strong>Images staged only from <code>dist/agent-packages/</code></strong> (A9, <a href="../../tests/unit/images.test.ts"><code>tests/unit/images.test.ts</code></a>): staging pointed back at the root failed with the stray <code>.DS_Store</code>, the <code>.env</code> and the edited file all staged; the build step without <code>--no-dry-run</code> failed &quot;installs the agent packages under npm run --silent --dry-run&quot; (<a href="../../tests/unit/release.test.ts"><code>tests/unit/release.test.ts</code></a>).</li>
+<li>The orphan sweep's selection (A10), the stopping daemon's consumers (A12), the build lock (A15), the lock's clearers (A16) and the light-run registration (A17): each clause broken alone, recorded on the plan (<code>docs/plans/debt-paydown.md</code>).</li>
+</ul>
+<p>The timeout guards (<a href="../../tests/unit/abort.test.ts"><code>tests/unit/abort.test.ts</code></a>), 2026-10-11, each broken once and restored: <code>withTimeout</code> without its timer's hold failed its collection cases, re-wrapped and direct; the source guard failed naming a planted <code>const t = AbortSignal.timeout(5)</code> passed to a multi-line <code>AbortSignal.any([…])</code>, and it finds every such call of the tree before the fix (<code>049eb99~1</code>: seven, in five files), a case kept in the test.</p>
+<p>The demo-videos guards (plan (<code>docs/plans/demo-videos.md</code>)), 2026-10-11, each broken once and restored:</p>
+<ul>
+<li><strong>The recorder's frame</strong> (R9, A4, <a href="../../tests/integration/portal-record-frame.test.ts"><code>tests/integration/portal-record-frame.test.ts</code></a>), in the gate: the sampler named the telemetry, the scene's caption, the message box and the command-line view each when the frame let it show; with the frame's own hiding rule removed, the clean case failed naming <code>figcaption.muted in #view-watch</code>.</li>
+<li><strong>The videos agree with their pages</strong> (R8, A5, <a href="../../tests/unit/docs.test.ts"><code>tests/unit/docs.test.ts</code></a>): a video deleted, a sidecar's commit, sha256, models and frame size changed, a page's line changed, a video over 10,000,000 bytes, the folder over 125,000,000 bytes, the combined video's parts reordered or a part's sha256 changed, and the stylesheet's video rule removed each failed, naming the page or file.</li>
+<li><strong>Promotion refuses each bad recording</strong> (R4, R5, A2, <a href="../../tests/unit/demos-record.test.ts"><code>tests/unit/demos-record.test.ts</code></a>): every reason in <code>refusals</code>, <code>encode</code> and <code>privateIn</code>, removed in turn, failed a test.</li>
+</ul>
+</section>
+<section id="offline">
+<h2>The gate stays offline</h2>
+<p>No suite of the gate reaches the network once its caches are warm (<code>docs/plans/extension-modules.md</code> R17, A17): the unit and integration suites run with a setup file (<a href="../../tests/helpers/network-guard.ts"><code>tests/helpers/network-guard.ts</code></a>) that refuses any TCP connection but to loopback, naming the address, so a test that would reach a vendor fails instead; every module test runs against fakes and the <a href="../../tests/helpers/module-contract.ts">contract suite</a>. Every network call site under <code>src/</code>, <code>images/</code>, <code>harness-images/</code> and <code>modules/</code> is listed, by file and enclosing symbol, with why it reaches out (<a href="../../tests/unit/network-sites.test.ts"><code>tests/unit/network-sites.test.ts</code></a>, found by parsing with the TypeScript compiler); a new one fails until it is listed. No shipped recipe names a hosted model. A vendor is reached only by the opt-in <code>npm run live:modules</code> (<a href="../deployments/index.html#live-modules">Deployments</a>).</p>
+</section>
+<section id="determinism">
+<h2>Determinism</h2>
+<ul>
+<li><strong>Exact assertions need greedy decoding:</strong> a recipe whose output the gate asserts exactly sets <code>chat.temperature: 0</code> (<a href="../../AGENTS.md">AGENTS.md</a> §3), merged over the catalogue's sampling defaults. Both recipes do: <a href="../../recipes/hello-world.json">recipes/hello-world.json</a>, <a href="../../recipes/memory.json">recipes/memory.json</a>. Measured, not assumed (<a href="history.html#determinism">History</a>).</li>
+<li><strong>Never loosen an assertion.</strong> If an upgrade changes the output, re-verify and update the expectation (PRINCIPLES §8).</li>
+<li><strong>A timed-out test cannot move the next test's fake clock</strong> (<a href="../../tests/helpers/fake-clock-guard.ts"><code>tests/helpers/fake-clock-guard.ts</code></a>, the unit and integration suites' second setup file): vitest moves on from a test that times out while its body runs on, so each test runs with its own signal and <code>vi</code>'s clock moves refuse once it has aborted. Proven (<a href="../../tests/unit/fake-clock-guard.test.ts"><code>fake-clock-guard.test.ts</code></a>): the abort check, the per-test binding, the setup file and one listed move, each removed, failed it; and with a test forced to time out, the files that showed the knock-on (<code>restart.test.ts</code>, <code>persistence-stop.test.ts</code>, as they stood before <code>e23af9b</code>) failed only that test (2026-10-11).</li>
+<li><strong>Every turn ends in a tool call:</strong> channel turns send <code>tool_choice: &quot;required&quot;</code>, so no stray text is lost.</li>
+<li><strong>Prompt caching can change greedy output.</strong> llama.cpp's server README warns that <code>cache_prompt</code> &quot;can cause nondeterministic results&quot;, because logits are not guaranteed bit-identical between batch sizes (read 2026-09-28 at <code>7fe450e19</code>); the routing eval already showed a temperature-0 <code>pass</code> reason differ between a cold and a cached attempt at <code>6da73b2</code>. Since the <a href="../architecture/channel.html#prefix">shared prefix</a> makes cached turns the rule, the eval's four exact replies were decoded three ways — on a fresh server, after another agent's turn in the same slot, and restored from the host prompt store — and were identical in every way, and each the reply the eval asserts (probe A12, at <code>8e91c4f</code>, and again at <code>08136cf</code> after prompt-prefix's amendment changed the lone agents' requests, 28 of 28 checks, records (<code>evals/probes/prompt-prefix-2026-09-28/README.md</code>)). For the two requests of a lone agent, &quot;warm&quot; follows that agent's own earlier turn, since no other agent shares its prefix. Two runs in the same order reproduce the same cache states, so a repeated run is not evidence of this; the cold-and-warm probe is. <em>(Corrected 2026-09-29: this said the exact-reply eval runs one agent alone; its &quot;two-agent hello world&quot; runs hewo-1 and hewo-2 on one channel.)</em></li>
+</ul>
+</section>
+<section id="definitions">
+<h2>Closed-schema definitions</h2>
+<p>Recipes (<code>recipes/*.json</code>), images and catalogue entries (<code>catalogue/*.json</code>) are validated once, where they enter, by <code>Definitions</code> in <a href="../../src/daemon/definitions/index.ts"><code>src/daemon/definitions/index.ts</code></a>. <code>closedObject</code> rejects any unknown key, so a typo fails loudly; an unknown name throws <code>UnknownRecipe</code> or <code>UnknownImage</code>. Tests: <a href="../../tests/unit/definitions.test.ts">tests/unit/definitions.test.ts</a>.</p>
+</section>
+<section id="pins">
+<h2>Pinned, verified models</h2>
+<ul>
+<li>Each catalogue entry pins a Hugging Face <code>repo</code> at a commit <code>revision</code>, plus the <code>size</code> and <code>sha256</code> of every file.</li>
+<li>The model store (<a href="../../src/daemon/model-store/index.ts"><code>src/daemon/model-store/index.ts</code></a>) downloads to staging, verifies every sha256, then renames atomically to <code>models/sha256-&lt;tree digest&gt;/</code>. A mismatch is fatal and never retried. Only GGUF or safetensors weights are allowed.</li>
+<li>Each entry records its licence id, source URL at that revision, and date read (<code>license.verified</code>); see <a href="../architecture/models.html">Models</a>. Agent images carry an <code>asha.source</code> label, a digest of their build context, and are tagged by it (<code>asha-image-&lt;name&gt;:&lt;digest hex&gt;</code>); a changed context is a new tag, so a stale image is never reused and no tag is replaced.</li>
+</ul>
+</section>
+<section id="errors">
+<h2>Error surfacing</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 230" role="img" aria-labelledby="qc-err-t qc-err-d">
+  <title id="qc-err-t">How a daemon failure becomes findable</title>
+  <desc id="qc-err-d">A failure anywhere in the daemon is passed to the one logging facade, JsonLinesLogger in src/daemon/log.ts, with the error. The facade serializes the error with its name, message, stack and cause chain, sets ts, level and event last so no field can hide them, and appends one JSON line synchronously to ASHA_HOME/logs/daemon.jsonl before echoing it to stderr. The 3am query, jq selecting level error on that file, finds every error record.</desc>
+  <defs><marker id="qc-err-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="10" y="50" width="150" height="90" rx="6"/>
+  <text class="label title" x="85" y="78" text-anchor="middle">A failure</text>
+  <text class="label small" x="85" y="98" text-anchor="middle">anywhere in</text>
+  <text class="label small" x="85" y="113" text-anchor="middle">the daemon</text>
+
+  <rect class="box accent" x="200" y="50" width="220" height="90" rx="6"/>
+  <text class="label mono" x="310" y="74" text-anchor="middle">JsonLinesLogger.error()</text>
+  <text class="label small" x="310" y="94" text-anchor="middle">name, message, stack, cause chain</text>
+  <text class="label small" x="310" y="110" text-anchor="middle">ts, level, event set last</text>
+  <text class="label small" x="310" y="126" text-anchor="middle">written synchronously</text>
+
+  <rect class="box" x="460" y="30" width="290" height="50" rx="6"/>
+  <text class="label mono" x="605" y="52" text-anchor="middle">&lt;ASHA_HOME&gt;/logs/daemon.jsonl</text>
+  <text class="label small" x="605" y="68" text-anchor="middle">one JSON line per record</text>
+
+  <rect class="box" x="460" y="110" width="200" height="40" rx="6"/>
+  <text class="label mono" x="560" y="135" text-anchor="middle">stderr (echo)</text>
+
+  <path class="edge" d="M160 95 H198" marker-end="url(#qc-err-arr)"/>
+  <path class="edge" d="M420 80 L458 58" marker-end="url(#qc-err-arr)"/>
+  <path class="edge" d="M420 110 L458 128" marker-end="url(#qc-err-arr)"/>
+
+  <rect class="box accent" x="460" y="175" width="290" height="44" rx="6"/>
+  <text class="label mono" x="605" y="202" text-anchor="middle">jq -c 'select(.level=="error")'</text>
+  <path class="edge dim" d="M710 80 V173" marker-end="url(#qc-err-arr)"/>
+  <text class="label small" x="450" y="201" text-anchor="end">the 3am query reads the file</text>
+</svg>
+<figcaption>Every daemon failure goes through JsonLinesLogger, lands as one JSON line in daemon.jsonl (and on stderr), and is found by the 3am query.</figcaption>
+</figure>
+<ul>
+<li><strong>One facade:</strong> <code>JsonLinesLogger</code> in <a href="../../src/daemon/log.ts"><code>src/daemon/log.ts</code></a> writes each record synchronously as one JSON line in <code>&lt;ASHA_HOME&gt;/logs/daemon.jsonl</code>, echoed to stderr, so it is on disk before any crash that follows.</li>
+<li><strong>Errors keep their detail:</strong> name, message, stack and <code>cause</code> chain; <code>ts</code>, <code>level</code> and <code>event</code> are set last so no field can hide an error. Events: <a href="../architecture/index.html#logs">Architecture: logs</a>.</li>
+<li><strong>Expected external failures are data:</strong> the model gateway returns <code>{ok:false, reason, detail}</code>.</li>
+<li><strong>Refusals are findable and bounded:</strong> every 401 and 403 is a <code>warn</code> record <code>http.refused</code> with its reason and <code>count</code>, one per reason and API per second at most (<a href="../architecture/index.html#apis">the guard</a>): <code>jq -c &#39;select(.event==&quot;http.refused&quot;)&#39;</code>.</li>
+<li><strong>Isolation fails closed and loudly:</strong> a container that cannot be confined to the daemon's port is never started; the launch fails with <code>ContainerIsolationFailed</code> (logged as <code>launch.failed</code> or <code>conversation.agent_unavailable</code>, reason <code>container_runtime</code>), naming the rule, network or check, with the command's output. A failure to remove a home's rules or network is <code>daemon.reclaim_failed</code> and fails the start or the stop (<a href="../architecture/index.html#host-inference">reaching the host</a>).</li>
+<li><strong>Nothing guesses an environment:</strong> a missing <code>ASHA_URL</code>, <code>ASHA_AGENT_TOKEN</code> or docker socket fails loudly. Tests: <a href="../../tests/unit/log.test.ts">tests/unit/log.test.ts</a>.</li>
+</ul>
+<p class="pre-label">the 3am query (PRINCIPLES §11)</p><pre><code class="language-sh">jq -c &#39;select(.level==&quot;error&quot;)&#39; ~/.simplyautonomous/harness/logs/daemon.jsonl
+</code></pre>
+<p><strong>Every remote call is bounded</strong>, for example: CLI health check 3 s, daemon start 20 s, stop 90 s, an agent draining its started work at stop 65 s inside a 70 s stop grace, model chat 60 s, <code>llama-server</code> ready 120 s, model download stall 60 s, <code>brew install</code> 15 min, <code>colima start</code> 10 min, each <code>colima ssh</code> that installs or removes the container rules 30 s.</p>
+<p><strong>A bound survives a garbage collection:</strong> a timeout combined with another signal is made only by <code>withTimeout</code> (<a href="../../src/shared/abort.ts"><code>src/shared/abort.ts</code></a>). On Node 22, <code>AbortSignal.any([AbortSignal.timeout(ms), …])</code> holds its sources weakly, and a collection left such a call unbounded (2026-10-11); <code>withTimeout</code> holds the timeout signal by a timer until it fires. A guard in <a href="../../tests/unit/abort.test.ts"><code>tests/unit/abort.test.ts</code></a> fails on any <code>AbortSignal.any(…)</code> in <code>src/</code> or an image's source that holds <code>AbortSignal.timeout(</code> or a name assigned from it.</p>
+</section>
+<section id="review">
+<h2>Adversarial review and checklists</h2>
+<p>Every change gets an adversarial review by a fresh agent before it is reported done — a change that touches code through the review loops in <a href="../../sdlc/README.md"><code>sdlc/</code></a>, anything else in one round — and every plan two (plan and completion); in a one-round review, findings are fixed, rebutted with evidence, or declined as not material, and the completing commit carries a <code>Review:</code> trailer. Correctness, security, data-loss and principle findings are never declined (<a href="../../PRINCIPLES.md">PRINCIPLES.md</a> §18–§19). Docs are reviewed against the <a href="../project/documentation.html">contract</a>. The workflow and prompts: <a href="../project/workflows.html#review">Workflows: adversarial review</a>. The <a href="../project/workflows.html#checklists">checklists</a> define done, and the item that should have caught an escaped defect is amended (§21).</p>
+</section>
+<footer class="page"><span>Source: <code>docs/quality/index.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

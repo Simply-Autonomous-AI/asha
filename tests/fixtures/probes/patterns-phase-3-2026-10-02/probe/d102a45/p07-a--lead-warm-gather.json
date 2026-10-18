@@ -1,0 +1,101 @@
+{
+  "commit": "d102a45b4059a62f100af58747d186b1be299a95",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p07-a/lead-warm-gather",
+  "control": false,
+  "change": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "4, 7"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "4, 7"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1185,
+          "completionTokens": 20
+        }
+      ],
+      "ms": 3162,
+      "board": [],
+      "requestSha256": "eae0ff211531a53089fb2331aed7e46dc93056fadcd9e6cea4daa32dae6cf057",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "4, 7"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "4, 7"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1185,
+          "completionTokens": 20
+        }
+      ],
+      "ms": 457,
+      "board": [],
+      "requestSha256": "eae0ff211531a53089fb2331aed7e46dc93056fadcd9e6cea4daa32dae6cf057",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "4, 7"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "4, 7"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1185,
+          "completionTokens": 20
+        }
+      ],
+      "ms": 460,
+      "board": [],
+      "requestSha256": "eae0ff211531a53089fb2331aed7e46dc93056fadcd9e6cea4daa32dae6cf057",
+      "ok": true
+    }
+  ]
+}

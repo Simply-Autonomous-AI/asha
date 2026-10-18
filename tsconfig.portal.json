@@ -1,0 +1,26 @@
+{
+  // The portal's page (docs/plans/portal.md R15): its own project, for the browser — ES2024 and the DOM, and no
+  // Node types, so a Node global (Buffer, process) in any module it compiles fails the type-check. The shared modules
+  // it imports are compiled here too, into this project's own output, so no file is written by both projects.
+  "compilerOptions": {
+    "target": "ES2024",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "types": [],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "outDir": "dist/portal-build",
+    "rootDir": "."
+  },
+  "include": ["src/portal/**/*.ts"]
+}

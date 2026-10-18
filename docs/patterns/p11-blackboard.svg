@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 420" role="img" aria-labelledby="p11-t p11-d">
+  <title id="p11-t">P11 · Blackboard</title>
+  <desc id="p11-d">p11-a: you ask editor-1 for the shopping list; it consults contrib-a-1, contrib-b-1 and contrib-c-1 in one call; each posts its item to the channel's blackboard and answers only "posted"; editor-1 reads the board and replies with the items. p11-b: you ask planner-1 for the meeting notice; it consults note-day-1, then note-room-1, then note-time-1, one call each; note-day-1 posts "notice: meeting on Thursday"; note-room-1 and note-time-1 each read the board and post the last notice extended with their own fact; planner-1 reads the board and replies with the notice. No question or answer carries an item or a fact: they travel only through the board.</desc>
+  <defs><marker id="p11-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <text class="label" x="20" y="24">p11-a · the shopping list</text>
+  <rect class="box" x="20" y="40" width="80" height="34" rx="5"/>
+  <text class="label mono" x="60" y="62" text-anchor="middle">you</text>
+  <rect class="box accent" x="140" y="40" width="110" height="34" rx="5"/>
+  <text class="label mono" x="195" y="62" text-anchor="middle">editor-1</text>
+  <path class="edge" d="M100 57 H138" marker-end="url(#p11-a)"/>
+  <rect class="box" x="300" y="34" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="53" text-anchor="middle">contrib-a-1</text>
+  <rect class="box" x="300" y="70" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="89" text-anchor="middle">contrib-b-1</text>
+  <rect class="box" x="300" y="106" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="125" text-anchor="middle">contrib-c-1</text>
+  <path class="edge" d="M250 57 L298 48" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M250 60 L298 84" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M250 64 L298 118" marker-end="url(#p11-a)"/>
+  <text class="label small" x="262" y="150">consult; answers "posted"</text>
+  <rect class="box accent" x="480" y="40" width="180" height="96" rx="5"/>
+  <text class="label mono small" x="490" y="58">blackboard (channel main)</text>
+  <text class="label mono small" x="490" y="80">item: saffron</text>
+  <text class="label mono small" x="490" y="98">item: quince jam</text>
+  <text class="label mono small" x="490" y="116">item: rye flour</text>
+  <path class="edge" d="M420 84 H478" marker-end="url(#p11-a)"/>
+  <text class="label small" x="425" y="78">post</text>
+  <path class="edge" d="M570 136 C570 175 195 175 195 76" marker-end="url(#p11-a)"/>
+  <text class="label small" x="330" y="182">editor-1 reads the board, then replies with the items</text>
+  <text class="label" x="20" y="222">p11-b · the meeting notice</text>
+  <rect class="box" x="20" y="238" width="80" height="34" rx="5"/>
+  <text class="label mono" x="60" y="260" text-anchor="middle">you</text>
+  <rect class="box accent" x="140" y="238" width="110" height="34" rx="5"/>
+  <text class="label mono" x="195" y="260" text-anchor="middle">planner-1</text>
+  <path class="edge" d="M100 255 H138" marker-end="url(#p11-a)"/>
+  <rect class="box" x="300" y="232" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="251" text-anchor="middle">1 note-day-1</text>
+  <rect class="box" x="300" y="268" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="287" text-anchor="middle">2 note-room-1</text>
+  <rect class="box" x="300" y="304" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="323" text-anchor="middle">3 note-time-1</text>
+  <path class="edge" d="M250 252 L298 246" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M250 256 L298 282" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M250 260 L298 316" marker-end="url(#p11-a)"/>
+  <text class="label small" x="218" y="350">one call at a time, in turn</text>
+  <rect class="box accent" x="460" y="232" width="200" height="100" rx="5"/>
+  <text class="label mono small" x="470" y="250">blackboard (channel main)</text>
+  <text class="label mono small" x="470" y="272">notice: … Thursday</text>
+  <text class="label mono small" x="470" y="292">… Thursday, in the Juniper room</text>
+  <text class="label mono small" x="470" y="312">… Juniper room, at 14:30</text>
+  <path class="edge" d="M420 246 H458" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M458 282 H422" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M422 290 H458" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M458 312 H422" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M422 324 H458" marker-end="url(#p11-a)"/>
+  <text class="label small" x="425" y="350">read, then post the notice extended</text>
+  <path class="edge" d="M560 332 C560 395 195 395 195 274" marker-end="url(#p11-a)"/>
+  <text class="label small" x="300" y="408">planner-1 reads the board, then replies with the notice</text>
+</svg>

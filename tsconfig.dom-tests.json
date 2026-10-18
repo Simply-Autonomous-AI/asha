@@ -1,0 +1,13 @@
+{
+  // The unit tests of the portal's browser modules (tests/**/*.dom.test.ts) and the fakes they run against
+  // (tests/helpers/fake-dom.ts, fake-canvas.ts): their own project, with both the DOM library — the modules' own types
+  // — and Node's, which the test runner needs. tsconfig.json leaves them out, so no Node module there may name a DOM
+  // type, and tsconfig.portal.json still compiles the page with no Node types.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2024", "ES2025.Iterator", "ES2025.Collection", "DOM", "DOM.Iterable"],
+    "types": ["node"]
+  },
+  "include": ["tests/**/*.dom.test.ts", "tests/helpers/fake-dom.ts", "tests/helpers/fake-canvas.ts"],
+  "exclude": ["node_modules", "dist"]
+}

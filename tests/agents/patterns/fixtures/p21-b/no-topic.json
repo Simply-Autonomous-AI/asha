@@ -1,0 +1,50 @@
+{
+  "scenario": "p21-b",
+  "breaks": "the message is posted to topic sports, to everyone (channel.posted with topic sports and to null)",
+  "note": "Posted to everyone with no topic.",
+  "team": "topics",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "The home team won."
+  },
+  "recipients": [
+    "sports-desk-1",
+    "front-page-1"
+  ],
+  "messages": [
+    {
+      "from": "sports-desk-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "sports-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "sports-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "sports-desk-1",
+      "kind": "output",
+      "text": "sports-desk-1 noted: The home team won.",
+      "working": [
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "output",
+      "text": "front-page-1 noted: The home team won.",
+      "working": []
+    }
+  ],
+  "ms": 6000
+}

@@ -1,0 +1,42 @@
+{
+  "scenario": "p01-a",
+  "breaks": "the request completes within the pattern's bound",
+  "note": "The request took one millisecond more than its page's bound (patterns-phase-1 R4, A4).",
+  "team": "delegation",
+  "input": {
+    "user": "alice",
+    "to": "lead-1",
+    "text": "Please ask greeter-1 to say Hello World."
+  },
+  "recipients": [
+    "lead-1"
+  ],
+  "messages": [
+    {
+      "from": "lead-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "lead-1",
+      "kind": "internal",
+      "text": "Say: Hello World",
+      "to": "greeter-1",
+      "working": [
+        "lead-1",
+        "greeter-1"
+      ]
+    },
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "greeter-1",
+      "kind": "output",
+      "text": "Hello World"
+    }
+  ],
+  "ms": "bound+1"
+}

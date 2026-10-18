@@ -1,0 +1,36 @@
+{
+  "kind": "chat",
+  "id": "pico-v2-q8_0",
+  "repo": "OculusMindAI/OculusMind-ToolCall-8B-v2",
+  "revision": "3a3d1b36fbfd397e67545786057b0e335a8efffc",
+  "weights": "gguf/Q8_0/model-q8_0.gguf",
+  "files": [
+    {
+      "path": "gguf/Q8_0/model-q8_0.gguf",
+      "size": 9028871552,
+      "sha256": "fe76fb07e5ca7351171bcd94838129514f8ad9bfc0a4e84ac6d9c247b33e1c56"
+    },
+    {
+      "path": "LICENSE",
+      "size": 11347,
+      "sha256": "fccc764ff9f6234f79d44e8ddd800356b3660250969c2f4c8f70b5adcba0f02c"
+    },
+    {
+      "path": "NOTICE",
+      "size": 15479,
+      "sha256": "d7adb7f766497eaa9ce093de49f37e6373408f2fbb836bbdfb42629c8e07527d"
+    }
+  ],
+  "license": {
+    "id": "apache-2.0",
+    "source": "https://huggingface.co/OculusMindAI/OculusMind-ToolCall-8B-v2/blob/3a3d1b36fbfd397e67545786057b0e335a8efffc/LICENSE",
+    "verified": "2026-10-09"
+  },
+  "serve": {
+    "contextSize": 8192
+  },
+  "chat": {
+    "temperature": 0
+  },
+  "toolCallStart": "[TOOL_CALLS]"
+}

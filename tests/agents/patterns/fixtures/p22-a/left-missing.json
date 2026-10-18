@@ -1,0 +1,27 @@
+{
+  "scenario": "p22-a",
+  "breaks": "its \"left:\" part names the meeting room",
+  "note": "The summary leaves out what is left.",
+  "team": "escalation",
+  "input": {
+    "user": "alice",
+    "to": "helper-1",
+    "text": "Convert 3 metres to centimetres, then book a meeting room for 3 pm."
+  },
+  "recipients": [
+    "helper-1"
+  ],
+  "messages": [
+    {
+      "from": "helper-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "helper-1",
+      "kind": "output",
+      "text": "ESCALATE: done: 3 metres is 300 centimetres"
+    }
+  ],
+  "ms": 4000
+}

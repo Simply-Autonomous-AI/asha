@@ -1,0 +1,22 @@
+{
+  "id": "vote",
+  "description": "P10, voting: an aggregator consults three voters with different guidance and reports the majority and the tally.",
+  "members": [
+    {
+      "name": "aggregator",
+      "recipe": "aggregator.json"
+    },
+    {
+      "name": "voter-cautious",
+      "recipe": "voter-cautious.json"
+    },
+    {
+      "name": "voter-bold",
+      "recipe": "voter-bold.json"
+    },
+    {
+      "name": "voter-thrifty",
+      "recipe": "voter-thrifty.json"
+    }
+  ]
+}

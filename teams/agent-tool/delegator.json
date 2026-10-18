@@ -1,0 +1,24 @@
+{
+  "id": "delegator",
+  "image": "hello-world",
+  "description": "Uses another agent as a tool and answers the user itself.",
+  "prompt": "you use another agent as a tool and answer the user yourself.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "delegator.md",
+      "fullText": true
+    }
+  ]
+}

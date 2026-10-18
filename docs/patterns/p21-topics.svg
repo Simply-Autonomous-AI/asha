@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="p21-t p21-d">
+  <title id="p21-t">P21 · Publish / subscribe (topic routing)</title>
+  <desc id="p21-d">p21-a: the user posts to topic weather; the harness delivers it to weather-desk-1 and front-page-1, each of which replies noted with the message; sports-desk-1 receives nothing. p21-b: topic sports reaches sports-desk-1 and front-page-1.</desc>
+  <defs><marker id="p21-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="8" y="10" width="120" height="34" rx="5"/>
+  <text class="label mono" x="68" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M68 44 V324"/>
+  <rect class="box" x="168" y="10" width="120" height="34" rx="5"/>
+  <text class="label mono" x="228" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M228 44 V324"/>
+  <rect class="box accent" x="328" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="396" y="32" text-anchor="middle">weather-desk-1</text>
+  <path class="edge dim" d="M396 44 V324"/>
+  <rect class="box accent" x="480" y="10" width="130" height="34" rx="5"/>
+  <text class="label mono" x="545" y="32" text-anchor="middle">sports-desk-1</text>
+  <path class="edge dim" d="M545 44 V324"/>
+  <rect class="box accent" x="626" y="10" width="126" height="34" rx="5"/>
+  <text class="label mono" x="689" y="32" text-anchor="middle">front-page-1</text>
+  <path class="edge dim" d="M689 44 V324"/>
+  <path class="edge" d="M68 80 H226" marker-end="url(#p21-a)"/>
+  <text class="label small" x="148" y="74" text-anchor="middle">topic=weather: Rain…</text>
+  <path class="edge" d="M228 108 H394" marker-end="url(#p21-a)"/>
+  <path class="edge" d="M228 108 H687" marker-end="url(#p21-a)"/>
+  <text class="label small" x="545" y="102" text-anchor="middle">subscribed: weather-desk, front-page</text>
+  <path class="edge" d="M396 140 H70" marker-end="url(#p21-a)"/>
+  <text class="label small" x="232" y="134" text-anchor="middle">weather-desk-1 noted: Rain…</text>
+  <path class="edge" d="M689 172 H70" marker-end="url(#p21-a)"/>
+  <text class="label small" x="380" y="166" text-anchor="middle">front-page-1 noted: Rain…</text>
+  <path class="edge" d="M68 222 H226" marker-end="url(#p21-a)"/>
+  <text class="label small" x="148" y="216" text-anchor="middle">topic=sports: The home…</text>
+  <path class="edge" d="M228 250 H543" marker-end="url(#p21-a)"/>
+  <path class="edge" d="M228 250 H687" marker-end="url(#p21-a)"/>
+  <text class="label small" x="460" y="244" text-anchor="middle">subscribed: sports-desk, front-page</text>
+  <text class="label small" x="380" y="290" text-anchor="middle">each replies "noted"; the unsubscribed desk receives nothing</text>
+</svg>

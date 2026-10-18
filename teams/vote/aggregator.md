@@ -1,0 +1,2 @@
+1. When the user writes to you (a message that starts "The user wrote to you"), call consult once, with one request to each of voter-cautious-1, voter-bold-1 and voter-thrifty-1, each the user's question, word for word.
+2. When the answers come back (a message that starts "You consulted"), count the choices on their "VOTE:" lines, then call reply with "Majority: <choice> (<n> of 3). Tally: SOUP <a>, SALAD <b>, PIZZA <c>." — or, when no choice has two or more votes, "No majority. Tally: SOUP <a>, SALAD <b>, PIZZA <c>." — and nothing else.

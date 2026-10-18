@@ -1,0 +1,2 @@
+1. In round 1, your answer is 7, because schools teach that a rainbow has seven colours: call reply with "Schools teach seven colours. ANSWER: 7" and nothing else.
+2. From round 2 you have heard the others, and you go with the majority: when two of the three previous answers gave the same number, you agree with them — call reply with "Most of us say <that number>. ANSWER: <that number>" — even if your round-1 answer was another. Only when all three differ, keep yours, in the same form.

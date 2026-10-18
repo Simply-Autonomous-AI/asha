@@ -1,0 +1,44 @@
+{
+  "scenario": "p12-b",
+  "breaks": "exactly one output, from greeter-1, matching /^hello,? world\\.?$/i",
+  "note": "translator-1 answers too.",
+  "team": "self-select",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Please say: Hello World."
+  },
+  "recipients": [
+    "greeter-1",
+    "translator-1"
+  ],
+  "messages": [
+    {
+      "from": "translator-1",
+      "kind": "status",
+      "text": "pass: not a translation",
+      "working": [
+        "greeter-1"
+      ]
+    },
+    {
+      "from": "translator-1",
+      "kind": "output",
+      "text": "Bonjour le monde",
+      "working": [
+        "greeter-1"
+      ]
+    },
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "greeter-1",
+      "kind": "output",
+      "text": "Hello World."
+    }
+  ],
+  "ms": 3000
+}

@@ -1,0 +1,94 @@
+{
+  "scenario": "p18-a",
+  "breaks": "worker-1's answer, on the call, to delegator-1, matches /hello,? world/i",
+  "note": "worker-1's answer is not the words it was asked to say.",
+  "team": "agent-tool",
+  "input": {
+    "user": "alice",
+    "to": "delegator-1",
+    "text": "Get worker-1 to say Hello World, then tell me yourself what it said."
+  },
+  "recipients": [
+    "delegator-1"
+  ],
+  "messages": [
+    {
+      "from": "delegator-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "delegator-1",
+      "to": "worker-1",
+      "kind": "internal",
+      "text": "Get worker-1 to say Hello World, then tell me yourself what it said.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "delegator-1",
+        "worker-1"
+      ]
+    },
+    {
+      "from": "worker-1",
+      "to": "delegator-1",
+      "kind": "internal",
+      "text": "Goodbye",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "delegator-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "delegator-1",
+      "kind": "internal",
+      "text": "Answers to delegator-1's call: 1 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "delegator-1"
+      ]
+    },
+    {
+      "from": "delegator-1",
+      "kind": "output",
+      "text": "worker-1 said: Goodbye"
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "delegator-1",
+      "addressees": [
+        "worker-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "delegator-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    }
+  ],
+  "ms": 11000
+}

@@ -1,0 +1,12 @@
+data: {"id":"chatcmpl-1","object":"chat.completion.chunk","created":1759363200,"model":"mistral.ministral-3-8b-instruct","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-1","object":"chat.completion.chunk","created":1759363200,"model":"mistral.ministral-3-8b-instruct","choices":[{"index":0,"delta":{"content":"Paris is "},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-1","object":"chat.completion.chunk","created":1759363200,"model":"mistral.ministral-3-8b-instruct","choices":[{"index":0,"delta":{"content":"the capital."},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-1","object":"chat.completion.chunk","created":1759363200,"model":"mistral.ministral-3-8b-instruct","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+
+data: {"id":"chatcmpl-1","object":"chat.completion.chunk","created":1759363200,"model":"mistral.ministral-3-8b-instruct","choices":[],"usage":{"prompt_tokens":21,"completion_tokens":6,"total_tokens":27}}
+
+data: [DONE]
+

@@ -1,0 +1,32 @@
+{
+  "pattern": "P19",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:35:31.185Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p19-spawning",
+  "models": [
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 21120,
+  "bytes": 1205183,
+  "sha256": "6c088f894ade8a8af357c327b096bcbb5499ff9fdaf3d154a535aaa25ee3fd2a",
+  "frames": 422,
+  "framesPerSecond": 20,
+  "longestGapMs": 67,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P19 · Dynamic spawning of workers",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 4767,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p19-a",
+      "outcome": "pass"
+    }
+  ]
+}

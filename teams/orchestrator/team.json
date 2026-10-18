@@ -1,0 +1,22 @@
+{
+  "id": "orchestrator",
+  "description": "P5, orchestrator–workers: a lead splits a request into parts and consults the worker whose description covers each part.",
+  "members": [
+    {
+      "name": "lead",
+      "recipe": "lead.json"
+    },
+    {
+      "name": "worker-a",
+      "recipe": "worker-a.json"
+    },
+    {
+      "name": "worker-b",
+      "recipe": "worker-b.json"
+    },
+    {
+      "name": "worker-c",
+      "recipe": "worker-c.json"
+    }
+  ]
+}

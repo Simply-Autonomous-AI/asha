@@ -1,0 +1,319 @@
+// The CLI's side of files for agents (docs/plans/agent-files.md R1–R3a, R7, R8, R12a, R13): the files a message
+// attaches, read and checked here (attach.ts); the channel's space made ready (`POST /v1/channel/space`); the upload
+// of a message's files in one request, streamed from their descriptors; and a returned file fetched and saved under
+// `./asha-files/<channel>/`, never overwriting. The daemon never opens a host path a user names (R3).
+
+import { createHash, randomBytes } from 'node:crypto';
+import { constants } from 'node:fs';
+import { link, lstat, mkdir, open, unlink } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
+
+import { MAX_FILES_PER_MESSAGE, fileNameProblem, suffixedName } from '../shared/files.js';
+import { SPACE_CLOSED, daemonRefusedLine, silenceLine, spaceBoundRule, spaceEvent, uploadRefusalLine, type SpaceReady } from '../shared/lines.js';
+import { NAME_PATTERN, Routes, type ReturnedFile, type SpaceEvent, type UploadResponse } from '../shared/protocol.js';
+import { expandHome, lineAttachments, readAttachment, type OpenAttachment, type PathContext } from './attach.js';
+import type { Ctx } from './commands.js';
+
+// The CLI's bounds on an upload's answer and a returned file's body (R3a, R12a; timing.uploadAnswerMs and
+// timing.downloadIdleMs), shared with the portal's page (docs/plans/portal.md R18).
+export { DOWNLOAD_IDLE_MS, UPLOAD_ANSWER_MS } from '../shared/timing.js';
+// Shared with the portal's page (R15): one implementation each, re-exported for the CLI's own modules.
+export { cloudWarning, fileLine } from '../shared/lines.js';
+/** The folder returned files are saved in, under the folder `asha` runs in (the owner's answer to question 5). */
+export const SAVE_FOLDER = 'asha-files';
+
+/** Where the CLI runs, for paths: its working directory, the user's home, and ASHA_HOME. */
+export function pathContext(ctx: Pick<Ctx, 'cwd' | 'homeDir' | 'env'>, ashaHome: string): PathContext {
+  return { cwd: ctx.cwd(), home: ctx.homeDir(), ashaHome };
+}
+
+/** A message's files to attach: strict (`file=`: any refusal refuses the message) or from a line (refusals said, never fatal). */
+export type AttachRequest = { readonly kind: 'files'; readonly paths: readonly string[] } | { readonly kind: 'line'; readonly line: string };
+
+/** The files read for a message, ready to upload; undefined once a refusal has been printed (strict). */
+export async function readMessageFiles(ctx: Ctx, attach: AttachRequest, context: PathContext): Promise<OpenAttachment[] | undefined> {
+  if (attach.kind === 'line') {
+    const found = await lineAttachments(attach.line, context);
+    for (const item of found) if (item.kind === 'warn') ctx.stderr(`⚠ not attached ${item.shown}: ${item.rule}\n`);
+    return found.flatMap((item) => (item.kind === 'attach' ? [item.file] : []));
+  }
+  const files: OpenAttachment[] = [];
+  const close = async (): Promise<void> => {
+    for (const f of files) await f.close();
+  };
+  const seen = new Set<string>();
+  for (const path of attach.paths) {
+    // `~/` expanded by the CLI itself: bash and zsh expand it after `=` differently (R1).
+    const read = await readAttachment(resolve(context.cwd, expandHome(path, context.home)), path, context);
+    if (!read.ok) {
+      await close();
+      ctx.stderr(`✗ ${path}: ${read.rule}\n`);
+      return undefined;
+    }
+    // A file is attached once however many times it is named.
+    if (seen.has(read.file.resolved)) {
+      await read.file.close();
+      continue;
+    }
+    seen.add(read.file.resolved);
+    files.push(read.file);
+    if (files.length > MAX_FILES_PER_MESSAGE) {
+      await close();
+      ctx.stderr(`✗ ${path}: more than ${MAX_FILES_PER_MESSAGE} files\n`);
+      return undefined;
+    }
+  }
+  return files;
+}
+
+/** The space's usage and the cloud-granted agents its files may reach, from `space_ready`; undefined once a failure is printed. */
+export async function prepareSpace(
+  ctx: Ctx,
+  daemon: { readonly port: number; readonly credential: string },
+  request: { readonly channel: string; readonly recipe?: string },
+  events: (body: ReadableStream<Uint8Array>, onChunk: () => void) => AsyncGenerator<unknown>,
+): Promise<SpaceReady | undefined> {
+  const controller = new AbortController();
+  const stop = () => controller.abort();
+  ctx.signal.addEventListener('abort', stop, { once: true });
+  let idle = setTimeout(stop, ctx.timing.streamIdleMs);
+  try {
+    const response = await ctx.fetch(`http://127.0.0.1:${daemon.port}${Routes.channelSpace}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${daemon.credential}` },
+      body: JSON.stringify({ channel: request.channel, ...(request.recipe === undefined ? {} : { recipe: request.recipe }) }),
+      signal: controller.signal,
+    });
+    if (!response.ok || response.body === null) {
+      ctx.stderr(daemonRefusedLine(`refused the file space of channel ${request.channel}`, response.status, await response.text()));
+      return undefined;
+    }
+    for await (const raw of events(response.body, () => {
+      clearTimeout(idle);
+      idle = setTimeout(stop, ctx.timing.streamIdleMs);
+    })) {
+      const ready = spaceEvent(ctx, raw as SpaceEvent);
+      if (ready === 'failed') return undefined;
+      if (ready !== undefined) return ready;
+    }
+    ctx.stderr(SPACE_CLOSED);
+    return undefined;
+  } catch (error) {
+    if (ctx.signal.aborted) return undefined;
+    if (controller.signal.aborted) {
+      ctx.stderr(silenceLine(ctx.timing.streamIdleMs));
+      return undefined;
+    }
+    throw error;
+  } finally {
+    clearTimeout(idle);
+    ctx.signal.removeEventListener('abort', stop);
+  }
+}
+
+/**
+ * The files that fit the space's bounds by the usage `space_ready` reported (R11): strict, any file past them refuses
+ * the message (undefined, said); from a line, each that would pass one is said not attached and left out.
+ */
+export async function withinBounds(ctx: Ctx, files: OpenAttachment[], usage: { readonly bytes: number; readonly entries: number }, channel: string, strict: boolean): Promise<OpenAttachment[] | undefined> {
+  const kept: OpenAttachment[] = [];
+  let bytes = usage.bytes;
+  for (const file of files) {
+    const rule = spaceBoundRule(channel, usage, { count: kept.length, bytes: bytes - usage.bytes }, file.size);
+    if (rule === undefined) {
+      kept.push(file);
+      bytes += file.size;
+      continue;
+    }
+    if (strict) {
+      for (const f of files) await f.close();
+      ctx.stderr(`✗ ${file.shown}: ${rule}\n`);
+      return undefined;
+    }
+    ctx.stderr(`⚠ not attached ${file.shown}: ${rule}\n`);
+    await file.close();
+  }
+  return kept;
+}
+
+/**
+ * Uploads a message's files in one request (R3a): its body the manifest's line, then each file's bytes from its own
+ * descriptor, streamed; answered within UPLOAD_ANSWER_MS. Undefined once a refusal has been printed.
+ */
+export async function upload(
+  ctx: Ctx,
+  daemon: { readonly port: number; readonly credential: string },
+  props: { readonly channel: string; readonly user: string; readonly files: readonly OpenAttachment[] },
+): Promise<UploadResponse | undefined> {
+  const bound = AbortSignal.timeout(ctx.timing.uploadAnswerMs);
+  const signal = AbortSignal.any([bound, ctx.signal]);
+  const where = `channel ${props.channel}`;
+  const query = new URLSearchParams({ channel: props.channel, user: props.user });
+  try {
+    const response = await ctx.fetch(`http://127.0.0.1:${daemon.port}${Routes.channelFiles}?${query.toString()}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/octet-stream', authorization: `Bearer ${daemon.credential}` },
+      body: uploadBody(props.files),
+      // A streamed request body (Node's fetch): sent as it is read, never held whole.
+      duplex: 'half',
+      signal,
+    } as RequestInit & { duplex: 'half' });
+    const text = await response.text();
+    if (response.status !== 200) {
+      ctx.stderr(uploadRefusalLine(props.channel, response.status, text));
+      return undefined;
+    }
+    const answer = JSON.parse(text) as UploadResponse;
+    // Every name and path the daemon sends is checked again here (R13).
+    for (const f of answer.files) {
+      const problem = fileNameProblem(f.name, { returned: false });
+      if (problem !== undefined || !/^\/channel\/upload-[0-9a-f]{16}\/[^/]+$/.test(f.path)) throw new Error(`the daemon answered an upload with a file it may not name: ${JSON.stringify(f)}`);
+    }
+    return answer;
+  } catch (error) {
+    if (ctx.signal.aborted) return undefined;
+    if (bound.aborted) {
+      ctx.stderr(`✗ upload to ${where}: no answer in ${ctx.timing.uploadAnswerMs / 1_000} s\n`);
+      return undefined;
+    }
+    throw error;
+  }
+}
+
+/** The upload's body (R3a): the manifest line, then each file's bytes in manifest order, pulled as the request sends them. */
+function uploadBody(files: readonly OpenAttachment[]): ReadableStream<Uint8Array> {
+  const manifest = Buffer.from(`${JSON.stringify(files.map((f) => ({ name: f.name, size: f.size, sha256: f.sha256 })))}\n`);
+  let index = -1;
+  let current: AsyncIterator<Uint8Array> | undefined;
+  return new ReadableStream<Uint8Array>(
+    {
+      async pull(controller) {
+        for (;;) {
+          if (index === -1) {
+            index = 0;
+            controller.enqueue(manifest);
+            return;
+          }
+          if (index >= files.length) {
+            controller.close();
+            return;
+          }
+          current ??= files[index]!.bytes()[Symbol.asyncIterator]();
+          const next = await current.next();
+          if (next.done !== true) {
+            controller.enqueue(next.value);
+            return;
+          }
+          current = undefined;
+          index += 1;
+        }
+      },
+    },
+    { highWaterMark: 0 },
+  );
+}
+
+/**
+ * Fetches a returned file and saves it as `asha-files/<channel>/<name>` under the folder `asha` runs in, never
+ * overwriting (R12a): a partial file made exclusively, its bytes read with a 30 s inactivity bound and checked against
+ * the record, then linked to the final name — `-2`, `-3`, … when one is taken, a link included — and the partial
+ * removed. Prints `file: <path> (<bytes> bytes, sha256 <hex>)` on stdout; false once a failure is printed.
+ */
+export async function saveReturned(ctx: Ctx, daemon: { readonly port: number; readonly credential: string }, channel: string, file: ReturnedFile): Promise<boolean> {
+  const refuse = (rule: string): false => {
+    ctx.stderr(`✗ file ${file.name}: ${rule}\n`);
+    return false;
+  };
+  // The name and the channel become a host path: checked here, whatever the daemon says (R13).
+  const nameProblem = fileNameProblem(file.name, { returned: true });
+  if (nameProblem !== undefined) return refuse(nameProblem);
+  if (!NAME_PATTERN.test(channel)) return refuse(`the channel ${JSON.stringify(channel)} is not a channel name`);
+  if (!/^[0-9a-f]{32}$/.test(file.id)) return refuse('the daemon named it by an id that is not one');
+  const base = join(ctx.cwd(), SAVE_FOLDER);
+  const folder = join(base, channel);
+  for (const dir of [base, folder]) {
+    const made = await realDirectory(dir);
+    if (made !== undefined) return refuse(made);
+  }
+  // A fixed-length name, whatever the file's: `.<name>.asha-partial` passed 255 bytes for a name of 242 or more (finding 3).
+  const partial = join(folder, `.asha-partial-${randomBytes(8).toString('hex')}`);
+  let handle;
+  try {
+    handle = await open(partial, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o644);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'EEXIST') return refuse(`${partial} is in the way (a download's partial file): remove it`);
+    throw error;
+  }
+  let kept = false;
+  try {
+    const controller = new AbortController();
+    const stop = () => controller.abort();
+    ctx.signal.addEventListener('abort', stop, { once: true });
+    let idle = setTimeout(stop, ctx.timing.downloadIdleMs);
+    const hash = createHash('sha256');
+    let size = 0;
+    try {
+      const response = await ctx.fetch(`http://127.0.0.1:${daemon.port}${Routes.channelFiles}/${file.id}`, { headers: { authorization: `Bearer ${daemon.credential}` }, signal: controller.signal });
+      if (response.status !== 200 || response.body === null) return refuse(`the daemon answered HTTP ${response.status}: ${(await response.text()).slice(0, 200)}`);
+      for await (const chunk of response.body) {
+        clearTimeout(idle);
+        idle = setTimeout(stop, ctx.timing.downloadIdleMs);
+        hash.update(chunk);
+        size += chunk.byteLength;
+        if (size > file.size) return refuse(`more than its ${file.size} bytes arrived`);
+        await handle.write(chunk);
+      }
+    } catch (error) {
+      if (ctx.signal.aborted) return false;
+      if (controller.signal.aborted) return refuse(`no bytes for ${ctx.timing.downloadIdleMs / 1_000} s`);
+      if (error instanceof TypeError) return refuse(`the download was cut short after ${size} of ${file.size} bytes (${error.message})`);
+      throw error;
+    } finally {
+      clearTimeout(idle);
+      ctx.signal.removeEventListener('abort', stop);
+    }
+    if (size !== file.size) return refuse(`${size} bytes arrived, not ${file.size}`);
+    const sha256 = hash.digest('hex');
+    if (sha256 !== file.sha256) return refuse(`its sha256 is ${sha256}, not the ${file.sha256} the reply named`);
+    await handle.sync();
+    kept = true;
+  } finally {
+    await handle.close();
+    if (!kept) await unlink(partial).catch((error: unknown) => ctx.stderr(`✗ ${partial} could not be removed: ${(error as Error).message}\n`));
+  }
+  // Linked to its name, never over anything there: a file or a link already there takes the next suffix.
+  let name = file.name;
+  for (let n = 2; ; n += 1) {
+    try {
+      await link(partial, join(folder, name));
+      break;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'EEXIST') {
+        await unlink(partial);
+        throw error;
+      }
+      name = suffixedName(file.name, n);
+    }
+  }
+  await unlink(partial);
+  ctx.stdout(`file: ${join(SAVE_FOLDER, channel, name)} (${file.size} bytes, sha256 ${file.sha256})\n`);
+  return true;
+}
+
+/** Makes `dir` a real directory (never through a link), or says why it cannot be one. */
+async function realDirectory(dir: string): Promise<string | undefined> {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const stats = await lstat(dir);
+      return stats.isDirectory() ? undefined : `${dir} exists and is not a folder (a link or a file): files are never saved through it`;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+    }
+    try {
+      await mkdir(dir, { mode: 0o755 });
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+    }
+  }
+  return `${dir} could not be made a folder`;
+}

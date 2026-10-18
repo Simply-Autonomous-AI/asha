@@ -1,0 +1,14 @@
+{
+  "id": "suite-missing-recipe",
+  "description": "Agent-suite fixture (collaborating-agents A4): its second member names a recipe that does not exist.",
+  "members": [
+    {
+      "name": "lead",
+      "recipe": "sayer.json"
+    },
+    {
+      "name": "ghost",
+      "recipe": "ghost.json"
+    }
+  ]
+}

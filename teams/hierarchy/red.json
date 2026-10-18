@@ -1,0 +1,24 @@
+{
+  "id": "red",
+  "image": "hello-world",
+  "description": "Knows one colour's number.",
+  "prompt": "you know one colour's number.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "red.md",
+      "fullText": true
+    }
+  ]
+}

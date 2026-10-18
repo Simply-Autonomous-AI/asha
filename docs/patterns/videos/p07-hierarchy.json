@@ -1,0 +1,33 @@
+{
+  "pattern": "P7",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:22:08.098Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p07-hierarchy",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 48920,
+  "bytes": 3575858,
+  "sha256": "e1ba1262fe57aec82977c52d3a4ad1d9c382d40841ae21d49fc7f34bdbf5cd52",
+  "frames": 978,
+  "framesPerSecond": 20,
+  "longestGapMs": 87,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P7 · Hierarchical teams",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5047,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p07-a",
+      "outcome": "pass"
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p03-pipeline.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipeline Pattern Demo</title>
+<meta name="description" content="P3 · Sequential pipeline: Each stage does its part and hands the result to the next; the last stage replies. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Pipeline Pattern Demo</nav>
+<h1>P3 · Sequential pipeline</h1>
+<p class="lede">Each stage does its part and hands the result to the next; the last stage replies. Here three stages each add one colour to a list only they know.</p>
+<div class="facts"><span>written 2026-09-29</span><span>status: <span class="badge built">built</span> 2026-09-29, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/pipeline/team.json"><code>teams/pipeline/</code></a></span><span>test: <a href="../../tests/agents/p03-pipeline.test.ts"><code>tests/agents/p03-pipeline.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-1.md</code>, its runs</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p03-a</code>, as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>Built: its three recorded runs with every member on <code>qwen3-8b-q4_k_m</code> passed, then one under the bound they set (runs (<code>docs/plans/patterns-phase-1.md</code>)); moved 2026-10-10 by <code>docs/plans/demo-model-pico.md</code> R3, with every member on <code>pico-v2-q8_0</code> (it has no router): three recorded runs passed at <code>6eed097</code> with the move, then one under the bound they set at <code>8dd3a26</code> (runs (<code>evals/probes/demo-model-pico-runs-2026-10-09/README.md</code>)); its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>stage-a</code>, <code>stage-b</code>, <code>stage-c</code> on <code>pico-v2-q8_0</code>.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p03-pipeline.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>pico-v2-q8_0</code> (<a href="videos/p03-pipeline.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 25 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when work has fixed steps in a fixed order, each owned by one agent: extract, then check, then format.</p>
+<p><strong>Do not use it</strong> when the steps' order depends on the work (plan-and-execute, P6) or when the steps are independent (fan-out, P4). A pipeline is as slow as the sum of its stages: here three model turns in a row.</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 266" role="img" aria-labelledby="p03-t p03-d">
+  <title id="p03-t">Sequential pipeline: each stage adds its colour and passes the list on</title>
+  <desc id="p03-d">You write to stage-a-1, which sends list: red to stage-b-1. stage-b-1 adds orange and sends list: red, orange to stage-c-1. stage-c-1 adds yellow and replies list: red, orange, yellow to you. Each colour is known to one stage only.</desc>
+  <defs><marker id="p03-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="35" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="110" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M110 44 V260"/>
+  <rect class="box accent" x="215" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="290" y="32" text-anchor="middle">stage-a-1</text>
+  <path class="edge dim" d="M290 44 V260"/>
+  <rect class="box accent" x="395" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="470" y="32" text-anchor="middle">stage-b-1</text>
+  <path class="edge dim" d="M470 44 V260"/>
+  <rect class="box accent" x="575" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="650" y="32" text-anchor="middle">stage-c-1</text>
+  <path class="edge dim" d="M650 44 V260"/>
+  <path class="edge" d="M110 80 H288" marker-end="url(#p03-a)"/>
+  <text class="label small" x="200" y="74" text-anchor="middle">Build the colour list.</text>
+  <path class="edge" d="M290 124 H468" marker-end="url(#p03-a)"/>
+  <text class="label small" x="380" y="118" text-anchor="middle">internal: list: red</text>
+  <path class="edge" d="M470 168 H648" marker-end="url(#p03-a)"/>
+  <text class="label small" x="560" y="162" text-anchor="middle">internal: list: red, orange</text>
+  <path class="edge" d="M650 212 H112" marker-end="url(#p03-a)"/>
+  <text class="label small" x="380" y="206" text-anchor="middle">output: list: red, orange, yellow</text>
+</svg>
+<figcaption>Each arrow is one message the channel carries, in order; a note under a lifeline is the tool the agent's guidance tells it to call.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 24,000 ms since 2026-10-10, set from its three recorded runs with its sub-agents on <code>pico-v2-q8_0</code> (<code>docs/plans/demo-model-pico.md</code> R3) — the largest request, p03-a's 15,769 ms in run 3 at <code>6eed097</code> with the move, times 1.5 (23,653.5), rounded up to a whole second; the cap is 45,000 ms. <em>Before, with every member on <code>qwen3-8b-q4_k_m</code>:</em> 24,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-1.md</code> R4) — the largest request, p03-a's 15,643 ms at <code>fb55f7e</code>, times 1.5, rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=pipeline
+# bound: 24000 ms
+# p03-a
+./asha to=stage-a-1 user=alice message=&quot;Build the colour list.&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>8dd3a26</code> (clean tree), <code>docs/plans/demo-model-pico.md</code>'s fourth run (R3 (d)), with its sub-agents on <code>pico-v2-q8_0</code>, from its results file <code>evals/probes/demo-model-pico-runs-2026-10-09/run-4/results/p03-pipeline.json</code>: each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' tool calls as they stream — lines such as <code>› &lt;handle&gt; &lt;tool&gt;: …</code>, one fragment each (D38) — are left out here; the results file holds them. The transcript before, with every member on <code>qwen3-8b-q4_k_m</code>, is in this page's history (<code>git show 8dd3a26:docs/patterns/p03-pipeline.md</code>).</p>
+<p><strong>p03-a</strong> — exit 0, 14,292 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=stage-a-1 user=alice message=&quot;Build the colour list.&quot;
+› alice → stage-a-1 on main: Build the colour list.
+› stage-a-1: ok
+› internal stage-a-1 → stage-b-1: list: red
+› stage-b-1: ok
+› internal stage-b-1 → stage-c-1: list: red, orange
+› stage-c-1: ok
+› output stage-c-1 → alice:
+list: red, orange, yellow
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/pipeline/team.json"><code>teams/pipeline/team.json</code></a>: the team — <code>stage-a</code>, <code>stage-b</code>, <code>stage-c</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>.</li>
+<li><code>stage-a</code>: <a href="../../teams/pipeline/stage-a.json"><code>stage-a.json</code></a>, its recipe, and <a href="../../teams/pipeline/stage-a.md"><code>stage-a.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>stage-b</code>: <a href="../../teams/pipeline/stage-b.json"><code>stage-b.json</code></a>, its recipe, and <a href="../../teams/pipeline/stage-b.md"><code>stage-b.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>stage-c</code>: <a href="../../teams/pipeline/stage-c.json"><code>stage-c.json</code></a>, its recipe, and <a href="../../teams/pipeline/stage-c.md"><code>stage-c.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><a href="../../tests/agents/p03-pipeline.test.ts"><code>tests/agents/p03-pipeline.test.ts</code></a>: launches the team and sends each scenario's message from this page, then asserts each scenario only through its checker, <code>P03_…</code> in <a href="../../tests/agents/patterns/phase-1.ts"><code>tests/agents/patterns/phase-1.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation and one per mutation the plan lists: <a href="../../tests/agents/patterns/fixtures/p03-a/pass.json"><code>tests/agents/patterns/fixtures/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>With every member on <code>pico-v2-q8_0</code> (it has no router) (demo-model-pico, 2026-10-10): its largest request took 15,769 ms in the three recorded runs and 14,292 ms in the fourth, under its bound of 24,000 ms. The limits after it were measured with every member on <code>qwen3-8b-q4_k_m</code>, before the move; one about a sub-agent was not measured again on <code>pico-v2-q8_0</code>.</li>
+<li>Two of the three stages must forward instead of replying, which the general channel instructions — &quot;every result … goes through reply&quot; — say otherwise; the guidance says to forward, and the line before every recipe's guidance says the guidance wins (<code>docs/plans/patterns-phase-1.md</code> R7).</li>
+<li>Each colour is in one stage's guidance only, and the proof checks it. That shows the list passed through each stage in order (the transcript), not that a stage could not guess a colour: red, orange, yellow is the rainbow's own start, so the facts are not synthetic (orchestration-patterns' convention); the claims that each internal message carries exactly the colours so far are what show each stage added its own.</li>
+<li>Measured (2026-09-29, runs (<code>docs/plans/patterns-phase-1.md</code>)): passed its first run at <code>90c3eec</code> with no change to its guidance; three model turns in series take 14–16 s, the longest of the five, so its bound is 24 s.</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p03">agent test report, P3 · Sequential pipeline</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p03-pipeline.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

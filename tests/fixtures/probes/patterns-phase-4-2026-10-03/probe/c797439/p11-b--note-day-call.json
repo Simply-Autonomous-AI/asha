@@ -1,0 +1,249 @@
+{
+  "commit": "c79743931a18a108d9eb0944e59055b5cfa4c14c",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p11-b/note-day-call",
+  "control": false,
+  "doc": null,
+  "dropStep": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "notice: meeting on Thursday"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1198,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1286,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 4180,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "3c982b3f8f144602a545c1da50e83c47d0ee2ae7247188c6f6a4ae83a9f66567",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "notice: meeting on Thursday"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1198,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1286,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 1232,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "3c982b3f8f144602a545c1da50e83c47d0ee2ae7247188c6f6a4ae83a9f66567",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "notice: meeting on Thursday"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1198,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1286,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 1241,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "3c982b3f8f144602a545c1da50e83c47d0ee2ae7247188c6f6a4ae83a9f66567",
+      "ok": true
+    }
+  ]
+}

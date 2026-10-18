@@ -1,0 +1,80 @@
+{
+  "commit": "1161e2983ed4e002563968326a13660eaec586f9",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p16/clerk-first",
+  "control": false,
+  "change": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": null,
+      "problem": "first round recorded",
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "ask_user",
+              "arguments": {
+                "text": "Approve posting \"Office closed Friday.\"? Answer yes or no."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1458,
+          "completionTokens": 31
+        }
+      ],
+      "ms": 4004,
+      "board": [],
+      "requestSha256": "2bd27e822c32d065f1efaa03f26b63872bf46c8ed517eac07c6ef8fcbf03532a",
+      "ok": true
+    },
+    {
+      "calls": null,
+      "problem": "first round recorded",
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "ask_user",
+              "arguments": {
+                "text": "Approve posting \"Office closed Friday.\"? Answer yes or no."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1458,
+          "completionTokens": 31
+        }
+      ],
+      "ms": 706,
+      "board": [],
+      "requestSha256": "2bd27e822c32d065f1efaa03f26b63872bf46c8ed517eac07c6ef8fcbf03532a",
+      "ok": true
+    },
+    {
+      "calls": null,
+      "problem": "first round recorded",
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "ask_user",
+              "arguments": {
+                "text": "Approve posting \"Office closed Friday.\"? Answer yes or no."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1458,
+          "completionTokens": 31
+        }
+      ],
+      "ms": 711,
+      "board": [],
+      "requestSha256": "2bd27e822c32d065f1efaa03f26b63872bf46c8ed517eac07c6ef8fcbf03532a",
+      "ok": true
+    }
+  ]
+}

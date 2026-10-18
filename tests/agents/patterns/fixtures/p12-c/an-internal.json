@@ -1,0 +1,46 @@
+{
+  "scenario": "p12-c",
+  "breaks": "no agent posts an internal message",
+  "note": "greeter-1 forwards the request to translator-1 before passing.",
+  "team": "self-select",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Please book me a flight to Paris."
+  },
+  "recipients": [
+    "greeter-1",
+    "translator-1"
+  ],
+  "messages": [
+    {
+      "from": "greeter-1",
+      "kind": "internal",
+      "text": "Please book me a flight to Paris.",
+      "to": "translator-1",
+      "working": [
+        "greeter-1",
+        "translator-1"
+      ]
+    },
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "pass: not mine",
+      "working": [
+        "translator-1"
+      ]
+    },
+    {
+      "from": "translator-1",
+      "kind": "status",
+      "text": "pass: not mine"
+    },
+    {
+      "from": "asha",
+      "kind": "output",
+      "text": "No agent could answer this:\n- greeter-1 passed: not mine\n- translator-1 passed: not mine"
+    }
+  ],
+  "ms": 2500
+}

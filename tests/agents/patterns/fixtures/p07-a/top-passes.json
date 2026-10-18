@@ -1,0 +1,32 @@
+{
+  "scenario": "p07-a",
+  "breaks": "the command exits 0",
+  "note": "top-1 passes: the harness answers, exit 1.",
+  "team": "hierarchy",
+  "input": {
+    "user": "alice",
+    "to": "top-1",
+    "text": "Which numbers stand for the warm colours and for the cool colours?"
+  },
+  "recipients": [
+    "top-1"
+  ],
+  "messages": [
+    {
+      "from": "top-1",
+      "kind": "status",
+      "text": "pass: x",
+      "working": [
+        "top-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "kind": "output",
+      "text": "No agent could answer this:\n- top-1 passed: x",
+      "working": []
+    }
+  ],
+  "log": [],
+  "ms": 20000
+}

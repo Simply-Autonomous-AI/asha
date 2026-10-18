@@ -1,0 +1,126 @@
+{
+  "scenario": "p17-a",
+  "breaks": "the command exits 1",
+  "note": "The conversation settles on a reply and the command exits 0: no end.",
+  "team": "budget",
+  "input": {
+    "user": "alice",
+    "to": "ping-1",
+    "text": "Start."
+  },
+  "recipients": [
+    "ping-1"
+  ],
+  "messages": [
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "kind": "output",
+      "text": "pong",
+      "working": []
+    }
+  ],
+  "ms": 15000
+}

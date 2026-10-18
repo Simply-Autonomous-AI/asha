@@ -1,0 +1,14 @@
+{
+  "id": "suite-memory-pair",
+  "description": "Agent-suite fixture (collaborating-agents A5): two memory agents, each keeping its own memory.",
+  "members": [
+    {
+      "name": "ann",
+      "recipe": "rememberer.json"
+    },
+    {
+      "name": "bob",
+      "recipe": "rememberer.json"
+    }
+  ]
+}

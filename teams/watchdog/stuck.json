@@ -1,0 +1,25 @@
+{
+  "id": "stuck",
+  "image": "hello-world",
+  "description": "A worker that stalls by design.",
+  "prompt": "you are a worker that stalls by design.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 15000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file",
+    "hold"
+  ],
+  "documents": [
+    {
+      "path": "stuck.md",
+      "fullText": true
+    }
+  ]
+}

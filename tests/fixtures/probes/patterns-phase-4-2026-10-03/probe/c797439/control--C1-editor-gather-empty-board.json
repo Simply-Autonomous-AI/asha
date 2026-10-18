@@ -1,0 +1,219 @@
+{
+  "commit": "c79743931a18a108d9eb0944e59055b5cfa4c14c",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "control/C1-editor-gather-empty-board",
+  "control": true,
+  "doc": null,
+  "dropStep": null,
+  "passes": 0,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "pass",
+          "arguments": {
+            "reason": "No items found on the blackboard"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 2108,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {
+                "since": 0
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2145,
+          "completionTokens": 19
+        },
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {
+                "since": 0
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2186,
+          "completionTokens": 19
+        },
+        {
+          "calls": [
+            {
+              "name": "pass",
+              "arguments": {
+                "reason": "No items found on the blackboard"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2227,
+          "completionTokens": 23
+        }
+      ],
+      "ms": 2378,
+      "seed": [],
+      "board": [],
+      "reply": null,
+      "requestSha256": "37ca326951b609cb4d46a90c8706a04d64fdfc8289d08df2c3986f424780f302",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "pass",
+          "arguments": {
+            "reason": "No items found on the blackboard"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 2108,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {
+                "since": 0
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2145,
+          "completionTokens": 19
+        },
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {
+                "since": 0
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2186,
+          "completionTokens": 19
+        },
+        {
+          "calls": [
+            {
+              "name": "pass",
+              "arguments": {
+                "reason": "No items found on the blackboard"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2227,
+          "completionTokens": 23
+        }
+      ],
+      "ms": 2389,
+      "seed": [],
+      "board": [],
+      "reply": null,
+      "requestSha256": "37ca326951b609cb4d46a90c8706a04d64fdfc8289d08df2c3986f424780f302",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "pass",
+          "arguments": {
+            "reason": "No items found on the blackboard"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 2108,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {
+                "since": 0
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2145,
+          "completionTokens": 19
+        },
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {
+                "since": 0
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2186,
+          "completionTokens": 19
+        },
+        {
+          "calls": [
+            {
+              "name": "pass",
+              "arguments": {
+                "reason": "No items found on the blackboard"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2227,
+          "completionTokens": 23
+        }
+      ],
+      "ms": 2379,
+      "seed": [],
+      "board": [],
+      "reply": null,
+      "requestSha256": "37ca326951b609cb4d46a90c8706a04d64fdfc8289d08df2c3986f424780f302",
+      "ok": false
+    }
+  ]
+}

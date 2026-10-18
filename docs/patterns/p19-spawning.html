@@ -1,0 +1,140 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p19-spawning.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dynamic Spawning Demo</title>
+<meta name="description" content="P19 · Dynamic spawning of workers: A lead brings a new worker online when it needs one, and calls it. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Dynamic Spawning Demo</nav>
+<h1>P19 · Dynamic spawning of workers</h1>
+<p class="lede">A lead brings a new worker onto the channel when it needs one, and calls it in the same turn.</p>
+<div class="facts"><span>written 2026-10-02</span><span>status: <span class="badge built">built</span> 2026-10-02, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/spawner/team.json"><code>teams/spawner/</code></a></span><span>test: <a href="../../tests/agents/p19-spawning.test.ts"><code>tests/agents/p19-spawning.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-3.md</code>, its runs</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenario: <code>p19-a</code>, as <code>docs/plans/orchestration-patterns.md</code> specifies it.</li>
+<li>Built: its three recorded runs on the pinned model passed, then one under the bound they set, at <code>2168282</code> (runs (<code>docs/plans/patterns-phase-3.md</code>)); its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>lead</code> on <code>qwen3-8b-q4_k_m</code>.</li>
+<li>The team has one member, <code>lead</code>, whose recipe grants it <code>launch: {&quot;recipes&quot;: [&quot;helper&quot;], &quot;maxPerConversation&quot;: 1}</code>; <code>helper.json</code> sits in the folder, no member's (<a href="../architecture/channel.html#launching">launching</a>).</li>
+<li>lead-1 calls <code>launch_agent</code>; once helper-1 is online, the turn's next request is rebuilt with helper-1 on the roster, so the same turn can <code>consult</code> it. helper-1 is stopped when the conversation settles. The chat shows the launch as it begins, <code>lead-1: launching a new helper agent</code>, before helper-1 joins and greets (since 2026-10-16, <code>docs/plans/demo-scene-refresh.md</code> R14).</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p19-spawning.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>qwen3-8b-q4_k_m</code> (<a href="videos/p19-spawning.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 21 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when the agents a request needs are not known until it arrives, or are too many or too costly to keep running: the lead brings them in for one conversation, and they go when it ends.</p>
+<p><strong>Do not use it</strong> when the same workers serve every request (keep them on the channel: orchestrator–workers, P5), or when the worker must keep what it learned past the conversation (a launched agent persists nothing).</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 330" role="img" aria-labelledby="p19-t p19-d">
+  <title id="p19-t">P19 · Dynamic spawning of workers</title>
+  <desc id="p19-d">lead-1, alone on the channel, receives the request and calls launch_agent with the recipe helper; the daemon starts helper-1, which joins the channel; launch_agent returns its handle and lead-1's next request is rebuilt with helper-1 on the roster; lead-1 consults helper-1, which answers marigold; the gather returns to lead-1, which replies with the word; when the conversation settles, helper-1 is stopped.</desc>
+  <defs><marker id="p19-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="130" height="34" rx="5"/>
+  <text class="label mono" x="85" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M85 44 V324"/>
+  <rect class="box" x="180" y="10" width="130" height="34" rx="5"/>
+  <text class="label mono" x="245" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M245 44 V324"/>
+  <rect class="box accent" x="340" y="10" width="130" height="34" rx="5"/>
+  <text class="label mono" x="405" y="32" text-anchor="middle">lead-1</text>
+  <path class="edge dim" d="M405 44 V324"/>
+  <rect class="box accent" x="500" y="10" width="130" height="34" rx="5"/>
+  <text class="label mono" x="565" y="32" text-anchor="middle">helper-1</text>
+  <path class="edge dim" d="M565 110 V290"/>
+  <path class="edge" d="M85 72 H403" marker-end="url(#p19-a)"/>
+  <text class="label small" x="245" y="66" text-anchor="middle">Bring in a helper and tell me its word.</text>
+  <path class="edge" d="M405 98 H247" marker-end="url(#p19-a)"/>
+  <text class="label small" x="325" y="92" text-anchor="middle">launch_agent helper</text>
+  <path class="edge" d="M245 112 H563" marker-end="url(#p19-a)"/>
+  <text class="label small" x="460" y="106" text-anchor="middle">starts helper-1: it joins</text>
+  <path class="edge" d="M245 138 H403" marker-end="url(#p19-a)"/>
+  <text class="label small" x="325" y="132" text-anchor="middle">{"handle":"helper-1"}</text>
+  <text class="label small" x="397" y="156" text-anchor="end">request rebuilt, helper-1 on the roster</text>
+  <path class="edge" d="M405 180 H563" marker-end="url(#p19-a)"/>
+  <text class="label small" x="485" y="174" text-anchor="middle">consult: What is your word?</text>
+  <path class="edge" d="M565 206 H407" marker-end="url(#p19-a)"/>
+  <text class="label small" x="485" y="200" text-anchor="middle">marigold</text>
+  <path class="edge" d="M405 236 H87" marker-end="url(#p19-a)"/>
+  <text class="label small" x="245" y="230" text-anchor="middle">The helper's word is marigold.</text>
+  <path class="edge" d="M245 276 H563" marker-end="url(#p19-a)"/>
+  <text class="label small" x="404" y="270" text-anchor="middle">the conversation settled: stop helper-1</text>
+</svg>
+<figcaption>lead-1, alone on the channel, receives the request and calls launch_agent with the recipe helper; the daemon starts helper-1, which joins the channel; launch_agent returns its handle and lead-1's next request is rebuilt with helper-1 on the roster; lead-1 consults helper-1, which answers marigold; the gather returns to lead-1, which replies with the word; when the conversation settles, helper-1 is stopped.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send the scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 21,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-3.md</code> R4) — the largest request, p19-a's 13,934 ms at <code>869a0d2</code>, times 1.5 (20,901), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=spawner
+# bound: 21000 ms
+# p19-a
+./asha to=lead-1 user=alice message=&quot;Bring in a helper and tell me its word.&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>66e5271</code> (clean tree), its third recorded run, from its results file as committed in <code>7fee14a</code> (<code>git show 7fee14a:tests/agents/results/p19-spawning.json</code>): each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' output as it streams (lines such as &quot;› <handle> reply: {…}&quot;) is left out here; the results file holds it.</p>
+<p><strong>p19-a</strong> — exit 0, 13,731 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=lead-1 user=alice message=&quot;Bring in a helper and tell me its word.&quot;
+› alice → lead-1 on main: Bring in a helper and tell me its word.
+› lead-1: ok
+› internal lead-1 → helper-1: What is your word?
+› internal helper-1 → lead-1: marigold
+› internal asha → lead-1: Answers to lead-1&#39;s call: 1 answered.
+› lead-1: ok
+› output lead-1 → alice:
+The helper&#39;s word is marigold.
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/spawner/team.json"><code>teams/spawner/team.json</code></a>: the team — <code>lead</code> alone, joining as <code>lead-1</code>.</li>
+<li><code>lead</code>: <a href="../../teams/spawner/lead.json"><code>lead.json</code></a>, its recipe, with its launch grant and a <code>messageTimeoutMs</code> of 120,000 (the launch lies inside its turn), and <a href="../../teams/spawner/lead.md"><code>lead.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>helper</code> (launched, no member): <a href="../../teams/spawner/helper.json"><code>helper.json</code></a>, with a <code>startupTimeoutMs</code> of 30,000, and <a href="../../teams/spawner/helper.md"><code>helper.md</code></a>.</li>
+<li><a href="../../tests/agents/p19-spawning.test.ts"><code>tests/agents/p19-spawning.test.ts</code></a>: launches the team and sends the scenario's message from this page, then asserts it only through its checker, <code>P19_A</code> in <a href="../../tests/agents/patterns/phase-3.ts"><code>tests/agents/patterns/phase-3.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p19-a/pass.json"><code>tests/agents/patterns/fixtures/p19-a/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>A launch takes about half a second warm (the image built and the model serving already: the launched recipe must share the lead's image and model), and lies inside the lead's turn, bounded at 35,000 ms; a helper that does not come online in its <code>startupTimeoutMs</code> (at most 30,000) is <code>launch_failed</code>, which the model is told.</li>
+<li>One helper per conversation (<code>maxPerConversation</code>): a second launch is refused <code>launch_cap</code>, which the model is told. The route's refusals and the helper's stop are proven without a model in <a href="../../tests/integration/daemon.test.ts"><code>daemon.test.ts</code></a> (&quot;an agent launching from its grant&quot;).</li>
+<li>Without its grant the lead has no tool to launch with, and does not (the plan's control C3, 0/3).</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p19">agent test report, P19 · Dynamic spawning of workers</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p19-spawning.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 250" role="img" aria-labelledby="pyr-t pyr-d">
+  <title id="pyr-t">The test pyramid</title>
+  <desc id="pyr-d">From the wide base to the narrow top: 484 unit tests, 41 integration tests, 35 agent-suite scenarios, and 10 end-to-end eval tests. The routing diagnostic sits beside the pyramid, outside the gate.</desc>
+  <path class="box" d="M60 230 H480 L440 180 H100 Z"/>
+  <text class="label title" x="270" y="204" text-anchor="middle">unit · 484 tests</text>
+  <text class="label small" x="270" y="220" text-anchor="middle">every collaborator injected</text>
+  <path class="box" d="M100 175 H440 L400 125 H140 Z"/>
+  <text class="label title" x="270" y="149" text-anchor="middle">integration · 41</text>
+  <text class="label small" x="270" y="165" text-anchor="middle">real daemon over HTTP, fakes behind it</text>
+  <path class="box accent" d="M140 120 H400 L360 70 H180 Z"/>
+  <text class="label title" x="270" y="94" text-anchor="middle">agent suite · 35</text>
+  <text class="label small" x="270" y="110" text-anchor="middle">real agents, real models</text>
+  <path class="box accent" d="M180 65 H360 L320 15 H220 Z"/>
+  <text class="label title" x="270" y="40" text-anchor="middle">eval · 10</text>
+  <text class="label small" x="270" y="56" text-anchor="middle">./asha end to end</text>
+  <rect class="box host" x="500" y="70" width="130" height="105" rx="6"/>
+  <text class="label title" x="565" y="100" text-anchor="middle">routing</text>
+  <text class="label small" x="565" y="118" text-anchor="middle">diagnostic, not gated</text>
+  <text class="label small" x="565" y="136" text-anchor="middle">19 cases × 3</text>
+  <text class="label small" x="565" y="154" text-anchor="middle">per model</text>
+</svg>

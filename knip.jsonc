@@ -1,0 +1,30 @@
+// knip (`npm run lint:unused`, the gate's step after `npm run lint`): files, exports, types and dependencies that
+// nothing in the repository uses. ESLint and tsc see one file at a time, so an export nothing imports passes both; knip
+// reads the whole project. Its own plugins find vitest's, ESLint's and Prettier's configs and package.json's scripts;
+// these are the entry points nothing imports but a Dockerfile, a page or a person.
+{
+  "$schema": "https://unpkg.com/knip@6.39.0/schema.json",
+  "entry": [
+    // Each agent image's process, started by its Dockerfile's ENTRYPOINT.
+    "images/*/src/main.ts",
+    // The reference modules, loaded by the module runtime by path.
+    "modules/*/index.mjs",
+    // The harness images' processes: the egress proxy and the module runtime.
+    "src/egress-proxy/main.ts",
+    "src/module-runtime/main.ts",
+    // The portal's page, loaded by portal/index.html.
+    "src/portal/app.ts",
+    // The eval report, run by hand.
+    "evals/report.ts",
+    // The decider, paused work wired to nothing yet: an entry until the owner's record `decider-release` is answered.
+    "src/daemon/decider/index.ts",
+  ],
+  "ignore": [
+    // Copies of internal records the shipped tests read (tests/fixtures/README.md), and the dated probes, run by hand
+    // once and kept as evidence: neither is code anything imports.
+    "tests/fixtures/**",
+    "evals/probes/**",
+  ],
+  // Host tools the tests and the release run, not npm packages.
+  "ignoreBinaries": ["jq", "mkfifo", "brew"],
+}

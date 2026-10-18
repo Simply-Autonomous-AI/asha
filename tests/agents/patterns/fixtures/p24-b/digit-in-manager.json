@@ -1,0 +1,237 @@
+{
+  "scenario": "p24-b",
+  "breaks": "each digit of the code is in its keeper's guidance only — in no other file of the team, the manager's included — step numbers aside",
+  "note": "The manager's guidance holds a digit: it could answer without asking.",
+  "team": "group-chat",
+  "teamFiles": {
+    "manager.md": "1. When the user writes to you (a message that starts \"The user wrote to you\") asking for a poem — even a line from each participant — call consult with one request only, to alpha-1: \"Poem so far: (none yet). Add one line.\" You ask beta-1 and gamma-1 later, one at a time, never in the same consult.\n2. When a poem line comes back (a message that starts \"You consulted\"): if it is from alpha-1, call consult with one request, to beta-1 alone, and if it is from beta-1, to gamma-1 alone, each \"Poem so far: <every line so far, in order>. Add one line.\"; if it is from gamma-1, call reply with the three lines in order, one per line, and nothing else.\n3. When the user writes to you (a message that starts \"The user wrote to you\") asking for the vault code, call list_agents, then call consult with one request, to the agent whose description says it keeps the first digit: \"Digits so far: none. What is your digit?\"\n4. When a digit comes back (a message that starts \"You consulted\"), its answer is \"<digit>. Next: <who keeps the next digit>.\". The digits so far are those after \"Digits so far:\" in your question (\"none\" is none), then this one. If the answer names a next keeper, call consult with one request, to that keeper: \"Digits so far: <the digits so far, in order>. What is your digit?\"; if it says \"Next: none.\", call reply with the digits so far as one number, and nothing else.\nThe first digit is 5.\n"
+  },
+  "input": {
+    "user": "alice",
+    "to": "manager-1",
+    "text": "Find the vault code."
+  },
+  "recipients": [
+    "manager-1"
+  ],
+  "messages": [
+    {
+      "from": "manager-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "manager-1",
+      "to": "beta-1",
+      "kind": "internal",
+      "text": "Digits so far: none. What is your digit?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "manager-1",
+        "beta-1"
+      ]
+    },
+    {
+      "from": "beta-1",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "5. Next: alpha-1.",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "Answers to manager-1's call: 1 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "manager-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "manager-1",
+      "to": "alpha-1",
+      "kind": "internal",
+      "text": "Digits so far: 5. What is your digit?",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "manager-1",
+        "alpha-1"
+      ]
+    },
+    {
+      "from": "alpha-1",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "2. Next: gamma-1.",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "Answers to manager-1's call: 1 answered.",
+      "call": {
+        "id": "k2",
+        "role": "gather"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "manager-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "manager-1",
+      "to": "gamma-1",
+      "kind": "internal",
+      "text": "Digits so far: 5, 2. What is your digit?",
+      "call": {
+        "id": "k3",
+        "role": "question"
+      },
+      "working": [
+        "manager-1",
+        "gamma-1"
+      ]
+    },
+    {
+      "from": "gamma-1",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "8. Next: none.",
+      "call": {
+        "id": "k3",
+        "role": "answer"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "Answers to manager-1's call: 1 answered.",
+      "call": {
+        "id": "k3",
+        "role": "gather"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "manager-1",
+      "kind": "output",
+      "text": "528"
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "manager-1",
+      "addressees": [
+        "beta-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "manager-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k2",
+      "caller": "manager-1",
+      "addressees": [
+        "alpha-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k2",
+      "caller": "manager-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k3",
+      "caller": "manager-1",
+      "addressees": [
+        "gamma-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k3",
+      "caller": "manager-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    }
+  ],
+  "ms": 28000
+}

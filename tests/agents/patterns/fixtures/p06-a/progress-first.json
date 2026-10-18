@@ -1,0 +1,362 @@
+{
+  "scenario": "p06-a",
+  "breaks": "planner-1's first file write is /workspace/task-ledger.md, before any write of progress-ledger.md (its agent log): the first call had no progress ledger to read",
+  "note": "The planner's first write is the progress ledger, not the task ledger.",
+  "team": "plan-execute",
+  "input": {
+    "user": "alice",
+    "to": "planner-1",
+    "text": "What is the password?"
+  },
+  "recipients": [
+    "planner-1"
+  ],
+  "messages": [
+    {
+      "from": "planner-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "planner-1",
+      "to": "half-a-1",
+      "kind": "internal",
+      "text": "What is your half of the password? (step 1, attempt 1)",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "planner-1",
+        "half-a-1"
+      ]
+    },
+    {
+      "from": "half-a-1",
+      "to": "planner-1",
+      "kind": "internal",
+      "text": "sun",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "planner-1",
+      "kind": "internal",
+      "text": "Answers to planner-1's call: 1 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "from": "planner-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "planner-1",
+      "to": "half-b-1",
+      "kind": "internal",
+      "text": "What is your half of the password? (step 2, attempt 1)",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "planner-1",
+        "half-b-1"
+      ]
+    },
+    {
+      "from": "half-b-1",
+      "to": "planner-1",
+      "kind": "internal",
+      "text": "ERROR: unavailable",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "planner-1",
+      "kind": "internal",
+      "text": "Answers to planner-1's call: 1 answered.",
+      "call": {
+        "id": "k2",
+        "role": "gather"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "from": "planner-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "planner-1",
+      "to": "half-b-1",
+      "kind": "internal",
+      "text": "What is your half of the password? (step 2, attempt 2)",
+      "call": {
+        "id": "k3",
+        "role": "question"
+      },
+      "working": [
+        "planner-1",
+        "half-b-1"
+      ]
+    },
+    {
+      "from": "half-b-1",
+      "to": "planner-1",
+      "kind": "internal",
+      "text": "ERROR: unavailable",
+      "call": {
+        "id": "k3",
+        "role": "answer"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "planner-1",
+      "kind": "internal",
+      "text": "Answers to planner-1's call: 1 answered.",
+      "call": {
+        "id": "k3",
+        "role": "gather"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "from": "planner-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "planner-1",
+      "to": "backup-1",
+      "kind": "internal",
+      "text": "What is your half of the password? (plan 2, step 2, attempt 3)",
+      "call": {
+        "id": "k4",
+        "role": "question"
+      },
+      "working": [
+        "planner-1",
+        "backup-1"
+      ]
+    },
+    {
+      "from": "backup-1",
+      "to": "planner-1",
+      "kind": "internal",
+      "text": "flower",
+      "call": {
+        "id": "k4",
+        "role": "answer"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "planner-1",
+      "kind": "internal",
+      "text": "Answers to planner-1's call: 1 answered.",
+      "call": {
+        "id": "k4",
+        "role": "gather"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "from": "planner-1",
+      "kind": "output",
+      "text": "sunflower"
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "planner-1",
+      "addressees": [
+        "half-a-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "planner-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k2",
+      "caller": "planner-1",
+      "addressees": [
+        "half-b-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k2",
+      "caller": "planner-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k3",
+      "caller": "planner-1",
+      "addressees": [
+        "half-b-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k3",
+      "caller": "planner-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k4",
+      "caller": "planner-1",
+      "addressees": [
+        "backup-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k4",
+      "caller": "planner-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    }
+  ],
+  "agentLogs": {
+    "planner-1": [
+      {
+        "level": "info",
+        "event": "tool.file_written",
+        "handle": "planner-1",
+        "path": "/workspace/progress-ledger.md",
+        "size": 100,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+        "level": "info",
+        "event": "tool.file_written",
+        "handle": "planner-1",
+        "path": "/workspace/task-ledger.md",
+        "size": 100,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+        "level": "info",
+        "event": "tool.file_written",
+        "handle": "planner-1",
+        "path": "/workspace/progress-ledger.md",
+        "size": 100,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+        "level": "info",
+        "event": "tool.file_written",
+        "handle": "planner-1",
+        "path": "/workspace/progress-ledger.md",
+        "size": 100,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+        "level": "info",
+        "event": "tool.file_written",
+        "handle": "planner-1",
+        "path": "/workspace/task-ledger.md",
+        "size": 100,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+        "level": "info",
+        "event": "tool.file_written",
+        "handle": "planner-1",
+        "path": "/workspace/progress-ledger.md",
+        "size": 100,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    ]
+  },
+  "workspace": {
+    "planner-1": {
+      "progress-ledger.md": "step 1 attempt 1: done; progress: yes; stalls: 0; answer: sun\nstep 2 attempt 1: failed; progress: no; stalls: 1; answer: ERROR: unavailable\nstep 2 attempt 2: failed; progress: no; stalls: 2; answer: ERROR: unavailable\nstep 2 attempt 3: done; progress: yes; stalls: 2; answer: flower\n",
+      "task-ledger.md": "fact: the password is two halves joined\nstep 1: half-a-1 — first half\nstep 2: half-b-1 — second half\nplan 2\nstep 2: backup-1 — second half\n"
+    }
+  },
+  "ms": 42000
+}

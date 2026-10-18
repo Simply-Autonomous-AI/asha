@@ -1,0 +1,31 @@
+{
+  "scenario": "p12-c",
+  "breaks": "translator-1 posts exactly one \"pass: …\" status",
+  "note": "translator-1 says nothing at all, neither pass nor answer.",
+  "team": "self-select",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Please book me a flight to Paris."
+  },
+  "recipients": [
+    "greeter-1",
+    "translator-1"
+  ],
+  "messages": [
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "pass: not mine",
+      "working": [
+        "translator-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "kind": "output",
+      "text": "No agent could answer this:\n- greeter-1 passed: not mine\n- translator-1 passed: not mine"
+    }
+  ],
+  "ms": 2500
+}

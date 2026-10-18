@@ -1,0 +1,282 @@
+{
+  "commit": "c79743931a18a108d9eb0944e59055b5cfa4c14c",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "control/C2-note-room-no-notice",
+  "control": true,
+  "doc": null,
+  "dropStep": null,
+  "passes": 0,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 1341,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "notice: rye flour, quince jam, saffron, in the Juniper room"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1528,
+          "completionTokens": 37
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1644,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 2607,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-room-1",
+          "text": "notice: rye flour, quince jam, saffron, in the Juniper room",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "4427107882edd5a45b39980a46fe822c8cfe67a86eef6354f8e9823ffc26825c",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 1341,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "notice: rye flour, quince jam, saffron, in the Juniper room"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1528,
+          "completionTokens": 37
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1644,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 2601,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-room-1",
+          "text": "notice: rye flour, quince jam, saffron, in the Juniper room",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "4427107882edd5a45b39980a46fe822c8cfe67a86eef6354f8e9823ffc26825c",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 1341,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "notice: rye flour, quince jam, saffron, in the Juniper room"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1528,
+          "completionTokens": 37
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1644,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 2592,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-room-1",
+          "text": "notice: rye flour, quince jam, saffron, in the Juniper room",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "4427107882edd5a45b39980a46fe822c8cfe67a86eef6354f8e9823ffc26825c",
+      "ok": false
+    }
+  ]
+}

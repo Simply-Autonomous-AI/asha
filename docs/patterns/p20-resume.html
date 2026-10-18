@@ -1,0 +1,201 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p20-resume.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkpoint And Resume Demo</title>
+<meta name="description" content="P20 · Checkpoint and resume: a conversation in progress when the daemon stops is resumed after the restart and completes, and a long-running supervisor killed mid-task finishes the rest. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Checkpoint And Resume Demo</nav>
+<h1>P20 · Checkpoint and resume</h1>
+<p class="lede">Work in progress survives a stop of the harness: a conversation waiting on another agent when the daemon stops is resumed when the agent is relaunched, and completes without the user sending anything again; a long-running supervisor that keeps its progress in its saved workspace, killed mid-task, does the rest after its relaunch, each task once in its file.</p>
+<div class="facts"><span>written 2026-10-03</span><span>status: <span class="badge built">built</span> 2026-10-03, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/resume/team.json"><code>teams/resume/</code></a></span><span>test: <a href="../../tests/agents/p20-resume.test.ts"><code>tests/agents/p20-resume.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-5.md</code>, its runs</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p20-a</code>, a supervisor waiting on its call to a worker when the daemon stops, resumed by the relaunch; and <code>p20-b</code>, the long-running supervisor of <code>docs/plans/agent-persistence.md</code> A8, as <code>docs/plans/patterns-phase-5.md</code> specifies them.</li>
+<li>What carries the work across the stop: a persisted agent's saved <code>/workspace</code> (<a href="../architecture/channel.html#persisted">persisted agents</a>), and its record of unsaved messages, which keeps a user's message until its conversation is finished and re-sends it, once, at the agent's next launch in a later daemon run.</li>
+<li>Built: its three recorded runs with every member on <code>qwen3-8b-q4_k_m</code> passed, then one under the bound they set, at <code>b0a4ea3</code> (runs (<code>docs/plans/patterns-phase-5.md</code>)); moved 2026-10-10 by <code>docs/plans/demo-model-pico.md</code> R3, with its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code>: three recorded runs passed at <code>6eed097</code> with the move, then one under the bound they set at <code>8dd3a26</code> (runs (<code>evals/probes/demo-model-pico-runs-2026-10-09/README.md</code>)); its checkers' every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>supervisor</code> on <code>qwen3-8b-q4_k_m</code>; <code>worker</code>, <code>tasker</code> on <code>pico-v2-q8_0</code>.</li>
+<li>The relaunch is the user's <code>./asha --launch team=resume</code>: it starts the daemon, re-sends the kept message marked as a retry, and follows the resumed conversation, printing <code>› resuming your message from &lt;time&gt;</code> and the answer.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p20-resume.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>pico-v2-q8_0</code> and <code>qwen3-8b-q4_k_m</code> (<a href="videos/p20-resume.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 76 s, every scenario passed. The page followed the daemon's 3 restarts: after each, it loads again and watches the channel afresh, so the chat starts over. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when work can outlive a run of the harness: a supervisor waiting on other agents, or working through a list of tasks in its own turns, should pick up where it was rather than lose the work or start again. Give the agent <code>persist: [&quot;workspace&quot;]</code> (or <code>&quot;memory&quot;</code>) in its recipe, keep its progress in a file there, and relaunch it after the restart.</p>
+<p><strong>Do not use it</strong> for work whose effects must happen exactly once. The resume replays the user's message from the agent's last saved state: anything the interrupted turn did outside that state — a question to another agent, a post, a file in <code>/channel</code>, a model call, a web search — can happen again. The re-sent message says it was sent before the restart, so a well-guided agent checks its saved progress first (p20-b's tasker reads <code>tasks.json</code>), but the harness gives no exactly-once guarantee.</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 460" role="img" aria-labelledby="p20-t p20-d">
+  <title id="p20-t">P20 · Checkpoint and resume</title>
+  <desc id="p20-d">p20-a: you ask supervisor-1 for worker-1's word; it consults worker-1, whose container the test has paused, and the daemon is stopped while the call is open; supervisor-1's record keeps your message; the relaunch starts a new daemon, re-sends the message marked as a retry, supervisor-1 consults worker-1 again, worker-1 answers marigold, and supervisor-1 answers you. p20-b: tasker-1 does tasks 1 and 2, saving each in tasks.json; the daemon is killed while task 3 runs; the relaunch re-sends tasks 3 and 4, and the tasker finds task 3 not saved and does it, then task 4.</desc>
+  <defs><marker id="p20-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <text class="label" x="20" y="24">p20-a · a conversation waiting on a call</text>
+  <rect class="box" x="20" y="40" width="80" height="34" rx="5"/>
+  <text class="label mono" x="60" y="62" text-anchor="middle">you</text>
+  <rect class="box accent" x="150" y="40" width="130" height="34" rx="5"/>
+  <text class="label mono" x="215" y="62" text-anchor="middle">supervisor-1</text>
+  <rect class="box" x="360" y="40" width="110" height="34" rx="5"/>
+  <text class="label mono" x="415" y="62" text-anchor="middle">worker-1</text>
+  <rect class="box" x="520" y="40" width="140" height="34" rx="5"/>
+  <text class="label mono small" x="590" y="61" text-anchor="middle">pending.json</text>
+  <path class="edge" d="M100 57 H148" marker-end="url(#p20-m)"/>
+  <path class="edge" d="M280 57 H358" marker-end="url(#p20-m)"/>
+  <text class="label mono small" x="290" y="92">consult: What is your word?</text>
+  <text class="label small" x="360" y="110">paused by the test</text>
+  <path class="edge" d="M215 74 C215 140 590 140 590 76" marker-end="url(#p20-m)"/>
+  <text class="label small" x="340" y="150">the message kept: its call is open</text>
+  <text class="label mono small" x="20" y="180">./asha --stop — the call closes, the daemon exits</text>
+  <text class="label mono small" x="20" y="200">./asha --launch team=resume — a new daemon</text>
+  <path class="edge" d="M590 210 C590 240 215 240 215 256" marker-end="url(#p20-m)"/>
+  <text class="label small" x="300" y="236">re-sent once, marked as a retry</text>
+  <rect class="box accent" x="150" y="258" width="130" height="34" rx="5"/>
+  <text class="label mono" x="215" y="280" text-anchor="middle">supervisor-1</text>
+  <rect class="box" x="360" y="258" width="110" height="34" rx="5"/>
+  <text class="label mono" x="415" y="280" text-anchor="middle">worker-1</text>
+  <path class="edge" d="M280 268 H358" marker-end="url(#p20-m)"/>
+  <path class="edge" d="M358 284 H282" marker-end="url(#p20-m)"/>
+  <text class="label mono small" x="300" y="308">marigold</text>
+  <path class="edge" d="M150 275 H102" marker-end="url(#p20-m)"/>
+  <rect class="box" x="20" y="258" width="80" height="34" rx="5"/>
+  <text class="label mono" x="60" y="280" text-anchor="middle">you</text>
+  <text class="label small" x="20" y="320">worker-1's word is marigold</text>
+  <text class="label" x="20" y="362">p20-b · a long-running supervisor</text>
+  <rect class="box accent" x="20" y="376" width="110" height="34" rx="5"/>
+  <text class="label mono" x="75" y="398" text-anchor="middle">tasker-1</text>
+  <text class="label mono small" x="150" y="388">tasks 1, 2 → tasks.json [1,2], each saved</text>
+  <text class="label mono small" x="150" y="406">task 3 written, then SIGKILL: not saved</text>
+  <text class="label mono small" x="150" y="424">relaunch: tasks 3, 4 re-sent → [1,2,3,4]</text>
+  <text class="label small" x="150" y="446">each task once in its file; no message sent again</text>
+</svg>
+<figcaption>p20-a: you ask supervisor-1 for worker-1's word; it consults worker-1, whose container the test has paused, and the daemon is stopped while the call is open; supervisor-1's record keeps your message; the relaunch starts a new daemon, re-sends the message marked as a retry, supervisor-1 consults worker-1 again, worker-1 answers marigold, and supervisor-1 answers you. p20-b: tasker-1 does tasks 1 and 2, saving each in tasks.json; the daemon is killed while task 3 runs; the relaunch re-sends tasks 3 and 4, and the tasker finds task 3 not saved and does it, then task 4.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then each scenario's commands, p20-a first: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8), asserted on p20-a's message and relaunch and on each of p20-b's commands: 27,000 ms since 2026-10-10, set from its three recorded runs with its sub-agents on <code>pico-v2-q8_0</code> (<code>docs/plans/demo-model-pico.md</code> R3) — the largest request, p20-b's 17,391 ms in run 1 at <code>6eed097</code> with the move, times 1.5 (26,086.5), rounded up to a whole second; the cap is 45,000 ms. <em>Before, with every member on <code>qwen3-8b-q4_k_m</code>:</em> 24,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-5.md</code> R14) — p20-a's largest, the relaunch of run 2, 15,559 ms at <code>0c79534</code>, times 1.5 (23,338.5), rounded up to a whole second, and p20-b's, run 1's relaunch, 15,582 ms, giving the same; the cap is 45,000 ms. (p20-b's bound was 17,000 ms in its one-member team, <code>docs/plans/agent-persistence.md</code> A8.)</p>
+<pre><code class="language-asha-run">./asha --launch team=resume
+# bound: 27000 ms
+# p20-a
+./asha to=supervisor-1 user=alice message=&quot;Ask worker-1 for its word and tell me.&quot;
+./asha --stop
+./asha --launch team=resume
+# p20-b
+./asha --stop
+./asha --launch team=resume
+./asha to=tasker-1 user=alice message=&quot;do task 1&quot;
+./asha to=tasker-1 user=alice message=&quot;do task 2&quot;
+./asha to=tasker-1 user=alice message=&quot;do task 3&quot;
+./asha to=tasker-1 user=alice message=&quot;do task 4&quot;
+./asha --launch team=resume
+</code></pre>
+<p><strong>The faults are the test's.</strong> In p20-a the test pauses worker-1's container before the message and runs <code>--stop</code> once the daemon logs supervisor-1's call, so the stop always lands while the call is open; typed by hand, worker-1 may answer first and the conversation finish before the stop. In p20-b the test sends tasks 3 and 4 together and kills the daemon with SIGKILL once task 3's write to <code>tasks.json</code> is logged — by hand, <code>kill -9</code> the daemon while task 3 runs.</p>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>8dd3a26</code> (clean tree), <code>docs/plans/demo-model-pico.md</code>'s fourth run (R3 (d)), with its sub-agents on <code>pico-v2-q8_0</code>, from its results file <code>p20-resume.json</code> (<code>evals/probes/demo-model-pico-runs-2026-10-09/run-4/results/p21-resume.json</code>): p20-a's message and relaunch, and p20-b's relaunch, as the suite ran them (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines, to all but p20-b's relaunch), each command's stderr, then its stdout. <strong>Left out below:</strong></p>
+<ul>
+<li>the relaunch's progress lines up to each member's <code>Hi</code>: the daemon's start, with the log path of a temporary home, and each member's container runtime, model, model server and image;</li>
+<li>p20-a's <code>--stop</code> (<code>stopped (pid …)</code>, 3,713 ms);</li>
+<li>p20-b's <code>--stop</code>, launch and tasks 1–4;</li>
+<li>the models' tool-call lines.</li>
+</ul>
+<p>The transcript before, with every member on <code>qwen3-8b-q4_k_m</code>, is in this page's history (<code>git show 8dd3a26:docs/patterns/p20-resume.md</code>).</p>
+<p><strong>p20-a, the message</strong> — exit 1, 8,021 ms; the daemon was stopped while worker-1 held the question:</p>
+<pre><code class="language-text">$ ./asha --verbose to=supervisor-1 user=alice message=&quot;Ask worker-1 for its word and tell me.&quot;
+› alice → supervisor-1 on main: Ask worker-1 for its word and tell me.
+› supervisor-1: ok
+› internal supervisor-1 → worker-1: What is your word?
+› tasker-1 left the channel: channel stream closed
+› supervisor-1 left the channel: channel stream closed
+› output asha → alice:
+No agent could answer this:
+- supervisor-1 worked on it but sent you no reply
+- worker-1 received it but said nothing
+</code></pre>
+<p><strong>p20-a, the relaunch</strong> — exit 0, 16,736 ms; nothing sent again:</p>
+<pre><code class="language-text">$ ./asha --verbose --launch team=resume
+› supervisor-1 resumed from state saved 2026-10-10T03:37:47.357Z
+› tasker-1 resumed from state saved 2026-10-10T03:37:47.350Z
+› resuming your message from 2026-10-10T03:37:42.080Z
+› supervisor-1: ok
+› internal supervisor-1 → worker-1: What is your word?
+› internal worker-1 → supervisor-1: marigold
+› internal asha → supervisor-1: Answers to supervisor-1&#39;s call: 1 answered.
+› supervisor-1: ok
+› output supervisor-1 → alice:
+supervisor-1
+worker-1
+tasker-1
+worker-1&#39;s word is marigold
+</code></pre>
+<p>The resuming line names the time alice sent the message, before the stop; supervisor-1 asked worker-1 again, from the re-sent message.</p>
+<p><strong>p20-b, the relaunch</strong> — exit 0, 16,772 ms, without <code>--verbose</code>; the daemon had been killed while task 3 ran:</p>
+<pre><code class="language-text">$ ./asha --launch team=resume
+(daemon file names port 63559, which did not answer: fetch failed)
+› resuming your message from 2026-10-10T03:38:25.416Z
+› resuming your message from 2026-10-10T03:38:25.630Z
+supervisor-1
+worker-1
+tasker-1
+done task 3
+done task 4
+</code></pre>
+<p>Task 3 had been written to <code>tasks.json</code> before the kill, but its checkpoint was never promoted, so the restored file lacked it: the re-sent task wrote it again, then task 4. The run's proof records it: two checkpoints promoted before the kill, three writes of <code>tasks.json</code> in the first run and two in the second, and <code>tasks.json</code> naming each task once.</p>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/resume/team.json"><code>teams/resume/team.json</code></a>: three members, each joining as <code>&lt;name&gt;-1</code> — <code>supervisor</code> and <code>worker</code> (p20-a), <code>tasker</code> (p20-b).</li>
+<li><a href="../../teams/resume/supervisor.json"><code>supervisor.json</code></a> and <a href="../../teams/resume/supervisor.md"><code>supervisor.md</code></a>: persists <code>workspace</code>; asks worker-1 for its word with <code>consult</code>, also when the message was sent before the restart, then replies with it.</li>
+<li><a href="../../teams/resume/worker.json"><code>worker.json</code></a> and <a href="../../teams/resume/worker.md"><code>worker.md</code></a>: holds the word, <code>marigold</code>, in its document alone, and replies with it when asked.</li>
+<li><a href="../../teams/resume/tasker.json"><code>tasker.json</code></a> and <a href="../../teams/resume/tasker.md"><code>tasker.md</code></a>: persists <code>workspace</code>; for each <code>do task &lt;id&gt;</code>, reads <code>tasks.json</code>, writes it with the id added once, and replies <code>done task &lt;id&gt;</code> (<code>docs/plans/agent-persistence.md</code> A8's long-running supervisor).</li>
+<li><a href="../../tests/agents/p20-resume.test.ts"><code>tests/agents/p20-resume.test.ts</code></a>: runs this page's block with each scenario's fault, and asserts each scenario only through its checker, <code>P20_A</code> and <code>P20_B</code> in <a href="../../tests/agents/patterns/p20.ts"><code>tests/agents/patterns/p20.ts</code></a>, each on its own slice of the daemon log.</li>
+<li>The checkers' fixtures — each scenario's first recorded run, and one failing fixture per claim and per clause: <a href="../../tests/agents/p20-a/run-1.json"><code>tests/agents/p20-a/run-1.json</code></a> and <a href="../../tests/agents/p20-b/recorded-run-1.json"><code>tests/agents/p20-b/recorded-run-1.json</code></a>, run by <a href="../../tests/unit/p20-checker.test.ts"><code>tests/unit/p20-checker.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>With its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code> (demo-model-pico, 2026-10-10): its largest request took 17,391 ms in the three recorded runs and 16,772 ms in the fourth, under its bound of 27,000 ms. The limits after it were measured with every member on <code>qwen3-8b-q4_k_m</code>, before the move; one about a sub-agent was not measured again on <code>pico-v2-q8_0</code>.</li>
+<li><strong>The resume replays the user's message.</strong> Nothing of the open call is saved: after the restart supervisor-1 asks worker-1 again, so the worker's turn — and anything else the interrupted turn did outside the supervisor's saved <code>/workspace</code> — can repeat (delivery at least once; <code>docs/plans/agent-persistence.md</code> R9 (g)).</li>
+<li><strong>It needs a persisted agent and a later daemon run.</strong> Only an agent whose recipe persists something has a record of unsaved messages; its message is re-sent at its next launch after the daemon has stopped and started again, never by a relaunch in the same run, and only when the user relaunches it: the daemon starts no agent by itself.</li>
+<li><strong>Once.</strong> A message re-sent once is not re-sent again if the daemon stops during its re-send.</li>
+<li><strong>Only the user's message is resumed.</strong> An agent's own message to another, or a call's question to a persisted callee, is not.</li>
+<li><strong>The interrupted command still says no agent could answer.</strong> At the stop, the message command ends with the harness's <code>No agent could answer this: …</code> and exits 1, as for any conversation a stop interrupts; the answer comes with the relaunch (D62, for the owner to decide).</li>
+<li><strong>The faults are the test's</strong> (above): the pause of worker-1 and p20-b's SIGKILL.</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the log record or transcript line that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p20">agent test report, P20 · Checkpoint and resume</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p20-resume.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

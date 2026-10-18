@@ -1,0 +1,32 @@
+{
+  "pattern": "P3",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:16:45.501Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p03-pipeline",
+  "models": [
+    "pico-v2-q8_0"
+  ],
+  "durationMs": 24840,
+  "bytes": 1421954,
+  "sha256": "6501ef80451aea24a6f84becdcfef62009076855a85e7f56c522c75e970c4cf2",
+  "frames": 497,
+  "framesPerSecond": 20,
+  "longestGapMs": 62,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P3 · Sequential pipeline",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5041,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p03-a",
+      "outcome": "pass"
+    }
+  ]
+}

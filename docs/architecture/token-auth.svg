@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 470" role="img" aria-labelledby="tk-t tk-d">
+  <title id="tk-t">The control credential, the agent token, and how a request is authorised</title>
+  <desc id="tk-d">At each start, startDaemon makes the control credential with randomBytes(32) and writes it into daemon.json, mode 0600, which the CLI reads and sends as a bearer credential. At launch, AgentSupervisor.launch creates an agent token with randomBytes(32) and stores the agent's record under it; ColimaRuntime.start passes it to docker run by name as ASHA_AGENT_TOKEN, on the home's network asha-homeId, from which the container reaches only the daemon's port. Inside the container, readAgentEnvironment reads it and HarnessClient sends it as a bearer token. Every request enters route() in server.ts, whose guard runs before any route: first the Host header must be 127.0.0.1 or localhost with the daemon's port (or, under /agent/, the containers' name for the host), and an Origin, if sent, must be the daemon's own, else 403; then a path under /v1/ needs the control credential, compared in constant time, and a path under /agent/ needs a live agent token, else 401; each refusal is logged as http.refused, bounded. A request that passes is routed: the control routes, the agent routes with the token mapped to the agent's handle and channel, or 404. When the container exits, its record and token are deleted; at stop, daemon.json is removed.</desc>
+  <defs><marker id="tk-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <text class="label small" x="10" y="16">at launch</text>
+  <rect class="box" x="10" y="24" width="230" height="74" rx="6"/>
+  <text class="label title" x="125" y="44" text-anchor="middle">AgentSupervisor.launch</text>
+  <text class="label mono" x="125" y="63" text-anchor="middle">randomBytes(32) → token</text>
+  <text class="label mono" x="125" y="82" text-anchor="middle">records.set(token, record)</text>
+
+  <rect class="box" x="265" y="24" width="230" height="74" rx="6"/>
+  <text class="label title" x="380" y="44" text-anchor="middle">ColimaRuntime.start</text>
+  <text class="label mono" x="380" y="63" text-anchor="middle">docker run -e ASHA_AGENT_TOKEN</text>
+  <text class="label small" x="380" y="82" text-anchor="middle">on asha-&lt;homeId&gt;: daemon port only</text>
+
+  <rect class="box" x="520" y="24" width="230" height="74" rx="6"/>
+  <text class="label title" x="635" y="44" text-anchor="middle">agent container</text>
+  <text class="label mono" x="635" y="63" text-anchor="middle">readAgentEnvironment</text>
+  <text class="label mono" x="635" y="82" text-anchor="middle">HarnessClient</text>
+
+  <path class="edge" d="M240 61 H263" marker-end="url(#tk-a)"/>
+  <path class="edge" d="M495 61 H518" marker-end="url(#tk-a)"/>
+
+  <text class="label small" x="10" y="136">at each start, then every request</text>
+  <rect class="box" x="10" y="144" width="230" height="74" rx="6"/>
+  <text class="label title" x="125" y="164" text-anchor="middle">asha CLI</text>
+  <text class="label mono" x="125" y="183" text-anchor="middle">daemon.json (0600)</text>
+  <text class="label small" x="125" y="202" text-anchor="middle">credential: startDaemon, randomBytes(32)</text>
+
+  <rect class="box accent" x="265" y="144" width="485" height="74" rx="6"/>
+  <text class="label title" x="507" y="164" text-anchor="middle">route() in server.ts: the guard, before any route</text>
+  <text class="label mono" x="507" y="183" text-anchor="middle">Host and Origin → 403 · credential or token → 401</text>
+  <text class="label small" x="507" y="202" text-anchor="middle">each refusal logged as http.refused, bounded</text>
+
+  <path class="edge" d="M240 181 H263" marker-end="url(#tk-a)"/>
+  <text class="label mono" x="252" y="236" text-anchor="middle">Bearer &lt;credential&gt;</text>
+  <path class="edge" d="M635 98 V142" marker-end="url(#tk-a)"/>
+  <text class="label mono" x="627" y="125" text-anchor="end">Bearer &lt;token&gt;</text>
+
+  <rect class="box" x="265" y="250" width="150" height="84" rx="6"/>
+  <text class="label title" x="340" y="268" text-anchor="middle">/v1/…</text>
+  <text class="label mono" x="340" y="287" text-anchor="middle">the credential</text>
+  <text class="label mono" x="340" y="303" text-anchor="middle">timingSafeEqual</text>
+  <text class="label small" x="340" y="321" text-anchor="middle">Host: 127.0.0.1, localhost</text>
+
+  <rect class="box" x="432" y="250" width="150" height="84" rx="6"/>
+  <text class="label title" x="507" y="268" text-anchor="middle">/agent/…</text>
+  <text class="label mono" x="507" y="287" text-anchor="middle">bearer(req)</text>
+  <text class="label mono" x="507" y="303" text-anchor="middle">isAgentToken(token)</text>
+  <text class="label small" x="507" y="321" text-anchor="middle">+ host.docker.internal</text>
+
+  <rect class="box" x="600" y="250" width="150" height="84" rx="6"/>
+  <text class="label title" x="675" y="270" text-anchor="middle">anything else</text>
+  <text class="label mono" x="675" y="292" text-anchor="middle">404</text>
+  <text class="label small" x="675" y="312" text-anchor="middle">after Host and Origin</text>
+
+  <path class="edge" d="M340 218 V248" marker-end="url(#tk-a)"/>
+  <path class="edge" d="M507 218 V248" marker-end="url(#tk-a)"/>
+  <path class="edge" d="M675 218 V248" marker-end="url(#tk-a)"/>
+
+  <rect class="box accent" x="265" y="364" width="150" height="96" rx="6"/>
+  <text class="label title" x="340" y="384" text-anchor="middle">control routes</text>
+  <text class="label mono" x="340" y="404" text-anchor="middle">health · agents</text>
+  <text class="label mono" x="340" y="420" text-anchor="middle">conversations</text>
+  <text class="label mono" x="340" y="436" text-anchor="middle">channel</text>
+
+  <rect class="box accent" x="432" y="364" width="150" height="96" rx="6"/>
+  <text class="label title" x="507" y="382" text-anchor="middle">agent routes</text>
+  <text class="label mono" x="507" y="400" text-anchor="middle">GET /agent/v1/channel</text>
+  <text class="label small" x="507" y="416" text-anchor="middle">the join stream, then post ·</text>
+  <text class="label small" x="507" y="432" text-anchor="middle">ack · roster · chat · embed</text>
+  <text class="label small" x="507" y="448" text-anchor="middle">token → handle and channel</text>
+
+  <rect class="box" x="600" y="364" width="150" height="96" rx="6"/>
+  <text class="label title" x="675" y="384" text-anchor="middle">refused</text>
+  <text class="label mono" x="675" y="406" text-anchor="middle">401 · 403</text>
+  <text class="label small" x="675" y="426" text-anchor="middle">nothing is read</text>
+  <text class="label small" x="675" y="442" text-anchor="middle">or started first</text>
+
+  <path class="edge" d="M340 334 V362" marker-end="url(#tk-a)"/>
+  <path class="edge" d="M507 334 V362" marker-end="url(#tk-a)"/>
+  <path class="edge dim" d="M415 322 H424 V348 H675 V362" marker-end="url(#tk-a)"/>
+  <path class="edge dim" d="M582 322 H591 V348" />
+
+  <rect class="box" x="10" y="364" width="230" height="96" rx="6"/>
+  <text class="label title" x="125" y="384" text-anchor="middle">container exits · daemon stops</text>
+  <text class="label mono" x="125" y="406" text-anchor="middle">records.delete(token)</text>
+  <text class="label mono" x="125" y="424" text-anchor="middle">rm daemon.json</text>
+  <text class="label small" x="125" y="444" text-anchor="middle">each secret dies with its holder</text>
+</svg>

@@ -1,0 +1,22 @@
+{
+  "id": "plan-execute",
+  "description": "P6, plan-and-execute: a planner keeps a task ledger and a progress ledger, runs each step through its agent, and re-plans a step that stalls.",
+  "members": [
+    {
+      "name": "planner",
+      "recipe": "planner.json"
+    },
+    {
+      "name": "half-a",
+      "recipe": "half-a.json"
+    },
+    {
+      "name": "half-b",
+      "recipe": "half-b.json"
+    },
+    {
+      "name": "backup",
+      "recipe": "backup.json"
+    }
+  ]
+}

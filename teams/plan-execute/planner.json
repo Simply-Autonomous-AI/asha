@@ -1,0 +1,24 @@
+{
+  "id": "planner",
+  "image": "hello-world",
+  "description": "Plans, runs each step through the agent that does it, and re-plans a stalled step.",
+  "prompt": "you plan, run each step through the agent that does it, and re-plan a step that stalls.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "planner.md",
+      "fullText": true
+    }
+  ]
+}

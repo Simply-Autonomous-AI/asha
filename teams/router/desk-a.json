@@ -1,0 +1,24 @@
+{
+  "id": "desk-a",
+  "image": "hello-world",
+  "description": "Translates short English phrases into French.",
+  "prompt": "you translate short English phrases into French.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "desk-a.md",
+      "fullText": true
+    }
+  ]
+}

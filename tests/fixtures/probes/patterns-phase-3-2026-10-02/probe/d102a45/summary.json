@@ -1,0 +1,1104 @@
+{
+  "commit": "d102a45b4059a62f100af58747d186b1be299a95",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "repeats": 3,
+  "builders": {
+    "B1": true,
+    "B2": true
+  },
+  "summary": [
+    {
+      "id": "p14-a/worker-first",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        2993,
+        431,
+        431
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1152
+        ],
+        [
+          1152
+        ],
+        [
+          1152
+        ]
+      ],
+      "requestSha256": "eac3b2a2e5a776b3fee0192a9064f71354d3e0956ae1a81f44f65b2cb39fb16d",
+      "shown": [
+        "reply {\"text\":\"Hello World.\"} => reply {\"text\":\"Hello World.\"}",
+        "reply {\"text\":\"Hello World.\"} => reply {\"text\":\"Hello World.\"}",
+        "reply {\"text\":\"Hello World.\"} => reply {\"text\":\"Hello World.\"}"
+      ]
+    },
+    {
+      "id": "p14-a/worker-redelivered",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        575,
+        430,
+        436
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1170
+        ],
+        [
+          1170
+        ],
+        [
+          1170
+        ]
+      ],
+      "requestSha256": "abb9bcf30e210890476152c8601fe71b80d198453214c5baab1b8e4dc4ff1339",
+      "shown": [
+        "reply {\"text\":\"Hello World.\"} => reply {\"text\":\"Hello World.\"}",
+        "reply {\"text\":\"Hello World.\"} => reply {\"text\":\"Hello World.\"}",
+        "reply {\"text\":\"Hello World.\"} => reply {\"text\":\"Hello World.\"}"
+      ]
+    },
+    {
+      "id": "p18/ping-first",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        4659,
+        601,
+        606
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1795
+        ],
+        [
+          1795
+        ],
+        [
+          1795
+        ]
+      ],
+      "requestSha256": "8f1148bb00c2021789a11e930bb66216a0fe656c4449294c3c860231d959cd64",
+      "shown": [
+        "send_message {\"to\":\"pong-1\",\"text\":\"ping\"} => send_message {\"to\":\"pong-1\",\"text\":\"ping\"}",
+        "send_message {\"to\":\"pong-1\",\"text\":\"ping\"} => send_message {\"to\":\"pong-1\",\"text\":\"ping\"}",
+        "send_message {\"to\":\"pong-1\",\"text\":\"ping\"} => send_message {\"to\":\"pong-1\",\"text\":\"ping\"}"
+      ]
+    },
+    {
+      "id": "p18/pong-on-ping",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        4660,
+        600,
+        603
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1792
+        ],
+        [
+          1792
+        ],
+        [
+          1792
+        ]
+      ],
+      "requestSha256": "5b3ac5172db8f47da4042970b345cbc5a1a6a756c1f8c806a7ba1006300072e5",
+      "shown": [
+        "send_message {\"to\":\"ping-1\",\"text\":\"pong\"} => send_message {\"to\":\"ping-1\",\"text\":\"pong\"}",
+        "send_message {\"to\":\"ping-1\",\"text\":\"pong\"} => send_message {\"to\":\"ping-1\",\"text\":\"pong\"}",
+        "send_message {\"to\":\"ping-1\",\"text\":\"pong\"} => send_message {\"to\":\"ping-1\",\"text\":\"pong\"}"
+      ]
+    },
+    {
+      "id": "p18/ping-on-pong",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        696,
+        600,
+        602
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1796
+        ],
+        [
+          1796
+        ],
+        [
+          1796
+        ]
+      ],
+      "requestSha256": "9289f0f24d332dd6bfa8a60b3decc03fbf586cca7fc276593497d722f984bf96",
+      "shown": [
+        "send_message {\"to\":\"pong-1\",\"text\":\"ping\"} => send_message {\"to\":\"pong-1\",\"text\":\"ping\"}",
+        "send_message {\"to\":\"pong-1\",\"text\":\"ping\"} => send_message {\"to\":\"pong-1\",\"text\":\"ping\"}",
+        "send_message {\"to\":\"pong-1\",\"text\":\"ping\"} => send_message {\"to\":\"pong-1\",\"text\":\"ping\"}"
+      ]
+    },
+    {
+      "id": "p22-a/weather-desk",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        4693,
+        626,
+        624
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1812
+        ],
+        [
+          1812
+        ],
+        [
+          1812
+        ]
+      ],
+      "requestSha256": "b5c31a98dd862cbe87520e13a712016e0ff1f06c788cc724b41b54d1d601a564",
+      "shown": [
+        "reply {\"text\":\"weather-desk-1 noted: Rain expected tomorrow.\"} => reply {\"text\":\"weather-desk-1 noted: Rain expected tomorrow.\"}",
+        "reply {\"text\":\"weather-desk-1 noted: Rain expected tomorrow.\"} => reply {\"text\":\"weather-desk-1 noted: Rain expected tomorrow.\"}",
+        "reply {\"text\":\"weather-desk-1 noted: Rain expected tomorrow.\"} => reply {\"text\":\"weather-desk-1 noted: Rain expected tomorrow.\"}"
+      ]
+    },
+    {
+      "id": "p22-a/front-page",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        4672,
+        600,
+        606
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1808
+        ],
+        [
+          1808
+        ],
+        [
+          1808
+        ]
+      ],
+      "requestSha256": "955532dc8886481ad6cd2e2fff6a85df24e4e833b551614affb50b719846b064",
+      "shown": [
+        "reply {\"text\":\"front-page-1 noted: Rain expected tomorrow.\"} => reply {\"text\":\"front-page-1 noted: Rain expected tomorrow.\"}",
+        "reply {\"text\":\"front-page-1 noted: Rain expected tomorrow.\"} => reply {\"text\":\"front-page-1 noted: Rain expected tomorrow.\"}",
+        "reply {\"text\":\"front-page-1 noted: Rain expected tomorrow.\"} => reply {\"text\":\"front-page-1 noted: Rain expected tomorrow.\"}"
+      ]
+    },
+    {
+      "id": "p22-b/sports-desk",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        4716,
+        650,
+        652
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1817
+        ],
+        [
+          1817
+        ],
+        [
+          1817
+        ]
+      ],
+      "requestSha256": "adc623babb8cbd0fccab06e091c4ef6fac61f4478886dd925c76dd80d9fb904e",
+      "shown": [
+        "reply {\"text\":\"sports-desk-1 noted: The home team won.\"} => reply {\"text\":\"sports-desk-1 noted: The home team won.\"}",
+        "reply {\"text\":\"sports-desk-1 noted: The home team won.\"} => reply {\"text\":\"sports-desk-1 noted: The home team won.\"}",
+        "reply {\"text\":\"sports-desk-1 noted: The home team won.\"} => reply {\"text\":\"sports-desk-1 noted: The home team won.\"}"
+      ]
+    },
+    {
+      "id": "p22-b/front-page",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        729,
+        626,
+        626
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1810
+        ],
+        [
+          1810
+        ],
+        [
+          1810
+        ]
+      ],
+      "requestSha256": "a613de67e122a49755703be2da97e43d93f6b8a991e4a67a54c09a38054cc930",
+      "shown": [
+        "reply {\"text\":\"front-page-1 noted: The home team won.\"} => reply {\"text\":\"front-page-1 noted: The home team won.\"}",
+        "reply {\"text\":\"front-page-1 noted: The home team won.\"} => reply {\"text\":\"front-page-1 noted: The home team won.\"}",
+        "reply {\"text\":\"front-page-1 noted: The home team won.\"} => reply {\"text\":\"front-page-1 noted: The home team won.\"}"
+      ]
+    },
+    {
+      "id": "p16/clerk-first",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        2680,
+        697,
+        695
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          906
+        ],
+        [
+          906
+        ],
+        [
+          906
+        ]
+      ],
+      "requestSha256": "636bcd8aa03b7ef487f9d3574207ea1033ff72d159f37964071b21dfa1e9a0eb",
+      "shown": [
+        "ask_user {\"text\":\"Approve posting \\\"Office closed Friday.\\\"? Answer yes or no.\"}",
+        "ask_user {\"text\":\"Approve posting \\\"Office closed Friday.\\\"? Answer yes or no.\"}",
+        "ask_user {\"text\":\"Approve posting \\\"Office closed Friday.\\\"? Answer yes or no.\"}"
+      ]
+    },
+    {
+      "id": "p16-a/clerk-yes",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        1260,
+        1206,
+        1205
+      ],
+      "rounds": [
+        2,
+        2,
+        2
+      ],
+      "tokens": [
+        [
+          912,
+          993
+        ],
+        [
+          912,
+          993
+        ],
+        [
+          912,
+          993
+        ]
+      ],
+      "requestSha256": "f6700bfd3288966dfd8e5a6676cf5c768bd98a83c809b0f02396c7d57554f090",
+      "shown": [
+        "blackboard_post {\"text\":\"Office closed Friday.\"} => reply {\"text\":\"Posted.\"}",
+        "blackboard_post {\"text\":\"Office closed Friday.\"} => reply {\"text\":\"Posted.\"}",
+        "blackboard_post {\"text\":\"Office closed Friday.\"} => reply {\"text\":\"Posted.\"}"
+      ]
+    },
+    {
+      "id": "p16-b/clerk-no",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        508,
+        430,
+        429
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          909
+        ],
+        [
+          909
+        ],
+        [
+          909
+        ]
+      ],
+      "requestSha256": "b311a7baab3d8feb02d01d68b8ebbafc4e026207728bd2ee962ba7472334eabe",
+      "shown": [
+        "reply {\"text\":\"Not posted.\"} => reply {\"text\":\"Not posted.\"}",
+        "reply {\"text\":\"Not posted.\"} => reply {\"text\":\"Not posted.\"}",
+        "reply {\"text\":\"Not posted.\"} => reply {\"text\":\"Not posted.\"}"
+      ]
+    },
+    {
+      "id": "control/C1-clerk-first-no-guidance",
+      "control": true,
+      "passes": 0,
+      "of": 3,
+      "ms": [
+        1707,
+        493,
+        491
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          711
+        ],
+        [
+          711
+        ],
+        [
+          711
+        ]
+      ],
+      "requestSha256": "ae0a31a80a0d2a5e57673ec7d6f9b9da272d78b92d5a5f1b9d1aecaab9b715d4",
+      "shown": [
+        "blackboard_post {\"text\":\"Office closed Friday.\"}",
+        "blackboard_post {\"text\":\"Office closed Friday.\"}",
+        "blackboard_post {\"text\":\"Office closed Friday.\"}"
+      ]
+    },
+    {
+      "id": "p23-a/helper-first",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        2690,
+        984,
+        991
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          798
+        ],
+        [
+          798
+        ],
+        [
+          798
+        ]
+      ],
+      "requestSha256": "a6e9fbfb327b79b8d310c55d6620d16ef95bf8144a17000b37cd783a3c5c7d4d",
+      "shown": [
+        "ask_user {\"text\":\"ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm\"}",
+        "ask_user {\"text\":\"ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm\"}",
+        "ask_user {\"text\":\"ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm\"}"
+      ]
+    },
+    {
+      "id": "p23-b/helper-answer",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        615,
+        472,
+        475
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          800
+        ],
+        [
+          800
+        ],
+        [
+          800
+        ]
+      ],
+      "requestSha256": "af6a658f31fa84f90fdcf2ca1b016d3e482511a78f249523916aa18582e84df1",
+      "shown": [
+        "pass {\"reason\":\"User answered the escalation request\"} => pass {\"reason\":\"User answered the escalation request\"}",
+        "pass {\"reason\":\"User answered the escalation request\"} => pass {\"reason\":\"User answered the escalation request\"}",
+        "pass {\"reason\":\"User answered the escalation request\"} => pass {\"reason\":\"User answered the escalation request\"}"
+      ]
+    },
+    {
+      "id": "control/C4-helper-answer-no-step-3",
+      "control": true,
+      "passes": 0,
+      "of": 3,
+      "ms": [
+        2077,
+        917,
+        922
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          785
+        ],
+        [
+          785
+        ],
+        [
+          785
+        ]
+      ],
+      "requestSha256": "d8f505bf07a4937e5a36b325eb28053db1ff8eadd6364fb8e25f3a6cc16a475f",
+      "shown": [
+        "reply {\"text\":\"3 metres = 300 centimetres. Also, 5 metres = 500 centimetres.\"} => reply {\"text\":\"3 metres = 300 centimetres. Also, 5 metres = 500 centimetres.\"}",
+        "reply {\"text\":\"3 metres = 300 centimetres. Also, 5 metres = 500 centimetres.\"} => reply {\"text\":\"3 metres = 300 centimetres. Also, 5 metres = 500 centimetres.\"}",
+        "reply {\"text\":\"3 metres = 300 centimetres. Also, 5 metres = 500 centimetres.\"} => reply {\"text\":\"3 metres = 300 centimetres. Also, 5 metres = 500 centimetres.\"}"
+      ]
+    },
+    {
+      "id": "p20-a/lead-first",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        3490,
+        412,
+        417
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1324
+        ],
+        [
+          1324
+        ],
+        [
+          1324
+        ]
+      ],
+      "requestSha256": "5bc638a5494f72ee8a9c9544c6364584baf74fd9eaba55b19141e605499dfa43",
+      "shown": [
+        "launch_agent {\"recipe\":\"helper\"}",
+        "launch_agent {\"recipe\":\"helper\"}",
+        "launch_agent {\"recipe\":\"helper\"}"
+      ]
+    },
+    {
+      "id": "p20-a/lead-after-launch",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        5476,
+        768,
+        775
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1989
+        ],
+        [
+          1989
+        ],
+        [
+          1989
+        ]
+      ],
+      "requestSha256": "f4d5decef392fa9532a8954e402bf395a95cf2df7bcac705795b70e859ba2fbd",
+      "shown": [
+        "consult {\"requests\":[{\"to\":\"helper-1\",\"text\":\"What is your word?\"}]} => consult {\"requests\":[{\"to\":\"helper-1\",\"text\":\"What is your word?\"}]}",
+        "consult {\"requests\":[{\"to\":\"helper-1\",\"text\":\"What is your word?\"}]} => consult {\"requests\":[{\"to\":\"helper-1\",\"text\":\"What is your word?\"}]}",
+        "consult {\"requests\":[{\"to\":\"helper-1\",\"text\":\"What is your word?\"}]} => consult {\"requests\":[{\"to\":\"helper-1\",\"text\":\"What is your word?\"}]}"
+      ]
+    },
+    {
+      "id": "p20-a/helper-call",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        3018,
+        435,
+        433
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1084
+        ],
+        [
+          1084
+        ],
+        [
+          1084
+        ]
+      ],
+      "requestSha256": "0d5c6922f3df9377314fac85d88fa4f0b08ea47b5c94539b64cdb266ffc91401",
+      "shown": [
+        "reply {\"text\":\"marigold\"} => reply {\"text\":\"marigold\"}",
+        "reply {\"text\":\"marigold\"} => reply {\"text\":\"marigold\"}",
+        "reply {\"text\":\"marigold\"} => reply {\"text\":\"marigold\"}"
+      ]
+    },
+    {
+      "id": "p20-a/lead-gather",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        753,
+        588,
+        586
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1974
+        ],
+        [
+          1974
+        ],
+        [
+          1974
+        ]
+      ],
+      "requestSha256": "4442019201ee1e0f45b6fc510553faab562326b2a514a98f748d9021e2b068a5",
+      "shown": [
+        "reply {\"text\":\"The helper's word is marigold.\"} => reply {\"text\":\"The helper's word is marigold.\"}",
+        "reply {\"text\":\"The helper's word is marigold.\"} => reply {\"text\":\"The helper's word is marigold.\"}",
+        "reply {\"text\":\"The helper's word is marigold.\"} => reply {\"text\":\"The helper's word is marigold.\"}"
+      ]
+    },
+    {
+      "id": "control/C3-lead-first-no-launch",
+      "control": true,
+      "passes": 0,
+      "of": 3,
+      "ms": [
+        576,
+        340,
+        335
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1228
+        ],
+        [
+          1228
+        ],
+        [
+          1228
+        ]
+      ],
+      "requestSha256": "939fa62888e7ba113dabc54054ea7bf23aafed8e788820b7026327a71ff068e2",
+      "shown": [
+        "list_agents {}",
+        "list_agents {}",
+        "list_agents {}"
+      ]
+    },
+    {
+      "id": "p07-a/top-first",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        6004,
+        1368,
+        1372
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1958
+        ],
+        [
+          1958
+        ],
+        [
+          1958
+        ]
+      ],
+      "requestSha256": "2b2d46733d323f6ac9aa2a3684c2ffbd7425e6b055e16e35bbccee30bc9a1959",
+      "shown": [
+        "consult {\"requests\":[{\"to\":\"lead-warm-1\",\"text\":\"What are your colours' numbers?\"},{\"to\":\"lead-cool-1\",\"text\":\"What are your colours' numbers?\"}]} => consult {\"requests\":[{\"to\":\"lead-warm-1\",\"text\":\"What are your colours' numbers?\"},{\"to\":\"lead-cool-1\",\"text\":\"What are your colours' numbers?\"}]}",
+        "consult {\"requests\":[{\"to\":\"lead-warm-1\",\"text\":\"What are your colours' numbers?\"},{\"to\":\"lead-cool-1\",\"text\":\"What are your colours' numbers?\"}]} => consult {\"requests\":[{\"to\":\"lead-warm-1\",\"text\":\"What are your colours' numbers?\"},{\"to\":\"lead-cool-1\",\"text\":\"What are your colours' numbers?\"}]}",
+        "consult {\"requests\":[{\"to\":\"lead-warm-1\",\"text\":\"What are your colours' numbers?\"},{\"to\":\"lead-cool-1\",\"text\":\"What are your colours' numbers?\"}]} => consult {\"requests\":[{\"to\":\"lead-warm-1\",\"text\":\"What are your colours' numbers?\"},{\"to\":\"lead-cool-1\",\"text\":\"What are your colours' numbers?\"}]}"
+      ]
+    },
+    {
+      "id": "p07-a/lead-warm-call",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        4537,
+        1171,
+        1166
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1473
+        ],
+        [
+          1473
+        ],
+        [
+          1473
+        ]
+      ],
+      "requestSha256": "e13261d9729a1d41c39dfa179c2aaf1351c963cbfaec849ed819f4d3dd368610",
+      "shown": [
+        "consult {\"requests\":[{\"to\":\"red-1\",\"text\":\"What is your number?\"},{\"to\":\"orange-1\",\"text\":\"What is your number?\"}]} => consult {\"requests\":[{\"to\":\"red-1\",\"text\":\"What is your number?\"},{\"to\":\"orange-1\",\"text\":\"What is your number?\"}]}",
+        "consult {\"requests\":[{\"to\":\"red-1\",\"text\":\"What is your number?\"},{\"to\":\"orange-1\",\"text\":\"What is your number?\"}]} => consult {\"requests\":[{\"to\":\"red-1\",\"text\":\"What is your number?\"},{\"to\":\"orange-1\",\"text\":\"What is your number?\"}]}",
+        "consult {\"requests\":[{\"to\":\"red-1\",\"text\":\"What is your number?\"},{\"to\":\"orange-1\",\"text\":\"What is your number?\"}]} => consult {\"requests\":[{\"to\":\"red-1\",\"text\":\"What is your number?\"},{\"to\":\"orange-1\",\"text\":\"What is your number?\"}]}"
+      ]
+    },
+    {
+      "id": "p07-a/lead-cool-call",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        4549,
+        1189,
+        1191
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1474
+        ],
+        [
+          1474
+        ],
+        [
+          1474
+        ]
+      ],
+      "requestSha256": "c319ccadbde5fa9483144037558b0322a0c7b845eade126a21bcc2540d6c9488",
+      "shown": [
+        "consult {\"requests\":[{\"to\":\"blue-1\",\"text\":\"What is your number?\"},{\"to\":\"violet-1\",\"text\":\"What is your number?\"}]} => consult {\"requests\":[{\"to\":\"blue-1\",\"text\":\"What is your number?\"},{\"to\":\"violet-1\",\"text\":\"What is your number?\"}]}",
+        "consult {\"requests\":[{\"to\":\"blue-1\",\"text\":\"What is your number?\"},{\"to\":\"violet-1\",\"text\":\"What is your number?\"}]} => consult {\"requests\":[{\"to\":\"blue-1\",\"text\":\"What is your number?\"},{\"to\":\"violet-1\",\"text\":\"What is your number?\"}]}",
+        "consult {\"requests\":[{\"to\":\"blue-1\",\"text\":\"What is your number?\"},{\"to\":\"violet-1\",\"text\":\"What is your number?\"}]} => consult {\"requests\":[{\"to\":\"blue-1\",\"text\":\"What is your number?\"},{\"to\":\"violet-1\",\"text\":\"What is your number?\"}]}"
+      ]
+    },
+    {
+      "id": "p07-a/red-call",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        2962,
+        390,
+        391
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1102
+        ],
+        [
+          1102
+        ],
+        [
+          1102
+        ]
+      ],
+      "requestSha256": "fb9d98a3b312ba3e0009ba6f979acfdd83111834e5dfef69d31f8c52f1f34e1b",
+      "shown": [
+        "reply {\"text\":\"4\"} => reply {\"text\":\"4\"}",
+        "reply {\"text\":\"4\"} => reply {\"text\":\"4\"}",
+        "reply {\"text\":\"4\"} => reply {\"text\":\"4\"}"
+      ]
+    },
+    {
+      "id": "p07-a/orange-call",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        2576,
+        392,
+        391
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1102
+        ],
+        [
+          1102
+        ],
+        [
+          1102
+        ]
+      ],
+      "requestSha256": "aec5c40e80482922a17cb940cfbd7962f288a3c4d31ffd61f672ab5695d5242e",
+      "shown": [
+        "reply {\"text\":\"7\"} => reply {\"text\":\"7\"}",
+        "reply {\"text\":\"7\"} => reply {\"text\":\"7\"}",
+        "reply {\"text\":\"7\"} => reply {\"text\":\"7\"}"
+      ]
+    },
+    {
+      "id": "p07-a/blue-call",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        2943,
+        389,
+        390
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1102
+        ],
+        [
+          1102
+        ],
+        [
+          1102
+        ]
+      ],
+      "requestSha256": "fd649dc1d4e1922e80489f26d4304c34e74015bda2af86fff0f27e8cadbabea2",
+      "shown": [
+        "reply {\"text\":\"3\"} => reply {\"text\":\"3\"}",
+        "reply {\"text\":\"3\"} => reply {\"text\":\"3\"}",
+        "reply {\"text\":\"3\"} => reply {\"text\":\"3\"}"
+      ]
+    },
+    {
+      "id": "p07-a/violet-call",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        2567,
+        393,
+        390
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1102
+        ],
+        [
+          1102
+        ],
+        [
+          1102
+        ]
+      ],
+      "requestSha256": "3e5709e21fe8307fd70f8e07724bce19553551af5acad823ae6908826864d6c3",
+      "shown": [
+        "reply {\"text\":\"2\"} => reply {\"text\":\"2\"}",
+        "reply {\"text\":\"2\"} => reply {\"text\":\"2\"}",
+        "reply {\"text\":\"2\"} => reply {\"text\":\"2\"}"
+      ]
+    },
+    {
+      "id": "p07-a/lead-warm-gather",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        3162,
+        457,
+        460
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1205
+        ],
+        [
+          1205
+        ],
+        [
+          1205
+        ]
+      ],
+      "requestSha256": "eae0ff211531a53089fb2331aed7e46dc93056fadcd9e6cea4daa32dae6cf057",
+      "shown": [
+        "reply {\"text\":\"4, 7\"} => reply {\"text\":\"4, 7\"}",
+        "reply {\"text\":\"4, 7\"} => reply {\"text\":\"4, 7\"}",
+        "reply {\"text\":\"4, 7\"} => reply {\"text\":\"4, 7\"}"
+      ]
+    },
+    {
+      "id": "p07-a/lead-cool-gather",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        3187,
+        459,
+        458
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1205
+        ],
+        [
+          1205
+        ],
+        [
+          1205
+        ]
+      ],
+      "requestSha256": "4817c6c871a2316a078afb99a948093281df5886104627fa1ba4384417a0fc17",
+      "shown": [
+        "reply {\"text\":\"3, 2\"} => reply {\"text\":\"3, 2\"}",
+        "reply {\"text\":\"3, 2\"} => reply {\"text\":\"3, 2\"}",
+        "reply {\"text\":\"3, 2\"} => reply {\"text\":\"3, 2\"}"
+      ]
+    },
+    {
+      "id": "p07-a/top-gather",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        966,
+        722,
+        721
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1991
+        ],
+        [
+          1991
+        ],
+        [
+          1991
+        ]
+      ],
+      "requestSha256": "5852cdec5e28c340a228db2b3de9a139dfb5d2ffdc3c7d3c66ae52e2a459e315",
+      "shown": [
+        "reply {\"text\":\"warm: 4, 7; cool: 3, 2\"} => reply {\"text\":\"warm: 4, 7; cool: 3, 2\"}",
+        "reply {\"text\":\"warm: 4, 7; cool: 3, 2\"} => reply {\"text\":\"warm: 4, 7; cool: 3, 2\"}",
+        "reply {\"text\":\"warm: 4, 7; cool: 3, 2\"} => reply {\"text\":\"warm: 4, 7; cool: 3, 2\"}"
+      ]
+    },
+    {
+      "id": "control/C2-lead-warm-call-not-granted",
+      "control": true,
+      "passes": 0,
+      "of": 3,
+      "ms": [
+        913,
+        718,
+        718
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1187
+        ],
+        [
+          1187
+        ],
+        [
+          1187
+        ]
+      ],
+      "requestSha256": "5e0f240babcfad94b2028b83401579fdbf062f8d20c13ec326edffde913c4992",
+      "shown": [
+        "reply {\"text\":\"I need to consult my team to find out the numbers of our colours.\"} => reply {\"text\":\"I need to consult my team to find out the numbers of our colours.\"}",
+        "reply {\"text\":\"I need to consult my team to find out the numbers of our colours.\"} => reply {\"text\":\"I need to consult my team to find out the numbers of our colours.\"}",
+        "reply {\"text\":\"I need to consult my team to find out the numbers of our colours.\"} => reply {\"text\":\"I need to consult my team to find out the numbers of our colours.\"}"
+      ]
+    },
+    {
+      "id": "control/C5-ping-first-no-guidance",
+      "control": true,
+      "passes": 0,
+      "of": 3,
+      "ms": [
+        4664,
+        627,
+        626
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1721
+        ],
+        [
+          1721
+        ],
+        [
+          1721
+        ]
+      ],
+      "requestSha256": "f41bf08fef2069a6f2a9d34938fb0d3a4afd4f5c2c0e3cb1c1c27ecefb7de0e9",
+      "shown": [
+        "send_message {\"to\":\"pong-1\",\"text\":\"Ping!\"} => send_message {\"to\":\"pong-1\",\"text\":\"Ping!\"}",
+        "send_message {\"to\":\"pong-1\",\"text\":\"Ping!\"} => send_message {\"to\":\"pong-1\",\"text\":\"Ping!\"}",
+        "send_message {\"to\":\"pong-1\",\"text\":\"Ping!\"} => send_message {\"to\":\"pong-1\",\"text\":\"Ping!\"}"
+      ]
+    }
+  ]
+}

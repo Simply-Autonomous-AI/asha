@@ -1,0 +1,22 @@
+3/3 p11-a/editor-first [6923, 1907, 1922 ms]: consult {"requests":[{"to":"contrib-a-1","text":"Post your item to the blackboard."},{"to":"contrib-b-1","text":"Post your item to the blackboard."},{"to":"contrib-c-1","text":"Post your item to the blackboar
+3/3 p11-a/contrib-a-call [4259, 1234, 1246 ms]: blackboard_post {"text":"item: saffron"} => reply {"text":"posted"}
+3/3 p11-a/contrib-b-call [3862, 1226, 1248 ms]: blackboard_post {"text":"item: quince jam"} => reply {"text":"posted"}
+3/3 p11-a/contrib-c-call [3826, 1222, 1247 ms]: blackboard_post {"text":"item: rye flour"} => reply {"text":"posted"}
+3/3 p11-a/editor-gather-abc [2115, 1934, 1935 ms]: blackboard_read {} => reply {"text":"The shopping list is as follows:\n\n- saffron\n- quince jam\n- rye flour"}
+3/3 p11-a/editor-gather-acb [1938, 1946, 1936 ms]: blackboard_read {} => reply {"text":"The shopping list is as follows:\n\n- saffron\n- rye flour\n- quince jam"}
+3/3 p11-a/editor-gather-bac [1938, 1958, 1924 ms]: blackboard_read {} => reply {"text":"The shopping list is as follows:\n\n- quince jam\n- saffron\n- rye flour"}
+3/3 p11-a/editor-gather-bca [1908, 1922, 1920 ms]: blackboard_read {} => reply {"text":"The shopping list is as follows:\n- quince jam\n- rye flour\n- saffron"}
+3/3 p11-a/editor-gather-cab [1945, 1940, 1938 ms]: blackboard_read {} => reply {"text":"The shopping list is as follows:\n\n- rye flour\n- saffron\n- quince jam"}
+3/3 p11-a/editor-gather-cba [1940, 1947, 1943 ms]: blackboard_read {} => reply {"text":"The shopping list is as follows:\n\n- rye flour\n- quince jam\n- saffron"}
+0/3 (control, expected to fail) control/C1-editor-gather-empty-board [2378, 2389, 2379 ms]: blackboard_read {} => blackboard_read {"since":0} => blackboard_read {"since":0} => pass {"reason":"No items found on the blackboard"}
+3/3 p11-b/planner-first [6170, 937, 948 ms]: consult {"requests":[{"to":"note-day-1","text":"Add your part to the notice on the blackboard."}]}
+3/3 p11-b/note-day-call [4180, 1232, 1241 ms]: blackboard_post {"text":"notice: meeting on Thursday"} => reply {"text":"posted"}
+3/3 p11-b/planner-gather-day [1122, 945, 953 ms]: consult {"requests":[{"to":"note-room-1","text":"Add your part to the notice on the blackboard."}]}
+3/3 p11-b/note-room-call [5690, 2459, 2469 ms]: blackboard_read {} => blackboard_post {"text":"notice: meeting on Thursday, in the Juniper room"} => reply {"text":"posted"}
+3/3 p11-b/planner-gather-room [1116, 944, 953 ms]: consult {"requests":[{"to":"note-time-1","text":"Add your part to the notice on the blackboard."}]}
+3/3 p11-b/note-time-call [6110, 2834, 2837 ms]: blackboard_read {} => blackboard_post {"text":"notice: meeting on Thursday, in the Juniper room, at 14:30"} => reply {"text":"posted"}
+3/3 p11-b/planner-gather-time [2543, 2458, 2463 ms]: blackboard_read {} => reply {"text":"The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30."}
+0/3 (control, expected to fail) control/C2-note-room-no-notice [2607, 2601, 2592 ms]: blackboard_read {} => blackboard_post {"text":"notice: rye flour, quince jam, saffron, in the Juniper room"} => reply {"text":"posted"}
+0/3 (control, expected to fail) control/C3-planner-gather-time-no-notice [1935, 1925, 1931 ms]: blackboard_read {} => reply {"text":"The meeting notice has been updated with the latest information. Please check the blackboard for the complete details."}
+0/3 (control, expected to fail) control/C4-note-room-no-guidance [4763, 2036, 2097 ms]: blackboard_post {"text":"Note from note-room-1: I am here to assist with the meeting notes."} => reply {"text":"Your message has been added to the blackboard. Let me know if you need further assistance."}
+EXIT=0

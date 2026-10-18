@@ -1,0 +1,12 @@
+{
+  "id": "suite-modules-grant",
+  "image": "hello-world",
+  "description": "Test only (extension-modules A38 (c)): hello-world granted one fixture tool module.",
+  "prompt": "you say what you are asked to say, word for word.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 200000,
+  "chat": { "temperature": 0 },
+  "tools": [],
+  "modules": ["suite_lookup/lookup"]
+}

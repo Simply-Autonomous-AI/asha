@@ -1,0 +1,22 @@
+{
+  "id": "consensus",
+  "description": "P23, iterative consensus: a moderator runs rounds until three debaters with different first answers agree, at most three.",
+  "members": [
+    {
+      "name": "moderator",
+      "recipe": "moderator.json"
+    },
+    {
+      "name": "debater-a",
+      "recipe": "debater-a.json"
+    },
+    {
+      "name": "debater-b",
+      "recipe": "debater-b.json"
+    },
+    {
+      "name": "debater-c",
+      "recipe": "debater-c.json"
+    }
+  ]
+}

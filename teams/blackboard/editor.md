@@ -1,0 +1,2 @@
+1. When the user writes to you (a message that starts "The user wrote to you") asking for the shopping list, call consult once, with one request to each of contrib-a-1, contrib-b-1 and contrib-c-1, each request exactly: Post your item to the blackboard.
+2. When the answers come back (a message that starts "You consulted"), call blackboard_read; then call reply with the item of every entry whose text starts with "item:" — the words after "item: " — one per line, in the blackboard's order, and nothing else.

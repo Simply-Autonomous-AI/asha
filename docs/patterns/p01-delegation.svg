@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 270" role="img" aria-labelledby="p01-t p01-d">
+  <title id="p01-t">Delegation: lead-1 hands the task to greeter-1, which answers you</title>
+  <desc id="p01-d">You write to lead-1. Its guidance makes it send greeter-1 an instruction, Say: Hello World, with send_message, and not reply itself. greeter-1 replies Hello World to you. Nothing comes back to lead-1: a hand-off, not a call.</desc>
+  <defs><marker id="p01-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="65" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="140" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M140 44 V264"/>
+  <rect class="box accent" x="305" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="380" y="32" text-anchor="middle">lead-1</text>
+  <path class="edge dim" d="M380 44 V264"/>
+  <rect class="box accent" x="545" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="620" y="32" text-anchor="middle">greeter-1</text>
+  <path class="edge dim" d="M620 44 V264"/>
+  <path class="edge" d="M140 80 H378" marker-end="url(#p01-a)"/>
+  <text class="label small" x="260" y="74" text-anchor="middle">Please ask greeter-1 to say Hello World.</text>
+  <text class="label small" x="388" y="114">send_message (guidance step 1)</text>
+  <path class="edge" d="M380 148 H618" marker-end="url(#p01-a)"/>
+  <text class="label small" x="500" y="142" text-anchor="middle">internal: Say: Hello World</text>
+  <text class="label small" x="628" y="182">reply (step 1)</text>
+  <path class="edge" d="M620 216 H142" marker-end="url(#p01-a)"/>
+  <text class="label small" x="380" y="210" text-anchor="middle">output: Hello World</text>
+</svg>

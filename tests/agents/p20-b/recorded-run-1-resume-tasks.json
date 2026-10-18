@@ -1,0 +1,230 @@
+{
+ "source": {
+  "commit": "2d94dc14e89056a83207aa6e080945be69d84eab",
+  "dirty": false,
+  "run": 1,
+  "startedAt": "2026-09-29T19:54:47.389Z",
+  "note": "recorded run 1 of p20-b at 2d94dc1: the four task commands from its results file, the daemon log and the supervisor's tasks.json writes from its home, tasks.json from its proof; the relaunch command rebuilt from its proof (stdout lines, resuming savedAts, ms), since that run recorded it only there"
+ },
+ "commands": [
+  {
+   "label": "task-1",
+   "args": [
+    "--verbose",
+    "channel=main",
+    "user=ivy",
+    "message=do task 1"
+   ],
+   "code": 0,
+   "stdout": "done task 1\n",
+   "stderr": "› ivy → main: do task 1\n› supervisor-1 read_file: {\"path\": \"tasks.json\"}\n› supervisor-1 write_file: {\"path\": \"tasks.json\", \"content\": \"[1]\"}\n› supervisor-1 reply: {\"text\": \"done task 1\"}\n› supervisor-1: ok\n› output supervisor-1 → ivy:\n",
+   "ms": 3970
+  },
+  {
+   "label": "task-2",
+   "args": [
+    "--verbose",
+    "channel=main",
+    "user=ivy",
+    "message=do task 2"
+   ],
+   "code": 0,
+   "stdout": "done task 2\n",
+   "stderr": "› ivy → main: do task 2\n› supervisor-1 read_file: {\"path\": \"tasks.json\"}\n› supervisor-1 write_file: {\"path\": \"tasks.json\", \"content\": \"[1, 2]\"}\n› supervisor-1 reply: {\"text\": \"done task 2\"}\n› supervisor-1: ok\n› output supervisor-1 → ivy:\n",
+   "ms": 2051
+  },
+  {
+   "label": "task-3",
+   "args": [
+    "--verbose",
+    "channel=main",
+    "user=ivy",
+    "message=do task 3"
+   ],
+   "code": 1,
+   "stdout": "",
+   "stderr": "› ivy → main: do task 3\n› supervisor-1 read_file: {\"path\": \"tasks.json\"}\n› supervisor-1 write_file: {\"path\": \"tasks.json\", \"content\": \"[1, 2, 3]\"}\n✗ the daemon closed the conversation before it settled; see its log (other side closed)\n",
+   "ms": 1517
+  },
+  {
+   "label": "task-4",
+   "args": [
+    "--verbose",
+    "channel=main",
+    "user=ivy",
+    "message=do task 4"
+   ],
+   "code": 1,
+   "stdout": "",
+   "stderr": "› ivy → main: do task 4\n✗ the daemon closed the conversation before it settled; see its log (other side closed)\n",
+   "ms": 1313
+  },
+  {
+   "label": "relaunch",
+   "args": [
+    "--launch",
+    "team=resume-tasks",
+    "channel=main"
+   ],
+   "code": 0,
+   "stdout": "supervisor-1\ndone task 3\ndone task 4\n",
+   "stderr": "› resuming your message from 2026-09-29T19:54:56.678Z\n› resuming your message from 2026-09-29T19:54:56.883Z\n",
+   "ms": 9383
+  }
+ ],
+ "daemonLog": [
+  {
+   "ts": "2026-09-29T19:54:48.293Z",
+   "level": "info",
+   "event": "daemon.started"
+  },
+  {
+   "ts": "2026-09-29T19:54:50.655Z",
+   "level": "info",
+   "event": "channel.posted",
+   "kind": "input",
+   "from": "ivy",
+   "to": null
+  },
+  {
+   "ts": "2026-09-29T19:54:54.501Z",
+   "level": "info",
+   "event": "channel.posted",
+   "kind": "output",
+   "from": "supervisor-1",
+   "to": "ivy"
+  },
+  {
+   "ts": "2026-09-29T19:54:54.547Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume-tasks/supervisor",
+   "generation": 1
+  },
+  {
+   "ts": "2026-09-29T19:54:54.627Z",
+   "level": "info",
+   "event": "channel.posted",
+   "kind": "input",
+   "from": "ivy",
+   "to": null
+  },
+  {
+   "ts": "2026-09-29T19:54:56.563Z",
+   "level": "info",
+   "event": "channel.posted",
+   "kind": "output",
+   "from": "supervisor-1",
+   "to": "ivy"
+  },
+  {
+   "ts": "2026-09-29T19:54:56.598Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume-tasks/supervisor",
+   "generation": 2
+  },
+  {
+   "ts": "2026-09-29T19:54:56.678Z",
+   "level": "info",
+   "event": "channel.posted",
+   "kind": "input",
+   "from": "ivy",
+   "to": null
+  },
+  {
+   "ts": "2026-09-29T19:54:56.883Z",
+   "level": "info",
+   "event": "channel.posted",
+   "kind": "input",
+   "from": "ivy",
+   "to": null
+  },
+  {
+   "ts": "2026-09-29T19:54:59.357Z",
+   "level": "info",
+   "event": "daemon.started"
+  },
+  {
+   "ts": "2026-09-29T19:55:01.394Z",
+   "level": "warn",
+   "event": "state.pending_found",
+   "identity": "main/resume-tasks/supervisor",
+   "entries": 2
+  },
+  {
+   "ts": "2026-09-29T19:55:01.610Z",
+   "level": "info",
+   "event": "channel.posted",
+   "kind": "input",
+   "from": "ivy",
+   "to": null,
+   "redelivered": true
+  },
+  {
+   "ts": "2026-09-29T19:55:01.610Z",
+   "level": "info",
+   "event": "channel.posted",
+   "kind": "input",
+   "from": "ivy",
+   "to": null,
+   "redelivered": true
+  },
+  {
+   "ts": "2026-09-29T19:55:01.624Z",
+   "level": "info",
+   "event": "state.redelivered",
+   "identity": "main/resume-tasks/supervisor",
+   "originalMessage": "c0395831be59501e"
+  },
+  {
+   "ts": "2026-09-29T19:55:05.669Z",
+   "level": "info",
+   "event": "channel.posted",
+   "kind": "output",
+   "from": "supervisor-1",
+   "to": "ivy"
+  },
+  {
+   "ts": "2026-09-29T19:55:05.720Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume-tasks/supervisor",
+   "generation": 3
+  },
+  {
+   "ts": "2026-09-29T19:55:05.742Z",
+   "level": "info",
+   "event": "state.redelivered",
+   "identity": "main/resume-tasks/supervisor",
+   "originalMessage": "a839f5c7691533cc"
+  },
+  {
+   "ts": "2026-09-29T19:55:07.880Z",
+   "level": "info",
+   "event": "channel.posted",
+   "kind": "output",
+   "from": "supervisor-1",
+   "to": "ivy"
+  },
+  {
+   "ts": "2026-09-29T19:55:07.919Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume-tasks/supervisor",
+   "generation": 4
+  },
+  {
+   "ts": "2026-09-29T19:55:08.068Z",
+   "level": "info",
+   "event": "state.promoted",
+   "identity": "main/resume-tasks/supervisor",
+   "generation": 5
+  }
+ ],
+ "writes": {
+  "first": 3,
+  "second": 2
+ },
+ "tasksJson": "[1, 2, 3, 4]"
+}

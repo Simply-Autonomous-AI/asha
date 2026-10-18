@@ -1,0 +1,14 @@
+{
+  "id": "budget",
+  "description": "P17, budgets and circuit breaker: two agents that would message each other for ever, stopped by the conversation's post or token budget.",
+  "members": [
+    {
+      "name": "ping",
+      "recipe": "ping.json"
+    },
+    {
+      "name": "pong",
+      "recipe": "pong.json"
+    }
+  ]
+}

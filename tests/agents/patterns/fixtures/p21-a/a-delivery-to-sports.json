@@ -1,0 +1,52 @@
+{
+  "scenario": "p21-a",
+  "breaks": "it is delivered to exactly weather-desk-1 and front-page-1 (the conversation's asha.delivery spans)",
+  "note": "The listed mutation: a delivery to sports-desk-1.",
+  "team": "topics",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Rain expected tomorrow.",
+    "topic": "weather"
+  },
+  "recipients": [
+    "weather-desk-1",
+    "front-page-1",
+    "sports-desk-1"
+  ],
+  "messages": [
+    {
+      "from": "weather-desk-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "weather-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "weather-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "weather-desk-1",
+      "kind": "output",
+      "text": "weather-desk-1 noted: Rain expected tomorrow.",
+      "working": [
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "output",
+      "text": "front-page-1 noted: Rain expected tomorrow.",
+      "working": []
+    }
+  ],
+  "ms": 6000
+}

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# asha — Autonomous Simple Harness for Agents.
+#
+# Run-time entry point: runs the built CLI and nothing else. Building is a
+# separate, build-time step in the repo — `npm install && npm run build` — and
+# asha never runs npm itself. Symlink this script onto your PATH if you like;
+# it finds the repo through the link.
+set -euo pipefail
+
+# Resolve through symlinks so the repo is found wherever the link lives.
+script="${BASH_SOURCE[0]}"
+while [ -L "$script" ]; do
+  target="$(readlink "$script")"
+  case "$target" in
+    /*) script="$target" ;;
+    *) script="$(dirname "$script")/$target" ;;
+  esac
+done
+repo="$(cd "$(dirname "$script")" && pwd)"
+
+main="$repo/dist/src/cli/main.js"
+if [ ! -f "$main" ]; then
+  echo "asha: not built — run \`npm install && npm run build\` in $repo first" >&2
+  exit 1
+fi
+exec node "$main" "$@"

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 250" role="img" aria-labelledby="lc-t lc-d">
+  <title id="lc-t">Agent lifecycle</title>
+  <desc id="lc-d">An agent is launched: its image is staged and built if needed and its container started with its URL and token. It connects its channel stream and gets its handle, then posts Hi and is online. It leaves the channel when its container exits, its stream closes, it holds a delivery past its bound, or the daemon stops it. Not online within the startup bound fails the launch.</desc>
+  <defs><marker id="lc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="10" y="40" width="160" height="80" rx="6"/>
+  <text class="label title" x="90" y="64" text-anchor="middle">starting</text>
+  <text class="label small" x="90" y="84" text-anchor="middle">docker run --rm</text>
+  <text class="label small" x="90" y="100" text-anchor="middle">-e ASHA_URL -e TOKEN</text>
+  <rect class="box" x="205" y="40" width="160" height="80" rx="6"/>
+  <text class="label title" x="285" y="64" text-anchor="middle">connected</text>
+  <text class="label small" x="285" y="84" text-anchor="middle">GET /agent/v1/channel</text>
+  <text class="label small" x="285" y="100" text-anchor="middle">welcome {handle}</text>
+  <rect class="box accent" x="400" y="40" width="160" height="80" rx="6"/>
+  <text class="label title" x="480" y="64" text-anchor="middle">online</text>
+  <text class="label small" x="480" y="84" text-anchor="middle">posted status "Hi"</text>
+  <text class="label small" x="480" y="100" text-anchor="middle">deliveries, posts, calls</text>
+  <rect class="box" x="595" y="40" width="155" height="80" rx="6"/>
+  <text class="label title" x="672" y="64" text-anchor="middle">left</text>
+  <text class="label small" x="672" y="84" text-anchor="middle">pending deliveries</text>
+  <text class="label small" x="672" y="100" text-anchor="middle">cleared</text>
+  <path class="edge" d="M170 80 H203" marker-end="url(#lc-a)"/>
+  <path class="edge" d="M365 80 H398" marker-end="url(#lc-a)"/>
+  <path class="edge" d="M560 80 H593" marker-end="url(#lc-a)"/>
+  <text class="label small" x="480" y="150" text-anchor="middle">leaves on: container exit · stream closed ·</text>
+  <text class="label small" x="480" y="166" text-anchor="middle">delivery past messageTimeoutMs · daemon stop</text>
+  <path class="edge dim" d="M90 120 V210 H670 V122" marker-end="url(#lc-a)"/>
+  <text class="label small" x="380" y="228" text-anchor="middle">not online within startupTimeoutMs, or exited first → stopped, AgentStartFailed (agent_start)</text>
+</svg>

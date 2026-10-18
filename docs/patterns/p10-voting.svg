@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 294" role="img" aria-labelledby="p10-t p10-d">
+  <title id="p10-t">P10 · Voting / ensemble</title>
+  <desc id="p10-d">aggregator-1 consults the three voters in one call; each answer goes to the aggregator only; one gather; the aggregator replies with the majority and the tally.</desc>
+  <defs><marker id="p10-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="95" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M95 44 V288"/>
+  <rect class="box accent" x="210" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="285" y="32" text-anchor="middle">aggregator-1</text>
+  <path class="edge dim" d="M285 44 V288"/>
+  <rect class="box" x="400" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="475" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M475 44 V288"/>
+  <rect class="box accent" x="590" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="665" y="32" text-anchor="middle">three voters</text>
+  <path class="edge dim" d="M665 44 V288"/>
+  <path class="edge" d="M95 80 H283" marker-end="url(#p10-a)"/>
+  <text class="label small" x="190" y="74" text-anchor="middle">pick the team lunch: SOUP, SALAD or PIZZA</text>
+  <text class="label small" x="293" y="114">consult (step 1)</text>
+  <path class="edge" d="M285 148 H663" marker-end="url(#p10-a)"/>
+  <text class="label small" x="475" y="142" text-anchor="middle">the same question to each</text>
+  <path class="edge" d="M665 182 H287" marker-end="url(#p10-a)"/>
+  <text class="label small" x="475" y="176" text-anchor="middle">a reason, then VOTE: … (to it only)</text>
+  <path class="edge" d="M475 216 H287" marker-end="url(#p10-a)"/>
+  <text class="label small" x="380" y="210" text-anchor="middle">gather: 3 answered</text>
+  <path class="edge" d="M285 250 H97" marker-end="url(#p10-a)"/>
+  <text class="label small" x="190" y="244" text-anchor="middle">output: Majority: … Tally: …</text>
+</svg>

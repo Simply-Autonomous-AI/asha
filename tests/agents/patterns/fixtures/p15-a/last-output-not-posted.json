@@ -1,0 +1,90 @@
+{
+  "scenario": "p15-a",
+  "breaks": "command 2's last output is clerk-1's \"Posted.\"",
+  "note": "The last output is not \"Posted.\".",
+  "team": "approval",
+  "input": {
+    "user": "alice",
+    "to": "clerk-1",
+    "text": "Post the announcement: Office closed Friday."
+  },
+  "recipients": [
+    "clerk-1"
+  ],
+  "messages": [
+    {
+      "model": {
+        "handle": "clerk-1",
+        "name": "ask_user",
+        "args": {
+          "text": "Approve posting \"Office closed Friday.\"? Answer yes or no."
+        }
+      }
+    },
+    {
+      "from": "clerk-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "clerk-1",
+      "kind": "output",
+      "text": "Approve posting \"Office closed Friday.\"? Answer yes or no.",
+      "asks": true
+    }
+  ],
+  "next": [
+    {
+      "input": {
+        "user": "alice",
+        "to": "clerk-1",
+        "text": "yes"
+      },
+      "recipients": [
+        "clerk-1"
+      ],
+      "messages": [
+        {
+          "model": {
+            "handle": "clerk-1",
+            "name": "blackboard_post",
+            "args": {
+              "text": "Office closed Friday."
+            }
+          }
+        },
+        {
+          "log": {
+            "level": "info",
+            "event": "blackboard.posted",
+            "channel": "main",
+            "author": "clerk-1",
+            "id": 1,
+            "size": 21
+          }
+        },
+        {
+          "model": {
+            "handle": "clerk-1",
+            "name": "reply",
+            "args": {
+              "text": "Done."
+            }
+          }
+        },
+        {
+          "from": "clerk-1",
+          "kind": "status",
+          "text": "ok"
+        },
+        {
+          "from": "clerk-1",
+          "kind": "output",
+          "text": "Done."
+        }
+      ],
+      "ms": 2500
+    }
+  ],
+  "ms": 3500
+}

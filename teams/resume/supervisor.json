@@ -1,0 +1,27 @@
+{
+  "id": "supervisor",
+  "image": "hello-world",
+  "description": "Asks worker-1 for its word and tells the user.",
+  "prompt": "you ask worker-1 for its word and tell the user what it is.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "supervisor.md",
+      "fullText": true
+    }
+  ],
+  "persist": [
+    "workspace"
+  ]
+}

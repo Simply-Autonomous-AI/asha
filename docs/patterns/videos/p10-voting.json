@@ -1,0 +1,33 @@
+{
+  "pattern": "P10",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:25:57.389Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p10-voting",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 30280,
+  "bytes": 2114514,
+  "sha256": "60ea99b97af3627c3294a66ce726205bc32368ac4cfb9d5c008251a45f00c190",
+  "frames": 604,
+  "framesPerSecond": 20,
+  "longestGapMs": 67,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P10 · Voting / ensemble",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5054,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p10-a",
+      "outcome": "pass"
+    }
+  ]
+}

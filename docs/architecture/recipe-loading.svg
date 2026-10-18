@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 300" role="img" aria-labelledby="rc-t rc-d">
+  <title id="rc-t">A recipe and what it names</title>
+  <desc id="rc-d">recipes/memory.json names the image memory, which is images/memory/ with its Dockerfile and TypeScript source, the chat model qwen3-8b-q4_k_m and the embedding model qwen3-embedding-0.6b-q8_0, each a file in catalogue/. The recipe also carries its system prompt, its bounds and chat sampling overrides.</desc>
+  <defs><marker id="rc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box accent" x="150" y="10" width="220" height="104" rx="6"/>
+  <text class="label title" x="260" y="32" text-anchor="middle">recipes/memory.json</text>
+  <text class="label mono" x="260" y="52" text-anchor="middle">id · description · prompt</text>
+  <text class="label mono" x="260" y="68" text-anchor="middle">startupTimeoutMs</text>
+  <text class="label mono" x="260" y="84" text-anchor="middle">messageTimeoutMs</text>
+  <text class="label mono" x="260" y="100" text-anchor="middle">chat {temperature: 0}</text>
+
+  <rect class="box" x="10" y="180" width="160" height="104" rx="6"/>
+  <text class="label title" x="90" y="202" text-anchor="middle">images/memory/</text>
+  <text class="label mono" x="90" y="224" text-anchor="middle">Dockerfile</text>
+  <text class="label mono" x="90" y="242" text-anchor="middle">src/main.ts</text>
+  <text class="label mono" x="90" y="260" text-anchor="middle">src/agent.ts …</text>
+  <text class="label small" x="90" y="276" text-anchor="middle">asha-image-memory:&lt;digest&gt;</text>
+
+  <rect class="box" x="180" y="180" width="160" height="104" rx="6"/>
+  <text class="label title" x="260" y="202" text-anchor="middle">catalogue/</text>
+  <text class="label mono" x="260" y="224" text-anchor="middle">qwen3-8b-q4_k_m</text>
+  <text class="label small" x="260" y="242" text-anchor="middle">kind: chat</text>
+
+  <rect class="box" x="350" y="180" width="160" height="104" rx="6"/>
+  <text class="label title" x="430" y="202" text-anchor="middle">catalogue/</text>
+  <text class="label mono" x="430" y="224" text-anchor="middle">qwen3-embedding-</text>
+  <text class="label mono" x="430" y="240" text-anchor="middle">0.6b-q8_0</text>
+  <text class="label small" x="430" y="258" text-anchor="middle">kind: embedding</text>
+
+  <path class="edge" d="M190 114 L100 178" marker-end="url(#rc-a)"/>
+  <text class="label mono" x="118" y="146">image</text>
+  <path class="edge" d="M260 114 V178" marker-end="url(#rc-a)"/>
+  <text class="label mono" x="266" y="150">model</text>
+  <path class="edge" d="M330 114 L420 178" marker-end="url(#rc-a)"/>
+  <text class="label mono" x="384" y="146">embeddingModel</text>
+</svg>

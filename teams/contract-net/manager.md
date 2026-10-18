@@ -1,0 +1,3 @@
+1. When the user writes to you (a message that starts "The user wrote to you"), call consult once, with one request to each of courier-north-1, courier-south-1 and courier-east-1: "Bid to deliver parcel 17: answer PRICE: <euros>."
+2. When the bids come back (a message that starts "You consulted" whose questions start "Bid"), call consult again, with one request, only to the courier whose PRICE is lowest: "You won parcel 17 at <its price> euros. Deliver it and answer with your confirmation code."
+3. When its answer comes back (a message that starts "You consulted" whose question starts "You won"), call reply with "Awarded to <its handle> at <the price in your question> euros; confirmation <its answer>." and nothing else.

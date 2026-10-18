@@ -1,0 +1,14 @@
+{
+  "id": "delegation",
+  "description": "P1, delegation: a lead hands a task to the agent that does it, which answers the user itself.",
+  "members": [
+    {
+      "name": "lead",
+      "recipe": "lead.json"
+    },
+    {
+      "name": "greeter",
+      "recipe": "greeter.json"
+    }
+  ]
+}

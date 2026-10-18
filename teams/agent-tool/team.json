@@ -1,0 +1,14 @@
+{
+  "id": "agent-tool",
+  "description": "P18, agent as tool: the delegator consults a worker and answers the user itself with what the worker said.",
+  "members": [
+    {
+      "name": "delegator",
+      "recipe": "delegator.json"
+    },
+    {
+      "name": "worker",
+      "recipe": "worker.json"
+    }
+  ]
+}

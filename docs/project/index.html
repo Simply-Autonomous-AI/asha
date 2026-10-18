@@ -1,0 +1,161 @@
+<!doctype html>
+<!-- Generated from docs/project/index.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asha Project Details</title>
+<meta name="description" content="What asha is, its objectives, the rules that govern it, its licence and terms, and where its procedures and history live.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="project">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / asha Project Details</nav>
+<h1>Project details</h1>
+<p class="lede">What asha is, what it is for, and the rules every change follows. Procedures are on <a href="workflows.html">Workflows</a>; dated records are on <a href="history.html">History</a>.</p>
+<div class="facts"><span>verified 2026-10-11</span><span>asha 0.1.1</span><span>© 2026 SimplyAutonomous.AI, LLC; PolyForm Noncommercial or Small Business</span><span>package: <code>private: true</code></span><span>sources: AGENTS.md, PRINCIPLES.md, package.json, git log</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>asha is one CLI and one daemon that run agents in local containers on local models, at $0 recurring cost.</li>
+<li>Objectives: local first, every multi-agent pattern demonstrated, drop-in modules, enterprise grade; patterns, modules and the enterprise targets have plans.</li>
+<li>PRINCIPLES.md governs; AGENTS.md adds this repo's rules. The gate is <code>npm run check</code>; there is no deploy path.</li>
+<li>Copyright © 2026 SimplyAutonomous.AI, LLC. Licensed under PolyForm Noncommercial 1.0.0 or PolyForm Small Business 1.0.0, at the user's choice; any other use needs a licence agreement signed with the company. Published on GitHub as <code>SimplyAutonomous-AI/asha</code> from 0.2.0 (2026-10-18), with its Terms of Service, Privacy Policy and contributor licence agreement.</li>
+<li>The <a href="../../TERMS.md">Terms of Service</a>, the <a href="../../PRIVACY.md">Privacy Policy</a> and the <a href="../../CLA.md">contributor licence agreement</a> are drafts, not reviewed by counsel, published as they are at the owner's direction (2026-10-18, <code>docs/plans/oss-release.md</code>, gate G3).</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#objectives">Objectives</a></li>
+<li><a href="#principles">Principles and repo rules</a></li>
+<li><a href="#licence">Licence</a></li>
+<li><a href="#terms">Terms</a></li>
+<li><a href="#more">In this section</a></li>
+</ol>
+</nav>
+<section id="summary">
+<h2>Summary</h2>
+<p><strong>asha</strong> is the Autonomous Simple Harness for Agents: the SimplyAutonomous.AI agent harness.</p>
+<ul>
+<li><strong><code>./asha</code></strong> posts messages to named agent channels, watches them, and starts the daemon when needed.</li>
+<li><strong>The daemon</strong> runs agent images in colima containers, carries the channel between agents and the user, and brokers every model call.</li>
+<li><strong>Models</strong> are open-weight, served on the host by llama.cpp's <code>llama-server</code>.</li>
+<li><strong>Everything is local.</strong> The daemon binds only to <code>127.0.0.1</code>; recurring cost is $0 (<a href="../../AGENTS.md">AGENTS.md</a> §2, §7). See the <a href="../index.html#system">system diagram</a>.</li>
+</ul>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Fact</th><th>Value</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>Package</td><td><code>asha</code> 0.2.0 (named <code>simplyautonomous-ai-harness</code> until 2026-10-16, <code>docs/plans/oss-release.md</code> R27), <code>&quot;private&quot;: true</code>, <code>&quot;license&quot;: &quot;SEE LICENSE IN LICENSE&quot;</code>, <code>&quot;author&quot;: &quot;SimplyAutonomous.AI, LLC&quot;</code></td><td><a href="../../package.json">package.json</a></td></tr>
+<tr><td>Runtime</td><td>Node.js <code>^22.13.0 || ^24.0.0 || &gt;=26.0.0</code> (the range both Vitest 5 and ESLint 10 support, needed for <code>npm install</code>; product code stops at <code>@types/node</code> 22.13 and <code>lib</code> ES2024, <a href="../quality/index.html#typecheck">Quality</a>), TypeScript 6.0.3</td><td><a href="../../package.json">package.json</a></td></tr>
+<tr><td>Status</td><td>First slice: single- and multi-agent hello world, and the <code>memory</code> recipe with four memory tiers</td><td><a href="../../AGENTS.md">AGENTS.md</a> §1</td></tr>
+<tr><td>Remote</td><td>A private server, only sometimes reachable (<code>git remote get-url origin</code>)</td><td><a href="../../AGENTS.md">AGENTS.md</a> §2</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="objectives">
+<h2>Objectives</h2>
+<p>The owner's objectives (2026-09-27). Work toward them starts as a plan (PRINCIPLES §19); 1 and 4 are standing properties every plan keeps.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Objective</th><th>What it means</th><th>Plan</th></tr></thead>
+<tbody>
+<tr><td><strong>1. Local first</strong></td><td>Every core capability runs on the user's hardware with local models. Cloud modules are optional; nothing in the core or the gate depends on one. The gate needs the network only to fill cold caches (host tools, the model, the images' base); the unit and integration suites refuse any connection but loopback, and every network call site is listed by a guard (<a href="../quality/index.html#offline">the gate stays offline</a>, since 2026-10-02).</td><td>holds today (<a href="../architecture/models.html">Models</a>)</td></tr>
+<tr><td><strong>2. Every multi-agent pattern, demonstrated</strong></td><td>A runnable, tested, documented example of each significant orchestration, supervision and collaboration pattern. Delegation is built (<a href="../architecture/channel.html#delegation">Channels</a>); the owner confirmed all 23 patterns of the catalogue (decisions/queue.json at <code>f538cb7</code>, record <code>pattern-catalogue</code>).</td><td><span class="badge planned">planned: orchestration-patterns</span> <code>docs/plans/orchestration-patterns.md</code></td></tr>
+<tr><td><strong>3. Drop-in modules</strong></td><td>Tools (web search such as Tavily, trading such as Alpaca) and model providers (Anthropic, OpenAI, AWS Bedrock, Google, Microsoft Azure) added as modules, with no change to the core. A cloud module is off unless a recipe grants it; a metered one needs a written estimate and the owner's approval (§7).</td><td>built 2026-10-02 by <code>docs/plans/extension-modules.md</code>: the <a href="../architecture/modules.html">module</a> contracts, sandbox, egress proxy, approvals, meter and command plugins, with the reference <code>tavily</code> (Tavily) and <code>bedrock</code> (AWS Bedrock) modules and the AWS CLI plugin, tested against fakes; no vendor called yet (keys and credential are the owner's to give); trading is out of scope (the owner, question 6); <span class="todo">TODO: the colima sandbox proofs and the gate run (plan (</span><code>docs/plans/extension-modules.md</code>))</td></tr>
+<tr><td><strong>4. Enterprise grade</strong></td><td>Quality, reliability, performance, security and privacy fit for an enterprise, shown by evidence through <a href="../../PRINCIPLES.md">the principles</a> and <a href="../quality/index.html">Quality controls</a>. The owner approved fourteen measurable targets on 2026-09-27 (decisions/queue.json record <code>enterprise-targets-approval</code>, option a): reply and launch times, no flaky tests, findable failures, crash recovery, no open door for containers, secrets, pinned dependencies, and data kept local, each to become an automated check in the gate.</td><td>standing; <span class="badge planned">planned: enterprise-targets</span> <code>docs/plans/enterprise-targets.md</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="principles">
+<h2>Principles and repo rules</h2>
+<ul>
+<li><strong><a href="../../PRINCIPLES.md">PRINCIPLES.md</a> governs this repo.</strong> It is a one-line index loaded every session; each principle's text is a file in <code>principles/</code>, read when a task reaches it. It asks that nothing else enumerate the principles, so this page lists only how they apply here. §17–§21 date from 2026-09-27.</li>
+<li><strong><a href="../../AGENTS.md">AGENTS.md</a> is canonical for this repo;</strong> <a href="../../CLAUDE.md">CLAUDE.md</a> only points to it.</li>
+</ul>
+<div class="callout tip">
+<p class="callout-title">Precedence</p>
+<p>AGENTS.md may be stricter than the principles where it names a reason. When a rule blocks correct work, stop and ask; never violate it silently.</p>
+</div>
+<h3 id="repo-rules">How the principles apply here</h3>
+<ul>
+<li><strong>§1:</strong> no deploy path. The gate is <code>npm run check</code> (lint → format check → typecheck → secret scan → unit → integration → build → demo selection → agents → eval → routing); nothing is done until it is green.</li>
+<li><strong>§2:</strong> origin is a private server; commit and push freely.</li>
+<li><strong>§3:</strong> the agent suite (<code>npm run test:agents</code>) and the eval (<code>npm run eval</code>) run real agents, both in the gate. <code>npm run eval:routing</code> measures the model's routing choices; its gate step, <code>npm run eval:routing:gate</code>, is the last step of the gate (since 2026-09-29).</li>
+<li><strong>§7:</strong> a paid model API, a hosted service, a second model backend or a second container runtime each needs a written justification first.</li>
+<li><strong>§11:</strong> every failure goes through <a href="../../src/daemon/log.ts"><code>src/daemon/log.ts</code></a> (<code>JsonLinesLogger</code>).</li>
+<li><strong>§12:</strong> model licences, revisions, digests, and llama.cpp and colima behaviour are recorded with source and date in <a href="../architecture/models.html">Models</a>.</li>
+<li><strong>§17–§21:</strong> docs are <code>.md</code> sources rendered by <code>npm run docs</code>, linked from <code>docs/index.md</code> or their section index, under the <a href="documentation.html">documentation contract</a>, guarded by <code>tests/unit/docs.test.ts</code>; one <a href="workflows.html#review">adversarial review</a> per change; future work in Plans (<code>docs/plans/index.md</code>) via the <a href="workflows.html#planning">planning workflow</a>; shortcuts in the debt register (<code>docs/plans/debt.md</code>); done is checked by the <a href="workflows.html#checklists">checklists</a>.</li>
+<li><strong>§22:</strong> there is no CDK infrastructure here; it applies only if some is added.</li>
+</ul>
+<h3 id="rules-specific-to-this-repo-agents-md-3">Rules specific to this repo (AGENTS.md §3)</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Area</th><th>Rule</th></tr></thead>
+<tbody>
+<tr><td>Pins</td><td>Every model is pinned by Hugging Face commit sha plus a sha256 per file. A name or branch is never a pin.</td></tr>
+<tr><td>Licences</td><td>Verified for the exact repo and revision served, and commercially permissive.</td></tr>
+<tr><td>Formats</td><td>GGUF or safetensors only. Pickle formats are never downloaded.</td></tr>
+<tr><td>Model cache</td><td>Only the harness writes it: stage, verify every sha256, rename atomically. A digest mismatch is fatal and never retried.</td></tr>
+<tr><td>Images</td><td>Rebuilt from the tree under test: each is tagged by its <code>asha.source</code> digest, so a changed tree is a new tag and a new build.</td></tr>
+<tr><td>Model access</td><td>Agents never reach a model server directly; every call goes through <code>/agent/v1/model/chat</code>.</td></tr>
+<tr><td>Environments</td><td>Nothing guesses an endpoint or environment. The one automatic behaviour, the CLI starting a daemon, is announced on stderr.</td></tr>
+<tr><td>Recipes</td><td>A recipe is the whole agent: one image, one model, and its bounds.</td></tr>
+<tr><td>Determinism</td><td>Output the gate asserts exactly decodes deterministically (<code>chat.temperature: 0</code>).</td></tr>
+<tr><td>Placement</td><td>Models on the host, agents in colima, because colima's VM has no Metal.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="licence">
+<h2>Licence</h2>
+<div class="callout decision">
+<p class="callout-title">PolyForm Noncommercial or PolyForm Small Business, at the user's choice — the owner, 2026-10-11</p>
+<p>The owner first set the terms: <em>&quot;We should plan to publish the ASHA harness (Autonomous Simple Harness for Agents), under a license that allows for non-commercial use unlimited, and commercial use unlimited for any company making less that $10 million USD annually.&quot;</em> Then <em>&quot;Make sure the company copyrights and rights reservations are in the repo docs.&quot;</em> Asked which licence should carry the terms, the owner asked for research into the licences most used for this, then chose <em>&quot;PolyForm Noncommercial and Small Business&quot;</em> (decision record <code>asha-publishing-licence-2</code>, option (c)). The option stated its line plainly: commercial use is free for companies under 100 people and US$1 million revenue (2019 dollars, adjusted for inflation), a tenth of the first terms' line. For asha this supersedes the owner's <em>&quot;Apache 2.0 for everything.&quot;</em> of 2026-09-27. <em>Corrected 2026-10-16:</em> this said the web repo stays Apache-2.0; since web <code>ac3db26</code> it is under the same two PolyForm licences, at the owner's word (2026-10-16) that nothing in the web repository is Apache-2.0 and that it carries the licence of the company's review-workflow repository.</p>
+</div>
+<ul>
+<li><strong>The licences:</strong> anyone may use asha under the <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial License 1.0.0</a> or the <a href="https://polyformproject.org/licenses/small-business/1.0.0">PolyForm Small Business License 1.0.0</a>, at their choice; each text governs what it permits. In short, the first covers noncommercial purposes (personal uses and noncommercial organizations among them), and the second use for the benefit of a company with fewer than 100 people working as employees and independent contractors and less than 1,000,000 USD (2019, adjusted by the US consumer price index) total revenue in the prior tax year, where &quot;your company&quot; counts every organization that controls it, is controlled by it, or shares control with it. A use neither permits — commercial use for a larger company among them — requires a separate licence agreement signed with SimplyAutonomous.AI, LLC. <em>(Reworded after the review of 2026-10-11, finding 5: this summary first left out the affiliates and stated the line as the licences' whole grant. Amended 2026-10-12, the owner: commercial use by a large business only &quot;under signed license agreement&quot;; this said a separate written licence &quot;is available&quot;.)</em></li>
+<li><strong>Attribution and indemnity</strong> <em>(added 2026-10-12, the owner: &quot;requiring attribution and indemnifying SimplyAutonomous.AI (like Apache 2.0)&quot;)</em>: both licences oblige every redistributor to pass on the licence terms and every <code>Required Notice:</code> line. The second such line carries one condition under either licence, after the Apache License 2.0 §9 (<em>amended 2026-10-12, the owner's answer to record <code>harness-licence-indemnity</code>, option (b): it was in the preamble, which nothing obliges a redistributor to pass on</em>): a redistributor who offers support, a warranty, an indemnity or another liability obligation does so on their own behalf only, and indemnifies, defends and holds SimplyAutonomous.AI, LLC harmless for any liability that brings. Both texts' <em>No Liability</em> section disclaims warranty and liability, as the Apache License 2.0 §7–§8 do. Neither licence makes a user indemnify the company for their own use.</li>
+<li><strong>The file:</strong> <a href="../../LICENSE">LICENSE</a> holds the line <code>Required Notice: Copyright © 2026 SimplyAutonomous.AI, LLC (https://simplyautonomous.ai)</code> and a second <code>Required Notice:</code> line with the indemnity condition, both of which the licences oblige every redistributor to pass on; the company's preamble; the carve-outs; and both texts. Each text is verbatim from the PolyForm project's repository at commit <code>76a278c402bc43b8d2b561da140b0f3e17263015</code>, fetched 2026-10-11: <code>PolyForm-Noncommercial-1.0.0.md</code>, sha256 <code>c0ea4a896d2c8c394b29f9427589996db826cd501c512279ff0ed3ef48fabbe5</code>, and <code>PolyForm-Small-Business-1.0.0.md</code>, sha256 <code>03eea824bff13316b767424b3e8f49538b46e52d897aecc87d6344343364aa56</code>.</li>
+<li><strong>The notice:</strong> Copyright © 2026 SimplyAutonomous.AI, LLC. All rights not granted by those licences are reserved. Every rendered page's footer carries the notice, and so does the <a href="../../README.md">README</a>.</li>
+<li><strong>Carve-outs:</strong> the modules under <code>modules/</code> stay Apache-2.0, as each <code>module.json</code> declares, under the owner's record <code>module-distribution</code> (separate packages under permissive licences). Third-party components keep their own licences. <em>(Amended 2026-10-12: <code>PRINCIPLES.md</code> is no longer carved out; it and <code>principles/</code> are under the repo's licences, the owner directing that no other project be attributed.)</em></li>
+<li><strong>The holder:</strong> SimplyAutonomous.AI, LLC, a Texas single-member LLC; its legal name was decided on 2026-10-10. Its certificate of formation (Form 205) was submitted on 2026-10-10 and awaits the Secretary of State's review, and the written assignment of the existing code to it is not yet signed (the company's formation records, read 2026-10-11). The notice names the holder as the owner directed, before both are done. The <code>LICENSE</code> preamble is an agent's draft, tracked for attorney review in the company's legal records.</li>
+<li><strong><code>package.json</code>:</strong> <code>&quot;license&quot;: &quot;SEE LICENSE IN LICENSE&quot;</code>, npm's form for a custom licence (docs.npmjs.com, <code>package.json</code>, read 2026-10-12), since the condition makes the terms more than an SPDX expression can say. <em>(Amended 2026-10-12, record <code>harness-licence-indemnity</code>, option (b); it was <code>(PolyForm-Noncommercial-1.0.0 OR PolyForm-Small-Business-1.0.0)</code>, the SPDX expression for the choice alone, read 2026-10-11.)</em> <code>&quot;private&quot;: true</code> stays, and <code>&quot;author&quot;</code> is <code>SimplyAutonomous.AI, LLC &lt;admin@simplyautonomous.ai&gt;</code>.</li>
+<li><strong>The Homebrew formula</strong> declares <code>license :cannot_represent</code>, Homebrew's form for a licence no SPDX expression represents (docs.brew.sh, Licence Guidelines, read 2026-10-12). <em>(Amended 2026-10-12, record <code>harness-licence-indemnity</code>, option (b); it was <code>license any_of: [&quot;PolyForm-Noncommercial-1.0.0&quot;, &quot;PolyForm-Small-Business-1.0.0&quot;]</code>.)</em></li>
+<li><strong>Not open source:</strong> neither licence is approved by the Open Source Initiative (the SPDX list marks both so). asha is source-available. The release plan (<code>docs/plans/oss-release.md</code>) carries what publishing it needs, contribution terms among them.</li>
+<li><strong>Names and marks:</strong> neither licence grants any right to use the names &quot;asha&quot; or &quot;SimplyAutonomous.AI&quot;.</li>
+<li><strong>Models are licensed separately,</strong> per pinned revision, in each <code>catalogue/&lt;id&gt;.json</code> (<code>license.id</code>, <code>license.source</code>, <code>license.verified</code>); see <a href="../architecture/models.html">Models</a>.</li>
+<li><strong>Before:</strong><ul>
+<li>From 2026-09-27, <code>LICENSE</code> was the Apache License 2.0, fetched verbatim from <a href="https://www.apache.org/licenses/LICENSE-2.0.txt">https://www.apache.org/licenses/LICENSE-2.0.txt</a> (sha256 <code>cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30</code>), and <code>package.json</code> declared <code>Apache-2.0</code>. From the morning of 2026-10-11 until the owner's choice, <code>LICENSE</code> reserved all rights.</li>
+<li>No copy was published: the two releases, 0.1.0 and 0.1.1, went only to the maintainers' local tap (<a href="../deployments/index.html#release">Deployments</a>). Those two versions still hold the Apache text — the local tap's formula declares <code>license &quot;Apache-2.0&quot;</code>, and their tarballs under <code>build/release/</code> hold the Apache <code>LICENSE</code> — so they stay Apache-2.0 if they are ever shared.</li>
+</ul>
+</li>
+</ul>
+<p><span class="todo">TODO: licences of third-party dependencies (npm devDependencies, colima, docker, llama.cpp, Homebrew formulas) are not yet reviewed or recorded.</span></p>
+</section>
+<section id="terms">
+<h2>Terms</h2>
+<div class="callout warning">
+<p class="callout-title">Drafts, not reviewed by counsel</p>
+<p>The owner chose a full product Terms of Service and Privacy Policy (2026-09-27, decisions/queue.json record <code>asha-terms</code> at <code>f538cb7</code>). They, and the contributor licence agreement, were drafted on 2026-10-18 at the owner's direction and are published as they are, unreviewed: <a href="../../TERMS.md">TERMS.md</a>, <a href="../../PRIVACY.md">PRIVACY.md</a>, <a href="../../CLA.md">CLA.md</a> (gate G3, waived in part by the owner, <code>docs/plans/oss-release.md</code>).</p>
+</div>
+<p>Legal text is drafted, reviewed and tracked in the company's legal records, outside this repo; the published texts at this repo's root are copies of those records, byte for byte.</p>
+<p><span class="todo">TODO: the Terms of Service for asha (and the Privacy Policy it relies on) are to be drafted and attorney-reviewed in the company's legal records — item &quot;Terms of Service / customer agreement for the product&quot; (marked required for asha, 2026-09-27) — then linked here once approved.</span></p>
+</section>
+<section id="more">
+<h2>In this section</h2>
+<div class="cards">
+<a class="card" href="workflows.html"><h3>Workflows</h3><p>How a change is planned, built, reviewed and called done, with the checklists.</p></a>
+<a class="card" href="documentation.html"><h3>Documentation contract</h3><p>How these pages are written, rendered and guarded, with a template.</p></a>
+<a class="card" href="history.html"><h3>History</h3><p>How asha was built, guard proofs and corrections, newest first.</p></a>
+</div>
+</section>
+<footer class="page"><span>Source: <code>docs/project/index.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

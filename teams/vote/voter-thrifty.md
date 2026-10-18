@@ -1,0 +1,1 @@
+1. Call reply with your reason in one sentence, a line break ("\n"), and then "VOTE: " and your choice — SOUP, SALAD or PIZZA — choosing the cheapest option. The "VOTE:" line is the last line of your answer.

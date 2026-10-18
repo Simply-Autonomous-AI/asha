@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 330" role="img" aria-labelledby="p22-t p22-d">
+  <title id="p22-t">Escalation: the helper does its part and hands the rest back to you</title>
+  <desc id="p22-d">You ask helper-1, alone on the channel, to convert 3 metres to centimetres and to book a meeting room. The conversion is its work; the booking is not. It escalates once with ask_user: ESCALATE: done: 300 centimetres; left: the meeting room, and the conversation waits for you. In p22-b you answer in that conversation with a conversion inside its role; it reaches helper-1 framed with its escalation, and it passes; asha then tells you no agent could answer, naming helper-1 as passed.</desc>
+  <defs><marker id="p22-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="40" y="10" width="140" height="34" rx="5"/>
+  <text class="label mono" x="110" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M110 44 V324"/>
+  <rect class="box" x="250" y="10" width="140" height="34" rx="5"/>
+  <text class="label mono" x="320" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M320 44 V324"/>
+  <rect class="box accent" x="460" y="10" width="140" height="34" rx="5"/>
+  <text class="label mono" x="530" y="32" text-anchor="middle">helper-1</text>
+  <path class="edge dim" d="M530 44 V324"/>
+  <path class="edge" d="M110 80 H528" marker-end="url(#p22-a)"/>
+  <text class="label small" x="320" y="74" text-anchor="middle">Convert 3 metres to centimetres, then book a meeting room for 3 pm.</text>
+  <text class="label small" x="522" y="106" text-anchor="end">ask_user (guidance step 2)</text>
+  <path class="edge" d="M530 130 H112" marker-end="url(#p22-a)"/>
+  <text class="label small" x="320" y="124" text-anchor="middle">output (asks): ESCALATE: done: … 300 …; left: … meeting room …</text>
+  <text class="label small" x="118" y="150">? helper-1 is waiting for your answer — the conversation waits</text>
+  <text class="label small" x="320" y="182" text-anchor="middle">p22-b · conversation=&lt;id&gt;: Also convert 5 metres to centimetres.</text>
+  <path class="edge" d="M110 190 H528" marker-end="url(#p22-a)"/>
+  <text class="label small" x="522" y="214" text-anchor="end">framed "The user answered … What you asked them: ESCALATE …"</text>
+  <text class="label small" x="522" y="232" text-anchor="end">pass (guidance step 3)</text>
+  <path class="edge" d="M530 256 H322" marker-end="url(#p22-a)"/>
+  <text class="label small" x="425" y="250" text-anchor="middle">pass: …</text>
+  <path class="edge" d="M320 290 H112" marker-end="url(#p22-a)"/>
+  <text class="label small" x="215" y="284" text-anchor="middle">No agent could answer this: helper-1 passed</text>
+</svg>

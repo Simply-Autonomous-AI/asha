@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 330" role="img" aria-labelledby="p19-t p19-d">
+  <title id="p19-t">P19 · Dynamic spawning of workers</title>
+  <desc id="p19-d">lead-1, alone on the channel, receives the request and calls launch_agent with the recipe helper; the daemon starts helper-1, which joins the channel; launch_agent returns its handle and lead-1's next request is rebuilt with helper-1 on the roster; lead-1 consults helper-1, which answers marigold; the gather returns to lead-1, which replies with the word; when the conversation settles, helper-1 is stopped.</desc>
+  <defs><marker id="p19-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="130" height="34" rx="5"/>
+  <text class="label mono" x="85" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M85 44 V324"/>
+  <rect class="box" x="180" y="10" width="130" height="34" rx="5"/>
+  <text class="label mono" x="245" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M245 44 V324"/>
+  <rect class="box accent" x="340" y="10" width="130" height="34" rx="5"/>
+  <text class="label mono" x="405" y="32" text-anchor="middle">lead-1</text>
+  <path class="edge dim" d="M405 44 V324"/>
+  <rect class="box accent" x="500" y="10" width="130" height="34" rx="5"/>
+  <text class="label mono" x="565" y="32" text-anchor="middle">helper-1</text>
+  <path class="edge dim" d="M565 110 V290"/>
+  <path class="edge" d="M85 72 H403" marker-end="url(#p19-a)"/>
+  <text class="label small" x="245" y="66" text-anchor="middle">Bring in a helper and tell me its word.</text>
+  <path class="edge" d="M405 98 H247" marker-end="url(#p19-a)"/>
+  <text class="label small" x="325" y="92" text-anchor="middle">launch_agent helper</text>
+  <path class="edge" d="M245 112 H563" marker-end="url(#p19-a)"/>
+  <text class="label small" x="460" y="106" text-anchor="middle">starts helper-1: it joins</text>
+  <path class="edge" d="M245 138 H403" marker-end="url(#p19-a)"/>
+  <text class="label small" x="325" y="132" text-anchor="middle">{"handle":"helper-1"}</text>
+  <text class="label small" x="397" y="156" text-anchor="end">request rebuilt, helper-1 on the roster</text>
+  <path class="edge" d="M405 180 H563" marker-end="url(#p19-a)"/>
+  <text class="label small" x="485" y="174" text-anchor="middle">consult: What is your word?</text>
+  <path class="edge" d="M565 206 H407" marker-end="url(#p19-a)"/>
+  <text class="label small" x="485" y="200" text-anchor="middle">marigold</text>
+  <path class="edge" d="M405 236 H87" marker-end="url(#p19-a)"/>
+  <text class="label small" x="245" y="230" text-anchor="middle">The helper's word is marigold.</text>
+  <path class="edge" d="M245 276 H563" marker-end="url(#p19-a)"/>
+  <text class="label small" x="404" y="270" text-anchor="middle">the conversation settled: stop helper-1</text>
+</svg>

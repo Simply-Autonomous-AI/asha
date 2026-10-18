@@ -1,0 +1,10 @@
+{
+  "id": "escalation",
+  "description": "P22, escalation: an agent that cannot finish hands the conversation to the user with a summary.",
+  "members": [
+    {
+      "name": "helper",
+      "recipe": "helper.json"
+    }
+  ]
+}

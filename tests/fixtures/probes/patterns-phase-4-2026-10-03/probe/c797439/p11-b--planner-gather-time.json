@@ -1,0 +1,309 @@
+{
+  "commit": "c79743931a18a108d9eb0944e59055b5cfa4c14c",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p11-b/planner-gather-time",
+  "control": false,
+  "doc": null,
+  "dropStep": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 2139,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2496,
+          "completionTokens": 41
+        }
+      ],
+      "ms": 2543,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday"
+        },
+        {
+          "author": "note-room-1",
+          "text": "notice: meeting on Thursday, in the Juniper room"
+        },
+        {
+          "author": "note-time-1",
+          "text": "notice: meeting on Thursday, in the Juniper room, at 14:30"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday",
+          "posted": false
+        },
+        {
+          "author": "note-room-1",
+          "text": "notice: meeting on Thursday, in the Juniper room",
+          "posted": false
+        },
+        {
+          "author": "note-time-1",
+          "text": "notice: meeting on Thursday, in the Juniper room, at 14:30",
+          "posted": false
+        }
+      ],
+      "reply": "The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30.",
+      "requestSha256": "7783edda666d917a7b8b5f0d1cef313b29c52579d4e87fde779dc888b6045a48",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 2139,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2496,
+          "completionTokens": 41
+        }
+      ],
+      "ms": 2458,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday"
+        },
+        {
+          "author": "note-room-1",
+          "text": "notice: meeting on Thursday, in the Juniper room"
+        },
+        {
+          "author": "note-time-1",
+          "text": "notice: meeting on Thursday, in the Juniper room, at 14:30"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday",
+          "posted": false
+        },
+        {
+          "author": "note-room-1",
+          "text": "notice: meeting on Thursday, in the Juniper room",
+          "posted": false
+        },
+        {
+          "author": "note-time-1",
+          "text": "notice: meeting on Thursday, in the Juniper room, at 14:30",
+          "posted": false
+        }
+      ],
+      "reply": "The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30.",
+      "requestSha256": "7783edda666d917a7b8b5f0d1cef313b29c52579d4e87fde779dc888b6045a48",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 2139,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2496,
+          "completionTokens": 41
+        }
+      ],
+      "ms": 2463,
+      "seed": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday"
+        },
+        {
+          "author": "note-room-1",
+          "text": "notice: meeting on Thursday, in the Juniper room"
+        },
+        {
+          "author": "note-time-1",
+          "text": "notice: meeting on Thursday, in the Juniper room, at 14:30"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        },
+        {
+          "author": "note-day-1",
+          "text": "notice: meeting on Thursday",
+          "posted": false
+        },
+        {
+          "author": "note-room-1",
+          "text": "notice: meeting on Thursday, in the Juniper room",
+          "posted": false
+        },
+        {
+          "author": "note-time-1",
+          "text": "notice: meeting on Thursday, in the Juniper room, at 14:30",
+          "posted": false
+        }
+      ],
+      "reply": "The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30.",
+      "requestSha256": "7783edda666d917a7b8b5f0d1cef313b29c52579d4e87fde779dc888b6045a48",
+      "ok": true
+    }
+  ]
+}

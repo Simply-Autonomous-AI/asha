@@ -1,0 +1,52 @@
+{
+  "scenario": "p02-a",
+  "breaks": "no message of the conversation is from or to desk-b-1 or desk-c-1 (channel.posted)",
+  "note": "desk-b-1 posts in the conversation too (to router-1).",
+  "team": "router",
+  "input": {
+    "user": "alice",
+    "to": "router-1",
+    "text": "Please translate 'thank you' into French."
+  },
+  "recipients": [
+    "router-1"
+  ],
+  "messages": [
+    {
+      "from": "router-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "router-1",
+      "kind": "internal",
+      "text": "Translate 'thank you' into French.",
+      "to": "desk-a-1",
+      "working": [
+        "router-1",
+        "desk-a-1"
+      ]
+    },
+    {
+      "from": "desk-b-1",
+      "kind": "internal",
+      "text": "I can help.",
+      "to": "router-1",
+      "working": [
+        "router-1",
+        "desk-b-1"
+      ]
+    },
+    {
+      "from": "desk-a-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "desk-a-1",
+      "kind": "output",
+      "text": "Merci"
+    }
+  ],
+  "ms": 5000
+}

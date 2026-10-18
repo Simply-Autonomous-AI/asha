@@ -1,0 +1,228 @@
+{
+  "commit": "c79743931a18a108d9eb0944e59055b5cfa4c14c",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p11-a/editor-gather-bac",
+  "control": false,
+  "doc": null,
+  "dropStep": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "The shopping list is as follows:\n\n- quince jam\n- saffron\n- rye flour"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 2108,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "The shopping list is as follows:\n\n- quince jam\n- saffron\n- rye flour"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2295,
+          "completionTokens": 39
+        }
+      ],
+      "ms": 1938,
+      "seed": [
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        }
+      ],
+      "reply": "The shopping list is as follows:\n\n- quince jam\n- saffron\n- rye flour",
+      "requestSha256": "37ca326951b609cb4d46a90c8706a04d64fdfc8289d08df2c3986f424780f302",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "The shopping list is as follows:\n\n- quince jam\n- saffron\n- rye flour"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 2108,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "The shopping list is as follows:\n\n- quince jam\n- saffron\n- rye flour"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2295,
+          "completionTokens": 39
+        }
+      ],
+      "ms": 1958,
+      "seed": [
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        }
+      ],
+      "reply": "The shopping list is as follows:\n\n- quince jam\n- saffron\n- rye flour",
+      "requestSha256": "37ca326951b609cb4d46a90c8706a04d64fdfc8289d08df2c3986f424780f302",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "The shopping list is as follows:\n\n- quince jam\n- saffron\n- rye flour"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_read",
+              "arguments": {}
+            }
+          ],
+          "text": "",
+          "promptTokens": 2108,
+          "completionTokens": 15
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "The shopping list is as follows:\n\n- quince jam\n- saffron\n- rye flour"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 2295,
+          "completionTokens": 39
+        }
+      ],
+      "ms": 1924,
+      "seed": [
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam"
+        },
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron"
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour"
+        }
+      ],
+      "board": [
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": false
+        },
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": false
+        },
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": false
+        }
+      ],
+      "reply": "The shopping list is as follows:\n\n- quince jam\n- saffron\n- rye flour",
+      "requestSha256": "37ca326951b609cb4d46a90c8706a04d64fdfc8289d08df2c3986f424780f302",
+      "ok": true
+    }
+  ]
+}

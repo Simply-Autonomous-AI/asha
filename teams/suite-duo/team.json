@@ -1,0 +1,14 @@
+{
+  "id": "suite-duo",
+  "description": "Agent-suite fixture (collaborating-agents A4): two members, each saying what it is asked to say.",
+  "members": [
+    {
+      "name": "lead",
+      "recipe": "sayer.json"
+    },
+    {
+      "name": "helper",
+      "recipe": "sayer.json"
+    }
+  ]
+}

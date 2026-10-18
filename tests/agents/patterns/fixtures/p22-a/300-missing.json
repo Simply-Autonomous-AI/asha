@@ -1,0 +1,27 @@
+{
+  "scenario": "p22-a",
+  "breaks": "its \"done:\" part holds 300",
+  "note": "The summary does not say what was done.",
+  "team": "escalation",
+  "input": {
+    "user": "alice",
+    "to": "helper-1",
+    "text": "Convert 3 metres to centimetres, then book a meeting room for 3 pm."
+  },
+  "recipients": [
+    "helper-1"
+  ],
+  "messages": [
+    {
+      "from": "helper-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "helper-1",
+      "kind": "output",
+      "text": "ESCALATE: done: nothing yet; left: book a meeting room for 3 pm"
+    }
+  ],
+  "ms": 4000
+}

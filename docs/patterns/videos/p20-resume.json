@@ -1,0 +1,33 @@
+{
+  "pattern": "P20",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:36:15.439Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p20-resume",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 76120,
+  "bytes": 4159022,
+  "sha256": "ccb35a86ae079c529285447c5fa240f233de4f9343f2aea658aa9d3fb5360c01",
+  "frames": 1495,
+  "framesPerSecond": 19.8,
+  "longestGapMs": 91,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P20 · Checkpoint and resume",
+  "restartsFollowed": 3,
+  "afterLastLineMs": 5048,
+  "scenarios": [
+    {
+      "id": "p20-a",
+      "outcome": "pass"
+    },
+    {
+      "id": "p20-b",
+      "outcome": "pass"
+    }
+  ]
+}

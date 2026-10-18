@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="ff-t ff-d">
+  <title id="ff-t">A file to an agent and back</title>
+  <desc id="ff-d">The CLI on the Mac reads the user's file and streams it to the daemon: first POST /v1/channel/space, then POST /v1/channel/files. Under the channel's lock the daemon copies it with docker cp through the holder, a container never started, into the channel's volume, in a folder of its own. Every agent of the channel mounts the volume at /channel. An agent's reply_with_files names files in /channel; the daemon copies each out through the holder, checks it, and posts the reply with the files' ids; the CLI downloads each with GET /v1/channel/files/id and saves it under asha-files/channel/.</desc>
+  <defs><marker id="ff-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="10" y="30" width="170" height="110" rx="6"/>
+  <text class="label title" x="95" y="54" text-anchor="middle">asha (the Mac)</text>
+  <text class="label small" x="95" y="76" text-anchor="middle">file= or ./path in a line</text>
+  <text class="label small" x="95" y="94" text-anchor="middle">read once, by descriptor</text>
+  <text class="label small" x="95" y="112" text-anchor="middle">deny list, bounds, sha256</text>
+  <rect class="box accent" x="250" y="30" width="200" height="110" rx="6"/>
+  <text class="label title" x="350" y="54" text-anchor="middle">daemon: file spaces</text>
+  <text class="label small" x="350" y="76" text-anchor="middle">the channel's lock</text>
+  <text class="label small" x="350" y="94" text-anchor="middle">measure, copy, roll back</text>
+  <text class="label small" x="350" y="112" text-anchor="middle">file table, returned files</text>
+  <rect class="box" x="520" y="30" width="230" height="110" rx="6"/>
+  <text class="label title" x="635" y="54" text-anchor="middle">holder (never started)</text>
+  <text class="label mono" x="635" y="78" text-anchor="middle">docker cp - holder:/</text>
+  <text class="label mono" x="635" y="98" text-anchor="middle">docker cp holder:path -</text>
+  <text class="label small" x="635" y="118" text-anchor="middle">--network none, the agent's image</text>
+  <rect class="box accent" x="520" y="200" width="230" height="110" rx="6"/>
+  <text class="label title" x="635" y="224" text-anchor="middle">volume of the channel</text>
+  <text class="label mono" x="635" y="248" text-anchor="middle">asha-home-run-channel</text>
+  <text class="label mono" x="635" y="268" text-anchor="middle">upload-16hex/notes.txt</text>
+  <text class="label small" x="635" y="288" text-anchor="middle">1,000 entries, 256,000,000 bytes</text>
+  <rect class="box" x="250" y="200" width="200" height="110" rx="6"/>
+  <text class="label title" x="350" y="224" text-anchor="middle">every agent on it</text>
+  <text class="label mono" x="350" y="248" text-anchor="middle">-v volume:/channel</text>
+  <text class="label small" x="350" y="268" text-anchor="middle">file tools read and write</text>
+  <text class="label small" x="350" y="288" text-anchor="middle">reply_with_files names files</text>
+  <rect class="box" x="10" y="200" width="170" height="110" rx="6"/>
+  <text class="label title" x="95" y="224" text-anchor="middle">saved on the Mac</text>
+  <text class="label mono" x="95" y="248" text-anchor="middle">asha-files/lab/out.txt</text>
+  <text class="label small" x="95" y="268" text-anchor="middle">never overwriting,</text>
+  <text class="label small" x="95" y="286" text-anchor="middle">never through a link</text>
+  <path class="edge" d="M180 70 H248" marker-end="url(#ff-a)"/>
+  <text class="label mono" x="214" y="62" text-anchor="middle">POST</text>
+  <path class="edge" d="M450 70 H518" marker-end="url(#ff-a)"/>
+  <path class="edge" d="M635 140 V198" marker-end="url(#ff-a)"/>
+  <path class="edge" d="M520 255 H452" marker-end="url(#ff-a)"/>
+  <text class="label small" x="486" y="247" text-anchor="middle">mount</text>
+  <path class="edge" d="M350 200 V142" marker-end="url(#ff-a)"/>
+  <text class="label small" x="358" y="175">reply with files</text>
+  <path class="edge" d="M250 120 L182 210" marker-end="url(#ff-a)"/>
+  <text class="label mono" x="168" y="170" text-anchor="end">GET files/id</text>
+</svg>

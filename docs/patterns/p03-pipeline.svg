@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 266" role="img" aria-labelledby="p03-t p03-d">
+  <title id="p03-t">Sequential pipeline: each stage adds its colour and passes the list on</title>
+  <desc id="p03-d">You write to stage-a-1, which sends list: red to stage-b-1. stage-b-1 adds orange and sends list: red, orange to stage-c-1. stage-c-1 adds yellow and replies list: red, orange, yellow to you. Each colour is known to one stage only.</desc>
+  <defs><marker id="p03-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="35" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="110" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M110 44 V260"/>
+  <rect class="box accent" x="215" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="290" y="32" text-anchor="middle">stage-a-1</text>
+  <path class="edge dim" d="M290 44 V260"/>
+  <rect class="box accent" x="395" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="470" y="32" text-anchor="middle">stage-b-1</text>
+  <path class="edge dim" d="M470 44 V260"/>
+  <rect class="box accent" x="575" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="650" y="32" text-anchor="middle">stage-c-1</text>
+  <path class="edge dim" d="M650 44 V260"/>
+  <path class="edge" d="M110 80 H288" marker-end="url(#p03-a)"/>
+  <text class="label small" x="200" y="74" text-anchor="middle">Build the colour list.</text>
+  <path class="edge" d="M290 124 H468" marker-end="url(#p03-a)"/>
+  <text class="label small" x="380" y="118" text-anchor="middle">internal: list: red</text>
+  <path class="edge" d="M470 168 H648" marker-end="url(#p03-a)"/>
+  <text class="label small" x="560" y="162" text-anchor="middle">internal: list: red, orange</text>
+  <path class="edge" d="M650 212 H112" marker-end="url(#p03-a)"/>
+  <text class="label small" x="380" y="206" text-anchor="middle">output: list: red, orange, yellow</text>
+</svg>

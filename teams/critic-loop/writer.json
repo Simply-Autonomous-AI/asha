@@ -1,0 +1,24 @@
+{
+  "id": "writer",
+  "image": "hello-world",
+  "description": "Writes one sentence, revising it until its critic accepts.",
+  "prompt": "you write one sentence and revise it until its critic accepts it.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "writer.md",
+      "fullText": true
+    }
+  ]
+}

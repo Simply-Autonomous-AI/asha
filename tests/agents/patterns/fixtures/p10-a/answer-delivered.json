@@ -1,0 +1,158 @@
+{
+  "scenario": "p10-a",
+  "breaks": "each answer is delivered to no agent: each voter had one delivery (its question), aggregator-1 two (the input and the gather) (asha.delivery spans)",
+  "note": "An answer delivered to an agent: aggregator-1 has a third delivery, as if voter-bold-1's answer had reached it.",
+  "team": "vote",
+  "input": {
+    "user": "alice",
+    "to": "aggregator-1",
+    "text": "Ask the voters to pick the team lunch: SOUP, SALAD or PIZZA."
+  },
+  "recipients": [
+    "aggregator-1"
+  ],
+  "messages": [
+    {
+      "from": "aggregator-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "aggregator-1",
+      "to": "voter-cautious-1",
+      "kind": "internal",
+      "text": "Ask the voters to pick the team lunch: SOUP, SALAD or PIZZA.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "aggregator-1",
+        "voter-cautious-1"
+      ]
+    },
+    {
+      "from": "aggregator-1",
+      "to": "voter-bold-1",
+      "kind": "internal",
+      "text": "Ask the voters to pick the team lunch: SOUP, SALAD or PIZZA.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "aggregator-1",
+        "voter-bold-1"
+      ]
+    },
+    {
+      "from": "aggregator-1",
+      "to": "voter-thrifty-1",
+      "kind": "internal",
+      "text": "Ask the voters to pick the team lunch: SOUP, SALAD or PIZZA.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "aggregator-1",
+        "voter-thrifty-1"
+      ]
+    },
+    {
+      "from": "voter-bold-1",
+      "to": "aggregator-1",
+      "kind": "internal",
+      "text": "Pizza is the most exciting lunch.\nVOTE: PIZZA",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "aggregator-1"
+      ]
+    },
+    {
+      "from": "voter-cautious-1",
+      "to": "aggregator-1",
+      "kind": "internal",
+      "text": "Soup is the most familiar choice.\nVOTE: SOUP",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "aggregator-1"
+      ]
+    },
+    {
+      "from": "voter-thrifty-1",
+      "to": "aggregator-1",
+      "kind": "internal",
+      "text": "Soup costs the least.\nVOTE: SOUP",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "aggregator-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "aggregator-1",
+      "kind": "internal",
+      "text": "Answers to aggregator-1's call: 3 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "aggregator-1"
+      ]
+    },
+    {
+      "from": "aggregator-1",
+      "kind": "output",
+      "text": "Majority: SOUP (2 of 3). Tally: SOUP 2, SALAD 0, PIZZA 1."
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "aggregator-1",
+      "addressees": [
+        "voter-cautious-1",
+        "voter-bold-1",
+        "voter-thrifty-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "aggregator-1",
+      "counts": {
+        "answered": 3,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    }
+  ],
+  "deliveries": [
+    "aggregator-1",
+    "voter-cautious-1",
+    "voter-bold-1",
+    "voter-thrifty-1",
+    "aggregator-1",
+    "aggregator-1"
+  ],
+  "ms": 12000
+}

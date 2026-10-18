@@ -1,0 +1,152 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p21-topics.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publish Subscribe Demo</title>
+<meta name="description" content="P21 · Publish / subscribe (topic routing): A message posted to a topic reaches only the agents subscribed to it. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Publish Subscribe Demo</nav>
+<h1>P21 · Publish / subscribe (topic routing)</h1>
+<p class="lede">A message posted to a topic reaches only the agents subscribed to it.</p>
+<div class="facts"><span>written 2026-10-02</span><span>status: <span class="badge built">built</span> 2026-10-02, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/topics/team.json"><code>teams/topics/</code></a></span><span>test: <a href="../../tests/agents/p21-topics.test.ts"><code>tests/agents/p21-topics.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-3.md</code>, its runs</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p21-a</code> (topic <code>weather</code>) and <code>p21-b</code> (topic <code>sports</code>), as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>Built: its three recorded runs on the pinned model passed, then one under the bound they set, at <code>0ed2808</code> (runs (<code>docs/plans/patterns-phase-3.md</code>)); its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>weather-desk</code>, <code>sports-desk</code>, <code>front-page</code> on <code>qwen3-8b-q4_k_m</code>.</li>
+<li>Each member's subscriptions are its <code>topics</code> in <a href="../../teams/topics/team.json"><code>team.json</code></a>: <code>weather-desk</code> takes <code>weather</code>, <code>sports-desk</code> takes <code>sports</code>, <code>front-page</code> takes both. A message names its topic with <code>topic=</code> (<a href="../architecture/channel.html#addressing">topics</a>).</li>
+<li>The routing is the harness's: a subscriber is sent the message as a message to everyone, so nothing a model sees changes; an agent that is not subscribed never receives it.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p21-topics.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>qwen3-8b-q4_k_m</code> (<a href="videos/p21-topics.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 25 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when several agents each care about a kind of message, and the sender should not have to know which agents those are.</p>
+<p><strong>Do not use it</strong> when one agent should decide who handles a message (router, P2), or when every agent should see every message and decide for itself (group chat, self-selection, P12).</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="p21-t p21-d">
+  <title id="p21-t">P21 · Publish / subscribe (topic routing)</title>
+  <desc id="p21-d">p21-a: the user posts to topic weather; the harness delivers it to weather-desk-1 and front-page-1, each of which replies noted with the message; sports-desk-1 receives nothing. p21-b: topic sports reaches sports-desk-1 and front-page-1.</desc>
+  <defs><marker id="p21-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="8" y="10" width="120" height="34" rx="5"/>
+  <text class="label mono" x="68" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M68 44 V324"/>
+  <rect class="box" x="168" y="10" width="120" height="34" rx="5"/>
+  <text class="label mono" x="228" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M228 44 V324"/>
+  <rect class="box accent" x="328" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="396" y="32" text-anchor="middle">weather-desk-1</text>
+  <path class="edge dim" d="M396 44 V324"/>
+  <rect class="box accent" x="480" y="10" width="130" height="34" rx="5"/>
+  <text class="label mono" x="545" y="32" text-anchor="middle">sports-desk-1</text>
+  <path class="edge dim" d="M545 44 V324"/>
+  <rect class="box accent" x="626" y="10" width="126" height="34" rx="5"/>
+  <text class="label mono" x="689" y="32" text-anchor="middle">front-page-1</text>
+  <path class="edge dim" d="M689 44 V324"/>
+  <path class="edge" d="M68 80 H226" marker-end="url(#p21-a)"/>
+  <text class="label small" x="148" y="74" text-anchor="middle">topic=weather: Rain…</text>
+  <path class="edge" d="M228 108 H394" marker-end="url(#p21-a)"/>
+  <path class="edge" d="M228 108 H687" marker-end="url(#p21-a)"/>
+  <text class="label small" x="545" y="102" text-anchor="middle">subscribed: weather-desk, front-page</text>
+  <path class="edge" d="M396 140 H70" marker-end="url(#p21-a)"/>
+  <text class="label small" x="232" y="134" text-anchor="middle">weather-desk-1 noted: Rain…</text>
+  <path class="edge" d="M689 172 H70" marker-end="url(#p21-a)"/>
+  <text class="label small" x="380" y="166" text-anchor="middle">front-page-1 noted: Rain…</text>
+  <path class="edge" d="M68 222 H226" marker-end="url(#p21-a)"/>
+  <text class="label small" x="148" y="216" text-anchor="middle">topic=sports: The home…</text>
+  <path class="edge" d="M228 250 H543" marker-end="url(#p21-a)"/>
+  <path class="edge" d="M228 250 H687" marker-end="url(#p21-a)"/>
+  <text class="label small" x="460" y="244" text-anchor="middle">subscribed: sports-desk, front-page</text>
+  <text class="label small" x="380" y="290" text-anchor="middle">each replies "noted"; the unsubscribed desk receives nothing</text>
+</svg>
+<figcaption>p21-a: the user posts to topic weather; the harness delivers it to weather-desk-1 and front-page-1, each of which replies noted with the message; sports-desk-1 receives nothing. p21-b: topic sports reaches sports-desk-1 and front-page-1.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 15,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-3.md</code> R4) — the largest request, p21-a's 9,501 ms at <code>b63f543</code>, times 1.5 (14,251.5), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=topics
+# bound: 15000 ms
+# p21-a
+./asha topic=weather user=alice message=&quot;Rain expected tomorrow.&quot;
+# p21-b
+./asha topic=sports user=alice message=&quot;The home team won.&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>b63f543</code> (clean tree), its third recorded run, from its results file as committed in <code>6519546</code> (<code>git show 6519546:tests/agents/results/p21-topics.json</code>): each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' output as it streams (lines such as &quot;› <handle> reply: {…}&quot;) is left out here; the results file holds it.</p>
+<p><strong>p21-a</strong> — exit 0, 9,501 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose topic=weather user=alice message=&quot;Rain expected tomorrow.&quot;
+› alice → main: Rain expected tomorrow.
+› front-page-1: ok
+› output front-page-1 → alice:
+› weather-desk-1: ok
+› output weather-desk-1 → alice:
+front-page-1 noted: Rain expected tomorrow.
+weather-desk-1 noted: Rain expected tomorrow.
+</code></pre>
+<p><strong>p21-b</strong> — exit 0, 5,827 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose topic=sports user=alice message=&quot;The home team won.&quot;
+› alice → main: The home team won.
+› front-page-1: ok
+› output front-page-1 → alice:
+› sports-desk-1: ok
+› output sports-desk-1 → alice:
+front-page-1 noted: The home team won.
+sports-desk-1 noted: The home team won.
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/topics/team.json"><code>teams/topics/team.json</code></a>: the team — <code>weather-desk</code>, <code>sports-desk</code>, <code>front-page</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>, each with its <code>topics</code>.</li>
+<li><code>weather-desk</code>: <a href="../../teams/topics/weather-desk.json"><code>weather-desk.json</code></a>, its recipe, and <a href="../../teams/topics/weather-desk.md"><code>weather-desk.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>sports-desk</code>: <a href="../../teams/topics/sports-desk.json"><code>sports-desk.json</code></a> and <a href="../../teams/topics/sports-desk.md"><code>sports-desk.md</code></a>.</li>
+<li><code>front-page</code>: <a href="../../teams/topics/front-page.json"><code>front-page.json</code></a> and <a href="../../teams/topics/front-page.md"><code>front-page.md</code></a>.</li>
+<li><a href="../../tests/agents/p21-topics.test.ts"><code>tests/agents/p21-topics.test.ts</code></a>: launches the team and sends each scenario's message from this page, then asserts each scenario only through its checker, <code>P21_A</code> and <code>P21_B</code> in <a href="../../tests/agents/patterns/phase-3.ts"><code>tests/agents/patterns/phase-3.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p21-a/pass.json"><code>tests/agents/patterns/fixtures/p21-a/</code></a> and <a href="../../tests/agents/patterns/fixtures/p21-b/pass.json"><code>p21-b/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>The delivery is the harness's and does not depend on the model; each desk only has to say it noted the message, which the probes showed, 3/3 for each turn (<code>docs/plans/patterns-phase-3.md</code>).</li>
+<li>Only a user's message has a topic; agents do not publish to topics, and a topic no agent on the channel takes is refused (<code>unknown_topic</code>), nothing posted.</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p21">agent test report, P21 · Publish / subscribe (topic routing)</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p21-topics.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

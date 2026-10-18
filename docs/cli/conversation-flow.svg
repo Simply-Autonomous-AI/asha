@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 560" role="img" aria-labelledby="cliflow-t cliflow-d">
+  <title id="cliflow-t">One asha message, from the CLI to the daemon and back</title>
+  <desc id="cliflow-d">The CLI reads daemon.json from the harness home, checks the daemon's health, and if none answers spawns a background daemon and polls its health. It then posts the message to /v1/conversations and reads the NDJSON stream: phase and announced events and the posted event become progress on stderr, an output message's text goes to stdout, heartbeats arrive every 10 seconds. Once the message is posted and no agent is still working, the CLI closes the stream and exits 0 if an agent replied, otherwise 1.</desc>
+  <defs>
+    <marker id="cliflow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker>
+    <marker id="cliflow-arrow-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#56625d"/></marker>
+  </defs>
+
+  <rect class="box" x="20" y="14" width="120" height="40" rx="6"/>
+  <text class="label title" x="80" y="39" text-anchor="middle">terminal</text>
+  <rect class="box accent" x="210" y="14" width="120" height="40" rx="6"/>
+  <text class="label title" x="270" y="39" text-anchor="middle">./asha</text>
+  <rect class="box" x="400" y="14" width="140" height="40" rx="6"/>
+  <text class="label title" x="470" y="39" text-anchor="middle">harness home</text>
+  <rect class="box accent" x="610" y="14" width="130" height="40" rx="6"/>
+  <text class="label title" x="675" y="39" text-anchor="middle">daemon</text>
+
+  <path class="edge dim" d="M80 54 V540"/>
+  <path class="edge dim" d="M270 54 V540"/>
+  <path class="edge dim" d="M470 54 V104"/>
+  <path class="edge dim" d="M675 54 V540"/>
+
+  <path class="edge" d="M270 88 H466" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="368" y="81" text-anchor="middle">read daemon.json</text>
+
+  <path class="edge" d="M270 124 H671" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="117" text-anchor="middle">GET /v1/health   (bounded 3 s)</text>
+  <path class="edge" d="M675 152 H274" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="145" text-anchor="middle">200 {pid, version, build, agents}</text>
+
+  <rect class="box host" x="200" y="166" width="550" height="62" rx="6"/>
+  <text class="label small" x="212" y="186">if none answers: spawn `main.js --server` detached, output → logs/server.log,</text>
+  <text class="label small" x="212" y="204">then poll /v1/health every 200 ms, up to 20 s; the daemon writes daemon.json</text>
+  <text class="label small" x="212" y="220">once it listens on 127.0.0.1:&lt;random port&gt;</text>
+
+  <path class="edge" d="M270 260 H671" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="253" text-anchor="middle">POST /v1/conversations</text>
+  <text class="label small" x="472" y="274" text-anchor="middle">{channel, message, user?, recipe?, to?}</text>
+
+  <path class="edge" d="M675 304 H274" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="297" text-anchor="middle">phase … / announced   (recipe= only)</text>
+  <path class="edge" d="M270 304 H84" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="175" y="297" text-anchor="middle">stderr: › image: …</text>
+
+  <path class="edge" d="M675 344 H274" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="337" text-anchor="middle">posted {message, working}</text>
+  <path class="edge" d="M270 344 H84" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="175" y="337" text-anchor="middle">stderr: › user-1 → …</text>
+
+  <path class="edge" d="M675 384 H274" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="377" text-anchor="middle">message {status | internal, working}</text>
+  <path class="edge" d="M270 384 H84" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="175" y="377" text-anchor="middle">stderr: › hewo-1: ok</text>
+
+  <path class="edge" d="M675 424 H274" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="417" text-anchor="middle">message {output, working: []}</text>
+  <path class="edge" d="M270 424 H84" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="175" y="417" text-anchor="middle">stdout: Hello World.</text>
+
+  <path class="edge dim" d="M675 460 H274" marker-end="url(#cliflow-arrow-dim)"/>
+  <text class="label small" x="472" y="453" text-anchor="middle">heartbeat every 10 s; the CLI gives up after 60 s of silence</text>
+
+  <rect class="box accent" x="200" y="478" width="300" height="50" rx="6"/>
+  <text class="label small" x="350" y="498" text-anchor="middle">posted, and working is empty: settled.</text>
+  <text class="label small" x="350" y="516" text-anchor="middle">Close the stream; exit 0 if an agent replied, else 1</text>
+</svg>

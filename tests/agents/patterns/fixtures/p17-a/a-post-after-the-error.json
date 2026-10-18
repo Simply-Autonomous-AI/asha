@@ -1,0 +1,154 @@
+{
+  "scenario": "p17-a",
+  "breaks": "no agent posts in the conversation after it ends: no channel.posted or channel.status of an agent after channel.conversation_ended",
+  "note": "The listed mutation: an agent post after the error event — a message from ping-1 the channel posted after it ended the conversation.",
+  "team": "budget",
+  "input": {
+    "user": "alice",
+    "to": "ping-1",
+    "text": "Start."
+  },
+  "recipients": [
+    "ping-1"
+  ],
+  "messages": [
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "log": {
+        "level": "error",
+        "event": "channel.conversation_ended",
+        "channel": "main",
+        "conversation": "c1",
+        "reason": "budget_exceeded",
+        "detail": "conversation c1 reached its budget of 8 agent posts"
+      }
+    },
+    {
+      "error": {
+        "reason": "budget_exceeded",
+        "detail": "conversation c1 reached its budget of 8 agent posts"
+      }
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    }
+  ],
+  "ms": 15000
+}

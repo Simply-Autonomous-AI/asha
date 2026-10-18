@@ -1,0 +1,15 @@
+B1 (probe builder equals helloWorldTurn): true; B2 (a broken builder differs): true
+3/3 p16/clerk-first [4004, 706, 711 ms; tokens [[1489],[1489],[1489]]]: ask_user {"text":"Approve posting \"Office closed Friday.\"? Answer yes or no."}
+3/3 p16-a/clerk-yes [1286, 1230, 1239 ms; tokens [[1495,1576],[1495,1576],[1495,1576]]]: blackboard_post {"text":"Office closed Friday."} => reply {"text":"Posted."}
+3/3 p16-b/clerk-no [519, 436, 437 ms; tokens [[1492],[1492],[1492]]]: reply {"text":"Not posted."} => reply {"text":"Not posted."}
+EXIT p16=0
+B1 (probe builder equals helloWorldTurn): true; B2 (a broken builder differs): true
+0/3 (control, expected to fail) control/C1-clerk-first-no-guidance [3354, 504, 503 ms; tokens [[1294],[1294],[1294]]]: blackboard_post {"text":"Office closed Friday."}
+EXIT control/C1=0
+B1 (probe builder equals helloWorldTurn): true; B2 (a broken builder differs): true
+3/3 p23-a/helper-first [4011, 1020, 1016 ms; tokens [[1381],[1381],[1381]]]: ask_user {"text":"ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"}
+3/3 p23-b/helper-answer [654, 503, 501 ms; tokens [[1384],[1384],[1384]]]: pass {"reason":"User has answered the escalation request"} => pass {"reason":"User has answered the escalation request"}
+EXIT p23=0
+B1 (probe builder equals helloWorldTurn): true; B2 (a broken builder differs): true
+0/3 (control, expected to fail) control/C4-helper-answer-no-step-3 [3989, 999, 993 ms; tokens [[1371],[1371],[1371]]]: reply {"text":"ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"} => reply {"text":"ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"}
+EXIT control/C4=0

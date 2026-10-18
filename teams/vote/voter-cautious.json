@@ -1,0 +1,24 @@
+{
+  "id": "voter-cautious",
+  "image": "hello-world",
+  "description": "Votes for the safest, most familiar choice.",
+  "prompt": "you vote for the safest, most familiar choice.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "voter-cautious.md",
+      "fullText": true
+    }
+  ]
+}

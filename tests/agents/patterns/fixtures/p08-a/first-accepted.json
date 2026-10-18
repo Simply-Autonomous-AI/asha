@@ -1,0 +1,164 @@
+{
+  "scenario": "p08-a",
+  "breaks": "call 1's answer starts \"Round 1: REVISE\"",
+  "note": "The critic accepts the first draft.",
+  "team": "critic-loop",
+  "input": {
+    "user": "alice",
+    "to": "writer-1",
+    "text": "Write one sentence about the harbour at night."
+  },
+  "recipients": [
+    "writer-1"
+  ],
+  "messages": [
+    {
+      "from": "writer-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "writer-1",
+      "to": "critic-1",
+      "kind": "internal",
+      "text": "Round 1. Draft: The harbour sleeps under the stars.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "writer-1",
+        "critic-1"
+      ]
+    },
+    {
+      "from": "critic-1",
+      "to": "writer-1",
+      "kind": "internal",
+      "text": "Round 1: ACCEPT",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "writer-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "writer-1",
+      "kind": "internal",
+      "text": "Answers to writer-1's call: 1 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "writer-1"
+      ]
+    },
+    {
+      "from": "writer-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "writer-1",
+      "to": "critic-1",
+      "kind": "internal",
+      "text": "Round 2. Draft: The harbour sleeps under the stars while the green lighthouse keeps watch.",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "writer-1",
+        "critic-1"
+      ]
+    },
+    {
+      "from": "critic-1",
+      "to": "writer-1",
+      "kind": "internal",
+      "text": "Round 2: ACCEPT",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "writer-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "writer-1",
+      "kind": "internal",
+      "text": "Answers to writer-1's call: 1 answered.",
+      "call": {
+        "id": "k2",
+        "role": "gather"
+      },
+      "working": [
+        "writer-1"
+      ]
+    },
+    {
+      "from": "writer-1",
+      "kind": "output",
+      "text": "The harbour sleeps under the stars while the green lighthouse keeps watch."
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "writer-1",
+      "addressees": [
+        "critic-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "writer-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k2",
+      "caller": "writer-1",
+      "addressees": [
+        "critic-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k2",
+      "caller": "writer-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    }
+  ],
+  "ms": 15000
+}

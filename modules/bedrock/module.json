@@ -1,0 +1,59 @@
+{
+  "id": "bedrock",
+  "kind": "ModelProvider",
+  "version": "1.0.0",
+  "entry": "index.mjs",
+  "files": {
+    "index.mjs": "af3a2d801c5cdc43634ce78e8da6e637624dea347c30d60419597902937c7a52",
+    "package-lock.json": "bb6b43dc23a8739892a14b7967938d8fbff6cf41212468cdda7927ad4c9bb7a0"
+  },
+  "licence": {
+    "id": "Apache-2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+    "read": "2026-10-01"
+  },
+  "hosts": [
+    "bedrock-runtime.us-east-1.amazonaws.com",
+    "bedrock.us-east-1.amazonaws.com"
+  ],
+  "secrets": [
+    "AWS_BEARER_TOKEN_BEDROCK"
+  ],
+  "cost": {
+    "model": "metered",
+    "approved": {
+      "by": "the owner",
+      "date": "2026-09-27",
+      "capUsd": 25
+    }
+  },
+  "models": [
+    {
+      "name": "ministral",
+      "kind": "chat",
+      "id": "mistral.ministral-3-8b-instruct",
+      "card": {
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-mistral-ai-ministral-3-8b.html",
+        "read": "2026-09-27"
+      },
+      "launched": "2025-12-02",
+      "prices": {
+        "inputUsdPerMTok": 0.15,
+        "outputUsdPerMTok": 0.15,
+        "url": "https://aws.amazon.com/bedrock/pricing/",
+        "read": "2026-09-27"
+      },
+      "terms": {
+        "url": "https://aws.amazon.com/legal/bedrock/third-party-models/",
+        "read": "2026-09-27"
+      },
+      "retention": {
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html",
+        "read": "2026-10-02"
+      },
+      "chat": {
+        "temperature": 0
+      }
+    }
+  ]
+}

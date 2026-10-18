@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 250" role="img" aria-labelledby="wf-dq-t wf-dq-d">
+  <title id="wf-dq-t">The decision-queue loop</title>
+  <desc id="wf-dq-d">An agent writes one self-contained record into decisions/queue.json while the decision server is not running; the record is pending. The owner runs npm run decisions, which serves the queue on a 127.0.0.1 address with a random token, and answers in the browser; the server writes the answer back to the file and the record becomes answered. The agent first commits the answered records unchanged, then applies each answer, with the decider and the date, to the plan or page it belongs to and commits. Last, it marks the record applied with an appliedNote saying where the answer went. The gate validates the committed queue with tests/unit/decision-queue.test.ts.</desc>
+  <defs><marker id="wf-dq-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="6" y="50" width="136" height="90" rx="6"/>
+  <text class="label title" x="74" y="74" text-anchor="middle">Agent writes</text>
+  <text class="label mono" x="74" y="94" text-anchor="middle">queue.json</text>
+  <text class="label small" x="74" y="112" text-anchor="middle">one record each,</text>
+  <text class="label small" x="74" y="127" text-anchor="middle">server stopped</text>
+
+  <rect class="box accent" x="159" y="50" width="136" height="90" rx="6"/>
+  <text class="label title" x="227" y="74" text-anchor="middle">Owner answers</text>
+  <text class="label mono" x="227" y="94" text-anchor="middle">npm run decisions</text>
+  <text class="label small" x="227" y="112" text-anchor="middle">browser, 127.0.0.1</text>
+  <text class="label small" x="227" y="127" text-anchor="middle">+ random token</text>
+
+  <rect class="box" x="312" y="50" width="136" height="90" rx="6"/>
+  <text class="label title" x="380" y="74" text-anchor="middle">Agent commits</text>
+  <text class="label small" x="380" y="94" text-anchor="middle">the answered</text>
+  <text class="label small" x="380" y="109" text-anchor="middle">records, unchanged,</text>
+  <text class="label small" x="380" y="124" text-anchor="middle">before applying</text>
+
+  <rect class="box" x="465" y="50" width="136" height="90" rx="6"/>
+  <text class="label title" x="533" y="74" text-anchor="middle">Agent applies</text>
+  <text class="label small" x="533" y="94" text-anchor="middle">answer, decider, date</text>
+  <text class="label small" x="533" y="109" text-anchor="middle">into the plan or page,</text>
+  <text class="label small" x="533" y="124" text-anchor="middle">and commits</text>
+
+  <rect class="box accent" x="618" y="50" width="136" height="90" rx="6"/>
+  <text class="label title" x="686" y="74" text-anchor="middle">Marked applied</text>
+  <text class="label mono" x="686" y="94" text-anchor="middle">appliedNote</text>
+  <text class="label small" x="686" y="112" text-anchor="middle">where it went,</text>
+  <text class="label small" x="686" y="127" text-anchor="middle">and the commit</text>
+
+  <path class="edge" d="M142 95 H157" marker-end="url(#wf-dq-arr)"/>
+  <path class="edge" d="M295 95 H310" marker-end="url(#wf-dq-arr)"/>
+  <path class="edge" d="M448 95 H463" marker-end="url(#wf-dq-arr)"/>
+  <path class="edge" d="M601 95 H616" marker-end="url(#wf-dq-arr)"/>
+
+  <text class="label mono" x="74" y="36" text-anchor="middle">pending</text>
+  <text class="label mono" x="304" y="36" text-anchor="middle">answered</text>
+  <text class="label mono" x="686" y="36" text-anchor="middle">applied</text>
+  <text class="label small" x="380" y="20" text-anchor="middle">status of the record</text>
+
+  <rect class="box host" x="6" y="175" width="748" height="50" rx="6"/>
+  <text class="label small" x="380" y="196" text-anchor="middle">The gate validates the committed queue: every record's shape, and that every source it cites exists</text>
+  <text class="label mono" x="380" y="214" text-anchor="middle">tests/unit/decision-queue.test.ts</text>
+</svg>

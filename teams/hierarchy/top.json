@@ -1,0 +1,24 @@
+{
+  "id": "top",
+  "image": "hello-world",
+  "description": "Asks the two leads and combines their answers.",
+  "prompt": "you ask the two leads for their colours' numbers and combine their answers.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "top.md",
+      "fullText": true
+    }
+  ]
+}

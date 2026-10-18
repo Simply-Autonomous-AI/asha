@@ -1,0 +1,362 @@
+{
+  "commit": "a9567ca9b7d7eb9cdec133f9a1120e105cdccc77",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "repeats": 3,
+  "summary": [
+    {
+      "id": "p21-a/supervisor-first",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        5084,
+        786,
+        783
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1902
+        ],
+        [
+          1902
+        ],
+        [
+          1902
+        ]
+      ],
+      "requestSha256": "d503d8b04114a23326a916dbb73211ff991351188d2e945af502571fe53b2491",
+      "shown": [
+        "consult {\"requests\":[{\"to\":\"worker-1\",\"text\":\"What is your word?\"}]}",
+        "consult {\"requests\":[{\"to\":\"worker-1\",\"text\":\"What is your word?\"}]}",
+        "consult {\"requests\":[{\"to\":\"worker-1\",\"text\":\"What is your word?\"}]}"
+      ]
+    },
+    {
+      "id": "p21-a/worker-call",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        2879,
+        436,
+        433
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1086
+        ],
+        [
+          1086
+        ],
+        [
+          1086
+        ]
+      ],
+      "requestSha256": "1053ce6bc332f3279507c4020a52df7225df577454e95f18fc33df492605b8e6",
+      "shown": [
+        "reply {\"text\":\"marigold\"}",
+        "reply {\"text\":\"marigold\"}",
+        "reply {\"text\":\"marigold\"}"
+      ]
+    },
+    {
+      "id": "p21-a/supervisor-gather",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        746,
+        584,
+        585
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1926
+        ],
+        [
+          1926
+        ],
+        [
+          1926
+        ]
+      ],
+      "requestSha256": "5a6956f602611005674ffa1da05de1c84a7d2b877e588e5f523853bea670819e",
+      "shown": [
+        "reply {\"text\":\"worker-1's word is marigold\"}",
+        "reply {\"text\":\"worker-1's word is marigold\"}",
+        "reply {\"text\":\"worker-1's word is marigold\"}"
+      ]
+    },
+    {
+      "id": "p21-a/supervisor-resent",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        920,
+        767,
+        763
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1920
+        ],
+        [
+          1920
+        ],
+        [
+          1920
+        ]
+      ],
+      "requestSha256": "d4f0635d1811adf3a99e2f89bed0eee43151d82948ce0dfe42566f5b3719f8b9",
+      "shown": [
+        "consult {\"requests\":[{\"to\":\"worker-1\",\"text\":\"What is your word?\"}]}",
+        "consult {\"requests\":[{\"to\":\"worker-1\",\"text\":\"What is your word?\"}]}",
+        "consult {\"requests\":[{\"to\":\"worker-1\",\"text\":\"What is your word?\"}]}"
+      ]
+    },
+    {
+      "id": "control/C1-supervisor-gather-unanswered",
+      "control": true,
+      "passes": 0,
+      "of": 3,
+      "ms": [
+        712,
+        558,
+        557
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1924
+        ],
+        [
+          1924
+        ],
+        [
+          1924
+        ]
+      ],
+      "requestSha256": "503b7c0b826f825c923a122f4afa80ce60f6eb295fe9b3d9c3ecab82edfbd500",
+      "shown": [
+        "reply {\"text\":\"worker-1's word is no answer\"}",
+        "reply {\"text\":\"worker-1's word is no answer\"}",
+        "reply {\"text\":\"worker-1's word is no answer\"}"
+      ]
+    },
+    {
+      "id": "control/C2-worker-no-guidance",
+      "control": true,
+      "passes": 0,
+      "of": 3,
+      "ms": [
+        2536,
+        503,
+        506
+      ],
+      "rounds": [
+        1,
+        1,
+        1
+      ],
+      "tokens": [
+        [
+          1032
+        ],
+        [
+          1032
+        ],
+        [
+          1032
+        ]
+      ],
+      "requestSha256": "76bdf6143909a2883ccaa64e5b87494396b7bdfe750a67b9fe71db2654e75e40",
+      "shown": [
+        "reply {\"text\":\"my word is 'secret'\"}",
+        "reply {\"text\":\"my word is 'secret'\"}",
+        "reply {\"text\":\"my word is 'secret'\"}"
+      ]
+    },
+    {
+      "id": "p21-b/tasker-task-1",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        6601,
+        1959,
+        1977
+      ],
+      "rounds": [
+        3,
+        3,
+        3
+      ],
+      "tokens": [
+        [
+          1914,
+          1960,
+          2005
+        ],
+        [
+          1914,
+          1960,
+          2005
+        ],
+        [
+          1914,
+          1960,
+          2005
+        ]
+      ],
+      "requestSha256": "672ca5fbf56471358a2eb80f4ad127467e2458751c388ebdff7499d8f3ad03b7",
+      "shown": [
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1]\"} => reply {\"text\":\"done task 1\"}",
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1]\"} => reply {\"text\":\"done task 1\"}",
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1]\"} => reply {\"text\":\"done task 1\"}"
+      ]
+    },
+    {
+      "id": "p21-b/tasker-task-2",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        2018,
+        2026,
+        2032
+      ],
+      "rounds": [
+        3,
+        3,
+        3
+      ],
+      "tokens": [
+        [
+          1914,
+          1967,
+          2012
+        ],
+        [
+          1914,
+          1967,
+          2012
+        ],
+        [
+          1914,
+          1967,
+          2012
+        ]
+      ],
+      "requestSha256": "17d03986d1eeccfebb6b45e74ea2b385d976e1ea795b5ff4bfba461fd0d0f2a4",
+      "shown": [
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1,2]\"} => reply {\"text\":\"done task 2\"}",
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1,2]\"} => reply {\"text\":\"done task 2\"}",
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1,2]\"} => reply {\"text\":\"done task 2\"}"
+      ]
+    },
+    {
+      "id": "p21-b/tasker-resent-3",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        2152,
+        2086,
+        2104
+      ],
+      "rounds": [
+        3,
+        3,
+        3
+      ],
+      "tokens": [
+        [
+          1932,
+          1989,
+          2034
+        ],
+        [
+          1932,
+          1989,
+          2034
+        ],
+        [
+          1932,
+          1989,
+          2034
+        ]
+      ],
+      "requestSha256": "28ac1ba0f8701cd1b5aecd218573c8af511216118b7002cb71fa923f73d33208",
+      "shown": [
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1,2,3]\"} => reply {\"text\":\"done task 3\"}",
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1,2,3]\"} => reply {\"text\":\"done task 3\"}",
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1,2,3]\"} => reply {\"text\":\"done task 3\"}"
+      ]
+    },
+    {
+      "id": "p21-b/tasker-resent-4",
+      "control": false,
+      "passes": 3,
+      "of": 3,
+      "ms": [
+        2143,
+        2146,
+        2149
+      ],
+      "rounds": [
+        3,
+        3,
+        3
+      ],
+      "tokens": [
+        [
+          1932,
+          1993,
+          2038
+        ],
+        [
+          1932,
+          1993,
+          2038
+        ],
+        [
+          1932,
+          1993,
+          2038
+        ]
+      ],
+      "requestSha256": "359faf6c9c780c51b7cd40bd8fbc45fee8d800dd7c6642b4c7d3bc5ba48e1298",
+      "shown": [
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1,2,3,4]\"} => reply {\"text\":\"done task 4\"}",
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1,2,3,4]\"} => reply {\"text\":\"done task 4\"}",
+        "read_file {\"path\":\"tasks.json\"} => write_file {\"path\":\"tasks.json\",\"content\":\"[1,2,3,4]\"} => reply {\"text\":\"done task 4\"}"
+      ]
+    }
+  ]
+}

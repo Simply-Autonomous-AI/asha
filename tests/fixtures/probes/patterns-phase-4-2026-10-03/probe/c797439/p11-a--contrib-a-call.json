@@ -1,0 +1,165 @@
+{
+  "commit": "c79743931a18a108d9eb0944e59055b5cfa4c14c",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p11-a/contrib-a-call",
+  "control": false,
+  "doc": null,
+  "dropStep": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "item: saffron"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1191,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1279,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 4259,
+      "seed": [],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "675396269bfe37b0533e96c54eb9b72a31291af815f5b37c4c4968755a1e9515",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "item: saffron"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1191,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1279,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 1234,
+      "seed": [],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "675396269bfe37b0533e96c54eb9b72a31291af815f5b37c4c4968755a1e9515",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "item: saffron"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1191,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1279,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 1246,
+      "seed": [],
+      "board": [
+        {
+          "author": "contrib-a-1",
+          "text": "item: saffron",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "675396269bfe37b0533e96c54eb9b72a31291af815f5b37c4c4968755a1e9515",
+      "ok": true
+    }
+  ]
+}

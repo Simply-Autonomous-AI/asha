@@ -1,0 +1,101 @@
+<!doctype html>
+<!-- Generated from docs/architecture/modules-aws-cli.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The aws_cli plugin</title>
+<meta name="description" content="The reference command plugin — the AWS CLI v2 for a CodePipeline example — where its release archive comes from and how to verify it, how to install it, its commands, licences, cost status and its proxy evidence.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="architecture">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha Architecture</a> / The aws_cli plugin</nav>
+<h1>The <code>aws_cli</code> plugin</h1>
+<p class="lede"><code>aws_cli</code> wraps the AWS CLI v2 as a <a href="modules.html#plugins">command plugin</a>, for the owner's example of an agent operating an AWS CodePipeline: read a pipeline's state, retry a failed stage (consequential: held for approval), and upload a file from the channel or a named root to an S3 bucket whose name begins <code>asha-demo-</code>. It is never built by the gate.</p>
+<div class="facts"><span>verified 2026-10-03</span><span><span class="badge built">built</span> 2026-10-02 (manifest and Dockerfile); never installed or run</span><span>code: <a href="../../modules/aws_cli/module.json"><code>modules/aws_cli/module.json</code></a>, <a href="../../modules/aws_cli/Dockerfile"><code>Dockerfile</code></a></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>The AWS CLI <code>2.37.8</code>, pinned per architecture by the sha256 of its release archive; the archive is not in this repository: download it yourself.</li>
+<li>Three commands: <code>codepipeline_get_state</code>, <code>codepipeline_retry_stage</code> (consequential), <code>s3_upload</code>.</li>
+<li>No recipe this repository ships may grant it until this page records the proxy's evidence below, and its cost has no owner's approval yet.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#archive">The release archive</a></li>
+<li><a href="#commands">Commands</a></li>
+<li><a href="#licences">Licences</a></li>
+<li><a href="#threats">Threat model</a></li>
+<li><a href="#cost">Cost</a></li>
+<li><a href="#proxy-evidence">R6 (b) proxy evidence</a></li>
+</ol>
+</nav>
+<section id="archive">
+<h2>The release archive</h2>
+<p>The installer downloads nothing: download the archive for your colima VM's architecture (<code>colima ssh -- uname -m</code>) and name it at install.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Architecture</th><th>URL</th><th>sha256</th></tr></thead>
+<tbody>
+<tr><td><code>aarch64</code></td><td><code>https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.37.8.zip</code></td><td><code>00c4bac1cac8624b728d991f821428d5de1e0cb56e3803045b85bff63bedee8b</code></td></tr>
+<tr><td><code>x86_64</code></td><td><code>https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.37.8.zip</code></td><td><code>6a2f98fee0901ff623ff9abb5c80f4d67c40e5c0ac5e2ad7afa2ba756a7d5088</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Each sha256 was computed on 2026-10-01 from the archive downloaded over HTTPS from <code>awscli.amazonaws.com</code>; the version was the newest in the AWS CLI v2 changelog that day. <strong>Verify the signature</strong> before installing, as AWS's <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">install guide</a> (read 2026-10-01) describes: import the AWS CLI Team's public key from that page (fingerprint <code>FB5D B77F D5C1 18B8 0511 ADA8 A631 0ACC 4672 475C</code>, expires 2027-07-01), download the <code>.sig</code> beside the archive (same URL with <code>.sig</code>), and run <code>gpg --verify awscli-exe-linux-&lt;arch&gt;-2.37.8.zip.sig awscli-exe-linux-&lt;arch&gt;-2.37.8.zip</code>.</p>
+<p><strong>Both pinned archives were verified this way on 2026-10-03</strong> (<code>docs/plans/debt-paydown.md</code> R6, which paid D50): the key block read again from the install guide was byte-identical to the one kept as <code>evals/probes/debt-paydown-2026-10-03/p5-aws-cli-public-key.asc.txt</code>, its fingerprint the manifest's; each archive's sha256 was its pin; <code>gpg --verify</code>, run with GnuPG 2.4.9 in a throwaway <code>node:22-alpine</code> container (nothing installed on the Mac), printed <code>VALIDSIG FB5DB77FD5C118B80511ADA8A6310ACC4672475C</code> for both, and <code>BADSIG</code> for a copy with one byte appended; the key is valid until 2027-07-01 (<code>evals/probes/debt-paydown-2026-10-03/r6-aws-cli-verify.out.txt</code>, script <code>evals/probes/debt-paydown-2026-10-03/r6-aws-cli-verify.mjs</code>). The manifest's <code>executable.signature</code> records that run, and <a href="../../tests/unit/plugin-signatures.test.ts"><code>tests/unit/plugin-signatures.test.ts</code></a> fails on any command plugin whose <code>signature.method</code> does not record <code>VALIDSIG</code> and its own fingerprint, or whose <code>verifiedBy</code> names no committed run that shows, for every archive pinned now, its sha256 as the pin, <code>VALIDSIG</code> by that fingerprint and <code>EXIT=0</code> — so an archive re-pinned without a new run fails it. <em>Corrected 2026-10-03: this said the check had not been done (D50).</em> The key expires 2027-07-01: a release pinned after that date is verified against the key as the install guide then gives it.</p>
+<pre><code>asha --install-module path=modules/aws_cli archive=&lt;the downloaded .zip&gt;
+</code></pre>
+<p>The installer checks the archive's sha256 against the manifest for the VM's architecture, refusing any other file, and builds the image with <code>--network=none</code> from the plugin base, unzipping the archive and running its installer. <strong>A recorded deviation from R28</strong> (&quot;the build runs only the archive's own installer&quot;): the slim plugin base has no <code>unzip</code>, so the harness's own <code>unzip.mjs</code> in the plugin base (Node's <code>zlib</code>, no download) unpacks the archive before the release's installer runs.</p>
+</section>
+<section id="commands">
+<h2>Commands</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Command</th><th>Runs</th><th>Classes</th></tr></thead>
+<tbody>
+<tr><td><code>codepipeline_get_state</code> <code>{pipeline}</code></td><td><code>aws codepipeline get-pipeline-state --region us-east-1 --output json --name &lt;pipeline&gt;</code></td><td><code>egress</code></td></tr>
+<tr><td><code>codepipeline_retry_stage</code> <code>{pipeline, stage, execution}</code></td><td><code>aws codepipeline retry-stage-execution --region us-east-1 --output json --retry-mode FAILED_ACTIONS --pipeline-name … --stage-name … --pipeline-execution-id …</code></td><td><code>egress</code>, <code>consequential</code></td></tr>
+<tr><td><code>s3_upload</code> <code>{source, destination}</code></td><td><code>aws s3 cp --region us-east-1 --only-show-errors &lt;source&gt; &lt;destination&gt;</code>, <code>source</code> a read path, <code>destination</code> <code>s3://asha-demo-&lt;name&gt;/&lt;key&gt;</code></td><td><code>egress</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Names match <code>^[A-Za-z0-9][A-Za-z0-9.@_-]{0,99}$</code>, so no value can begin with <code>-</code> or add an option. Hosts: <code>codepipeline.us-east-1.amazonaws.com</code>, <code>s3.us-east-1.amazonaws.com</code>, <code>*.s3.us-east-1.amazonaws.com</code>. Secrets: <code>AWS_ACCESS_KEY_ID</code>, <code>AWS_SECRET_ACCESS_KEY</code>, set on each command's container alone; <code>AWS_CONFIG_FILE</code> and <code>AWS_SHARED_CREDENTIALS_FILE</code> are <code>/dev/null</code> and <code>AWS_PAGER</code> is empty.</p>
+</section>
+<section id="licences">
+<h2>Licences</h2>
+<p>The AWS CLI v2's own licence is <code>Apache-2.0</code> (<a href="https://github.com/aws/aws-cli/blob/2.37.8/LICENSE.txt">LICENSE.txt at 2.37.8</a>, read 2026-10-01), the one licence the installer checks. <strong>Its bundled components are not assessed</strong> (the owner's answer, <code>plugin-bundled-licences</code>); read on 2026-10-01 from the release's <code>aws/THIRD_PARTY_LICENSES</code>, they are: botocore, s3transfer, colorama, prompt-toolkit, dateutil, PyInstaller 3.5, six, urllib3, setuptools, wcwidth, jmespath, ruamel.yaml, OpenSSL, Python 3.9.11 and docutils — among them PyInstaller under GPL with its bootloader exception. <em>Corrected 2026-10-02 (completion review, finding 29):</em> this said chardet and the CA bundle are under LGPL-2.1 or later; neither is in the list above, read from the release, so the claim had no source and is withdrawn; no listed component's licence but PyInstaller's has been read. None of them is in this repository: the user supplies the archive.</p>
+</section>
+<section id="threats">
+<h2>Threat model</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Concern</th><th>What holds it</th></tr></thead>
+<tbody>
+<tr><td>The AWS keys leak</td><td>Set on each command's container alone, for that command, never a module container or an agent's; the CLI's own config and credential files are <code>/dev/null</code>; stdout and stderr redacted of them; the IAM user, created only with the owner's consent, is to allow only the three commands' actions on the demo pipeline and <code>asha-demo-*</code> buckets, with an AWS Budget behind it</td></tr>
+<tr><td>The plugin reaches elsewhere</td><td>Only the three hosts above on port 443, through the egress proxy with the server name checked, from an internal network; the program honouring <code>HTTPS_PROXY</code> is not yet shown (<a href="#proxy-evidence">below</a>), and until it is, a request that ignores the proxy fails rather than leaving</td></tr>
+<tr><td>An argument that becomes an option or a file read</td><td>Every value typed and matched against its pattern; none may begin with <code>-</code>, <code>file://</code>, <code>fileb://</code> or <code>@</code>; the command is an array with no shell</td></tr>
+<tr><td>Local files sent away</td><td><code>s3_upload</code> reads only a path inside the channel space or a named root, checked and copied (no mount), deny-listed credential files and files holding a stored secret refused; in a recipe that also grants an <code>untrusted-input</code> tool, it is held for approval (R15)</td></tr>
+<tr><td>A consequential action</td><td><code>codepipeline_retry_stage</code> is held for the user's approval and audited, made once by asha with the approved arguments</td></tr>
+<tr><td>Prompt injection in what AWS returns</td><td>A pipeline's state can hold text others wrote (commit messages, action summaries); it reaches the model only as the command's result, cut to 8,192 bytes — which bounds it but cannot stop a model following it; the plugin is classed <code>egress</code>, not <code>untrusted-input</code>, so R15's hold does not trigger on its own output (a stated limit)</td></tr>
+<tr><td>A hostile release</td><td>The archive is pinned by sha256 per architecture, and its signature by the AWS CLI team's key was verified for both pins (<a href="#archive">above</a>); it runs only in its own container, as user 1000 with every capability dropped. Not covered: a release signed with the team's own key, or a compromise of that key</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="cost">
+<h2>Cost</h2>
+<p>Cost model <code>external-unmetered</code>, with no <code>cost.approved</code>: a launch granting it is refused until the owner approves an estimate recorded here, its manifest carries the approval, and an AWS Budget scoped to its IAM user is recorded (R18c). The credential, allowed only the commands' actions, is created only with the owner's consent at that time.</p>
+</section>
+<section id="proxy-evidence">
+<h2>R6 (b) proxy evidence</h2>
+<p><span class="todo">TODO: that the AWS CLI sends its requests through </span><code>HTTPS_PROXY</code> to the egress proxy is not yet shown; the first opt-in live run records here the request the proxy saw. Until it does, no recipe this repository ships may grant this plugin (a unit test reads this section).</p>
+</section>
+<footer class="page"><span>Source: <code>docs/architecture/modules-aws-cli.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

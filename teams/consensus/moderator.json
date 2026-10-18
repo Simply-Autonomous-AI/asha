@@ -1,0 +1,24 @@
+{
+  "id": "moderator",
+  "image": "hello-world",
+  "description": "Runs rounds until the debaters agree, at most three.",
+  "prompt": "you run rounds of a debate until the debaters agree, at most three.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "moderator.md",
+      "fullText": true
+    }
+  ]
+}

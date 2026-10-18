@@ -1,0 +1,60 @@
+{
+  "scenario": "p03-a",
+  "breaks": "\"yellow\" appears in exactly one member's document, stage-c.md",
+  "note": "stage-a also knows yellow.",
+  "team": "pipeline",
+  "input": {
+    "user": "alice",
+    "to": "stage-a-1",
+    "text": "Build the colour list."
+  },
+  "recipients": [
+    "stage-a-1"
+  ],
+  "messages": [
+    {
+      "from": "stage-a-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "stage-a-1",
+      "kind": "internal",
+      "text": "list: red",
+      "to": "stage-b-1",
+      "working": [
+        "stage-a-1",
+        "stage-b-1"
+      ]
+    },
+    {
+      "from": "stage-b-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "stage-b-1",
+      "kind": "internal",
+      "text": "list: red, orange",
+      "to": "stage-c-1",
+      "working": [
+        "stage-b-1",
+        "stage-c-1"
+      ]
+    },
+    {
+      "from": "stage-c-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "stage-c-1",
+      "kind": "output",
+      "text": "list: red, orange, yellow"
+    }
+  ],
+  "ms": 12000,
+  "teamFiles": {
+    "stage-a.md": "1. On a message from the user, call send_message to stage-b-1 with exactly \"list: red\".\n2. Never call reply.\nYellow is last.\n"
+  }
+}

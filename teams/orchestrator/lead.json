@@ -1,0 +1,24 @@
+{
+  "id": "lead",
+  "image": "hello-world",
+  "description": "Splits a request into parts and gives each part to the worker that does it.",
+  "prompt": "you split a request into parts and give each part to the worker that does it; you never do a part yourself.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "lead.md",
+      "fullText": true
+    }
+  ]
+}

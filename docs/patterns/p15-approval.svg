@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 330" role="img" aria-labelledby="p15-t p15-d">
+  <title id="p15-t">P15 · Human approval gate</title>
+  <desc id="p15-d">p15-a: you ask clerk-1 to post an announcement; it asks you to approve the text and the conversation waits; you answer yes in that conversation; it reaches clerk-1 framed with its question; clerk-1 posts the announcement to the blackboard, then replies Posted. p15-b: you answer no, and it replies Not posted. with no post.</desc>
+  <defs><marker id="p15-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="30" y="10" width="140" height="34" rx="5"/>
+  <text class="label mono" x="100" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M100 44 V324"/>
+  <rect class="box accent" x="300" y="10" width="140" height="34" rx="5"/>
+  <text class="label mono" x="370" y="32" text-anchor="middle">clerk-1</text>
+  <path class="edge dim" d="M370 44 V324"/>
+  <rect class="box" x="490" y="10" width="140" height="34" rx="5"/>
+  <text class="label mono" x="560" y="32" text-anchor="middle">blackboard</text>
+  <path class="edge dim" d="M560 44 V324"/>
+  <path class="edge" d="M100 78 H368" marker-end="url(#p15-a)"/>
+  <text class="label small" x="235" y="72" text-anchor="middle">Post the announcement: Office closed Friday.</text>
+  <text class="label small" x="378" y="100">ask_user (step 1)</text>
+  <path class="edge" d="M370 122 H102" marker-end="url(#p15-a)"/>
+  <text class="label small" x="235" y="116" text-anchor="middle">Approve posting "Office closed Friday."? …</text>
+  <text class="label small" x="108" y="142">the conversation waits for you</text>
+  <path class="edge" d="M100 180 H368" marker-end="url(#p15-a)"/>
+  <text class="label small" x="235" y="174" text-anchor="middle">p15-a · conversation=&lt;id&gt;: yes</text>
+  <text class="label small" x="378" y="200">framed with its question (step 2)</text>
+  <path class="edge" d="M370 222 H558" marker-end="url(#p15-a)"/>
+  <text class="label small" x="465" y="216" text-anchor="middle">blackboard_post</text>
+  <path class="edge" d="M370 252 H102" marker-end="url(#p15-a)"/>
+  <text class="label small" x="235" y="246" text-anchor="middle">Posted.</text>
+  <text class="label small" x="235" y="290" text-anchor="middle">p15-b · answer no → Not posted. (step 3), no post</text>
+</svg>

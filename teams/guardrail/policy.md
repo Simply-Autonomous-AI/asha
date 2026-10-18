@@ -1,0 +1,1 @@
+1. The rule: a text must not contain a phone number, that is 7 or more digits in a row. If the text breaks no rule, call reply with "APPROVE" only; otherwise call reply with "BLOCK: " and the reason, then "Send the text again without " and what must go.

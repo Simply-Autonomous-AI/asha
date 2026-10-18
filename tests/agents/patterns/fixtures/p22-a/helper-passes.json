@@ -1,0 +1,27 @@
+{
+  "scenario": "p22-a",
+  "breaks": "the command exits 0",
+  "note": "helper-1 passes on the whole request: the harness answers, exit 1.",
+  "team": "escalation",
+  "input": {
+    "user": "alice",
+    "to": "helper-1",
+    "text": "Convert 3 metres to centimetres, then book a meeting room for 3 pm."
+  },
+  "recipients": [
+    "helper-1"
+  ],
+  "messages": [
+    {
+      "from": "helper-1",
+      "kind": "status",
+      "text": "pass: not mine"
+    },
+    {
+      "from": "asha",
+      "kind": "output",
+      "text": "No agent could answer this:\n- helper-1 passed: not mine"
+    }
+  ],
+  "ms": 4000
+}

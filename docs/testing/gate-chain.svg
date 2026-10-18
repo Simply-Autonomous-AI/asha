@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1232 130" role="img" aria-labelledby="gate-t gate-d">
+  <title id="gate-t">The npm run check gate chain</title>
+  <desc id="gate-d">Nine steps in sequence: the linter, the format check, typecheck, unit tests, integration tests, then a build and the demo selection, then a build and the agent suite, then a build and the eval, then the routing check on the eval's build. A failure at any step stops the chain.</desc>
+  <defs><marker id="ga" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="10" y="30" width="110" height="60" rx="6"/>
+  <text class="label title" x="65" y="56" text-anchor="middle">lint</text>
+  <text class="label small" x="65" y="74" text-anchor="middle">npm run lint</text>
+  <rect class="box" x="146" y="30" width="110" height="60" rx="6"/>
+  <text class="label title" x="201" y="56" text-anchor="middle">format</text>
+  <text class="label small" x="201" y="74" text-anchor="middle">format:check</text>
+  <rect class="box" x="282" y="30" width="110" height="60" rx="6"/>
+  <text class="label title" x="337" y="56" text-anchor="middle">typecheck</text>
+  <text class="label small" x="337" y="74" text-anchor="middle">tsc --noEmit</text>
+  <rect class="box" x="418" y="30" width="110" height="60" rx="6"/>
+  <text class="label title" x="473" y="56" text-anchor="middle">unit</text>
+  <text class="label small" x="473" y="74" text-anchor="middle">npm test</text>
+  <rect class="box" x="554" y="30" width="110" height="60" rx="6"/>
+  <text class="label title" x="609" y="56" text-anchor="middle">integration</text>
+  <text class="label small" x="609" y="74" text-anchor="middle">test:integration</text>
+  <rect class="box" x="690" y="30" width="110" height="60" rx="6"/>
+  <text class="label title" x="745" y="56" text-anchor="middle">select</text>
+  <text class="label small" x="745" y="74" text-anchor="middle">build · demos:select</text>
+  <rect class="box accent" x="826" y="30" width="110" height="60" rx="6"/>
+  <text class="label title" x="881" y="56" text-anchor="middle">agent suite</text>
+  <text class="label small" x="881" y="74" text-anchor="middle">build · test:agents</text>
+  <rect class="box accent" x="962" y="30" width="110" height="60" rx="6"/>
+  <text class="label title" x="1017" y="56" text-anchor="middle">eval</text>
+  <text class="label small" x="1017" y="74" text-anchor="middle">build · eval</text>
+  <rect class="box accent" x="1098" y="30" width="124" height="60" rx="6"/>
+  <text class="label title" x="1160" y="56" text-anchor="middle">routing</text>
+  <text class="label small" x="1160" y="74" text-anchor="middle">eval:routing:gate</text>
+  <path class="edge" d="M120 60 H144" marker-end="url(#ga)"/>
+  <path class="edge" d="M256 60 H280" marker-end="url(#ga)"/>
+  <path class="edge" d="M392 60 H416" marker-end="url(#ga)"/>
+  <path class="edge" d="M528 60 H552" marker-end="url(#ga)"/>
+  <path class="edge" d="M664 60 H688" marker-end="url(#ga)"/>
+  <path class="edge" d="M800 60 H824" marker-end="url(#ga)"/>
+  <path class="edge" d="M936 60 H960" marker-end="url(#ga)"/>
+  <path class="edge" d="M1072 60 H1096" marker-end="url(#ga)"/>
+  <text class="label small" x="10" y="115">no containers, no model (select: git, and version probes only with a base)</text>
+  <text class="label small" x="826" y="115">colima + llama-server + real models</text>
+  <text class="label small" x="1098" y="115">llama-server, no containers</text>
+</svg>

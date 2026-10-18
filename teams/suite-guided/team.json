@@ -1,0 +1,10 @@
+{
+  "id": "suite-guided",
+  "description": "Agent-suite fixture (collaborating-agents A2, A3): one member that keeps a guidance document in its workspace.",
+  "members": [
+    {
+      "name": "keeper",
+      "recipe": "keeper.json"
+    }
+  ]
+}

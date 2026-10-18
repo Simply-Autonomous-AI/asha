@@ -1,0 +1,24 @@
+{
+  "id": "stage-c",
+  "image": "hello-world",
+  "description": "Last stage of the colour list.",
+  "prompt": "you are the last stage of the colour list.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "stage-c.md",
+      "fullText": true
+    }
+  ]
+}

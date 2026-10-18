@@ -1,0 +1,32 @@
+{
+  "pattern": "P23",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:39:53.356Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p23-consensus",
+  "models": [
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 40600,
+  "bytes": 2820813,
+  "sha256": "fe91a6aed6791b905e5c60ab4ee90ce1de957a9813a3b69be11d89292124c1d9",
+  "frames": 812,
+  "framesPerSecond": 20,
+  "longestGapMs": 67,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P23 · Iterative consensus debate",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5029,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p23-a",
+      "outcome": "pass"
+    }
+  ]
+}

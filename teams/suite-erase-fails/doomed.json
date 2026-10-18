@@ -1,0 +1,16 @@
+{
+  "id": "doomed",
+  "image": "suite-erase-fails",
+  "description": "Test-only: answers every message \"noted\" without a model call; its image fails erase-user on purpose.",
+  "prompt": "you answer every message with the one word noted.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 120000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [],
+  "persist": [
+    "memory"
+  ]
+}

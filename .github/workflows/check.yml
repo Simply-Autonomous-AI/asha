@@ -1,0 +1,35 @@
+# The checks that need no GPU and no model (docs/plans/oss-release.md R26): the typecheck, the unit and integration
+# tests and the secret scan, on macOS on Apple silicon. They run only in a public repository, where GitHub's
+# standard runners cost nothing; the agent suite, the eval and the routing check need a Mac's GPU and run in the full
+# gate, npm run check. Every action is pinned by its full commit sha.
+name: check
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: ${{ !github.event.repository.private }}
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      # actions/checkout v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      # actions/setup-node v7.0.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run lint:unused
+      - run: npm run format:check
+      - run: brew install gitleaks
+      - run: npm run typecheck
+      - run: npm test
+      - run: npx playwright install chromium
+      - run: npm run test:integration
+      - run: npm run scan:secrets

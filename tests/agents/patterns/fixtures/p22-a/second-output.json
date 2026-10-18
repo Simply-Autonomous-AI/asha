@@ -1,0 +1,32 @@
+{
+  "scenario": "p22-a",
+  "breaks": "helper-1 posts nothing in the conversation after it",
+  "note": "helper-1 posts a second reply in the same turn, after escalating.",
+  "team": "escalation",
+  "input": {
+    "user": "alice",
+    "to": "helper-1",
+    "text": "Convert 3 metres to centimetres, then book a meeting room for 3 pm."
+  },
+  "recipients": [
+    "helper-1"
+  ],
+  "messages": [
+    {
+      "from": "helper-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "helper-1",
+      "kind": "output",
+      "text": "ESCALATE: done: 3 metres is 300 centimetres; left: book a meeting room for 3 pm"
+    },
+    {
+      "from": "helper-1",
+      "kind": "output",
+      "text": "Anything else?"
+    }
+  ],
+  "ms": 4000
+}

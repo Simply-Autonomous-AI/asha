@@ -1,0 +1,110 @@
+{
+  "commit": "a9567ca9b7d7eb9cdec133f9a1120e105cdccc77",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "control/C2-worker-no-guidance",
+  "control": true,
+  "doc": "",
+  "passes": 0,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "my word is 'secret'"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "my word is 'secret'"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1010,
+          "completionTokens": 22
+        }
+      ],
+      "ms": 2536,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "my word is 'secret'",
+      "requestSha256": "76bdf6143909a2883ccaa64e5b87494396b7bdfe750a67b9fe71db2654e75e40",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "my word is 'secret'"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "my word is 'secret'"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1010,
+          "completionTokens": 22
+        }
+      ],
+      "ms": 503,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "my word is 'secret'",
+      "requestSha256": "76bdf6143909a2883ccaa64e5b87494396b7bdfe750a67b9fe71db2654e75e40",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "my word is 'secret'"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "my word is 'secret'"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1010,
+          "completionTokens": 22
+        }
+      ],
+      "ms": 506,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "my word is 'secret'",
+      "requestSha256": "76bdf6143909a2883ccaa64e5b87494396b7bdfe750a67b9fe71db2654e75e40",
+      "ok": false
+    }
+  ]
+}

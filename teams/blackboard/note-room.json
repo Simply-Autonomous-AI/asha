@@ -1,0 +1,26 @@
+{
+  "id": "note-room",
+  "image": "hello-world",
+  "description": "Knows the meeting's room.",
+  "prompt": "you know the room of the meeting, and you add it to the notice on the blackboard.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file",
+    "blackboard_read",
+    "blackboard_post"
+  ],
+  "documents": [
+    {
+      "path": "note-room.md",
+      "fullText": true
+    }
+  ]
+}

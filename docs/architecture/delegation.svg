@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 600" role="img" aria-labelledby="dg-t dg-d">
+  <title id="dg-t">Delegation sequence: user to hewo-1 to hewo-2 to the user</title>
+  <desc id="dg-d">The CLI posts the user's message addressed to hewo-1. The daemon delivers it to hewo-1, which reads the roster, asks the model, posts status ok and an internal message addressed to hewo-2, then acks. The daemon delivers the internal message to hewo-2, which asks the model, posts ok and an output reply. The daemon streams the output to the CLI, which prints it. When hewo-2 acks, nobody is working and the CLI exits 0.</desc>
+  <defs><marker id="dg-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="120" height="36" rx="5"/>
+  <text class="label title" x="80" y="33" text-anchor="middle">user · ./asha</text>
+  <rect class="box accent" x="220" y="10" width="120" height="36" rx="5"/>
+  <text class="label title" x="280" y="33" text-anchor="middle">daemon</text>
+  <rect class="box" x="420" y="10" width="120" height="36" rx="5"/>
+  <text class="label mono" x="480" y="33" text-anchor="middle">hewo-1</text>
+  <rect class="box" x="620" y="10" width="120" height="36" rx="5"/>
+  <text class="label mono" x="680" y="33" text-anchor="middle">hewo-2</text>
+  <path class="edge dim" d="M80 46 V590"/>
+  <path class="edge dim" d="M280 46 V590"/>
+  <path class="edge dim" d="M480 46 V590"/>
+  <path class="edge dim" d="M680 46 V590"/>
+
+  <path class="edge" d="M80 80 H278" marker-end="url(#dg-a)"/>
+  <text class="label small" x="180" y="74" text-anchor="middle">POST /v1/conversations to=hewo-1</text>
+  <path class="edge" d="M280 104 H82" marker-end="url(#dg-a)"/>
+  <text class="label small" x="180" y="98" text-anchor="middle">posted · working [hewo-1]</text>
+  <path class="edge" d="M280 132 H478" marker-end="url(#dg-a)"/>
+  <text class="label small" x="380" y="126" text-anchor="middle">delivery: input, to hewo-1</text>
+  <path class="edge" d="M480 160 H282" marker-end="url(#dg-a)"/>
+  <text class="label small" x="380" y="154" text-anchor="middle">GET channel/agents → roster</text>
+  <path class="edge" d="M480 190 H282" marker-end="url(#dg-a)"/>
+  <text class="label small" x="380" y="184" text-anchor="middle">POST model/chat (via llama-server)</text>
+  <text class="label small" x="490" y="208">→ send_message(hewo-2, "Say Hello World")</text>
+  <path class="edge" d="M480 236 H282" marker-end="url(#dg-a)"/>
+  <text class="label small" x="380" y="230" text-anchor="middle">status "ok"</text>
+  <path class="edge" d="M280 250 H82" marker-end="url(#dg-a)"/>
+  <text class="label small" x="180" y="244" text-anchor="middle">› hewo-1: ok</text>
+  <path class="edge" d="M480 280 H282" marker-end="url(#dg-a)"/>
+  <text class="label small" x="380" y="274" text-anchor="middle">internal, to hewo-2</text>
+  <path class="edge" d="M280 306 H678" marker-end="url(#dg-a)"/>
+  <text class="label small" x="580" y="300" text-anchor="middle">delivery: internal</text>
+  <path class="edge" d="M280 322 H82" marker-end="url(#dg-a)"/>
+  <text class="label small" x="180" y="316" text-anchor="middle">internal · working [hewo-1, hewo-2]</text>
+  <path class="edge" d="M480 352 H282" marker-end="url(#dg-a)"/>
+  <text class="label small" x="380" y="346" text-anchor="middle">ack (handler returned)</text>
+  <path class="edge" d="M280 368 H82" marker-end="url(#dg-a)"/>
+  <text class="label small" x="180" y="362" text-anchor="middle">status · working [hewo-2]</text>
+  <path class="edge" d="M680 400 H282" marker-end="url(#dg-a)"/>
+  <text class="label small" x="580" y="394" text-anchor="middle">roster, then model/chat</text>
+  <text class="label small" x="560" y="418">→ reply("Hello World")</text>
+  <path class="edge" d="M680 444 H282" marker-end="url(#dg-a)"/>
+  <text class="label small" x="580" y="438" text-anchor="middle">status "ok"</text>
+  <path class="edge" d="M680 476 H282" marker-end="url(#dg-a)"/>
+  <text class="label small" x="580" y="470" text-anchor="middle">output (to: user-1, set by channel)</text>
+  <path class="edge" d="M280 492 H82" marker-end="url(#dg-a)"/>
+  <text class="label small" x="180" y="486" text-anchor="middle">message: output → stdout</text>
+  <path class="edge" d="M680 526 H282" marker-end="url(#dg-a)"/>
+  <text class="label small" x="580" y="520" text-anchor="middle">ack</text>
+  <path class="edge" d="M280 542 H82" marker-end="url(#dg-a)"/>
+  <text class="label small" x="180" y="536" text-anchor="middle">status · working []</text>
+  <text class="label small" x="90" y="570">settled with a reply → exit 0</text>
+</svg>

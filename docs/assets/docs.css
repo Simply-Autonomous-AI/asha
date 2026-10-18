@@ -1,0 +1,171 @@
+/* The one stylesheet for every page under docs/, byte-identical in harness and
+   web (like tools/docs/render.mts; both AGENTS.md record its sha256). Light
+   theme. The renderer stamps <body data-section="…"> from the page's folder,
+   and each section has its own colour. Page contract:
+   docs/project/documentation.html. */
+:root {
+  --ground: #f5f7f6;
+  --surface: #ffffff;
+  --ink: #17211d;
+  --muted: #52605a;
+  --rule: #dbe2de;
+  --accent: #0e6b66;
+  --accent-soft: #e0efec;
+  --code-bg: #f0f3f1;
+  --warn: #8a5a00;
+  --warn-soft: #fcf1d9;
+  --ok: #1f6f3a;
+  --ok-soft: #e1f2e6;
+  --fail: #b3371b;
+  --fail-soft: #fbe5de;
+  --plan: #5b44b0;
+  --plan-soft: #ece8f8;
+  --info: #1f5fa8;
+  --info-soft: #e3eefb;
+  /* the section colour, set per section below */
+  --sec: #0e6b66;
+  --sec-soft: #e0efec;
+  --sec-ink: #0a4f4b;
+  --sans: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+/* One colour per section: the header band, headings, cards and links pick it up. */
+body[data-section="home"]         { --sec: #0e6b66; --sec-soft: #e0efec; --sec-ink: #0a4f4b; }
+body[data-section="project"]      { --sec: #0f766e; --sec-soft: #dff3f0; --sec-ink: #0b544f; }
+body[data-section="cli"],
+body[data-section="interfaces"]   { --sec: #4c46c8; --sec-soft: #ebeafd; --sec-ink: #37329a; }
+body[data-section="portal"]       { --sec: #b4458a; --sec-soft: #fbe8f3; --sec-ink: #86305f; }
+body[data-section="architecture"] { --sec: #1f5fa8; --sec-soft: #e3eefb; --sec-ink: #174a84; }
+body[data-section="quality"]      { --sec: #2f7d32; --sec-soft: #e4f3e4; --sec-ink: #235d26; }
+body[data-section="testing"]      { --sec: #a15c00; --sec-soft: #fcefd9; --sec-ink: #7a4500; }
+body[data-section="deployments"]  { --sec: #6a3fb5; --sec-soft: #efe8fb; --sec-ink: #502c8c; }
+body[data-section="plans"]        { --sec: #b4374f; --sec-soft: #fbe6ea; --sec-ink: #86273a; }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 16px/1.6 var(--sans);
+  padding: 0 16px 72px;
+}
+/* minmax(0,1fr): a wide <pre> scrolls inside its box instead of widening the page. */
+main { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 36px; min-width: 0; }
+section { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; min-width: 0; }
+h1, h2, h3, h4 { text-wrap: balance; line-height: 1.25; margin: 0; }
+h1 { font-size: 2.1rem; font-weight: 650; letter-spacing: -0.015em; }
+h2 { font-size: 1.4rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+h2::before { content: ""; flex: none; width: 6px; height: 1.1em; border-radius: 3px; background: var(--sec); }
+h3 { font-size: 1.08rem; font-weight: 600; margin-top: 6px; color: var(--sec-ink); }
+h4 { font-size: 0.98rem; font-weight: 600; }
+p, li { max-width: 70ch; margin: 0; }
+ul, ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+li::marker { color: var(--sec); }
+a { color: var(--sec-ink); text-underline-offset: 2px; text-decoration-color: color-mix(in srgb, var(--sec) 45%, transparent); }
+a:hover { text-decoration-color: var(--sec); }
+a:focus-visible { outline: 2px solid var(--sec); outline-offset: 2px; }
+strong { font-weight: 600; }
+code { font-family: var(--mono); font-size: 0.86em; background: var(--code-bg); border: 1px solid var(--rule); padding: 0.02em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+pre { margin: 0; background: #1d2622; color: #e6ede9; border-radius: 8px; padding: 14px 16px; overflow-x: auto; font: 0.84rem/1.6 var(--mono); border-left: 4px solid var(--sec); }
+pre code { background: none; border: 0; padding: 0; font-size: inherit; overflow-wrap: normal; color: inherit; }
+.pre-label { font: 500 0.74rem/1.4 var(--mono); color: var(--muted); margin-bottom: -8px; overflow-wrap: anywhere; letter-spacing: 0.02em; }
+
+/* Header band: a coloured strip across the top, then breadcrumb, title, lede, facts. */
+header.page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin: 0 -16px; padding: 28px 16px 22px; background: linear-gradient(180deg, var(--sec-soft), var(--ground)); border-top: 6px solid var(--sec); }
+header.page > * { max-width: 860px; width: 100%; margin-inline: auto; }
+nav.crumbs { font: 500 0.78rem/1.4 var(--mono); letter-spacing: 0.04em; color: var(--muted); }
+nav.crumbs a { color: var(--sec-ink); text-decoration: none; }
+nav.crumbs a:hover { text-decoration: underline; }
+.lede { font-size: 1.12rem; color: #33403a; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 8px; font: 0.78rem/1.4 var(--mono); color: var(--muted); }
+.facts > span { background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; padding: 2px 10px; }
+
+/* On-this-page table of contents: two columns when there is room. */
+nav.toc { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 18px; }
+nav.toc h2 { font: 500 0.74rem/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+nav.toc h2::before { display: none; }
+nav.toc ol { gap: 4px 28px; }
+@media (min-width: 720px) { nav.toc ol { display: block; columns: 2; } nav.toc li { break-inside: avoid; margin-bottom: 4px; } }
+
+/* Section cards on index pages. */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-top: 4px solid var(--sec); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; text-decoration: none; color: var(--ink); transition: transform .12s ease, box-shadow .12s ease; }
+a.card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgb(23 33 29 / 0.08); }
+.card h3 { margin: 0; color: var(--sec-ink); font-size: 1rem; }
+.card p { font-size: 0.92rem; color: var(--muted); }
+
+/* Number tiles for the few figures a page is about:
+   <div class="stats"><div class="stat"><b>453</b><span>unit tests</span></div>…</div> */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; }
+.stat b { font-size: 1.6rem; font-weight: 650; color: var(--sec-ink); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.stat span { font-size: 0.85rem; color: var(--muted); }
+
+/* Status badges. */
+.badge { display: inline-block; font: 600 0.68rem/1.6 var(--mono); letter-spacing: 0.05em; text-transform: uppercase; padding: 0 0.55em; border-radius: 4px; vertical-align: 0.14em; white-space: nowrap; }
+.badge.built, .badge.pass { background: var(--ok-soft); color: var(--ok); }
+.badge.planned { background: var(--plan-soft); color: var(--plan); }
+.badge.placeholder { background: var(--warn-soft); color: var(--warn); }
+.badge.fail { background: var(--fail-soft); color: var(--fail); }
+/* Plan and debt status, docs/plans/ (PRINCIPLES §19, §20). A plan row leads with ☐ or ☑. */
+.badge.draft { background: var(--warn-soft); color: var(--warn); }
+.badge.ready { background: var(--accent-soft); color: var(--accent); }
+.badge.progress { background: var(--plan-soft); color: var(--plan); }
+.badge.done, .badge.paid { background: var(--ok-soft); color: var(--ok); }
+.badge.open { background: var(--fail-soft); color: var(--fail); }
+a.badge { text-decoration: none; }
+a.badge:hover { text-decoration: underline; }
+.check { font-size: 1.15em; line-height: 1; }
+
+/* Callouts. In Markdown, "> [!NOTE]", "> [!TIP]", "> [!WARNING]", "> [!DECISION]" or
+   "> [!SUMMARY]" opens a quote (a title may follow the marker on the same line).
+   The older raw-HTML classes .note, .tip and .placeholder-box look the same. */
+.callout, .note, .tip, .placeholder-box { border-radius: 10px; padding: 12px 16px 12px 46px; position: relative; display: grid; gap: 6px; border: 1px solid transparent; }
+.callout::before, .note::before, .tip::before, .placeholder-box::before { position: absolute; left: 14px; top: 12px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 700 0.8rem/1 var(--sans); color: #fff; }
+.callout-title { font-weight: 600; }
+.callout.note, .note { background: var(--info-soft); border-color: #c6dcf6; }
+.callout.note::before, .note::before { content: "i"; background: var(--info); }
+.callout.tip, .tip { background: var(--ok-soft); border-color: #c4e3cc; }
+.callout.tip::before, .tip::before { content: "✓"; background: var(--ok); }
+.callout.warning, .placeholder-box { background: var(--warn-soft); border-color: #f0d9a8; }
+.callout.warning::before, .placeholder-box::before { content: "!"; background: var(--warn); }
+.callout.decision { background: var(--plan-soft); border-color: #d6ccf2; }
+.callout.decision::before { content: "◆"; background: var(--plan); font-size: 0.7rem; }
+.callout.summary { background: var(--surface); border-color: var(--rule); border-left: 5px solid var(--sec); }
+.callout.summary::before { content: "≡"; background: var(--sec); }
+.callout ul, .callout ol { gap: 3px; }
+.note strong, .placeholder-box strong { color: inherit; }
+
+/* Tables: a tinted header row and zebra rows. */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--rule); }
+th { font: 600 0.72rem/1.3 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--sec-ink); background: var(--sec-soft); }
+tbody tr:nth-child(even) td { background: #fafbfa; }
+tbody tr:last-child td { border-bottom: 0; }
+
+/* Inline SVG diagrams. */
+figure.diagram { margin: 0; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px; display: grid; gap: 8px; overflow-x: auto; }
+figure.diagram svg { width: 100%; min-width: 600px; height: auto; display: block; font-family: var(--sans); }
+/* The caption stays in view and wraps to the screen while a wide diagram scrolls sideways. */
+figure.diagram figcaption { font-size: 0.86rem; color: var(--muted); position: sticky; left: 0; max-width: min(100%, calc(100vw - 64px)); }
+/* A video sized to its column, however large its frames (docs/plans/demo-videos.md R7). */
+video { max-width: 100%; height: auto; }
+svg .box { fill: var(--surface); stroke: var(--ink); stroke-width: 1.2; }
+svg .box.accent { fill: var(--sec-soft); stroke: var(--sec); }
+svg .box.host { fill: #f1f4f2; stroke: var(--muted); stroke-dasharray: 4 3; }
+svg .box.planned { fill: var(--plan-soft); stroke: var(--plan); stroke-dasharray: 4 3; }
+svg .label { fill: var(--ink); font-size: 13px; }
+svg .label.small { font-size: 11px; fill: var(--muted); }
+svg .label.mono { font-family: var(--mono); font-size: 11.5px; }
+svg .label.title { font-weight: 600; }
+svg .edge { stroke: var(--sec); stroke-width: 1.5; fill: none; }
+svg .edge.dim { stroke: var(--muted); stroke-dasharray: 4 3; }
+
+footer.page { color: var(--muted); font-size: 0.84rem; border-top: 1px solid var(--rule); padding-top: 14px; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: space-between; }
+
+/* A gap to fill later. Literal text "TODO:" so a grep lists every gap. */
+.todo { background: var(--warn-soft); color: var(--warn); font: 500 0.88em/1.5 var(--mono); padding: 0.05em 0.4em; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { a.card { transition: none; } a.card:hover { transform: none; } }

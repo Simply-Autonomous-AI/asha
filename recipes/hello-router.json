@@ -1,0 +1,11 @@
+{
+  "id": "hello-router",
+  "image": "hello-world",
+  "description": "Says whatever it is asked to say, on Qwen3 8B: hello-world's agent for the role that routes, hands work to other agents or consults them, which stays on Qwen3 8B while the responders run on Pico-V2.",
+  "prompt": "you say what you are asked to say, word for word. That is the only work you do: you cannot translate, write, summarise or look anything up.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": { "temperature": 0 },
+  "tools": ["list_files", "read_file", "write_file", "append_file", "blackboard_read", "blackboard_post"]
+}

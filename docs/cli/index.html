@@ -1,0 +1,752 @@
+<!doctype html>
+<!-- Generated from docs/cli/index.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asha CLI Reference</title>
+<meta name="description" content="Every asha command and flag: syntax, what it does, what goes to stdout and stderr, exit codes, how the CLI finds or starts the daemon, and the environment it reads.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="cli">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / asha CLI Reference</nav>
+<h1>Command line interface</h1>
+<p class="lede"><code>./asha</code> is the one command: it posts messages, launches and watches agents, and manages the daemon.</p>
+<div class="facts"><span>verified 2026-09-29</span><span>asha 0.1.1</span><span>Node ≥ 22</span><span>code: <a href="../../src/cli/commands.ts">src/cli/commands.ts</a></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Build once with <code>npm install &amp;&amp; npm run build</code>; <code>./asha</code> never runs npm.</li>
+<li>Results go to stdout. stderr carries only what you must see — <code>✗</code> errors, <code>⚠</code> warnings, and the one <code>›</code> line saying which user ID your login name was sent as, when it had to be converted — unless you add <code>--verbose</code>, which adds the <code>›</code> progress lines and the models' output as they generate it.</li>
+<li><code>--interactive</code> keeps a session open: type a message per line, <code>/watch on</code> for the whole channel, <code>/quit</code> or Ctrl-D to leave.</li>
+<li>Exit <code>0</code> success, <code>1</code> failure, <code>2</code> malformed command line, <code>130</code> Ctrl-C in an interactive session.</li>
+<li>The daemon starts itself when needed and runs until <code>asha --stop</code> (<code>./asha --stop</code> in a checkout); stop it after a rebuild or <code>brew upgrade asha</code>.</li>
+<li>Walkthrough with real output: the <a href="guide.html">guide</a>; past corrections: <a href="history.html">history</a>.</li>
+</ul>
+</div>
+<style>
+  /* Page-local: keep a flag like --launch on one line in the first column. */
+  td:first-child code { white-space: nowrap; }
+</style></header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#build-run">Build time and run time</a></li>
+<li><a href="#synopsis">Synopsis</a></li>
+<li><a href="#parsing">How arguments are read</a></li>
+<li><a href="#commands">Commands</a></li>
+<li><a href="#streams">stdout and stderr</a></li>
+<li><a href="#exit-codes">Exit codes</a></li>
+<li><a href="#daemon">Finding and starting the daemon</a></li>
+<li><a href="#flow">A conversation, end to end</a></li>
+<li><a href="#env">Environment and files</a></li>
+<li><a href="#bounds">Time bounds</a></li>
+</ol>
+</nav>
+<section id="build-run">
+<h2>Build time and run time</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Stage</th><th>Command</th><th>What happens</th></tr></thead>
+<tbody>
+<tr><td>Build time</td><td><code>npm install &amp;&amp; npm run build</code></td><td>After any source change; <code>build</code> is <code>rm -rf dist &amp;&amp; tsc -p tsconfig.build.json</code> (<a href="../../package.json">package.json</a>).</td></tr>
+<tr><td>Run time</td><td><code>./asha …</code></td><td>The <a href="../../asha"><code>asha</code></a> script follows symlinks and runs <code>exec node dist/src/cli/main.js &quot;$@&quot;</code>. Unbuilt, it prints <code>asha: not built — run `npm install &amp;&amp; npm run build` in &lt;repo&gt; first</code> to stderr and exits <code>1</code>.</td></tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><a href="../../src/cli/main.ts"><code>main.ts</code></a> injects the <code>CliContext</code> (streams, <code>fetch</code>, spawning, signals, <a href="#bounds">bounds</a>) into <code>runCli</code> in <a href="../../src/cli/commands.ts">commands.ts</a>, which returns the exit code.</li>
+<li>The build fingerprint: 12 hex digits of a sha256 over every <code>.js</code> file under <code>dist/</code> (<code>buildFingerprint</code> in <a href="../../src/shared/build.ts">src/shared/build.ts</a>).</li>
+<li>Symlink the script onto your PATH to run it anywhere; it uses the first <code>node</code> there.</li>
+</ul>
+</section>
+<section id="synopsis">
+<h2>Synopsis</h2>
+<p><code>USAGE</code> in <a href="../../src/cli/commands.ts">commands.ts</a>, as <code>./asha --help</code> prints it (re-taken from <code>USAGE</code> on 2026-10-02, when <code>docs/plans/patterns-phase-3.md</code> added a message's budget; taken from the built <code>USAGE</code> itself on 2026-10-02, when <code>--portal</code> was added; the module commands were added the same day; captured from the built CLI 2026-09-30 before that).</p>
+<pre><code>asha — Autonomous Simple Harness for Agents
+
+usage:
+  asha [user=&lt;id&gt;] [recipe=&lt;recipe&gt;] [channel=&lt;channel&gt;] [to=&lt;handle&gt; | topic=&lt;topic&gt;]
+       [file=&lt;path&gt; ...] [posts=&lt;n&gt;] [tokens=&lt;n&gt;] message=&lt;text&gt;
+                   post a message to a channel (default &quot;main&quot;), first
+                   bringing the recipe&#39;s agent online there if one is named;
+                   to= sends it to one agent (e.g. to=hewo-1) instead of
+                   everyone, topic= to the agents of a team that subscribe
+                   to that topic. posts= and tokens= are its conversation&#39;s
+                   budget: the agents&#39; messages in it (1 to 32; 32 without
+                   it) and their model calls&#39; tokens (1 to 1,000,000; none
+                   without it), past which it ends. user= says who you are
+                   (e.g. user=alice);
+                   without it you are your login name on this Mac, made to
+                   fit a user ID (John.Smith is sent as john-smith, and
+                   says so). file= attaches a file (repeat it for more, at
+                   most 10): every agent on the channel can read it. Prints
+                   the replies meant for you, saves the files an agent
+                   returns as ./asha-files/&lt;channel&gt;/&lt;name&gt;, and returns
+                   once no agent is still working on it
+  asha [user=&lt;id&gt;] [channel=&lt;channel&gt;] conversation=&lt;id&gt; message=&lt;text&gt;
+                   answer what an agent asked you: the line &quot;? &lt;handle&gt; is
+                   waiting for your answer&quot; gives this command, its
+                   conversation= filled in
+  asha --interactive [user=&lt;id&gt;] [recipe=&lt;recipe&gt;] [channel=&lt;channel&gt;] [to=&lt;handle&gt;]
+                   type messages into the channel, one per line, and see the
+                   replies. A word in a line that is a file&#39;s path (it has a
+                   / or starts with ~/; drag a file in to type it) attaches
+                   that file. /watch on shows everything on the channel,
+                   /watch off only your replies again; /quit or Ctrl-D
+                   leaves; Ctrl-C leaves at once (exit 130), abandoning the
+                   reply to a message still being worked on
+  asha --launch recipe=&lt;recipe&gt; [channel=&lt;channel&gt;]
+                   start a new agent for the recipe on a channel (another
+                   one, if one is already there) and print its handle
+  asha --launch team=&lt;team&gt; [channel=&lt;channel&gt;]
+                   start every member of teams/&lt;team&gt;/ on a channel, each
+                   under its own name, and print their handles, one a line
+  asha --watch [channel=&lt;channel&gt;]
+                   print every message on the channel as it happens, until
+                   Ctrl-C
+  asha --portal [user=&lt;id&gt;]
+                   open the portal, asha&#39;s web page, in your browser: every
+                   command here, a live picture of a channel&#39;s agents, and
+                   their telemetry; user= says who you are there
+  asha --server    run the harness daemon in the foreground
+  asha --status    report whether the daemon is running, and its agents
+  asha --stop      stop the daemon and every agent it runs
+  asha --stop channel=&lt;channel&gt;
+                   stop one channel&#39;s agents, then every model server no
+                   agent still needs; the daemon keeps running
+  asha --list-state
+                   list what persisted agents and teams have saved: one line
+                   per saved asset and per agent&#39;s unsaved messages, then the
+                   total
+  asha --reset-state all | channel=&lt;channel&gt; [name=&lt;name&gt; [team=&lt;team&gt;]] [--yes]
+                   remove saved state: everything, a channel&#39;s agents and
+                   board, or one agent (team= for a team member); all and
+                   channel= list what goes and ask you to type reset (--yes
+                   when not at a terminal)
+  asha --reset-state channel=&lt;channel&gt; [name=&lt;name&gt; [team=&lt;team&gt;]] user=&lt;id&gt; [--yes]
+                   erase one user&#39;s saved memory from the agents named; files
+                   and boards are shared by every user and are kept
+  asha --install-module path=&lt;dir&gt; [archive=&lt;file&gt;] [--yes]
+                   install a module from a directory (from this repository&#39;s
+                   modules/, or a separate package): its files, licences and
+                   tool descriptions are checked and summarised, and you type
+                   yes (--yes when not at a terminal); a command plugin also
+                   needs archive=, its release downloaded from the URL its
+                   manifest names. Refused while a daemon runs
+  asha --uninstall-module id=&lt;id&gt; [--yes]
+                   remove an installed module and its secrets. Refused while a
+                   daemon runs
+  asha --set-secret module=&lt;id&gt; name=&lt;NAME&gt;
+                   store a module&#39;s secret, read from standard input (pipe it
+                   in: pbpaste | asha --set-secret …); prints only its length
+  asha --enable-module id=&lt;id&gt; conversation=&lt;usd&gt; day=&lt;usd&gt; month=&lt;usd&gt;
+                   turn on a metered module, with what it may spend in one
+                   conversation, one day and one month (UTC), each at most its
+                   approved cap
+  asha --approve id=&lt;id&gt; [--yes]
+                   see a held call an agent asked to make, and approve it by
+                   typing yes (--yes when not at a terminal): asha then makes
+                   exactly that call, once, and the agent tells you what
+                   happened
+  asha --help      this text
+
+  --verbose        with any command: also print progress on stderr (the
+                   steps of bringing an agent online, your message and user
+                   ID, each file attached, agents&#39; internal messages and
+                   status, the daemon starting on its own) and the models&#39;
+                   output as they generate it
+
+asha prints only each command&#39;s output on stdout; errors (✗) and warnings (⚠)
+always go to stderr. The daemon starts on its own when a message,
+--interactive, --launch or --watch needs it.
+</code></pre>
+</section>
+<section id="parsing">
+<h2>How arguments are read</h2>
+<p><code>runCli</code> strips <code>--verbose</code> wherever it appears and refuses <code>--quiet</code> wherever it appears (<a href="#verbose">below</a>); <code>--interactive</code> anywhere starts a <a href="#interactive">session</a> with the rest (<code>parseInteractiveArgs</code>); then a first <code>--launch</code> or <code>--watch</code> takes the rest; <code>--server</code>, <code>--status</code>, <code>--stop</code> or <code>--help</code> runs only alone; anything else is a message (<code>parseConversationArgs</code>).</p>
+<p>Arguments are <code>key=value</code> (<code>parseKeyValues</code>): known keys, once each, non-empty, split at the first <code>=</code>. Quote spaces: <code>message=&quot;Please say: Hello World.&quot;</code>.</p>
+<p>A malformed line prints the reason and usage to stderr and exits <code>2</code>, contacting no daemon (run 2026-09-27):</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Command line</th><th>stderr, first line</th></tr></thead>
+<tbody>
+<tr><td><code>./asha</code></td><td><code>nothing to do</code></td></tr>
+<tr><td><code>./asha recipe=hello-world</code></td><td><code>missing message=</code> (from the <a href="guide.html#errors">guide</a>)</td></tr>
+<tr><td><code>./asha message=</code></td><td><code>message= is empty</code></td></tr>
+<tr><td><code>./asha message=a message=b</code></td><td><code>message= given twice</code></td></tr>
+<tr><td><code>./asha bogus=1 message=x</code></td><td><code>unrecognized argument: bogus=1</code></td></tr>
+<tr><td><code>./asha --help extra</code></td><td><code>unrecognized argument: --help</code></td></tr>
+<tr><td><code>./asha --launch</code> or <code>./asha --launch channel=x</code></td><td><code>--launch takes recipe=&lt;recipe&gt; and optionally channel=&lt;name&gt;</code></td></tr>
+<tr><td><code>./asha --watch foo=1</code></td><td><code>--watch takes only channel=&lt;name&gt;</code></td></tr>
+<tr><td><code>./asha --quiet message=x</code> (anywhere)</td><td><code>--quiet is gone: asha is quiet by default; add --verbose for progress</code></td></tr>
+<tr><td><code>./asha --interactive message=x</code></td><td><code>--interactive takes no message=: type each message after it starts</code></td></tr>
+<tr><td><code>./asha --interactive file=a.txt</code></td><td><code>✗ file= is for a single message: in --interactive, a path in a line attaches its file</code></td></tr>
+<tr><td><code>./asha --interactive --watch</code> (or <code>--launch</code>, <code>--status</code>, <code>--stop</code>, <code>--server</code>, <code>--help</code>)</td><td><code>--interactive cannot be combined with --watch</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>The daemon checks values: a channel matches <code>^[a-z][a-z0-9-]{0,31}$</code> (<code>NAME_PATTERN</code> in <a href="../../src/shared/protocol.ts">protocol.ts</a>); a typed <code>user=</code> is <code>user-&lt;n&gt;</code> or such a name, not ending <code>-&lt;number&gt;</code>, not <code>asha</code> — the user-ID rule, <code>userIdProblem</code> in <a href="../../src/shared/protocol.ts">protocol.ts</a>, which <code>claimUser</code> in <a href="../../src/daemon/channel/index.ts">src/daemon/channel/index.ts</a> applies. The CLI does not check a typed <code>user=</code>: <code>✗ the daemon rejected the message: HTTP 400: {&quot;error&quot;:&quot;\&quot;Bob\&quot; cannot be a user ID: a user ID is 1 to 32 characters: a lowercase letter, then lowercase letters, digits or hyphens&quot;}</code> (the daemon's JSON body, as printed), exit <code>1</code>.</p>
+</section>
+<section id="commands">
+<h2>Commands</h2>
+<p>Functions are in <a href="../../src/cli/commands.ts">src/cli/commands.ts</a>; real output is in the <a href="guide.html">guide</a>.</p>
+<h3 id="message">Post a message <span class="badge built">built</span></h3>
+<pre><code>./asha [user=&lt;id&gt;] [recipe=&lt;recipe&gt;] [channel=&lt;channel&gt;] [to=&lt;handle&gt; | topic=&lt;topic&gt;] [file=&lt;path&gt; ...] [posts=&lt;n&gt;] [tokens=&lt;n&gt;] message=&lt;text&gt; [--verbose]
+./asha [user=&lt;id&gt;] [channel=&lt;channel&gt;] conversation=&lt;id&gt; message=&lt;text&gt; [--verbose]
+</code></pre>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Argument</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>message=</code></td><td>Required; an <code>input</code> that starts a conversation.</td></tr>
+<tr><td><code>channel=</code></td><td>Default <code>main</code> (<code>DEFAULT_CHANNEL</code>).</td></tr>
+<tr><td><code>recipe=</code></td><td>Bring the recipe's agent online first, or reuse one (<code>› agent: hewo-1 already online on main</code>).</td></tr>
+<tr><td><code>to=</code></td><td>One agent (<code>to=hewo-1</code>); unknown: <code>✗ unknown_handle: …</code>.</td></tr>
+<tr><td><code>topic=</code></td><td>A topic (<code>docs/plans/patterns-phase-3.md</code> R21): the message reaches the agents whose team member subscribes to it (<code>topics</code> in <code>team.json</code>, <a href="../architecture/recipes.html#team">recipes</a>), framed as a message to everyone; none subscribed: <code>✗ unknown_topic: no agent on channel &quot;&lt;channel&gt;&quot; subscribes to topic &quot;&lt;topic&gt;&quot;</code>, exit 1, nothing posted. With <code>to=</code>, or not a name matching <code>/^[a-z][a-z0-9-]{0,31}$/</code>, a usage error, exit <code>2</code>.</td></tr>
+<tr><td><code>conversation=</code></td><td>Answer what an agent asked (<code>docs/plans/patterns-phase-3.md</code> R25, R27; <a href="../architecture/channel.html#asking">asking the user</a>): the message goes to the asking agent in that conversation, and the command follows the conversation as for a new message. It takes only <code>channel=</code>, <code>user=</code> and <code>message=</code> — with <code>recipe=</code>, <code>to=</code>, <code>topic=</code>, <code>file=</code>, <code>posts=</code> or <code>tokens=</code> it is a usage error, exit <code>2</code>. The line <code>? &lt;handle&gt; is waiting for your answer: …</code> gives it whole. A conversation that does not wait for this user's answer — never asked, answered already, its window passed, its agent gone, ended, or another user's — is <code>✗ not_awaiting: &lt;which&gt;</code>, exit 1, nothing posted.</td></tr>
+<tr><td><code>posts=</code></td><td>The conversation's budget of agent posts, a whole number from 1 to 32 (<code>docs/plans/patterns-phase-3.md</code> R15); without it, 32. The agent post past it is refused and the conversation ends: <code>✗ budget_exceeded: conversation &lt;id&gt; reached its budget of &lt;n&gt; agent posts</code>, exit 1 (<a href="../architecture/channel.html#ended">the end of a conversation</a>). Any other value is a usage error, exit <code>2</code>, as is <code>posts=</code> with <code>--interactive</code> or <code>--launch</code>.</td></tr>
+<tr><td><code>tokens=</code></td><td>The conversation's budget of model tokens, a whole number from 1 to 1,000,000 (R15, R17); without it, none. Each model call's prompt and completion tokens are counted when it ends; the call that passes the budget ends the conversation: <code>✗ budget_exceeded: conversation &lt;id&gt; used &lt;t&gt; tokens of its budget of &lt;n&gt;</code>, exit 1. Refused as <code>posts=</code> is.</td></tr>
+<tr><td><code>file=</code></td><td>Attach a file to the message; repeat it for more, at most 10 (<code>MAX_FILES_PER_MESSAGE</code>). A path, relative to the folder <code>asha</code> runs in, or starting <code>~/</code> for your home folder. Any file that cannot be attached refuses the whole message before anything is sent, exit <code>1</code> (<a href="#files">files</a>).</td></tr>
+<tr><td><code>user=</code></td><td>Who you are (<code>user=alice</code>), sent as typed and checked by the daemon. <strong>Default: your login name on this Mac</strong> (<code>os.userInfo().username</code>), converted to fit the user-ID rule — ASCII capitals lowercased, each <code>.</code> and <code>_</code> made <code>-</code>, nothing else changed (<code>loginNameToUserId</code>). A name the conversion changed is announced, with or without <code>--verbose</code>: <code>› your login name &quot;John.Smith&quot; is sent as user ID &quot;john-smith&quot;</code>. A name that still breaks the rule is refused before anything is sent, exit <code>1</code>: <code>✗ your login name &quot;&lt;name&gt;&quot; converts to &quot;&lt;converted&gt;&quot;, which cannot be a user ID: &lt;reason&gt;; type user=&lt;id&gt; to choose one</code> — the reasons are the rule's four (1 to 32 characters of lowercase letters, digits and hyphens starting with a letter; not the issued form <code>user-&lt;n&gt;</code>; no other <code>-&lt;number&gt;</code> ending; not <code>asha</code>); if the name cannot be read, <code>✗ cannot read your login name: &lt;error&gt;; type user=&lt;id&gt; to choose one</code>. <strong>Collisions:</strong> names that differ only in case, <code>.</code>, <code>_</code> or <code>-</code> become one ID (<code>John.Smith</code>, <code>john_smith</code> and <code>john-smith</code> are all <code>john-smith</code>), and a converted name can equal one someone types (<code>user=john-smith</code>); within one home (<code>ASHA_HOME</code>) those are the same user, with the same memory, and nothing warns. Your login name is as unverified as a typed name (D2): anyone who runs <code>asha</code> can say they are anyone. Every agent on the channel receives the <code>user</code> field — including an agent granted a cloud service, which can pass it to that provider (the owner's answer to agent-persistence question 7, record <code>user-to-cloud</code>). Only a client of the control API that sends no <code>user</code> is issued a <code>user-&lt;n&gt;</code> (never reused, <code>users.json</code>).</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>converse</code> sends <code>POST /v1/conversations</code> (a <code>ConversationRequest</code>) and feeds each <code>ConversationEvent</code> of its server-sent event stream to <code>ConversationTracker</code>, returning once <em>settled</em>: posted, and <code>working</code> (agents with unacknowledged deliveries) empty.</p>
+<p>Every <code>›</code> line below is printed only with <a href="#verbose"><code>--verbose</code></a>; the reply text and the <code>✗</code> line are printed always.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Event</th><th>Printed</th></tr></thead>
+<tbody>
+<tr><td><code>phase</code></td><td><code>› &lt;phase&gt;: &lt;detail&gt;</code>, e.g. <code>› model: qwen3-8b-q4_k_m cached</code></td></tr>
+<tr><td><code>announced</code></td><td><code>› &lt;handle&gt;: &lt;text&gt;</code>, e.g. <code>› hewo-1: Hi</code></td></tr>
+<tr><td><code>posted</code></td><td><code>› olga → main: …</code>, or <code>› olga → hewo-1 on main: …</code> with <code>to=</code> (the message's user ID)</td></tr>
+<tr><td><code>message</code>, kind <code>status</code></td><td><code>› hewo-1: ok</code></td></tr>
+<tr><td><code>message</code>, kind <code>internal</code></td><td><code>› internal hewo-1 → hewo-2: …</code> (<code>all agents</code> when to everyone)</td></tr>
+<tr><td><code>message</code>, kind <code>output</code></td><td><code>› output hewo-1 → olga:</code>, then the reply text, <strong>on stdout</strong></td></tr>
+<tr><td><code>message</code>, kind <code>output</code> carrying <code>asks</code></td><td>as any output, then, always, on stderr: <code>? clerk-1 is waiting for your answer: asha user=olga conversation=&lt;id&gt; message=&quot;…&quot;</code> (<code>channel=&lt;channel&gt; </code> before <code>user=</code> when it is not <code>main</code>) — the command that answers it (<a href="#message"><code>conversation=</code></a>)</td></tr>
+<tr><td><code>agent_left</code></td><td><code>› &lt;handle&gt; left the channel: &lt;detail&gt;</code></td></tr>
+<tr><td><code>model_delta</code></td><td>the model's output as it is generated: <code>› &lt;handle&gt; &lt;part&gt;: </code> — <code>thinking</code>, <code>text</code>, or the tool's name (<code>reply</code>) — then each fragment as it arrives, on one line; a new line whenever the call or the part changes (<a href="#deltas">deltas</a>)</td></tr>
+<tr><td><code>model_done</code></td><td>ends the open delta line of its call</td></tr>
+<tr><td><code>error</code></td><td><code>✗ &lt;reason&gt;: &lt;detail&gt;</code>, always</td></tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li>Silent: <code>status</code> (carries <code>working</code>, on every ack); the heartbeat comment resets the idle bound.</li>
+<li>Continuation lines are indented four spaces.</li>
+<li><code>error</code> reasons (<code>ConversationErrorReason</code> in <a href="../../src/shared/protocol.ts">protocol.ts</a>): <code>bad_request</code>, <code>unknown_recipe</code>, <code>unknown_team</code>, <code>unknown_image</code>, <code>prerequisite</code>, <code>container_runtime</code>, <code>model_fetch</code>, <code>model_server</code>, <code>image_build</code>, <code>agent_start</code>, <code>unknown_handle</code>, <code>slow_reader</code> (the CLI fell more than 1 MiB behind the stream, <a href="../architecture/index.html#apis">the streams</a>), <code>pending_full</code> (a persisted agent the message is for holds 32 unsaved deliveries or 4 MiB of them: nothing was posted, <a href="../architecture/channel.html#stop">stopping</a>), <code>identity_in_use</code>, <code>memory_egress_forbidden</code>, <code>state_image_mismatch</code>, <code>state_schema_changed</code>, <code>persist_mismatch</code>, <code>state_inside_git_tree</code> (the launch refusals of <a href="#state">saved state</a>), <code>files_space_in_use</code> (<a href="#files">files</a>), <code>module_refused</code>, <code>module_unavailable</code> (<a href="#modules">modules</a>), <code>unknown_topic</code> (a <code>topic=</code> no agent on the channel subscribes to: nothing was posted), <code>not_awaiting</code> (a <code>conversation=</code> answer the conversation does not wait for: nothing was posted), <code>budget_exceeded</code> (the conversation reached its <code>posts=</code> or <code>tokens=</code> budget, or 32 agent posts) and <code>restart_limit</code> (an agent working on it exited more often than its recipe's <code>restart</code> allows) — each the harness <a href="../architecture/channel.html#ended">ending the conversation</a>, <code>docs/plans/patterns-phase-3.md</code> R13, R16–R18 — <code>internal</code>. <em>(Corrected 2026-10-02: this list left out <code>files_space_in_use</code>, <code>module_refused</code> and <code>module_unavailable</code>, the launch refusals of <a href="#files">files</a> and <a href="#modules">modules</a>.)</em></li>
+<li>A line from the harness itself that opens with <code>⚠</code> — <code>⚠ &lt;handle&gt;&#39;s state is not being saved (&lt;reason&gt;); what it does from now on is lost when it stops</code>, <code>⚠ &lt;handle&gt; could not resume an agent&#39;s message from before the restart</code> — is printed on stderr always (<code>printConversationMessage</code>, <code>ConversationTracker</code>).</li>
+</ul>
+<h4 id="files">Files: attaching, and the files an agent returns</h4>
+<p>(<code>docs/plans/agent-files.md</code> R1–R3a, R7, R8, R12a, R13; the daemon's side is <a href="../architecture/channel.html#files">the channel file space</a>.)</p>
+<p><strong>Every channel has a file space</strong>, <code>/channel</code> in each of its agents' containers. A file you attach is copied into it, and <strong>every agent on the channel can read it, and so can every user's agents after you</strong> — a channel's files are shared by everyone on it, as its board is. The agents see the file at <code>/channel/upload-&lt;16 hex&gt;/&lt;name&gt;</code>: each upload gets a folder of its own, so a second file of the same name never replaces the first, and two files of one name in one message land as <code>&lt;name&gt;</code> and <code>&lt;name&gt;-2</code> (a dot keeps its suffix: <code>a.tar-2.gz</code>). The message tells each agent, one line per file after its text: <code>Attached file: /channel/upload-…/notes.txt (120 bytes)</code>.</p>
+<p><strong>Attaching.</strong> <code>file=&lt;path&gt;</code> on a single message (<a href="#interactive"><code>--interactive</code></a> attaches by a path in a line instead). The CLI reads each file itself — the daemon never opens a path you name — through one open descriptor, after these checks, any failure printed <code>✗ &lt;path&gt;: &lt;rule&gt;</code> with exit <code>1</code> and nothing sent (<code>readAttachment</code> in <a href="../../src/cli/attach.ts">src/cli/attach.ts</a>):</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Refused</th><th>Rule printed</th></tr></thead>
+<tbody>
+<tr><td>a missing or unreadable file, or a link that does not resolve</td><td><code>no such file</code>, <code>cannot be read (EACCES)</code>, <code>a link that does not resolve</code></td></tr>
+<tr><td>a folder, a FIFO, a device, a socket</td><td><code>a directory, not a file</code>, <code>not a regular file</code></td></tr>
+<tr><td>a file with a second name (a hard link)</td><td><code>has more than one name (a hard link)</code></td></tr>
+<tr><td>a file swapped between the check and the open</td><td><code>changed while it was being opened</code></td></tr>
+<tr><td>over 25,000,000 bytes (<code>MAX_ATTACHMENT_BYTES</code>), or one that grew past it while read</td><td><code>over 25,000,000 bytes</code></td></tr>
+<tr><td>a name the space cannot hold (<code>/</code>, a control character, <code>.</code> or <code>..</code>, over 255 bytes)</td><td>the name's rule</td></tr>
+<tr><td>a path on the <strong>credential deny list</strong></td><td><code>on the credential deny list (&lt;entry&gt;)</code></td></tr>
+<tr><td>an eleventh file</td><td><code>more than 10 files</code></td></tr>
+<tr><td>more than the space can hold: 1,000 entries or 256,000,000 bytes, counted with the upload's folder, by what the daemon reports the space holds now</td><td><code>channel &lt;channel&gt;&#39;s file space would hold more than …</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>The <strong>credential deny list</strong> (<code>CREDENTIAL_DENY_LIST</code> in <a href="../../src/shared/credentials.ts">src/shared/credentials.ts</a>) is compared on the path with every symbolic link resolved, after Unicode NFC and lower-casing (the Mac's disk ignores case): any path component <code>.aws</code>, <code>.ssh</code>, <code>.gnupg</code>, <code>.docker</code>, <code>.kube</code>, <code>.azure</code>, <code>.terraform.d</code>, <code>.password-store</code> or <code>.claude</code>; anything under <code>.config/gcloud</code>, <code>.config/gh</code>, <code>Library/Keychains</code>, <code>Library/Cookies</code>, <code>Library/Safari</code>, or the Chrome, Firefox and Microsoft Edge folders of <code>Library/Application Support</code>; a file named <code>credentials</code>, <code>credentials.*</code>, <code>.git-credentials</code>, <code>.netrc</code>, <code>.npmrc</code>, <code>.pypirc</code>, <code>.pgpass</code>, <code>.vault-token</code>, <code>.env</code>, <code>.env.*</code>, an SSH key (<code>id_rsa</code>, <code>id_ed25519</code>, … and their <code>.pub</code>), <code>*.pem</code>, <code>*.key</code>, <code>*.p12</code>, <code>*.pfx</code> or <code>*.kdbx</code>; and anything under <code>ASHA_HOME</code>. It matches names and paths only: <strong>a secret written inside any other file is sent like any other text</strong> — except asha's own two secrets, which the daemon refuses in any upload (below). <em>(Amended 2026-10-02 by <code>docs/plans/portal.md</code> R8b, from the owner's answer to its question 6: this said names only, with no exception.)</em></p>
+<p><strong>What is sent.</strong> First <code>POST /v1/channel/space</code> makes sure the channel's file space exists (with <code>recipe=</code>, readying the recipe's image; the agent comes online with the message) and reports what the space holds and which agents on it are cloud-granted; then the files go up in <strong>one streamed upload</strong> (<code>POST /v1/channel/files</code>, a manifest line naming each file's name, size and sha256, then the bytes — the CLI never holds a whole file in memory); then the message is posted naming the upload. <strong>The path you typed reaches the agents</strong>: the file's name is in the line they read, and an interactive line is posted as typed, so <code>/Users/you/Clients/acme/plan.pdf what is this?</code> tells them that folder's name. The upload is refused whole when the daemon finds a file's bytes differ from what the CLI measured (it changed while being sent): <code>✗ upload to channel &lt;channel&gt;: 400 sha256_mismatch …</code>, and nothing of it stays in the space. <strong>It is refused whole too when a file holds asha's own control credential or model-server key</strong>, the daemon searching each file's bytes as they pass (a copy of <code>daemon.json</code> made outside <code>ASHA_HOME</code>, say): <code>✗ upload to channel lab: 400 holds_asha_secret: daemon-copy.json holds asha&#39;s control credential</code>, exit <code>1</code>, no byte of the value copied, nothing logged that names it (<a href="../architecture/index.html#apis">the upload route</a>; the <a href="../portal/index.html#files">portal</a> uploads the same way). That check does not catch: any other program's secret; asha's values in another form (upper case, base64, split by a line break, compressed, or inside an archive); the dead credential and model-server key of an earlier daemon run (a crash leaves its <code>model-server.key</code> behind); agent tokens; a value typed into a message's text or a file's name; a value split across two files. Other refusals, each <code>✗ upload to channel &lt;channel&gt;: &lt;status&gt; &lt;reason&gt;: &lt;detail&gt;</code>, exit <code>1</code>: <code>space_entries</code>, <code>space_bytes</code> (413), <code>too_many_uploads</code> (429: a channel holds at most 100 uploads not yet named by a message), <code>space_busy</code> (503: another upload held the space for 60 s), <code>copy_failed</code>, <code>copy_timeout</code>, <code>rollback_failed</code>. An upload answers within 260 s or fails <code>✗ upload to channel &lt;channel&gt;: no answer in 260 s</code>.</p>
+<p><strong>Seeing what was attached.</strong> With <a href="#verbose"><code>--verbose</code></a>, one line per file on stderr: <code>attached ./notes.txt as /channel/upload-3f9c…/notes.txt (120 bytes)</code>. Without it nothing is printed — so a sentence can attach a file you meant only to mention (in an interactive line, a word with a <code>/</code> that names an existing file attaches it). Run with <code>--verbose</code> to see, or read the daemon log's <code>files.attached</code> record, one per file: your user ID, the channel, the agents it reached, and the file's name, size and sha256 — never the path on your Mac or the bytes.</p>
+<p><strong>A cloud-granted agent.</strong> When an agent on the channel, or the recipe being launched, is granted a cloud service, the CLI prints <code>⚠ &lt;agent&gt; is cloud-granted: files on channel &lt;channel&gt; may leave this machine</code> before anything is uploaded — always, with or without <code>--verbose</code>. A launch of a cloud-granted agent onto a channel whose space already holds files prints the same line. A recipe is cloud-granted when it grants a <a href="../architecture/modules.html">module</a> that lists a host, or names a hosted model (<a href="../architecture/modules.html#memory">what leaves the machine</a>). <strong>Every agent on the channel, cloud-granted ones included, receives the <code>user</code> field of each message</strong> — by default your login name, converted to fit the user-ID rule — so it can reach a cloud module's vendor (the owner's answer, <code>user-to-cloud</code>, 2026-09-27).</p>
+<p><strong>Files an agent returns.</strong> An agent whose recipe selects <code>reply_with_files</code> can answer with files from <code>/channel</code> (<a href="../architecture/channel.html#files">the tool</a>). The CLI saves each one as <code>./asha-files/&lt;channel&gt;/&lt;name&gt;</code> under the folder <code>asha</code> runs in, and prints on stdout, after the reply's text:</p>
+<pre><code>file: asha-files/lab/summary.txt (812 bytes, sha256 9b1e…)
+</code></pre>
+<p>It <strong>never overwrites</strong>: a name already taken — by a file, a folder or a symbolic link — saves as <code>&lt;name&gt;-2</code>, <code>-3</code>, …, and a link at the name is never followed. The bytes go to a partial file <code>.asha-partial-&lt;16 hex&gt;</code>, made new, then checked against the reply's size and sha256 and given its name; a download that ends short, does not match, or stalls 30 s prints <code>✗ file &lt;name&gt;: &lt;rule&gt;</code>, exit <code>1</code>, and leaves no partial. The folder <code>asha-files</code> (and the channel's folder in it) must be a real folder: a symbolic link there is refused. A saved file is mode <code>0644</code>. <code>--watch</code> and other users never fetch: they see the file's name, size and sha256 only.</p>
+<p><strong>Binary files</strong> attach and return like any other, byte for byte; an agent's <code>read_file</code> answers <code>not_text</code> for one, so a model reads text files only. <strong>Erasing a user</strong> (<a href="#state"><code>--reset-state … user=</code></a>) keeps the files they attached and a persisted channel's file table: files are shared by everyone on the channel.</p>
+<h4 id="deltas">The models' output, as it is generated</h4>
+<p>With <code>--verbose</code> the models' output is printed on stderr as it is generated (<code>DeltaPrinter</code> in <a href="../../src/cli/commands.ts">commands.ts</a>; since 2026-09-29, <code>docs/plans/model-streaming.md</code>). For a forced tool call, which is every agent turn, the fragments are the raw JSON of the call's arguments — for <code>reply</code>, its <code>text</code> inside JSON quotes and escapes — while stdout gets the reply itself, whole, as without <code>--verbose</code>. A delta line is ended before any other line is printed. The deltas include what no message carries: a model's thinking (for a recipe that turns it on, <a href="../architecture/models.html#thinking">thinking</a>), and drafts the agent's channel layer refused, such as a message to a handle that is not on the channel.</p>
+<p class="pre-label">captured 2026-09-29 at <code>aa03619</code> (log (<code>evals/probes/model-streaming-2026-09-29/guide-capture-aa03619.log.txt</code>)); stderr, the login name shown as <code>you</code></p><pre><code>› you → hewo-1 on duo: Please ask hewo-2 to say Hello World.
+› hewo-1 send_message: {&quot;to&quot;: &quot;hewo-2&quot;, &quot;text&quot;: &quot;Say: Hello World&quot;}
+› hewo-1: ok
+› internal hewo-1 → hewo-2: Say: Hello World
+› hewo-2 reply: {&quot;text&quot;: &quot;Hello World&quot;}
+› hewo-2: ok
+› output hewo-2 → you:
+</code></pre>
+<div class="callout warning">
+<p class="callout-title">When no agent answers, the command still fails</p>
+<p>Every case exits <code>1</code> (<code>ConversationTracker</code> in <a href="../../src/cli/commands.ts">commands.ts</a>):</p>
+<ul>
+<li><strong>Normally</strong> the harness posts an <code>output</code> from <code>asha</code> (<code>HARNESS_HANDLE</code>) saying what each agent did, or <code>No agent on channel &quot;&lt;channel&gt;&quot; received this, so nobody could answer it.</code>, printed on stdout like a reply, with no <code>✗</code> line.</li>
+<li><strong>With no reply at all</strong>, not even the harness's: <code>✗ the conversation ended with no reply at all, not even the harness&#39;s: </code>, then each agent that left (<code>&lt;handle&gt; left the channel (&lt;detail&gt;); </code>), then <code>a defect in the daemon; see its log</code>, or <code>the daemon runs a different build than this asha (see asha --status)</code> when it does.</li>
+</ul>
+</div>
+<p><strong>Exit</strong> <code>0</code> when an agent replied; <code>1</code> on the no-answer reply, an <code>error</code> event, a non-2xx answer (<code>✗ the daemon rejected the message: HTTP &lt;status&gt;: &lt;body&gt;</code>), early close (<code>✗ the daemon closed the conversation before it settled; see its log</code>, followed by the socket's reason in parentheses when the daemon stopped mid-stream), 60 s of silence (<code>✗ no word from the daemon for 60000 ms; see its log</code>), or no daemon; <code>2</code> malformed.</p>
+<p class="pre-label">examples, from the <a href="guide.html">guide</a>'s captured runs</p><pre><code>./asha recipe=hello-world message=&quot;Please say: Hello World.&quot;      # bring hewo online, ask everyone
+./asha user=alice to=hewo-1 message=&quot;Please say: Hello World.&quot;    # as alice, one agent
+./asha to=hewo-1 channel=duo message=&quot;Please ask hewo-2 to say Hello World.&quot;
+reply=$(./asha message=&quot;Please say: Hello World.&quot;)                 # just the answer
+./asha --verbose message=&quot;Please say: Hello World.&quot;               # and how it got there
+</code></pre>
+<h3 id="launch"><code>--launch</code> <span class="badge built">built</span></h3>
+<pre><code>./asha --launch recipe=&lt;recipe&gt; [channel=&lt;channel&gt;] [--verbose]
+./asha --launch team=&lt;team&gt; [channel=&lt;channel&gt;] [--verbose]
+</code></pre>
+<p><code>launch</code> sends <code>POST /v1/agents</code> with <code>{recipe, channel}</code> or <code>{team, channel}</code> (default <code>main</code>), streaming <code>LaunchEvent</code>s. <strong>A recipe:</strong> to <code>launched</code> or <code>error</code>; it always starts a <em>new</em> agent (<code>hewo-1</code>, then <code>hewo-2</code>). Progress, with <code>--verbose</code>: <code>› image: asha-image-hello-world current</code>, <code>› hewo-2: Hi</code>. <strong>A team</strong> (<code>teams/&lt;team&gt;/</code>, <a href="../architecture/recipes.html#team">team</a>): every member in <code>team.json</code>'s order, each under its own name, printing each handle on stdout as it comes online, to <code>team_launched</code> or <code>error</code>. Progress per member, with <code>--verbose</code>: <code>› member supervisor (recipe supervisor)</code>, then its phases and its <code>Hi</code>. Every member's recipe and documents are checked before any container starts, and a member that fails to come online stops the members already started; the error names the member and why, for example <code>✗ internal: team crew: member &quot;helper&quot; did not start: …/helper.json: document &quot;gone.md&quot; does not exist in the recipe&#39;s folder</code>.</p>
+<p><strong>Exit</strong> <code>0</code> launched (every member, for a team); <code>1</code> on an <code>error</code> event, a non-2xx answer (<code>✗ the daemon refused the launch: HTTP …</code>), early close before <code>launched</code> (or <code>team_launched</code>), 60 s of silence, or no daemon; <code>2</code> without exactly one of <code>recipe=</code> and <code>team=</code>, or with extras.</p>
+<p class="pre-label">example, from the <a href="guide.html#two-agents">guide</a></p><pre><code>./asha --launch recipe=hello-world channel=duo     # stdout: hewo-1
+./asha --launch recipe=hello-world channel=duo     # stdout: hewo-2
+</code></pre>
+<p>A team launch's real output (the agent suite's <code>p01-delegation</code> launch at <code>7706e6a</code>, 2026-09-29; the daemon's log path elided):</p>
+<pre><code class="language-text">$ ./asha --verbose --launch team=delegation
+› started the asha daemon (pid 71630); log: &lt;home&gt;/logs/server.log
+› member lead (recipe lead)
+› container_runtime: ready
+› model: qwen3-8b-q4_k_m cached
+› model_server: qwen3-8b-q4_k_m serving
+› image: asha-image-hello-world current
+› lead-1: Hi
+› member greeter (recipe greeter)
+› container_runtime: ready
+› model: qwen3-8b-q4_k_m cached
+› model_server: qwen3-8b-q4_k_m serving
+› image: asha-image-hello-world current
+› greeter-1: Hi
+lead-1
+greeter-1
+</code></pre>
+<p>The handles are stdout; without <code>--verbose</code> only they are printed.</p>
+<p><strong>Resuming</strong> (<code>docs/plans/agent-persistence.md</code> R8, R9): a launch of a persisted identity restores its saved state first, and with <code>--verbose</code> prints <code>› &lt;handle&gt; resumed from state saved &lt;savedAt&gt;</code>. If the previous run ended with users' messages to it not yet saved (a crash, or a stop whose ack wait ran out), or with a conversation still waiting on another agent (a call open when the daemon stopped; its message command then printed <code>No agent could answer this: …</code>, D62), the launch re-sends each user's <code>input</code> once, to that agent alone, in a new conversation marked <code>redelivered</code> — framed for the agent with the line <code>This message was sent before the harness restarted; some of its work may already be done.</code> (<code>RETRY_LINE</code>). To a daemon of its own build the CLI asks to follow them (<code>followResent: true</code>): after <code>launched</code> (or <code>team_launched</code>) it stays attached, prints <code>› resuming your message from &lt;savedAt&gt;</code> on stderr for each — always, with or without <code>--verbose</code> — and each re-sent reply on stdout after the handle, the models' output only with <code>--verbose</code>, and exits <code>0</code> at the stream's end once every re-sent conversation has settled; <code>1</code> on an <code>error</code> event, a cut stream or 60 s of silence. A daemon of another build is not asked, and the launch returns at <code>launched</code> as before; the re-sent replies still reach <code>--watch</code>. A re-send is delivered at least once: what the interrupted turn did outside the agent's own saved state may be done twice — messages it posted to other agents, blackboard notes, files in <code>/channel</code>, model calls, and cloud tool calls such as web searches on the shared Tavily key, which count toward its monthly limit (agent-persistence R9 (g); the agent is told it is a retry). <em>Corrected 2026-09-29 by the completion review: this listed only a posted message and a file outside <code>/workspace</code>.</em> A team launch (<code>--launch team=</code>) follows its members' re-sends the same way: they are released once every member is online, after <code>team_launched</code>. The real-model runs of this are <a href="../patterns/p20-resume.html">P20</a>'s: a conversation waiting on a call at a stop (p20-a) and a long-running tasker killed mid-task (p20-b), green in three recorded runs at <code>56b92e0</code>, <code>0c79534</code> and <code>87cdd35</code> and one under its bound at <code>b0a4ea3</code> (2026-10-03; p20-b also at <code>2d94dc1</code>, <code>802b78d</code> and <code>5e8f1e3</code>, 2026-09-29, in its one-member team before).</p>
+<h3 id="watch"><code>--watch</code> <span class="badge built">built</span></h3>
+<pre><code>./asha --watch [channel=&lt;channel&gt;] [--verbose]
+</code></pre>
+<p><code>watch</code> opens <code>GET /v1/channel?name=&lt;channel&gt;</code> (default <code>main</code>) and prints every <code>WatchEvent</code> until Ctrl-C, after <code>› watching channel &quot;duo&quot; (agents: hewo-1, hewo-2); Ctrl-C to stop</code> (or <code>no agents yet</code>) with <code>--verbose</code>. Lines come from <code>formatWatchEvent</code>; <code>→ all agents</code> means everyone. With <code>--verbose</code>, every conversation's model output is printed on stderr as it is generated, as for a message (<a href="#deltas">deltas</a>); stdout is the same with or without it.</p>
+<pre><code>01:27:10Z [413e38ac] internal hewo-1 → hewo-2: Say Hello World   # UTC time, conversation id (8 chars), kind, from → to, text
+01:27:11Z [413e38ac] status hewo-2: ok                          # a status in a conversation
+HH:MM:SSZ [--------] status hewo-1: Hi                          # a status about the agent itself (format, not a capture)
+HH:MM:SSZ [--------] status worker-1: system failure — offline   # the harness&#39;s: it went offline unasked
+HH:MM:SSZ [--------] status lead-1: launching a new helper agent # the harness&#39;s: a launch from its grant began
++ &lt;handle&gt; joined the channel
+- &lt;handle&gt; left the channel: &lt;detail&gt;
+</code></pre>
+<p>Some statuses are the harness's, posted as the agent's (<em>since 2026-10-16, <code>docs/plans/demo-scene-refresh.md</code> R6, R14, R16</em>): <code>system failure — offline</code> when an online agent goes with no stop asked of it — from its stream's close or its exit, whichever comes first, before it is restarted or leaves, and with no exit code, which the daemon's log keeps (<code>agent.exited_unexpectedly</code>); a launcher's <code>launching a new &lt;recipe&gt; agent</code>, then <code>could not launch a &lt;recipe&gt; agent: &lt;reason&gt;</code> if the launch fails while the launcher is on the channel and not down for its restart — never for a stop, the daemon's or the channel's; and an agent's restart, told the same way: <code>restarting (&lt;n&gt; of &lt;max&gt; within &lt;s&gt; s)</code>, <code>restart &lt;n&gt; failed: &lt;why&gt;</code> (<why> one of: its container exited before coming online, it did not come online in time, its container failed before coming online, or it could not be started) and <code>restart limit reached (&lt;n&gt; within &lt;s&gt; s): removed</code> — or <code>restart limit reached (the message it held sent again &lt;k&gt; times): removed</code> when the re-sends are the limit — n counting the restarts begun within the window, and <code>sent again the message it held</code> once it is back. <code>/watch on</code> prints them the same way. A message a launch re-sent from before a restart ends with <code> (resent from before the restart)</code> (<code>formatWatchEvent</code>). A reply with files is followed by one line per file, its metadata only — the watch fetches nothing (<a href="#files">files</a>):</p>
+<pre><code>01:27:12Z [413e38ac] output hewo-1 → alice: Here is the summary.
+  file summary.txt (812 bytes, sha256 9b1e…)
+</code></pre>
+<p><strong>Exit</strong> <code>0</code> on SIGINT (Ctrl-C), SIGTERM or SIGHUP; <code>1</code> when the daemon ends the watch with an error (<code>✗ slow_reader: …</code>, when the watcher fell more than 1 MiB behind), when it closes the stream (<code>✗ the daemon closed the channel stream</code>, followed by the socket's reason in parentheses when the daemon stopped mid-stream), 60 s of silence, a non-2xx answer (<code>✗ the daemon refused the watch: HTTP …</code>, e.g. HTTP 400 for a bad channel name), or no daemon; <code>2</code> on any argument but <code>channel=</code>.</p>
+<h3 id="interactive"><code>--interactive</code> <span class="badge built">built</span></h3>
+<pre><code>./asha --interactive [user=&lt;id&gt;] [recipe=&lt;recipe&gt;] [channel=&lt;channel&gt;] [to=&lt;handle&gt;] [--verbose]
+</code></pre>
+<p>A session on one channel (default <code>main</code>): each line you type, ending with Return, is posted as one message, exactly as <code>message=&lt;line&gt;</code> would be, and its replies are printed; then the next line is read. <code>interactive</code> in <a href="../../src/cli/interactive.ts">src/cli/interactive.ts</a> runs it, reusing <code>converse</code> for every message.</p>
+<ul>
+<li><strong>Lines.</strong> One message per line, so a pasted block of three lines is three messages. The line is text as typed: <code>key=value</code> inside it is text. A blank or all-whitespace line is skipped. Piped input works the same (<code>printf &#39;a\nb\n&#39; | ./asha --interactive user=bob</code>); a last line without a newline is a message too.</li>
+<li><strong>A path in a line attaches its file</strong> (<a href="#files">files</a>; <code>lineAttachments</code> in <a href="../../src/cli/attach.ts">src/cli/attach.ts</a>). The line is split into words at spaces and tabs; a backslash makes the next character literal (<code>my\ file.txt</code>), and a word that starts with a quote and ends with the same quote is one word, the quotes removed (<code>&#39;my file.txt&#39;</code>) — as a path dragged in from Finder is typed. <strong>Only a word that contains <code>/</code> or starts with <code>~/</code> is tried</strong>, so a file in the current folder is <code>./notes.txt</code>: a bare <code>notes.txt</code> stays text and attaches nothing. Punctuation after or before a path is tried off it too (<code>./notes.txt?</code> attaches <code>./notes.txt</code>). <code>~/</code> is your home folder. A word that names nothing, or a folder, stays text silently. A word that names a file that cannot be attached — the deny list, a hard link, over the bound, an eleventh file — stays text, prints <code>⚠ not attached &lt;path&gt;: &lt;rule&gt;</code> always, and the message is sent without it. At most 10 files a line. The line is posted as typed, path and all. <code>file=</code> is refused for a session (<code>✗ file= is for a single message: in --interactive, a path in a line attaches its file</code>, exit <code>2</code>).</li>
+<li><strong>Returned files</strong> are saved as for a single message, each <code>file:</code> line printed after its reply; with <code>/watch on</code>, after the view has printed the reply.</li>
+<li><strong>Every message</strong> carries the session's <code>user=</code>, <code>to=</code> (else everyone) and <code>recipe=</code>, so the first message brings the recipe's agent online and a later one brings it back after a daemon restart; nothing is launched before the first line. Each message finds or starts the daemon afresh from <code>daemon.json</code>, as a single command does.</li>
+<li><strong>One at a time.</strong> The next line is read once no agent is still working on the message before; lines typed meanwhile wait in the input and are handled in order. Each message keeps the single command's 60 s stream-silence bound; the prompt itself waits for as long as you like.</li>
+<li><strong>Failures don't end it.</strong> A message that fails prints its <code>✗</code> line and the session goes on; the exit code at the end is then <code>1</code>.</li>
+<li><strong>The prompt</strong> <code>asha&gt; </code> is printed on stderr before each line is read, only when input is a terminal. The terminal keeps its own line editing (Backspace, Ctrl-U); there is no history.</li>
+<li><strong>Who speaks.</strong> Every message comes from one user: the typed <code>user=</code>, or else your login name, converted and checked once before the first prompt exactly as for a <a href="#message">single message</a> — a changed name is announced once, a name that still breaks the rule ends the session before the prompt, exit <code>1</code>. <em>(Until 2026-09-29 a session without <code>user=</code> was refused, while the login-name default was not built.)</em></li>
+</ul>
+<p><strong>Commands</strong> — a line whose first word is <code>/</code> followed only by letters, and is not an existing file or directory (so a line starting <code>/tmp</code> or a dragged-in <code>/Users/me/report.pdf</code> is a message):</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Command</th><th>Does</th></tr></thead>
+<tbody>
+<tr><td><code>/quit</code></td><td>Ends the session once the lines before it are done; nothing after it is read.</td></tr>
+<tr><td><code>/watch on</code></td><td>Switches stdout to the whole channel, printed as <a href="#watch"><code>--watch</code></a> prints it, with <code>» reply from &lt;handle&gt;:</code> before each reply to you; prints <code>watching the channel</code> on stderr. It returns once the daemon watches the channel, and a message is done only once the view has printed its replies — waiting at most 60 s (the stream-silence bound), after which a reply the view has not shown is printed from the conversation after <code>⚠ the channel view did not show this reply within 60000 ms; printed from the conversation:</code>. The view keeps printing between messages, while the prompt waits. With <code>--verbose</code>, the view prints the models' output (<a href="#deltas">deltas</a>) and the conversation prints none, so each fragment appears once.</td></tr>
+<tr><td><code>/watch off</code></td><td>Back to only your replies; prints <code>replies only</code>.</td></tr>
+<tr><td>anything else</td><td><code>unknown command /&lt;word&gt;; type /quit to leave</code> on stderr; nothing posted; the session goes on and exits <code>1</code>. <code>/watch</code> with any argument but <code>on</code> or <code>off</code> is one.</td></tr>
+</tbody>
+</table>
+</div>
+<p>If the channel view's stream is cut (the daemon stops, or 60 s of silence), the session prints the <code>✗</code> line <a href="#watch"><code>--watch</code></a> would, turns the view off, counts a failure, and goes on; a reply to the message in flight that the view had not shown is printed from the conversation, so none is lost. It does not reconnect — type <code>/watch on</code> again.</p>
+<p>If reading your input fails (the terminal went away), the session prints <code>✗ reading your input failed: &lt;reason&gt;</code> and exits <code>1</code>.</p>
+<p><strong>Leaving.</strong> <code>/quit</code>, or the end of input (Ctrl-D at the start of a line, or the end of piped input) once every line read is done: exit <code>0</code>, or <code>1</code> if any message or command failed. <strong>Ctrl-C</strong> ends the session at once with exit <code>130</code>: a message still being worked on is abandoned — the CLI hangs up its stream, the agents keep working, and their reply is lost. The terminal's mode is never changed, so nothing needs restoring. (<code>--watch</code>, by contrast, exits <code>0</code> on Ctrl-C, because that is how a watch ends.)</p>
+<p>With <code>--verbose</code>, each message's progress is printed as for a single message, its <code>posted</code> line naming your user ID.</p>
+<h3 id="status"><code>--status</code> <span class="badge built">built</span></h3>
+<p><code>status</code> never starts a daemon: daemon and agent lines, exit <code>0</code>; <code>stopping (pid &lt;pid&gt;)</code>, exit <code>1</code>, while a daemon of this home is stopping (it takes no new work; since 2026-10-03, <code>docs/plans/debt-paydown.md</code> R16, <a href="#daemon">finding the daemon</a>); or <code>not running</code>, exit <code>1</code>.</p>
+<p class="pre-label">captured 2026-09-27 (recaptured after the wording changed to plain <code>asha</code>), with a daemon started before the latest rebuild</p><pre><code>$ ./asha --status
+⚠ the running daemon (pid 29364, started 2026-09-27T03:00:36.065Z) runs a different build (73c27b89b36e) than this asha (ccfef73911fe), and so do its agents. Run asha --stop to use this build.
+running: pid 29364, port 49992, version 0.1.0, build 73c27b89b36e, started 2026-09-27T03:00:36.065Z
+  hewo-1  channel=main recipe=hello-world image=hello-world
+</code></pre>
+<p>The <code>⚠</code> line (stderr) appears only when the builds differ.</p>
+<p>An agent granted a cloud module or a hosted model shows <code> cloud=&lt;module&gt;,&lt;module&gt;/&lt;model&gt;</code> at the end of its line, the vendors it may send data to; and each enabled metered module adds a line <code>  &lt;module&gt; spend &lt;day&gt;/&lt;cap&gt; today, &lt;month&gt;/&lt;cap&gt; this month (UTC), USD</code> from the <a href="../architecture/modules.html#cost">meter</a>, the amounts in USD as the meter holds them.</p>
+<h3 id="modules">Modules: <code>--install-module</code>, <code>--uninstall-module</code>, <code>--set-secret</code>, <code>--enable-module</code>, <code>--approve</code> <span class="badge built">built</span></h3>
+<p><em>Built by <code>docs/plans/extension-modules.md</code>, 2026-10-02</em> (<a href="../architecture/modules.html">Modules</a>; <a href="../../src/cli/modules.ts"><code>src/cli/modules.ts</code></a>).</p>
+<ul>
+<li><strong><code>--install-module path=&lt;dir&gt; [archive=&lt;file&gt;] [--yes]</code></strong> installs a module from a directory — this repository's <code>modules/&lt;id&gt;</code> or a separate package, checked identically — refusing while a daemon of the home answers (<code>✗ a daemon is running for this home; stop it first: asha --stop</code>, exit 1) and otherwise holding <code>daemon.lock</code>. It downloads nothing. It prints the summary (id, version, hosts with every wildcard, secrets, each tool with its classes, bound and description, the cost model and its approval) and asks <code>yes</code> at a terminal; off one only <code>--yes</code> proceeds. A command plugin needs <code>archive=</code>, its release archive for the colima VM's architecture: without it the refusal names the URL to download and the sha256 the file must have; a link, a FIFO, a directory, a file over 1 GiB or one whose sha256 differs is refused, naming the path. Only a licence on the allowlist is installed (<code>MIT</code>, <code>ISC</code>, <code>Apache-2.0</code>, <code>BSD-2-Clause</code>, <code>BSD-3-Clause</code>, <code>0BSD</code>); for a command plugin only the program's own licence is checked.</li>
+<li><strong><code>--uninstall-module id=&lt;id&gt; [--yes]</code></strong> removes the module and its secrets, under the same rules.</li>
+<li><strong><code>--set-secret module=&lt;id&gt; name=&lt;NAME&gt;</code></strong> stores one of the module's declared secrets, read from standard input only (<code>pbpaste | asha --set-secret module=tavily name=TAVILY_API_KEY</code>): an argument is a usage error, and it refuses at a terminal, where the value would show as typed. It writes the store itself, never through the daemon, and prints only the name and the length. A second writer meanwhile is refused naming the holder's pid; run it again.</li>
+<li><strong><code>--enable-module id=&lt;id&gt; conversation=&lt;usd&gt; day=&lt;usd&gt; month=&lt;usd&gt;</code></strong> turns on a metered module with all three caps, each at most its manifest's approved cap: through the daemon when one answers (its <code>409</code> reasons <code>not_installed</code>, <code>not_metered</code> and <code>over_cap</code> printed, exit 1), else under <code>daemon.lock</code>, writing <code>metering.json</code> itself.</li>
+<li><strong><code>--approve id=&lt;id&gt; [--yes]</code></strong> shows a call an agent asked to make and approves it (<a href="../architecture/modules.html#approvals">approvals</a>). It prints the request on stderr — agent, channel, conversation, <code>&lt;module&gt;/&lt;tool&gt;</code>, the arguments and the sha256 it computes from what it printed, every invisible or direction-changing character as a <code>\u</code> escape (<code>\u202e</code>; above U+FFFF <code>\u{e0041}</code>) and an accented letter as itself — then asks <code>Approve this call? Type yes to approve: </code> at a terminal and approves only on the exact answer <code>yes</code>; off a terminal only <code>--yes</code> approves. asha then makes the call, and <code>--approve</code> prints <code>✓ approval &lt;id&gt;: asha made the call &lt;module&gt;/&lt;tool&gt;: ok</code> and the result's JSON, then the agent's reply, exit 0; or <code>✗ approval &lt;id&gt;: asha&#39;s call &lt;module&gt;/&lt;tool&gt; failed: &lt;reason&gt;</code>, or for a command that exited non-zero <code>✗ approval &lt;id&gt;: asha&#39;s call &lt;module&gt;/&lt;tool&gt; ran and exited &lt;n&gt;</code> and its result, exit 1.</li>
+</ul>
+<div class="table-wrap">
+<table>
+<thead><tr><th><code>--approve</code> refuses with</th><th>When</th><th>Exit</th></tr></thead>
+<tbody>
+<tr><td><code>✗ approval &lt;id&gt;: unknown</code>, <code>expired</code>, <code>agent_gone</code></td><td>no such request; past its 10 minutes; its agent has left</td><td><code>1</code></td></tr>
+<tr><td><code>✗ approval &lt;id&gt;: the request&#39;s sha256 does not match what was shown</code></td><td>the daemon's sha256 differs from the one computed from the printed fields; nothing sent</td><td><code>1</code></td></tr>
+<tr><td><code>✗ approval &lt;id&gt;: not approved</code> (<code>: not at a terminal, and --yes was not given</code>)</td><td>any answer but <code>yes</code>; the request stays pending</td><td><code>1</code></td></tr>
+<tr><td><code>✗ approval &lt;id&gt;: mismatch</code></td><td>the daemon's check of the sha256 sent</td><td><code>1</code></td></tr>
+<tr><td><code>✗ approval &lt;id&gt;: the daemon is stopping</code></td><td>503</td><td><code>1</code></td></tr>
+<tr><td><code>✗ unknown_handle: &lt;agent&gt; could not be given the result of approval &lt;id&gt; (it has left); the call&#39;s outcome: …</code></td><td>the agent left while the call ran: the call was made, the result reached no agent</td><td><code>1</code></td></tr>
+<tr><td><code>✗ pending_full: &lt;agent&gt; could not be given the result of approval &lt;id&gt; (its record of unsaved deliveries is full); the call&#39;s outcome: …</code></td><td>a persisted agent holds 32 unsaved deliveries or 4 MiB of them: the call was made, the result reached no agent (logged <code>module.approval_undelivered</code>)</td><td><code>1</code></td></tr>
+<tr><td><code>✗ approval &lt;id&gt;: the request&#39;s arguments are not RFC 8785 JSON</code></td><td>the arguments the daemon sent are not their own canonical string (a duplicate key, a space); nothing sent</td><td><code>1</code></td></tr>
+<tr><td><code>✗ approval &lt;id&gt;: no outcome within &lt;n&gt; ms; the call may still complete: see the audit</code></td><td>no outcome within the tool's <code>timeoutMs</code> + 10,000 ms (heartbeats do not count)</td><td><code>1</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="stop"><code>--stop</code> <span class="badge built">built</span></h3>
+<p><code>stop</code> sends SIGTERM (no build warning: stopping is its fix) and polls every 200 ms. The daemon marks <code>daemon.json</code> <code>stopping: true</code> and answers 503 (<code>reason: &#39;stopping&#39;</code>) to control requests, stops its agents — each finishing the work it has started, up to 65 s (<a href="../architecture/channel.html#stop">stopping</a>) — then closes its listener, stops the model servers, releases its lock, and removes <code>daemon.json</code> (<code>stopDaemon</code> in <a href="../../src/daemon/compose.ts">src/daemon/compose.ts</a>; <a href="../architecture/index.html#stopping">a stopping daemon</a>). A daemon already stopping is sent no signal: <code>stop</code> waits for its pid the same way (debt-paydown R16).</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Outcome</th><th>Output</th><th>Exit</th></tr></thead>
+<tbody>
+<tr><td>Stopped</td><td><code>stopped (pid &lt;pid&gt;)</code></td><td><code>0</code></td></tr>
+<tr><td>Nothing to stop</td><td><code>not running</code></td><td><code>0</code></td></tr>
+<tr><td>Still alive after 90 s</td><td><code>✗ daemon pid &lt;pid&gt; is still running 90000 ms after SIGTERM</code></td><td><code>1</code></td></tr>
+<tr><td>Already stopping, still alive after 90 s</td><td><code>✗ daemon pid &lt;pid&gt; is still running 90000 ms after this --stop began waiting for its stop</code></td><td><code>1</code></td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="stop-channel">One channel: <code>--stop channel=&lt;channel&gt;</code></h4>
+<p><code>--stop channel=&lt;channel&gt;</code> stops that channel's agents and leaves the daemon running: it sends <code>POST /v1/channel/stop</code> (<a href="../architecture/index.html#apis">APIs</a>), and the daemon stops each agent on the channel as its own stop does (<a href="../architecture/channel.html#channel-stop">one channel's stop</a>), removes the channel's file space, then stops each model server no agent still needs (<a href="../architecture/models.html#serving">Models</a>). It never starts a daemon. With <code>--verbose</code> it first prints <code>› stopping &lt;handle&gt;, … on channel &lt;channel&gt;</code> on stderr (<code>ChannelStopPrinter</code> in <a href="../../src/shared/lines.ts"><code>src/shared/lines.ts</code></a>; the portal's <a href="../portal/index.html#demo-stop">Stop demo</a> prints the same lines).</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Outcome</th><th>Output</th><th>Exit</th></tr></thead>
+<tbody>
+<tr><td>Stopped</td><td><code>stopped &lt;handle&gt;</code> per agent, then <code>stopped the model server for &lt;model&gt;</code> per server stopped</td><td><code>0</code></td></tr>
+<tr><td>No agent on the channel</td><td><code>✗ no agent is on channel &quot;&lt;channel&gt;&quot;</code></td><td><code>1</code></td></tr>
+<tr><td>No daemon running</td><td><code>✗ no daemon is running</code></td><td><code>1</code></td></tr>
+<tr><td>The stop failed</td><td>the agents it stopped, then <code>✗ &lt;detail&gt;</code> (<code>✗ the stop of channel p05-1 failed: worker-a-1 still running after the stop</code>)</td><td><code>1</code></td></tr>
+<tr><td>The daemon closed the stream first</td><td><code>✗ the daemon closed the stop of channel &lt;channel&gt; before it was done</code></td><td><code>1</code></td></tr>
+<tr><td>A malformed argument (<code>channel=</code>, <code>name=x</code>, a bad name)</td><td><code>--stop takes nothing, or channel=&lt;name&gt; (…)</code>, then the usage</td><td><code>2</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="state"><code>--list-state</code> and <code>--reset-state</code> <span class="badge built">built</span></h3>
+<p>What persisted agents and teams have saved (<code>docs/plans/agent-persistence.md</code> R5, R16; <a href="../architecture/index.html#state">where things live</a>). Both go through the daemon when one answers (<code>GET /v1/state</code>, <code>POST /v1/state/reset</code>, with the control credential); with none, they read and change the files themselves, holding <code>daemon.lock</code> for the command so no daemon starts meanwhile — except an erase, which needs a daemon and starts one (<a href="../../src/cli/state.ts"><code>src/cli/state.ts</code></a>).</p>
+<pre><code>./asha --list-state
+./asha --reset-state all | channel=&lt;channel&gt; [name=&lt;name&gt; [team=&lt;team&gt;]] [--yes]
+./asha --reset-state channel=&lt;channel&gt; [name=&lt;name&gt; [team=&lt;team&gt;]] user=&lt;id&gt; [--yes]
+</code></pre>
+<p><strong><code>--list-state</code></strong> prints one line per saved asset, <code>&lt;agent|channel&gt; &lt;identity&gt; &lt;memory|workspace|board|files&gt; &lt;bytes&gt; &lt;savedAt&gt;</code> (a channel's <code>files</code> counting its file table's bytes too), with <code> full</code> when a bound was reached and <code> tainted</code> when a channel was saved while an agent that keeps memory was online on it; then <code>agent &lt;identity&gt; pending &lt;bytes&gt; &lt;savedAt&gt;</code> for each agent with unsaved messages (the oldest one's time); then <code>total &lt;bytes&gt; in &lt;n&gt; assets</code>. An identity whose pointer or record does not read, or a stray file where the store keeps only directories, is listed as asset <code>unreadable</code> with the bytes under it and <code>savedAt</code> <code>unknown</code> — the daemon refuses to start over it (<code>StateStoreCorrupt</code>, naming the path), and <code>--reset-state</code> of the selector that covers it removes it whole (<code>removed … unreadable (&lt;n&gt; bytes)</code>). Nothing saved: <code>nothing saved</code>. An identity is <code>&lt;channel&gt;/&lt;team or -&gt;/&lt;name&gt;</code>. Exit <code>0</code>.</p>
+<p><strong><code>--reset-state</code></strong> removes exactly what it names — one agent (<code>channel= name=</code>, with <code>team=</code> for a team member), a channel's agents, its board and its files (<code>channel=</code>), or everything (<code>all</code>) — printing <code>removed &lt;agent|channel&gt; &lt;identity&gt; &lt;asset&gt; (&lt;bytes&gt; bytes)</code> for each, an agent's <code>pending</code> record among them; exit <code>0</code>. For <code>all</code> and <code>channel=</code> it first prints the matching <code>--list-state</code> lines and total, then on a terminal asks you to type <code>reset</code>, and off one needs <code>--yes</code>; anything else is <code>✗ reset cancelled</code>, exit <code>1</code>. An identity that is online (or being erased) is refused and nothing is removed; while a reset runs, a launch of an identity it removes is refused <code>identity_in_use</code>: <code>✗ &lt;identity&gt; is online; stop it first (asha --stop)</code>, exit <code>1</code>. A selector matching nothing: <code>✗ nothing saved matches &lt;selector&gt;</code>, exit <code>1</code>. A malformed one (a bad name, <code>team=</code> without <code>name=</code>, <code>all</code> with anything): <code>✗ …</code>, exit <code>2</code>, before any path is formed.</p>
+<p><strong><code>--reset-state … user=&lt;id&gt;</code></strong> erases one user's saved memory from the agents named (<a href="../architecture/memory.html#persisted">persisted memory</a>); <code>/workspace</code>, the board, the channel's files (<code>/channel</code>, the files that user attached included) and a persisted channel's file table are shared by every user and kept. It prints, per agent, <code>erased user &lt;id&gt; from agent &lt;identity&gt; memory (&lt;n&gt; files, &lt;n&gt; bytes)</code> or <code>no memory of user &lt;id&gt; in agent &lt;identity&gt;</code>, <code>erased user &lt;id&gt; from agent &lt;identity&gt; pending (&lt;n&gt; messages)</code> when it also removed that user's unsaved messages, <code>kept &lt;kind&gt; &lt;identity&gt; &lt;asset&gt;: shared by every user of the channel, not erased</code>, and <code>✗ could not erase user &lt;id&gt; from agent &lt;identity&gt;: &lt;reason&gt;</code> for one that failed — with the <code>pending</code> line when that user's unsaved messages were removed before the failure — going on to the next; exit <code>0</code> when every agent was erased or held nothing of the user, else <code>1</code>. The reasons: <code>erase_unsupported</code>, <code>exit_nonzero</code>, <code>timeout</code> (60 s), <code>bad_output</code>, <code>save_failed</code>, <code>erase_not_subset</code> — each leaves that agent's saved state as it was. <code>channel=</code> without <code>name=</code> confirms as a reset does. An erase never takes your login name: <code>user=</code> is required, and <code>all … user=</code> is refused, exit <code>2</code>. The answer is a stream with heartbeats, so a long erase is not cut by the 60 s silence bound.</p>
+<div class="callout warning">
+<p class="callout-title">What saved state costs, and what a reset does not reach</p>
+<ul>
+<li><strong>Anyone who can run <code>asha</code> can read, reset or erase any user's saved state by naming them:</strong> saved memory, <code>/workspace</code> and a persisted board are served to whoever claims the user name or uses the channel (D2).</li>
+<li><strong>A full <code>/memory</code></strong> (64 MiB, 4,096 files or 8,192 entries for the whole agent) stops being saved for every user of that agent, each later checkpoint failing <code>over_bound</code> (<code>state.save_failed</code> in the log each time; the <code>⚠ … not being saved</code> line once per agent per daemon run), until a reset or an erase makes room.</li>
+<li><strong>Backups</strong> (Time Machine) made before a reset or erase still hold what it removed; so does the info-level <code>channel.user_online</code> log line.</li>
+<li><strong>An erase removes one user's own memory, not what others' memories say about them:</strong> another user's saved memory that mentions them is kept (agent-persistence R16). <em>Corrected 2026-09-29 by the completion review: this limit was missing.</em></li>
+</ul>
+</div>
+<h3 id="portal"><code>--portal</code> <span class="badge built">built</span></h3>
+<pre><code>./asha --portal [user=&lt;id&gt;]
+</code></pre>
+<p>Opens the <a href="../portal/index.html">portal</a>, asha's web page, in your default browser. It finds or starts the daemon as a message does and takes your user ID from <code>user=</code> or, without it, from your login name, as a message does (its <code>›</code> line when converted, its <code>✗</code> line and exit <code>1</code> when it cannot be one). It writes <code>ASHA_HOME/portal.html</code> (<code>0600</code>, renamed into place, replacing an earlier one), whose only content sends the browser to <code>http://127.0.0.1:&lt;port&gt;/#c=&lt;credential&gt;&amp;u=&lt;user ID&gt;</code> — the fragment is read by the page and never sent in a request — and runs <code>open</code> on it (found by <code>PATH</code>), bounded by 10 s.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Outcome</th><th>Output</th><th>Exit</th></tr></thead>
+<tbody>
+<tr><td>Opened</td><td><code>portal: http://127.0.0.1:&lt;port&gt;/</code> on stdout</td><td><code>0</code></td></tr>
+<tr><td><code>open</code> could not start, exited non-zero, or ran 10 s (killed)</td><td><code>✗ could not open a browser (&lt;reason&gt;); open &lt;ASHA_HOME&gt;/portal.html in one</code></td><td><code>1</code></td></tr>
+<tr><td>Any argument but <code>user=</code></td><td><code>--portal takes only user=&lt;id&gt;</code> and the usage</td><td><code>2</code></td></tr>
+<tr><td><code>user=</code> naming no valid user ID</td><td><code>✗ &lt;why&gt;</code>, as <code>--reset-state</code> says it (e.g. <code>✗ a user ID is 1 to 32 characters: …</code>); nothing written or opened</td><td><code>2</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>The credential is in no output, no process's arguments and no log record. asha never removes <code>portal.html</code>; it holds a credential that dies at the daemon's next start.</p>
+<h3 id="server"><code>--server</code> <span class="badge built">built</span></h3>
+<p><code>server</code> runs the daemon in the foreground, as the background start does. <code>startDaemon</code> takes <code>daemon.lock</code>, listens on <code>127.0.0.1</code> (OS-picked port), writes <code>daemon.json</code> (<code>{pid, port, credential}</code>, mode <code>0600</code>, <a href="#daemon">below</a>), and on SIGINT, SIGTERM or SIGHUP (a closed terminal) shuts down as <a href="#stop"><code>--stop</code></a> describes, exit <code>0</code>. Every signal goes to the daemon's one stop trigger, which the portal's <code>POST /v1/stop</code> calls too: the first request starts the stop, logged <code>daemon.stop_requested</code> with its <code>source</code> (<code>signal</code> and the signal, <code>portal</code>, or the daemon's own <a href="../architecture/index.html#lifetime">lifetime</a>: <code>idle</code> and the <code>idleMs</code> it measured, <code>parent_exited</code> and the <code>pid</code>); a later one (a second Ctrl-C, a shutdown during <code>asha --stop</code>, a signal after the portal's stop) is logged with <code>ignored: true</code> and changes nothing (<a href="../../src/cli/signals.ts"><code>src/cli/signals.ts</code></a>, <code>RunningDaemon</code> in <a href="../../src/daemon/compose.ts">compose.ts</a>). <code>--server</code> exits <code>0</code> once the stop is done, whoever began it. Run by you, it stays until you stop it; a daemon a command started for you leaves after 30 idle minutes (<code>ASHA_IDLE_EXIT_MS</code>, <a href="#env">below</a>). <em>(Changed 2026-10-02 by <code>docs/plans/portal.md</code> R14: the records were <code>daemon.signal</code>.)</em></p>
+<p>Banner: <code>asha &lt;version&gt; serving on 127.0.0.1:&lt;port&gt; (pid &lt;pid&gt;); home &lt;home&gt;</code>. Log records go to <code>logs/daemon.jsonl</code> and stderr (<code>JsonLinesLogger</code> in <a href="../../src/daemon/log.ts">src/daemon/log.ts</a>). Failures: <code>jq -c &#39;select(.level==&quot;error&quot;)&#39; ~/.simplyautonomous/harness/logs/daemon.jsonl</code>.</p>
+<p>A live lock holder makes <code>acquirePidLock</code> throw <code>LockHeld</code>, uncaught, so Node exits <code>1</code>; a dead holder's lock is retaken.</p>
+<p><span class="todo">TODO: no captured run of --server, or of a second --server refused by the lock, yet</span></p>
+<h3 id="help"><code>--help</code> <span class="badge built">built</span></h3>
+<p>Prints the <a href="#synopsis">usage</a> to stdout and exits <code>0</code>; only as the sole argument.</p>
+<h3 id="verbose"><code>--verbose</code> <span class="badge built">built</span></h3>
+<p>Every command accepts it, anywhere on the line, and it adds the <code>›</code> progress lines on stderr: the steps of bringing an agent online, the posted message with your user ID, each file attached (<code>attached &lt;path&gt; as /channel/upload-…/&lt;name&gt; (&lt;n&gt; bytes)</code>, <a href="#files">files</a>), agents' <code>status</code> and <code>internal</code> messages, agents leaving, the <code>--watch</code> banner, <code>› started the asha daemon …</code> when a command starts the daemon, and the models' output as it is generated (<a href="#deltas">deltas</a>). It changes nothing on stdout and no exit code.</p>
+<p><em>Changed 2026-09-28 (the owner's answer of 2026-09-27, <code>docs/plans/cli-interactive.md</code>):</em> until then progress was printed by default and <code>--quiet</code> hid it. asha is now quiet by default, and <code>--quiet</code> is refused wherever it appears, exit <code>2</code>, before any daemon is found or started: <code>--quiet is gone: asha is quiet by default; add --verbose for progress</code>, a blank line, and the usage — so a script that passes it learns of the change instead of quietly getting something else.</p>
+</section>
+<section id="streams">
+<h2>stdout and stderr</h2>
+<p><strong>stdout carries the result. stderr carries what you must see — <code>✗</code> errors, <code>⚠</code> warnings (a stopping daemon's <code>⚠ the asha daemon (pid &lt;pid&gt;) is stopping; waiting for it to stop</code> among them, <a href="#daemon">finding the daemon</a>), the notices about a stale <code>daemon.json</code>, usage errors, <code>› your login name &quot;&lt;name&gt;&quot; is sent as user ID &quot;&lt;id&gt;&quot;</code> when the login name had to be converted (<a href="#message"><code>user=</code></a>), a resuming launch's <code>› resuming your message from &lt;savedAt&gt;</code> (<a href="#launch"><code>--launch</code></a>), and the harness's own <code>⚠</code> lines (<a href="#state">saved state</a>) — and, only with <a href="#verbose"><code>--verbose</code></a>, the <code>›</code> progress.</strong> <em>(Corrected 2026-09-29: this said the <code>›</code> lines were printed only with <code>--verbose</code>, false once the login-name ID line was built.)</em></p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Command</th><th>stdout</th><th>stderr</th></tr></thead>
+<tbody>
+<tr><td>message</td><td>the text of each reply (including the harness's no-answer reply); a <code>file: &lt;path&gt; (&lt;n&gt; bytes, sha256 &lt;hex&gt;)</code> line per file an agent returned, after its reply</td><td><code>⚠</code> build warning, the cloud <code>⚠</code> line, <code>✗</code> errors (a refused <code>file=</code> included), usage errors, the login-name ID line (without <code>user=</code>, a converted name only); <code>›</code> progress and the <code>attached</code> lines with <code>--verbose</code>; <code>? &lt;handle&gt; is waiting for your answer: asha … conversation=&lt;id&gt; message=&quot;…&quot;</code> after an ask (<a href="#message"><code>conversation=</code></a>)</td></tr>
+<tr><td><code>--interactive</code></td><td>each reply, or with <code>/watch on</code> the channel view; a <code>file:</code> line per returned file</td><td>the prompt (a terminal only), <code>⚠ not attached …</code> and the cloud <code>⚠</code> line, <code>watching the channel</code> / <code>replies only</code>, unknown commands, <code>⚠</code> (once per daemon build in a session), <code>✗</code>, the login-name ID line once before the first prompt; <code>›</code> progress with <code>--verbose</code></td></tr>
+<tr><td><code>--launch</code></td><td>the new handle; a resuming launch's re-sent replies</td><td><code>⚠</code> (the cloud line when a cloud-granted agent joins a channel whose space holds files), <code>✗</code>, <code>› resuming your message from &lt;savedAt&gt;</code> always; <code>›</code> progress with <code>--verbose</code></td></tr>
+<tr><td><code>--list-state</code>, <code>--reset-state</code></td><td>the listing; <code>removed …</code>, <code>erased …</code>, <code>no memory of …</code>, <code>kept …</code></td><td><code>✗</code>, the confirmation prompt (a terminal only)</td></tr>
+<tr><td><code>--watch</code></td><td>one line per channel event; <code>  file &lt;name&gt; (&lt;n&gt; bytes, sha256 &lt;hex&gt;)</code> after a reply with files</td><td><code>⚠</code>, <code>✗</code>; the <code>› watching …</code> line and the models' output with <code>--verbose</code></td></tr>
+<tr><td><code>--status</code></td><td><code>running: …</code> and agent lines, <code>stopping (pid …)</code>, or <code>not running</code></td><td><code>⚠</code> build warning</td></tr>
+<tr><td><code>--stop</code></td><td><code>stopped (pid …)</code> or <code>not running</code></td><td><code>✗</code> if it will not stop</td></tr>
+<tr><td><code>--portal</code></td><td><code>portal: http://127.0.0.1:&lt;port&gt;/</code></td><td><code>✗</code> if no browser could be opened; the login-name ID line (without <code>user=</code>, a converted name only); <code>›</code> progress with <code>--verbose</code></td></tr>
+<tr><td><code>--server</code></td><td>the <code>serving on …</code> banner</td><td>every log record as a JSON line</td></tr>
+<tr><td><code>--help</code></td><td>the usage</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>reply=$(./asha message=&quot;…&quot;)</code> captures only the answer (<a href="guide.html#quiet">guide</a>).</p>
+<p><strong>Control characters on a terminal.</strong> When stdout or stderr is a terminal, every C0 or C1 control character and DEL (U+0000–U+001F, U+007F–U+009F) except line feed and tab in what the CLI prints there is printed as <code>�</code> (U+FFFD), so a model's reply or another user's message cannot move the cursor, retitle the window or set the clipboard (OSC 52). Output to a pipe or a file is byte for byte (<code>scrubControl</code> in <a href="../../src/cli/commands.ts">commands.ts</a>).</p>
+</section>
+<section id="exit-codes">
+<h2>Exit codes</h2>
+<p><code>EXIT</code> in <a href="../../src/cli/commands.ts">commands.ts</a>: <code>{ ok: 0, failed: 1, usage: 2, interrupted: 130 }</code>. <code>--verbose</code> changes none of them.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>0</code></td><td>Success, per command above.</td></tr>
+<tr><td><code>1</code></td><td>Any failure above, or an uncaught error (a rejected top-level await; checked on Node 22.13.1).</td></tr>
+<tr><td><code>2</code></td><td>Malformed; nothing sent.</td></tr>
+<tr><td><code>130</code></td><td>Ctrl-C in an <a href="#interactive">interactive session</a> (128 + SIGINT, the usual code for an interrupt).</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="daemon">
+<h2>Finding and starting the daemon</h2>
+<p>A message (and each message of a session), <code>/watch on</code>, <code>--launch</code> and <code>--watch</code> start one if needed; <code>--status</code> and <code>--stop</code> only look.</p>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 620" role="img" aria-labelledby="clidisc-t clidisc-d">
+  <title id="clidisc-t">How the CLI finds, or starts, the daemon</title>
+  <desc id="clidisc-d">findDaemon reads daemon.json under the harness home. No file means no daemon. A file that is not JSON, or whose pid, port or credential is missing or mistyped, is reported on stderr naming the file, exit 1. With a file, it asks GET /v1/health on 127.0.0.1 at the recorded port with the credential as a bearer token, bounded at 3 seconds. A 2xx answer means the daemon is used, with a warning on stderr if it runs a different build, except for --stop. A 401 means the file is not this daemon's: reported on stderr naming daemon.json, exit 1, and never taken as no daemon. A file with no credential is from a daemon that predates credentials: its health is asked without one, and on 2xx the CLI says so and that asha --stop replaces it, exit 1, while --stop stops it. No answer or another non-2xx answer means no daemon. With no daemon, --status and --stop print not running; a message, --launch or --watch spawn node dist/src/cli/main.js --server detached, logging to logs/server.log, then look again every 200 ms for up to 20 seconds. If found, it is used. If the new process died, the CLI looks once more, since another CLI may have won the race, and uses that daemon if found, otherwise fails with the daemon exited during startup, exit 1. After 20 seconds it fails with the daemon did not answer within 20000 ms, exit 1.</desc>
+  <defs><marker id="clidisc-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="40" y="20" width="260" height="44" rx="6"/>
+  <text class="label mono" x="170" y="39" text-anchor="middle">read &lt;home&gt;/daemon.json</text>
+  <text class="label small" x="170" y="56" text-anchor="middle">DaemonFile {pid, port, credential}</text>
+
+  <rect class="box" x="470" y="10" width="270" height="78" rx="6"/>
+  <text class="label mono" x="605" y="28" text-anchor="middle">✗ on stderr · exit 1</text>
+  <text class="label small" x="605" y="45" text-anchor="middle">malformed: names daemon.json and the field</text>
+  <text class="label small" x="605" y="61" text-anchor="middle">401: the file is not this daemon's</text>
+  <text class="label small" x="605" y="77" text-anchor="middle">no credential: predates credentials (--stop stops it)</text>
+
+  <path class="edge" d="M300 34 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="383" y="28" text-anchor="middle">malformed</text>
+
+  <path class="edge" d="M40 42 H22 V222 H36" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="17" y="140" text-anchor="middle" transform="rotate(-90 17 140)">no file</text>
+
+  <path class="edge" d="M170 64 V106" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="178" y="90">file</text>
+
+  <rect class="box" x="40" y="110" width="260" height="44" rx="6"/>
+  <text class="label mono" x="170" y="129" text-anchor="middle">GET /v1/health on &lt;port&gt;</text>
+  <text class="label small" x="170" y="146" text-anchor="middle">Bearer &lt;credential&gt; · bounded 3 s</text>
+
+  <path class="edge" d="M300 118 H430 V70 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="365" y="112" text-anchor="middle">401 · no credential</text>
+
+  <path class="edge" d="M300 142 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="383" y="136" text-anchor="middle">2xx</text>
+
+  <rect class="box accent" x="470" y="104" width="270" height="56" rx="6"/>
+  <text class="label title" x="605" y="123" text-anchor="middle">use it</text>
+  <text class="label small" x="605" y="139" text-anchor="middle">⚠ on stderr if its build differs,</text>
+  <text class="label small" x="605" y="153" text-anchor="middle">--verbose or not (not for --stop)</text>
+
+  <path class="edge" d="M170 154 V196" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="178" y="180">no answer, or another non-2xx</text>
+
+  <rect class="box" x="40" y="200" width="260" height="44" rx="6"/>
+  <text class="label title" x="170" y="227" text-anchor="middle">no daemon</text>
+
+  <path class="edge" d="M300 222 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label mono" x="383" y="215" text-anchor="middle">--status, --stop</text>
+
+  <rect class="box" x="470" y="196" width="270" height="52" rx="6"/>
+  <text class="label mono" x="605" y="217" text-anchor="middle">not running (stdout)</text>
+  <text class="label small" x="605" y="236" text-anchor="middle">--status exits 1 · --stop exits 0</text>
+
+  <path class="edge" d="M170 244 V286" marker-end="url(#clidisc-arr)"/>
+  <text class="label mono" x="178" y="270">message, --launch, --watch</text>
+
+  <rect class="box" x="40" y="290" width="560" height="44" rx="6"/>
+  <text class="label mono" x="320" y="309" text-anchor="middle">spawn node dist/src/cli/main.js --server, detached</text>
+  <text class="label small" x="320" y="326" text-anchor="middle">stdout and stderr → &lt;home&gt;/logs/server.log · prints › started the asha daemon (pid …)</text>
+
+  <path class="edge" d="M170 334 V366" marker-end="url(#clidisc-arr)"/>
+
+  <rect class="box" x="40" y="370" width="260" height="44" rx="6"/>
+  <text class="label title" x="170" y="389" text-anchor="middle">every 200 ms: look again</text>
+  <text class="label small" x="170" y="406" text-anchor="middle">read daemon.json + /v1/health</text>
+
+  <path class="edge" d="M300 392 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="383" y="385" text-anchor="middle">found</text>
+
+  <rect class="box accent" x="470" y="370" width="270" height="44" rx="6"/>
+  <text class="label title" x="605" y="397" text-anchor="middle">use it</text>
+
+  <path class="edge" d="M170 414 V456" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="178" y="440">the new process died</text>
+
+  <rect class="box" x="40" y="460" width="260" height="44" rx="6"/>
+  <text class="label title" x="170" y="479" text-anchor="middle">look once more</text>
+  <text class="label small" x="170" y="496" text-anchor="middle">another CLI may have won the race</text>
+
+  <path class="edge" d="M300 468 H500 V418" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="400" y="462" text-anchor="middle">found</text>
+
+  <path class="edge" d="M300 496 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="383" y="490" text-anchor="middle">none</text>
+
+  <rect class="box" x="470" y="476" width="270" height="48" rx="6"/>
+  <text class="label mono" x="605" y="496" text-anchor="middle">✗ the daemon exited during startup;</text>
+  <text class="label mono" x="605" y="514" text-anchor="middle">see &lt;server.log&gt; · exit 1</text>
+
+  <path class="edge" d="M40 392 H22 V582 H36" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="17" y="487" text-anchor="middle" transform="rotate(-90 17 487)">after 20 s</text>
+
+  <rect class="box" x="40" y="558" width="370" height="48" rx="6"/>
+  <text class="label mono" x="225" y="578" text-anchor="middle">✗ the daemon did not answer within 20000 ms;</text>
+  <text class="label mono" x="225" y="596" text-anchor="middle">see &lt;server.log&gt; · exit 1</text>
+</svg>
+<figcaption>The find-or-start decision: <code>findDaemon</code> and <code>startServer</code> in <a href="../../src/cli/commands.ts">src/cli/commands.ts</a>, <code>spawnServer</code> in <a href="../../src/cli/main.ts">main.ts</a>.</figcaption>
+</figure>
+<p><strong>Finding</strong> (<code>findDaemon</code>, with <code>parseDaemonFile</code>):</p>
+<ol>
+<li>Read <code>&lt;home&gt;/daemon.json</code> (<code>DaemonFile</code>: <code>{pid, port, credential}</code>, and <code>stopping: true</code> while the daemon stops; mode <code>0600</code>). No file: not running. A file saying <code>stopping: true</code> is a <strong>stopping</strong> daemon when its <code>pid</code> is alive and is an asha daemon — <code>ps -o command= -p &lt;pid&gt;</code> (2,000 ms bound) ends with <code>/dist/src/cli/main.js --server</code> — and not running otherwise (a crash or a reboot that left the file, its pid dead or reused); the health is not asked. A <code>stopping</code> that is not exactly <code>true</code> makes the file unreadable (below). A file that is not JSON, whose <code>pid</code> or <code>port</code> is missing or mistyped, or whose <code>credential</code> is present but not a non-empty printable string, fails every command, exit <code>1</code>, never read as &quot;not running&quot;: <code>✗ &lt;home&gt;/daemon.json cannot be read as a daemon file: &lt;what is wrong&gt;. If no asha daemon is running for this home, remove it.</code></li>
+<li><code>GET http://127.0.0.1:&lt;port&gt;/v1/health</code> with <code>Authorization: Bearer &lt;credential&gt;</code>, within 3 s (a <code>HealthResponse</code>). The CLI sends the credential this way on every request it makes (<a href="../architecture/index.html#apis">the two APIs</a>).</li>
+<li>A <code>401</code> from a port whose file names a dead <code>pid</code> means the daemon crashed and another server took its port: <code>(daemon file names pid &lt;pid&gt;, which is not running; port &lt;port&gt; now belongs to another server)</code>, and the CLI goes on as if no daemon ran (a message starts one). A <code>401</code> with the <code>pid</code> alive means a daemon answers but the file is not its own. It fails, exit <code>1</code>, and starts nothing (a second daemon would only meet the held lock): <code>✗ the daemon on port &lt;port&gt; refused the credential in &lt;home&gt;/daemon.json (HTTP 401), so that file is not this daemon&#39;s. If no asha daemon is running for this home, remove the file.</code></li>
+<li>No answer prints <code>(daemon file names port &lt;port&gt;, which did not answer: &lt;error&gt;)</code>, once per command however often a start polls the file (<code>notedStalePorts</code>); that or another non-2xx counts as not running — but a <code>503</code> with <code>reason: &#39;stopping&#39;</code> from a live asha daemon (checked as in 1) is a <strong>stopping</strong> daemon: one that began to stop before it rewrote its file.</li>
+<li>A different build prints the <a href="#status"><code>⚠</code> warning</a>, with or without <code>--verbose</code>, once per build in a command or an interactive session; a daemon too old to say shows <code>unknown, from before builds were tracked</code>.</li>
+</ol>
+<p><strong>A stopping daemon</strong> (since 2026-10-03, <code>docs/plans/debt-paydown.md</code> R16; D21, now paid): <code>--status</code> prints <code>stopping (pid &lt;pid&gt;)</code>, exit <code>1</code>; <code>--stop</code> sends nothing and waits (<a href="#stop"><code>--stop</code></a>); every other command prints <code>⚠ the asha daemon (pid &lt;pid&gt;) is stopping; waiting for it to stop</code> on stderr, with or without <code>--verbose</code>, polls its pid every 200 ms up to 90 s (the daemon's slowest clean stop, <code>SERVER_STOP_MS</code>), then goes on as if no daemon ran — a command that starts one starts one; past 90 s: <code>✗ the asha daemon (pid &lt;pid&gt;) was still stopping after 90000 ms; see &lt;home&gt;/logs/daemon.jsonl, and if no asha daemon runs for this home, remove &lt;home&gt;/daemon.json</code>, exit <code>1</code> (<code>findDaemonAfterStop</code> in <a href="../../src/cli/commands.ts">commands.ts</a>). A start's own poll treats a stopping daemon as not yet up. Before this, a stopping daemon read as absent: <code>--status</code> said <code>not running</code>, and a message started a second daemon, which then met the held lock. An older CLI meeting a newer daemon ignores <code>stopping</code> and reads the <code>503</code> as absent, as before.</p>
+<p><strong>A daemon from before credentials</strong> wrote <code>{pid, port}</code> with no <code>credential</code>. Its health is asked without one; if it answers, every command but <code>--stop</code> fails, exit <code>1</code>: <code>✗ the running daemon (pid &lt;pid&gt;, port &lt;port&gt;) predates credentials: it serves its API to any local process. Run asha --stop to replace it with this build.</code> <code>--stop</code> stops it as before (<code>SIGTERM</code>, then <code>stopped (pid …)</code>).</p>
+<p><strong>Starting</strong> (<code>startServer</code>, <code>spawnServer</code>):</p>
+<ol>
+<li>Spawn <code>node dist/src/cli/main.js --server</code>, detached, stdin ignored, output to <code>&lt;home&gt;/logs/server.log</code>.</li>
+<li>With <code>--verbose</code>, print <code>› started the asha daemon (pid &lt;pid&gt;); log: &lt;home&gt;/logs/server.log</code> (the owner's answer of 2026-09-27: announced only with <code>--verbose</code>).</li>
+<li>Look every 200 ms, up to 20 s.</li>
+<li>If it dies, look once more (another CLI may have won); otherwise <code>✗ the daemon exited during startup; see &lt;server.log&gt;</code>, exit <code>1</code>.</li>
+<li>After 20 s: <code>✗ the daemon did not answer within 20000 ms; see &lt;server.log&gt;</code>, exit <code>1</code>.</li>
+</ol>
+</section>
+<section id="flow">
+<h2>A conversation, end to end</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 560" role="img" aria-labelledby="cliflow-t cliflow-d">
+  <title id="cliflow-t">One asha message, from the CLI to the daemon and back</title>
+  <desc id="cliflow-d">The CLI reads daemon.json from the harness home, checks the daemon's health, and if none answers spawns a background daemon and polls its health. It then posts the message to /v1/conversations and reads the NDJSON stream: phase and announced events and the posted event become progress on stderr, an output message's text goes to stdout, heartbeats arrive every 10 seconds. Once the message is posted and no agent is still working, the CLI closes the stream and exits 0 if an agent replied, otherwise 1.</desc>
+  <defs>
+    <marker id="cliflow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker>
+    <marker id="cliflow-arrow-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#56625d"/></marker>
+  </defs>
+
+  <rect class="box" x="20" y="14" width="120" height="40" rx="6"/>
+  <text class="label title" x="80" y="39" text-anchor="middle">terminal</text>
+  <rect class="box accent" x="210" y="14" width="120" height="40" rx="6"/>
+  <text class="label title" x="270" y="39" text-anchor="middle">./asha</text>
+  <rect class="box" x="400" y="14" width="140" height="40" rx="6"/>
+  <text class="label title" x="470" y="39" text-anchor="middle">harness home</text>
+  <rect class="box accent" x="610" y="14" width="130" height="40" rx="6"/>
+  <text class="label title" x="675" y="39" text-anchor="middle">daemon</text>
+
+  <path class="edge dim" d="M80 54 V540"/>
+  <path class="edge dim" d="M270 54 V540"/>
+  <path class="edge dim" d="M470 54 V104"/>
+  <path class="edge dim" d="M675 54 V540"/>
+
+  <path class="edge" d="M270 88 H466" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="368" y="81" text-anchor="middle">read daemon.json</text>
+
+  <path class="edge" d="M270 124 H671" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="117" text-anchor="middle">GET /v1/health   (bounded 3 s)</text>
+  <path class="edge" d="M675 152 H274" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="145" text-anchor="middle">200 {pid, version, build, agents}</text>
+
+  <rect class="box host" x="200" y="166" width="550" height="62" rx="6"/>
+  <text class="label small" x="212" y="186">if none answers: spawn `main.js --server` detached, output → logs/server.log,</text>
+  <text class="label small" x="212" y="204">then poll /v1/health every 200 ms, up to 20 s; the daemon writes daemon.json</text>
+  <text class="label small" x="212" y="220">once it listens on 127.0.0.1:&lt;random port&gt;</text>
+
+  <path class="edge" d="M270 260 H671" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="253" text-anchor="middle">POST /v1/conversations</text>
+  <text class="label small" x="472" y="274" text-anchor="middle">{channel, message, user?, recipe?, to?}</text>
+
+  <path class="edge" d="M675 304 H274" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="297" text-anchor="middle">phase … / announced   (recipe= only)</text>
+  <path class="edge" d="M270 304 H84" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="175" y="297" text-anchor="middle">stderr: › image: …</text>
+
+  <path class="edge" d="M675 344 H274" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="337" text-anchor="middle">posted {message, working}</text>
+  <path class="edge" d="M270 344 H84" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="175" y="337" text-anchor="middle">stderr: › user-1 → …</text>
+
+  <path class="edge" d="M675 384 H274" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="377" text-anchor="middle">message {status | internal, working}</text>
+  <path class="edge" d="M270 384 H84" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="175" y="377" text-anchor="middle">stderr: › hewo-1: ok</text>
+
+  <path class="edge" d="M675 424 H274" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="472" y="417" text-anchor="middle">message {output, working: []}</text>
+  <path class="edge" d="M270 424 H84" marker-end="url(#cliflow-arrow)"/>
+  <text class="label mono" x="175" y="417" text-anchor="middle">stdout: Hello World.</text>
+
+  <path class="edge dim" d="M675 460 H274" marker-end="url(#cliflow-arrow-dim)"/>
+  <text class="label small" x="472" y="453" text-anchor="middle">heartbeat every 10 s; the CLI gives up after 60 s of silence</text>
+
+  <rect class="box accent" x="200" y="478" width="300" height="50" rx="6"/>
+  <text class="label small" x="350" y="498" text-anchor="middle">posted, and working is empty: settled.</text>
+  <text class="label small" x="350" y="516" text-anchor="middle">Close the stream; exit 0 if an agent replied, else 1</text>
+</svg>
+<figcaption>Each stream line is a <code>ConversationEvent</code> (<a href="../../src/shared/protocol.ts">protocol.ts</a>). The daemon's <code>conversation</code> (<a href="../../src/daemon/server.ts">src/daemon/server.ts</a>) closes only on <code>error</code>; the CLI hangs up. <code>--launch</code> (<code>POST /v1/agents</code>) and <code>--watch</code> (<code>GET /v1/channel</code>) work alike.</figcaption>
+</figure>
+</section>
+<section id="env">
+<h2>Environment and files</h2>
+<p>Read by <code>harnessPaths</code> in <a href="../../src/shared/paths.ts">src/shared/paths.ts</a>; empty is unset — but for the three lifetime variables, which <code>asha --server</code> reads (<code>lifetimeFrom</code> in <a href="../../src/cli/commands.ts">commands.ts</a>) and refuses unless each is a positive whole number (and <code>ASHA_EXIT_WITH_PID</code> a process of this user running now): <code>✗ ASHA_IDLE_EXIT_MS=&quot;0&quot; is not a positive whole number</code>, exit <code>1</code>, before anything starts. A started daemon inherits the CLI's whole environment, with <code>ASHA_IDLE_EXIT_MS=1800000</code> added unless it is set (<code>autoStartEnv</code>).</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Variable</th><th>Default</th><th>What it changes</th></tr></thead>
+<tbody>
+<tr><td><code>ASHA_HOME</code></td><td><code>~/.simplyautonomous/harness</code></td><td>State, including <code>daemon.json</code>; one daemon per home. Created <code>0700</code> when it does not exist.</td></tr>
+<tr><td><code>ASHA_MODELS_DIR</code></td><td><code>&lt;home&gt;/models</code></td><td>The model cache; shareable.</td></tr>
+<tr><td><code>ASHA_IDLE_EXIT_MS</code></td><td>unset for <code>asha --server</code> you run; <code>1800000</code> (30 minutes) for a daemon a command starts</td><td>Read by <code>asha --server</code>: with nothing to do for this long — no agent, no launch or restart in progress, no request or stream open (an open <code>--watch</code> or portal tab counts) — the daemon stops itself and exits <code>0</code>. Unset, it never stops for idleness (<a href="../architecture/index.html#lifetime">its lifetime</a>).</td></tr>
+<tr><td><code>ASHA_MODEL_IDLE_MS</code></td><td><code>900000</code> (15 minutes)</td><td>Read by <code>asha --server</code>: a model server no call has used for this long is stopped, and started again by the next call that needs it (<a href="../architecture/models.html#idle">idle unload</a>).</td></tr>
+<tr><td><code>ASHA_EXIT_WITH_PID</code></td><td>unset</td><td>Read by <code>asha --server</code>: the daemon stops within 5 s of that process ending. The test suites set it to their own process.</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>ASHA_URL</code> and <code>ASHA_AGENT_TOKEN</code> (<code>AgentEnv</code> in <a href="../../src/shared/protocol.ts">protocol.ts</a>) are for agent containers only. Files under the home (<code>daemon.json</code>, <code>daemon.lock</code>, <code>model-server.key</code>, <code>users.json</code>, <code>logs/server.log</code>, <code>logs/daemon.jsonl</code>, <code>logs/agents/</code>, <code>staging/</code>, <code>models/</code>) are listed in <a href="../deployments/index.html#state">Deployments</a>.</p>
+</section>
+<section id="bounds">
+<h2>Time bounds</h2>
+<p>Every wait is bounded (PRINCIPLES §11): <a href="../../src/cli/main.ts">main.ts</a> (<code>timing</code>) and <a href="../../src/cli/commands.ts">commands.ts</a>.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Bound</th><th>Value</th><th>Where</th></tr></thead>
+<tbody>
+<tr><td>Health check on a daemon</td><td>3 s</td><td><code>HEALTH_TIMEOUT_MS</code></td></tr>
+<tr><td>A started daemon answering</td><td>20 s</td><td><code>timing.serverStartMs</code></td></tr>
+<tr><td>Exit after <code>--stop</code></td><td>90 s</td><td><code>timing.serverStopMs</code></td></tr>
+<tr><td>Stream silence</td><td>60 s, reset by every line</td><td><code>timing.streamIdleMs</code></td></tr>
+<tr><td>Poll interval</td><td>200 ms</td><td><code>timing.pollMs</code></td></tr>
+<tr><td>Heartbeat on open streams</td><td>10 s</td><td><code>heartbeatMs</code>, passed by <code>server</code></td></tr>
+<tr><td>One agent model call</td><td>60 s</td><td><code>chatTimeoutMs</code>, passed by <code>server</code></td></tr>
+<tr><td>An upload's answer (<a href="#files">files</a>)</td><td>260 s: the daemon answers within 240 s — at most 60 s waiting for the space, then the measurement, the copy and a rollback, at most 60 s each — and the CLI waits 20 s more</td><td><code>timing.uploadAnswerMs</code> (<code>UPLOAD_ANSWER_MS</code> in <a href="../../src/shared/timing.ts">src/shared/timing.ts</a>)</td></tr>
+<tr><td>A returned file's download</td><td>30 s without a byte</td><td><code>timing.downloadIdleMs</code> (<code>DOWNLOAD_IDLE_MS</code>)</td></tr>
+<tr><td><code>open</code>, for <code>--portal</code></td><td>10 s, then killed</td><td><code>PORTAL_OPEN_MS</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>The bounds the <a href="../portal/index.html#failures">portal</a>'s page waits with are these, from one module both import: <a href="../../src/shared/timing.ts"><code>src/shared/timing.ts</code></a> (<code>HEALTH_TIMEOUT_MS</code>, <code>STREAM_IDLE_MS</code>, <code>UPLOAD_ANSWER_MS</code>, <code>DOWNLOAD_IDLE_MS</code>, <code>SERVER_STOP_MS</code>).</p>
+<p>Heartbeats keep a 5 GB first download (78 s in the <a href="guide.html#one-agent">guide</a>) under the idle bound.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/cli/index.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

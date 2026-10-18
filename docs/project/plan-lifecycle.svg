@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 230" role="img" aria-labelledby="wf-plan-t wf-plan-d">
+  <title id="wf-plan-t">A plan from draft to done</title>
+  <desc id="wf-plan-d">A plan is written as a draft from the template. The plan review, one adversarial round, checks that the requirements are unambiguous, complete and testable. With every open question closed and the plan-ready checklist passing, the plan is ready. Implementing it moves it to in progress through the coding, testing and documentation workflows. The completion review fills a requirement table with evidence in every cell; a gap is material and goes back to be fixed. With no gaps, the completing commit marks the plan done, checks it off in the index and marks its retired debt paid.</desc>
+  <defs><marker id="wf-plan-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="6" y="60" width="108" height="80" rx="6"/>
+  <text class="label title" x="60" y="86" text-anchor="middle">draft</text>
+  <text class="label small" x="60" y="104" text-anchor="middle">from the</text>
+  <text class="label small" x="60" y="120" text-anchor="middle">template</text>
+
+  <rect class="box accent" x="134" y="60" width="108" height="80" rx="6"/>
+  <text class="label title" x="188" y="86" text-anchor="middle">plan review</text>
+  <text class="label small" x="188" y="104" text-anchor="middle">adversarial,</text>
+  <text class="label small" x="188" y="120" text-anchor="middle">one round</text>
+
+  <rect class="box" x="262" y="60" width="108" height="80" rx="6"/>
+  <text class="label title" x="316" y="86" text-anchor="middle">ready</text>
+  <text class="label small" x="316" y="104" text-anchor="middle">questions closed,</text>
+  <text class="label small" x="316" y="120" text-anchor="middle">checklist passes</text>
+
+  <rect class="box" x="390" y="60" width="108" height="80" rx="6"/>
+  <text class="label title" x="444" y="86" text-anchor="middle">in progress</text>
+  <text class="label small" x="444" y="104" text-anchor="middle">code · tests</text>
+  <text class="label small" x="444" y="120" text-anchor="middle">· docs</text>
+
+  <rect class="box accent" x="518" y="60" width="108" height="80" rx="6"/>
+  <text class="label title" x="572" y="86" text-anchor="middle">completion</text>
+  <text class="label title" x="572" y="102" text-anchor="middle">review</text>
+  <text class="label small" x="572" y="120" text-anchor="middle">evidence per cell</text>
+
+  <rect class="box" x="646" y="60" width="108" height="80" rx="6"/>
+  <text class="label title" x="700" y="86" text-anchor="middle">done ☑</text>
+  <text class="label small" x="700" y="104" text-anchor="middle">checked off,</text>
+  <text class="label small" x="700" y="120" text-anchor="middle">debt paid</text>
+
+  <path class="edge" d="M114 100 H132" marker-end="url(#wf-plan-arr)"/>
+  <path class="edge" d="M242 100 H260" marker-end="url(#wf-plan-arr)"/>
+  <path class="edge" d="M370 100 H388" marker-end="url(#wf-plan-arr)"/>
+  <path class="edge" d="M498 100 H516" marker-end="url(#wf-plan-arr)"/>
+  <path class="edge" d="M626 100 H644" marker-end="url(#wf-plan-arr)"/>
+
+  <text class="label small" x="188" y="36" text-anchor="middle">owner decides owner questions;</text>
+  <text class="label small" x="188" y="50" text-anchor="middle">the agent decides the rest</text>
+
+  <path class="edge dim" d="M572 140 V185 H444 V142" marker-end="url(#wf-plan-arr)"/>
+  <text class="label small" x="508" y="205" text-anchor="middle">a gap in any cell is material: fix it</text>
+
+  <text class="label small" x="316" y="165" text-anchor="middle">only a ready plan</text>
+  <text class="label small" x="316" y="180" text-anchor="middle">is implemented</text>
+</svg>

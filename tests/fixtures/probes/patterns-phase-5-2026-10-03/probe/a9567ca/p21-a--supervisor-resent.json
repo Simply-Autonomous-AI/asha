@@ -1,0 +1,140 @@
+{
+  "commit": "a9567ca9b7d7eb9cdec133f9a1120e105cdccc77",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p21-a/supervisor-resent",
+  "control": false,
+  "doc": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "consult",
+          "arguments": {
+            "requests": [
+              {
+                "to": "worker-1",
+                "text": "What is your word?"
+              }
+            ]
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "consult",
+              "arguments": {
+                "requests": [
+                  {
+                    "to": "worker-1",
+                    "text": "What is your word?"
+                  }
+                ]
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1887,
+          "completionTokens": 33
+        }
+      ],
+      "ms": 920,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": null,
+      "requestSha256": "d4f0635d1811adf3a99e2f89bed0eee43151d82948ce0dfe42566f5b3719f8b9",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "consult",
+          "arguments": {
+            "requests": [
+              {
+                "to": "worker-1",
+                "text": "What is your word?"
+              }
+            ]
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "consult",
+              "arguments": {
+                "requests": [
+                  {
+                    "to": "worker-1",
+                    "text": "What is your word?"
+                  }
+                ]
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1887,
+          "completionTokens": 33
+        }
+      ],
+      "ms": 767,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": null,
+      "requestSha256": "d4f0635d1811adf3a99e2f89bed0eee43151d82948ce0dfe42566f5b3719f8b9",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "consult",
+          "arguments": {
+            "requests": [
+              {
+                "to": "worker-1",
+                "text": "What is your word?"
+              }
+            ]
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "consult",
+              "arguments": {
+                "requests": [
+                  {
+                    "to": "worker-1",
+                    "text": "What is your word?"
+                  }
+                ]
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1887,
+          "completionTokens": 33
+        }
+      ],
+      "ms": 763,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": null,
+      "requestSha256": "d4f0635d1811adf3a99e2f89bed0eee43151d82948ce0dfe42566f5b3719f8b9",
+      "ok": true
+    }
+  ]
+}

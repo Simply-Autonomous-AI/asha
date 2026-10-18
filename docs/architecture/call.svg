@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 640" role="img" aria-labelledby="cl-t cl-d">
+  <title id="cl-t">A call: hewo-1 consults memo-1 and hewo-2, gets one gather, and replies to the user</title>
+  <desc id="cl-d">The user's message is delivered to hewo-1, which calls consult. The daemon records the call and delivers one question to each addressee. Each callee's turn offers only reply and pass; memo-1 answers and hewo-2 passes, both through the answer route. When the last outcome is recorded, the daemon delivers one gather from asha to hewo-1, which replies to the user. hewo-1 stays in the working set while the call is open.</desc>
+  <defs><marker id="cl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="120" height="36" rx="5"/>
+  <text class="label title" x="80" y="33" text-anchor="middle">user · ./asha</text>
+  <rect class="box accent" x="220" y="10" width="120" height="36" rx="5"/>
+  <text class="label title" x="280" y="33" text-anchor="middle">daemon</text>
+  <rect class="box" x="400" y="10" width="110" height="36" rx="5"/>
+  <text class="label mono" x="455" y="33" text-anchor="middle">hewo-1</text>
+  <rect class="box" x="530" y="10" width="100" height="36" rx="5"/>
+  <text class="label mono" x="580" y="33" text-anchor="middle">memo-1</text>
+  <rect class="box" x="645" y="10" width="100" height="36" rx="5"/>
+  <text class="label mono" x="695" y="33" text-anchor="middle">hewo-2</text>
+  <path class="edge dim" d="M80 46 V630"/>
+  <path class="edge dim" d="M280 46 V630"/>
+  <path class="edge dim" d="M455 46 V630"/>
+  <path class="edge dim" d="M580 46 V630"/>
+  <path class="edge dim" d="M695 46 V630"/>
+
+  <path class="edge" d="M80 80 H278" marker-end="url(#cl-a)"/>
+  <text class="label small" x="180" y="74" text-anchor="middle">input, to hewo-1</text>
+  <path class="edge" d="M280 106 H453" marker-end="url(#cl-a)"/>
+  <text class="label small" x="368" y="100" text-anchor="middle">delivery: input</text>
+  <text class="label small" x="462" y="126">→ consult([memo-1: …, hewo-2: …])</text>
+  <path class="edge" d="M455 150 H282" marker-end="url(#cl-a)"/>
+  <text class="label small" x="368" y="144" text-anchor="middle">POST channel/calls {delivery, requests}</text>
+  <text class="label small" x="290" y="170">records the call; reserves 4 posts</text>
+  <path class="edge" d="M280 194 H578" marker-end="url(#cl-a)"/>
+  <text class="label small" x="430" y="188" text-anchor="middle">question (call: question)</text>
+  <path class="edge" d="M280 220 H693" marker-end="url(#cl-a)"/>
+  <text class="label small" x="560" y="214" text-anchor="middle">question (call: question)</text>
+  <path class="edge" d="M455 250 H282" marker-end="url(#cl-a)"/>
+  <text class="label small" x="368" y="244" text-anchor="middle">ack · still working (open call)</text>
+  <text class="label small" x="540" y="276">call turn: reply or pass only</text>
+  <path class="edge" d="M580 300 H282" marker-end="url(#cl-a)"/>
+  <text class="label small" x="430" y="294" text-anchor="middle">POST calls/answer {delivery, text}</text>
+  <path class="edge" d="M280 322 H82" marker-end="url(#cl-a)"/>
+  <text class="label small" x="180" y="316" text-anchor="middle">internal memo-1 → hewo-1 (answer)</text>
+  <path class="edge" d="M695 352 H282" marker-end="url(#cl-a)"/>
+  <text class="label small" x="560" y="346" text-anchor="middle">POST calls/answer {delivery, pass}</text>
+  <path class="edge" d="M280 374 H82" marker-end="url(#cl-a)"/>
+  <text class="label small" x="180" y="368" text-anchor="middle">› hewo-2: pass: …</text>
+  <text class="label small" x="290" y="400">last outcome → one gather, then acks</text>
+  <path class="edge" d="M280 424 H453" marker-end="url(#cl-a)"/>
+  <text class="label small" x="368" y="418" text-anchor="middle">gather from asha (call: gather)</text>
+  <path class="edge" d="M280 448 H82" marker-end="url(#cl-a)"/>
+  <text class="label small" x="180" y="442" text-anchor="middle">internal asha → hewo-1: Answers to …</text>
+  <text class="label small" x="462" y="474">→ reply(…)</text>
+  <path class="edge" d="M455 500 H282" marker-end="url(#cl-a)"/>
+  <text class="label small" x="368" y="494" text-anchor="middle">output</text>
+  <path class="edge" d="M280 524 H82" marker-end="url(#cl-a)"/>
+  <text class="label small" x="180" y="518" text-anchor="middle">output → stdout</text>
+  <path class="edge" d="M455 556 H282" marker-end="url(#cl-a)"/>
+  <text class="label small" x="368" y="550" text-anchor="middle">ack of the gather</text>
+  <path class="edge" d="M280 580 H82" marker-end="url(#cl-a)"/>
+  <text class="label small" x="180" y="574" text-anchor="middle">status · working []</text>
+  <text class="label small" x="90" y="610">settled with a reply → exit 0</text>
+</svg>

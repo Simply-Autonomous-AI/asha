@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 362" role="img" aria-labelledby="p08-t p08-d">
+  <title id="p08-t">P8 · Generator–critic loop</title>
+  <desc id="p08-d">writer-1 consults critic-1 with its draft; the critic sends it back naming what is missing; the writer revises and consults again; on ACCEPT it replies with the accepted draft.</desc>
+  <defs><marker id="p08-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="95" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M95 44 V356"/>
+  <rect class="box accent" x="210" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="285" y="32" text-anchor="middle">writer-1</text>
+  <path class="edge dim" d="M285 44 V356"/>
+  <rect class="box" x="400" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="475" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M475 44 V356"/>
+  <rect class="box accent" x="590" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="665" y="32" text-anchor="middle">critic-1</text>
+  <path class="edge dim" d="M665 44 V356"/>
+  <path class="edge" d="M95 80 H283" marker-end="url(#p08-a)"/>
+  <text class="label small" x="190" y="74" text-anchor="middle">Write one sentence about the harbour …</text>
+  <path class="edge" d="M285 114 H663" marker-end="url(#p08-a)"/>
+  <text class="label small" x="475" y="108" text-anchor="middle">Round 1. Draft: …</text>
+  <path class="edge" d="M665 148 H287" marker-end="url(#p08-a)"/>
+  <text class="label small" x="475" y="142" text-anchor="middle">Round 1: REVISE: say that the lighthouse is green.</text>
+  <path class="edge" d="M475 182 H287" marker-end="url(#p08-a)"/>
+  <text class="label small" x="380" y="176" text-anchor="middle">gather</text>
+  <path class="edge" d="M285 216 H663" marker-end="url(#p08-a)"/>
+  <text class="label small" x="475" y="210" text-anchor="middle">Round 2. Draft: … green lighthouse …</text>
+  <path class="edge" d="M665 250 H287" marker-end="url(#p08-a)"/>
+  <text class="label small" x="475" y="244" text-anchor="middle">Round 2: ACCEPT</text>
+  <path class="edge" d="M475 284 H287" marker-end="url(#p08-a)"/>
+  <text class="label small" x="380" y="278" text-anchor="middle">gather</text>
+  <path class="edge" d="M285 318 H97" marker-end="url(#p08-a)"/>
+  <text class="label small" x="190" y="312" text-anchor="middle">output: the accepted draft</text>
+</svg>

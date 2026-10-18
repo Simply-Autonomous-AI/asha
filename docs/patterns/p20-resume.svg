@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 460" role="img" aria-labelledby="p20-t p20-d">
+  <title id="p20-t">P20 · Checkpoint and resume</title>
+  <desc id="p20-d">p20-a: you ask supervisor-1 for worker-1's word; it consults worker-1, whose container the test has paused, and the daemon is stopped while the call is open; supervisor-1's record keeps your message; the relaunch starts a new daemon, re-sends the message marked as a retry, supervisor-1 consults worker-1 again, worker-1 answers marigold, and supervisor-1 answers you. p20-b: tasker-1 does tasks 1 and 2, saving each in tasks.json; the daemon is killed while task 3 runs; the relaunch re-sends tasks 3 and 4, and the tasker finds task 3 not saved and does it, then task 4.</desc>
+  <defs><marker id="p20-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <text class="label" x="20" y="24">p20-a · a conversation waiting on a call</text>
+  <rect class="box" x="20" y="40" width="80" height="34" rx="5"/>
+  <text class="label mono" x="60" y="62" text-anchor="middle">you</text>
+  <rect class="box accent" x="150" y="40" width="130" height="34" rx="5"/>
+  <text class="label mono" x="215" y="62" text-anchor="middle">supervisor-1</text>
+  <rect class="box" x="360" y="40" width="110" height="34" rx="5"/>
+  <text class="label mono" x="415" y="62" text-anchor="middle">worker-1</text>
+  <rect class="box" x="520" y="40" width="140" height="34" rx="5"/>
+  <text class="label mono small" x="590" y="61" text-anchor="middle">pending.json</text>
+  <path class="edge" d="M100 57 H148" marker-end="url(#p20-m)"/>
+  <path class="edge" d="M280 57 H358" marker-end="url(#p20-m)"/>
+  <text class="label mono small" x="290" y="92">consult: What is your word?</text>
+  <text class="label small" x="360" y="110">paused by the test</text>
+  <path class="edge" d="M215 74 C215 140 590 140 590 76" marker-end="url(#p20-m)"/>
+  <text class="label small" x="340" y="150">the message kept: its call is open</text>
+  <text class="label mono small" x="20" y="180">./asha --stop — the call closes, the daemon exits</text>
+  <text class="label mono small" x="20" y="200">./asha --launch team=resume — a new daemon</text>
+  <path class="edge" d="M590 210 C590 240 215 240 215 256" marker-end="url(#p20-m)"/>
+  <text class="label small" x="300" y="236">re-sent once, marked as a retry</text>
+  <rect class="box accent" x="150" y="258" width="130" height="34" rx="5"/>
+  <text class="label mono" x="215" y="280" text-anchor="middle">supervisor-1</text>
+  <rect class="box" x="360" y="258" width="110" height="34" rx="5"/>
+  <text class="label mono" x="415" y="280" text-anchor="middle">worker-1</text>
+  <path class="edge" d="M280 268 H358" marker-end="url(#p20-m)"/>
+  <path class="edge" d="M358 284 H282" marker-end="url(#p20-m)"/>
+  <text class="label mono small" x="300" y="308">marigold</text>
+  <path class="edge" d="M150 275 H102" marker-end="url(#p20-m)"/>
+  <rect class="box" x="20" y="258" width="80" height="34" rx="5"/>
+  <text class="label mono" x="60" y="280" text-anchor="middle">you</text>
+  <text class="label small" x="20" y="320">worker-1's word is marigold</text>
+  <text class="label" x="20" y="362">p20-b · a long-running supervisor</text>
+  <rect class="box accent" x="20" y="376" width="110" height="34" rx="5"/>
+  <text class="label mono" x="75" y="398" text-anchor="middle">tasker-1</text>
+  <text class="label mono small" x="150" y="388">tasks 1, 2 → tasks.json [1,2], each saved</text>
+  <text class="label mono small" x="150" y="406">task 3 written, then SIGKILL: not saved</text>
+  <text class="label mono small" x="150" y="424">relaunch: tasks 3, 4 re-sent → [1,2,3,4]</text>
+  <text class="label small" x="150" y="446">each task once in its file; no message sent again</text>
+</svg>

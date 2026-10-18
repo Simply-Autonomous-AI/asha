@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 362" role="img" aria-labelledby="p16-t p16-d">
+  <title id="p16-t">P16 · Guardrail / policy check</title>
+  <desc id="p16-d">writer-1 asks policy-1 to check its draft; the draft with the number is blocked; the revised text is approved; the writer replies with exactly the approved text.</desc>
+  <defs><marker id="p16-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="95" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M95 44 V356"/>
+  <rect class="box accent" x="210" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="285" y="32" text-anchor="middle">writer-1</text>
+  <path class="edge dim" d="M285 44 V356"/>
+  <rect class="box" x="400" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="475" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M475 44 V356"/>
+  <rect class="box accent" x="590" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="665" y="32" text-anchor="middle">policy-1</text>
+  <path class="edge dim" d="M665 44 V356"/>
+  <path class="edge" d="M95 80 H283" marker-end="url(#p16-a)"/>
+  <text class="label small" x="190" y="74" text-anchor="middle">How can I reach support? … 5550123456 …</text>
+  <path class="edge" d="M285 114 H663" marker-end="url(#p16-a)"/>
+  <text class="label small" x="475" y="108" text-anchor="middle">Check: … 5550123456 …</text>
+  <path class="edge" d="M665 148 H287" marker-end="url(#p16-a)"/>
+  <text class="label small" x="475" y="142" text-anchor="middle">BLOCK: … without the phone number.</text>
+  <path class="edge" d="M475 182 H287" marker-end="url(#p16-a)"/>
+  <text class="label small" x="380" y="176" text-anchor="middle">gather</text>
+  <path class="edge" d="M285 216 H663" marker-end="url(#p16-a)"/>
+  <text class="label small" x="475" y="210" text-anchor="middle">Check: the text without it</text>
+  <path class="edge" d="M665 250 H287" marker-end="url(#p16-a)"/>
+  <text class="label small" x="475" y="244" text-anchor="middle">APPROVE</text>
+  <path class="edge" d="M475 284 H287" marker-end="url(#p16-a)"/>
+  <text class="label small" x="380" y="278" text-anchor="middle">gather</text>
+  <path class="edge" d="M285 318 H97" marker-end="url(#p16-a)"/>
+  <text class="label small" x="190" y="312" text-anchor="middle">output: exactly the approved text</text>
+</svg>

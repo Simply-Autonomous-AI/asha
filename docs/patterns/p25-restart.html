@@ -1,0 +1,143 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p25-restart.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supervisor Restart Demo</title>
+<meta name="description" content="P25 · Supervisor restart: An agent that crashes is restarted under its handle by its supervisor, and the message it held is sent to it again; past its restart intensity it is not restarted, and its conversation ends. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Supervisor Restart Demo</nav>
+<h1>P25 · Supervisor restart</h1>
+<p class="lede">An agent that crashes is restarted under its handle by its supervisor, and the message it held is sent to it again; past its restart intensity — two restarts in a minute — it is not restarted, and its conversation ends.</p>
+<div class="facts"><span>written 2026-10-02</span><span>status: <span class="badge built">built</span> 2026-10-02, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/restart/team.json"><code>teams/restart/</code></a></span><span>test: <a href="../../tests/agents/p25-restart.test.ts"><code>tests/agents/p25-restart.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-3.md</code>, its runs</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p25-a</code> and <code>p25-b</code>, as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>Built: its three recorded runs with every member on <code>qwen3-8b-q4_k_m</code> passed, then one under the bound they set, at <code>0fe982a</code> (runs (<code>docs/plans/patterns-phase-3.md</code>)); moved 2026-10-10 by <code>docs/plans/demo-model-pico.md</code> R3, with every member on <code>pico-v2-q8_0</code> (it has no router): three recorded runs passed at <code>6eed097</code> with the move, then one under the bound they set at <code>8dd3a26</code> (runs (<code>evals/probes/demo-model-pico-runs-2026-10-09/README.md</code>)); its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>worker</code> on <code>pico-v2-q8_0</code>.</li>
+<li>The supervisor is the harness: <code>worker</code>'s recipe names <code>restart: {&quot;max&quot;: 2, &quot;withinMs&quot;: 60000}</code>, and an agent that exits on its own is restarted under its handle with its held message sent again (<a href="../architecture/channel.html#restarting">restarting a crashed agent</a>).</li>
+<li>The fault is the suite's, never the model's: <code>worker-1</code>'s container is paused before the message and killed once the daemon logs the message posted; in p25-b each restarted container is killed as it starts. Each time it goes, the chat shows <code>worker-1: system failure — offline</code> and the scene crosses its robot with a red ✕ until it greets again — or, in p25-b's last, leaves (since 2026-10-16, <code>docs/plans/demo-scene-refresh.md</code> R6–R8). The supervisor's work is told as it goes (R16): <code>restarting (1 of 2 within 60 s)</code>, then in p25-a the worker's greeting and <code>sent again the message it held</code>; in p25-b <code>restart 1 failed: its container exited before coming online</code>, <code>restarting (2 of 2 within 60 s)</code>, <code>restart 2 failed: …</code> and <code>restart limit reached (2 within 60 s): removed</code>, then <code>worker-1 left</code>.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p25-restart.webm"></video></p>
+<p>Recorded at <code>4dfa2d0</code> on 2026-10-16, its team on <code>pico-v2-q8_0</code> (<a href="videos/p25-restart.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 73 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when an agent can crash mid-task and the same agent should take the task up again, under the name other agents and the user know it by, without a crash loop running for ever.</p>
+<p><strong>Do not use it</strong> when the work should go to another agent (watchdog and reassignment, P14), or when the agent keeps state across restarts of the daemon (a persisted agent's re-sends, <code>docs/plans/agent-persistence.md</code>), which a restart refuses.</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" role="img" aria-labelledby="p25-t p25-d">
+  <title id="p25-t">P25 · Supervisor restart</title>
+  <desc id="p25-d">p25-a: the user asks worker-1, whose container is paused, then killed; the harness restarts it under the same handle and sends the message again, framed as sent before the restart; worker-1 replies Hello World. p25-b: each restarted container is killed as it starts; after two restarts in a minute the third exit is the limit, and the conversation ends restart_limit.</desc>
+  <defs><marker id="p25-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="8" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="76" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M76 44 V424"/>
+  <rect class="box" x="240" y="10" width="200" height="34" rx="5"/>
+  <text class="label mono" x="340" y="32" text-anchor="middle">asha (supervisor)</text>
+  <path class="edge dim" d="M340 44 V424"/>
+  <rect class="box accent" x="560" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="628" y="32" text-anchor="middle">worker-1</text>
+  <path class="edge dim" d="M628 44 V424"/>
+  <text class="label small" x="16" y="66">p25-a</text>
+  <path class="edge" d="M76 84 H626" marker-end="url(#p25-a)"/>
+  <text class="label small" x="352" y="78" text-anchor="middle">Please say: Hello World. (held: the container is paused)</text>
+  <text class="label small" x="640" y="112">killed: exit 137</text>
+  <text class="label small" x="350" y="136">agent.exited_unexpectedly; member suspended</text>
+  <text class="label small" x="350" y="158">agent.restarting, attempt 1</text>
+  <path class="edge" d="M340 176 H626" marker-end="url(#p25-a)"/>
+  <text class="label small" x="484" y="170" text-anchor="middle">new container rejoins as worker-1</text>
+  <path class="edge" d="M340 206 H626" marker-end="url(#p25-a)"/>
+  <text class="label small" x="484" y="200" text-anchor="middle">the same message again, restarted</text>
+  <path class="edge" d="M628 236 H78" marker-end="url(#p25-a)"/>
+  <text class="label small" x="352" y="230" text-anchor="middle">output: Hello World.</text>
+  <text class="label small" x="16" y="270">p25-b</text>
+  <path class="edge" d="M76 288 H626" marker-end="url(#p25-a)"/>
+  <text class="label small" x="352" y="282" text-anchor="middle">Please say: Hello World. (paused, then killed)</text>
+  <text class="label small" x="350" y="314">agent.restarting 1, 2: each container killed as it starts</text>
+  <text class="label small" x="350" y="338">third exit: agent.restart_limit</text>
+  <path class="edge" d="M340 362 H78" marker-end="url(#p25-a)"/>
+  <text class="label small" x="208" y="356" text-anchor="middle">error: restart_limit</text>
+  <text class="label small" x="350" y="392">worker-1 leaves the channel</text>
+</svg>
+<figcaption>p25-a: the user asks worker-1, whose container is paused, then killed; the harness restarts it under the same handle and sends the message again, framed as sent before the restart; worker-1 replies Hello World. p25-b: each restarted container is killed as it starts; after two restarts in a minute the third exit is the limit, and the conversation ends restart_limit.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs, with the fault around them (the suite pauses and kills containers through colima's docker; a reader can do the same with <code>docker pause</code> and <code>docker kill</code>). The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 8,000 ms since 2026-10-10, set from its three recorded runs with its sub-agents on <code>pico-v2-q8_0</code> (<code>docs/plans/demo-model-pico.md</code> R3) — the largest request, p25-a's 4,689 ms in run 2 at <code>6eed097</code> with the move, times 1.5 (7,033.5), rounded up to a whole second; the cap is 45,000 ms. <em>Before, with every member on <code>qwen3-8b-q4_k_m</code>:</em> 7,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-3.md</code> R4) — the largest request, p25-a's 4,555 ms at <code>04c77b3</code>, times 1.5 (6,832.5), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=restart
+# bound: 8000 ms
+# p25-a
+./asha to=worker-1 user=alice message=&quot;Please say: Hello World.&quot;
+# p25-b
+./asha to=worker-1 user=alice message=&quot;Please say: Hello World.&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>8dd3a26</code> (clean tree), <code>docs/plans/demo-model-pico.md</code>'s fourth run (R3 (d)), with its sub-agents on <code>pico-v2-q8_0</code>, from its results file <code>p25-restart.json</code> (<code>evals/probes/demo-model-pico-runs-2026-10-09/run-4/results/p14-restart.json</code>): each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' tool calls as they stream — lines such as <code>› &lt;handle&gt; &lt;tool&gt;: …</code>, one fragment each (D38) — are left out here; the results file holds them. The transcript before, with every member on <code>qwen3-8b-q4_k_m</code>, is in this page's history (<code>git show 8dd3a26:docs/patterns/p25-restart.md</code>).</p>
+<p><strong>p25-a</strong> — exit 0, 4,478 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=worker-1 user=alice message=&quot;Please say: Hello World.&quot;
+› alice → worker-1 on main: Please say: Hello World.
+› worker-1: ok
+› output worker-1 → alice:
+Hello World.
+</code></pre>
+<p><strong>p25-b</strong> — exit 1, 3,102 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=worker-1 user=alice message=&quot;Please say: Hello World.&quot;
+› alice → worker-1 on main: Please say: Hello World.
+✗ restart_limit: worker-1 exited 3 times within 60 s; not restarted
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/restart/team.json"><code>teams/restart/team.json</code></a>: the team — <code>worker</code>, joining as <code>worker-1</code>.</li>
+<li><code>worker</code>: <a href="../../teams/restart/worker.json"><code>worker.json</code></a>, its recipe, with its <code>restart</code>, and <a href="../../teams/restart/worker.md"><code>worker.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><a href="../../tests/agents/p25-restart.test.ts"><code>tests/agents/p25-restart.test.ts</code></a>: launches the team and sends each scenario's message from this page, with its fault, then asserts each scenario only through its checker, <code>P25_A</code> and <code>P25_B</code> in <a href="../../tests/agents/patterns/phase-3.ts"><code>tests/agents/patterns/phase-3.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p25-a/pass.json"><code>tests/agents/patterns/fixtures/p25-a/</code></a> and <a href="../../tests/agents/patterns/fixtures/p25-b/pass.json"><code>p25-b/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>With every member on <code>pico-v2-q8_0</code> (it has no router) (demo-model-pico, 2026-10-10): its largest request took 4,689 ms in the three recorded runs and 4,478 ms in the fourth, under its bound of 8,000 ms. The limits after it were measured with every member on <code>qwen3-8b-q4_k_m</code>, before the move; one about a sub-agent was not measured again on <code>pico-v2-q8_0</code>.</li>
+<li>The model sees the restart only as one line before the message, <code>This message was sent before you were restarted; some of its work may already be done.</code>; whether work outside the agent was already done is for its guidance to check, and <code>worker</code>'s has nothing outside to check.</li>
+<li>p25-b starts once p25-a's restart is a minute old, so its three exits meet a window holding only its own restarts: the intensity counts every restart of <code>worker-1</code> on the channel, not one scenario's.</li>
+<li>Measured in the premise probes (2026-10-02, <code>d102a45</code>): the worker's turn on the re-sent message, 3/3 (<code>docs/plans/patterns-phase-3.md</code>); a warm restart, <code>agent.isolation_ready</code> to <code>agent.online</code>, about 0.4 s (probe L).</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p25">agent test report, P25 · Supervisor restart</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p25-restart.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

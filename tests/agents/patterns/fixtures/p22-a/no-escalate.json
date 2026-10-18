@@ -1,0 +1,27 @@
+{
+  "scenario": "p22-a",
+  "breaks": "exactly one output, from helper-1, starting \"ESCALATE:\"",
+  "note": "helper-1 answers the conversion and says nothing about the rest.",
+  "team": "escalation",
+  "input": {
+    "user": "alice",
+    "to": "helper-1",
+    "text": "Convert 3 metres to centimetres, then book a meeting room for 3 pm."
+  },
+  "recipients": [
+    "helper-1"
+  ],
+  "messages": [
+    {
+      "from": "helper-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "helper-1",
+      "kind": "output",
+      "text": "3 metres is 300 centimetres."
+    }
+  ],
+  "ms": 4000
+}

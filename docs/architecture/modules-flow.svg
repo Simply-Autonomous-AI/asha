@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 420" role="img" aria-labelledby="mf-t mf-d">
+  <title id="mf-t">A granted module tool's call</title>
+  <desc id="mf-d">An agent container calls a granted module tool on the daemon's module-call route, never the module itself. The daemon checks the grant and the arguments, holds a consequential call for the user's approval, reserves the meter and audits; then the module host writes one request line to the module's container on its own internal network, or the plugin runner creates a one-shot container for a command. The module reaches the internet only through the egress proxy, which allows only its manifest's hosts on port 443, checks the TLS server name, resolves once and dials only a public IPv4 address. The proxy's own bridge is fenced by iptables rejects to every private range, colima's network and the host. The answer comes back on the module's stdout and reaches the model only as a tool result, cut to 8 KiB.</desc>
+  <defs><marker id="mf-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="10" y="30" width="170" height="120" rx="6"/>
+  <text class="label title" x="95" y="54" text-anchor="middle">agent container</text>
+  <text class="label small" x="95" y="76" text-anchor="middle">model calls &lt;module&gt;__&lt;tool&gt;</text>
+  <text class="label mono" x="95" y="98" text-anchor="middle">POST /agent/v1/</text>
+  <text class="label mono" x="95" y="114" text-anchor="middle">modules/call</text>
+  <text class="label small" x="95" y="136" text-anchor="middle">no secret, no cloud route</text>
+  <rect class="box accent" x="240" y="30" width="250" height="190" rx="6"/>
+  <text class="label title" x="365" y="54" text-anchor="middle">daemon (supervisor)</text>
+  <text class="label small" x="365" y="78" text-anchor="middle">granted? (403 module_forbidden)</text>
+  <text class="label small" x="365" y="98" text-anchor="middle">schema (400), R31 arguments</text>
+  <text class="label small" x="365" y="118" text-anchor="middle">consequential → approval_required</text>
+  <text class="label small" x="365" y="138" text-anchor="middle">meter reserve, audit, idempotency key</text>
+  <text class="label small" x="365" y="158" text-anchor="middle">module host / plugin runner</text>
+  <text class="label small" x="365" y="178" text-anchor="middle">result redacted, cut to 8 KiB</text>
+  <text class="label small" x="365" y="198" text-anchor="middle">module.call / module.failed</text>
+  <rect class="box" x="560" y="30" width="210" height="110" rx="6"/>
+  <text class="label title" x="665" y="54" text-anchor="middle">module container</text>
+  <text class="label small" x="665" y="76" text-anchor="middle">one per (module, channel)</text>
+  <text class="label small" x="665" y="94" text-anchor="middle">NDJSON on stdio, ≤ 1 MiB a line</text>
+  <text class="label small" x="665" y="112" text-anchor="middle">its own secrets only</text>
+  <text class="label small" x="665" y="130" text-anchor="middle">read-only, caps dropped</text>
+  <rect class="box" x="560" y="160" width="210" height="80" rx="6"/>
+  <text class="label title" x="665" y="184" text-anchor="middle">plugin one-shot</text>
+  <text class="label small" x="665" y="204" text-anchor="middle">docker cp in, run, cp out</text>
+  <text class="label small" x="665" y="222" text-anchor="middle">no mount, removed after</text>
+  <rect class="box accent" x="440" y="290" width="240" height="110" rx="6"/>
+  <text class="label title" x="560" y="314" text-anchor="middle">egress proxy</text>
+  <text class="label small" x="560" y="336" text-anchor="middle">CONNECT to a manifest host :443</text>
+  <text class="label small" x="560" y="354" text-anchor="middle">SNI = host; resolve once, IPv4</text>
+  <text class="label small" x="560" y="372" text-anchor="middle">public unicast only; 10 s / 60 s</text>
+  <text class="label small" x="560" y="390" text-anchor="middle">egress.connection / egress.refused</text>
+  <rect class="box" x="10" y="290" width="300" height="110" rx="6"/>
+  <text class="label title" x="160" y="314" text-anchor="middle">fences in the colima VM</text>
+  <text class="label small" x="160" y="336" text-anchor="middle">module network: --internal (no DNS out)</text>
+  <text class="label small" x="160" y="354" text-anchor="middle">bridge ashae&lt;homeId&gt;: iptables rejects</text>
+  <text class="label small" x="160" y="372" text-anchor="middle">to private ranges, 192.168.5.0/24, host</text>
+  <text class="label small" x="160" y="390" text-anchor="middle">all labelled asha.home: the reclaim</text>
+  <text class="label small" x="730" y="350" text-anchor="middle">vendor</text>
+  <path class="edge" d="M180 90 L240 90" marker-end="url(#mf-a)"/>
+  <path class="edge" d="M490 85 L560 85" marker-end="url(#mf-a)"/>
+  <path class="edge" d="M490 195 L560 200" marker-end="url(#mf-a)"/>
+  <path class="edge" d="M640 140 L600 290" marker-end="url(#mf-a)"/>
+  <path class="edge" d="M665 240 L640 290" marker-end="url(#mf-a)"/>
+  <path class="edge" d="M680 345 L710 345" marker-end="url(#mf-a)"/>
+</svg>

@@ -1,0 +1,14 @@
+{
+  "id": "suite-files-kept",
+  "description": "Agent-suite fixture (agent-files A12), test-only: one scripted agent on images/suite-files, its channel's board and files persisted.",
+  "persist": [
+    "board",
+    "files"
+  ],
+  "members": [
+    {
+      "name": "keeper",
+      "recipe": "scribe.json"
+    }
+  ]
+}

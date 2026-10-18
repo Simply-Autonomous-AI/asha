@@ -1,0 +1,65 @@
+{
+  "scenario": "p03-a",
+  "breaks": "no other internal message or output",
+  "note": "stage-a-1 also replies to the user.",
+  "team": "pipeline",
+  "input": {
+    "user": "alice",
+    "to": "stage-a-1",
+    "text": "Build the colour list."
+  },
+  "recipients": [
+    "stage-a-1"
+  ],
+  "messages": [
+    {
+      "from": "stage-a-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "stage-a-1",
+      "kind": "internal",
+      "text": "list: red",
+      "to": "stage-b-1",
+      "working": [
+        "stage-a-1",
+        "stage-b-1"
+      ]
+    },
+    {
+      "from": "stage-a-1",
+      "kind": "output",
+      "text": "list: red",
+      "working": [
+        "stage-b-1"
+      ]
+    },
+    {
+      "from": "stage-b-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "stage-b-1",
+      "kind": "internal",
+      "text": "list: red, orange",
+      "to": "stage-c-1",
+      "working": [
+        "stage-b-1",
+        "stage-c-1"
+      ]
+    },
+    {
+      "from": "stage-c-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "stage-c-1",
+      "kind": "output",
+      "text": "list: red, orange, yellow"
+    }
+  ],
+  "ms": 12000
+}

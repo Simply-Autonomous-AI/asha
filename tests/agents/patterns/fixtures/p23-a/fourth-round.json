@@ -1,0 +1,528 @@
+{
+  "scenario": "p23-a",
+  "breaks": "the rounds stop at the first gather whose tokens are all equal, or after round 3 (R = 3)",
+  "note": "The umbrella's fourth mutation: a fourth round.",
+  "team": "consensus",
+  "input": {
+    "user": "alice",
+    "to": "moderator-1",
+    "text": "Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8."
+  },
+  "recipients": [
+    "moderator-1"
+  ],
+  "messages": [
+    {
+      "from": "moderator-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-a-1",
+      "kind": "internal",
+      "text": "Round 1. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-a-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-b-1",
+      "kind": "internal",
+      "text": "Round 1. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-b-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-c-1",
+      "kind": "internal",
+      "text": "Round 1. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-c-1"
+      ]
+    },
+    {
+      "from": "debater-c-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Indigo and violet are one colour.\nANSWER: 6",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "debater-a-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Red to violet makes seven.\nANSWER: 7",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "debater-b-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Schools teach seven colours.\nANSWER: 7",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Answers to moderator-1's call: 3 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-a-1",
+      "kind": "internal",
+      "text": "Round 2. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Red to violet makes seven.\nANSWER: 7 debater-b-1: Schools teach seven colours.\nANSWER: 7 debater-c-1: Indigo and violet are one colour.\nANSWER: 6",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-a-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-b-1",
+      "kind": "internal",
+      "text": "Round 2. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Red to violet makes seven.\nANSWER: 7 debater-b-1: Schools teach seven colours.\nANSWER: 7 debater-c-1: Indigo and violet are one colour.\nANSWER: 6",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-b-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-c-1",
+      "kind": "internal",
+      "text": "Round 2. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Red to violet makes seven.\nANSWER: 7 debater-b-1: Schools teach seven colours.\nANSWER: 7 debater-c-1: Indigo and violet are one colour.\nANSWER: 6",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-c-1"
+      ]
+    },
+    {
+      "from": "debater-a-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Still seven.\nANSWER: 7",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "debater-b-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Still seven.\nANSWER: 7",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "debater-c-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Still six.\nANSWER: 6",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Answers to moderator-1's call: 3 answered.",
+      "call": {
+        "id": "k2",
+        "role": "gather"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-a-1",
+      "kind": "internal",
+      "text": "Round 3. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Still seven.\nANSWER: 7 debater-b-1: Still seven.\nANSWER: 7 debater-c-1: Still six.\nANSWER: 6",
+      "call": {
+        "id": "k3",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-a-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-b-1",
+      "kind": "internal",
+      "text": "Round 3. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Still seven.\nANSWER: 7 debater-b-1: Still seven.\nANSWER: 7 debater-c-1: Still six.\nANSWER: 6",
+      "call": {
+        "id": "k3",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-b-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-c-1",
+      "kind": "internal",
+      "text": "Round 3. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Still seven.\nANSWER: 7 debater-b-1: Still seven.\nANSWER: 7 debater-c-1: Still six.\nANSWER: 6",
+      "call": {
+        "id": "k3",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-c-1"
+      ]
+    },
+    {
+      "from": "debater-a-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Still seven.\nANSWER: 7",
+      "call": {
+        "id": "k3",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "debater-b-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Still seven.\nANSWER: 7",
+      "call": {
+        "id": "k3",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "debater-c-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Still six.\nANSWER: 6",
+      "call": {
+        "id": "k3",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Answers to moderator-1's call: 3 answered.",
+      "call": {
+        "id": "k3",
+        "role": "gather"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-a-1",
+      "kind": "internal",
+      "text": "Round 4. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Still seven.\nANSWER: 7 debater-b-1: Still seven.\nANSWER: 7 debater-c-1: Still six.\nANSWER: 6",
+      "call": {
+        "id": "k4",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-a-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-b-1",
+      "kind": "internal",
+      "text": "Round 4. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Still seven.\nANSWER: 7 debater-b-1: Still seven.\nANSWER: 7 debater-c-1: Still six.\nANSWER: 6",
+      "call": {
+        "id": "k4",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-b-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "to": "debater-c-1",
+      "kind": "internal",
+      "text": "Round 4. Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Still seven.\nANSWER: 7 debater-b-1: Still seven.\nANSWER: 7 debater-c-1: Still six.\nANSWER: 6",
+      "call": {
+        "id": "k4",
+        "role": "question"
+      },
+      "working": [
+        "moderator-1",
+        "debater-c-1"
+      ]
+    },
+    {
+      "from": "debater-a-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Most of us said seven.\nANSWER: 7",
+      "call": {
+        "id": "k4",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "debater-c-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Most said seven, so seven.\nANSWER: 7",
+      "call": {
+        "id": "k4",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "debater-b-1",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Seven, as most said.\nANSWER: 7",
+      "call": {
+        "id": "k4",
+        "role": "answer"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "moderator-1",
+      "kind": "internal",
+      "text": "Answers to moderator-1's call: 3 answered.",
+      "call": {
+        "id": "k4",
+        "role": "gather"
+      },
+      "working": [
+        "moderator-1"
+      ]
+    },
+    {
+      "from": "moderator-1",
+      "kind": "output",
+      "text": "Consensus: 7, reached in round 4."
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "moderator-1",
+      "addressees": [
+        "debater-a-1",
+        "debater-b-1",
+        "debater-c-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "moderator-1",
+      "counts": {
+        "answered": 3,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k2",
+      "caller": "moderator-1",
+      "addressees": [
+        "debater-a-1",
+        "debater-b-1",
+        "debater-c-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k2",
+      "caller": "moderator-1",
+      "counts": {
+        "answered": 3,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k3",
+      "caller": "moderator-1",
+      "addressees": [
+        "debater-a-1",
+        "debater-b-1",
+        "debater-c-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k3",
+      "caller": "moderator-1",
+      "counts": {
+        "answered": 3,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k4",
+      "caller": "moderator-1",
+      "addressees": [
+        "debater-a-1",
+        "debater-b-1",
+        "debater-c-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k4",
+      "caller": "moderator-1",
+      "counts": {
+        "answered": 3,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    }
+  ],
+  "ms": 20000
+}

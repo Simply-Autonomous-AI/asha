@@ -1,0 +1,80 @@
+{
+  "name": "asha",
+  "version": "0.2.0",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "SimplyAutonomous.AI, LLC <admin@simplyautonomous.ai>",
+  "repository": "https://github.com/SimplyAutonomous-AI/asha",
+  "homepage": "https://github.com/SimplyAutonomous-AI/asha#readme",
+  "bugs": "https://github.com/SimplyAutonomous-AI/asha/issues",
+  "type": "module",
+  "description": "asha — Autonomous Simple Harness for Agents: run AI agents and multi-agent patterns on your own Mac, with open-weight models served locally",
+  "keywords": [
+    "agents",
+    "multi-agent",
+    "llm",
+    "open-weight models",
+    "llama.cpp",
+    "local",
+    "macos",
+    "orchestration",
+    "harness"
+  ],
+  "bin": {
+    "asha": "asha"
+  },
+  "engines": {
+    "node": "^22.13.0 || ^24.0.0 || >=26.0.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.portal.json && tsc --noEmit -p tsconfig.dom-tests.json",
+    "lint": "eslint --max-warnings 0 .",
+    "lint:unused": "knip",
+    "lint:fix": "eslint --max-warnings 0 --fix .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && tsc -p tsconfig.portal.json && node --experimental-strip-types --disable-warning=ExperimentalWarning tools/agent-packages/build.mts",
+    "test": "vitest run --config vitest.config.mts",
+    "test:coverage": "vitest run --config vitest.config.mts --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "test:agents": "npm run build && vitest run --config vitest.agents.config.mts",
+    "eval": "npm run build && vitest run --config vitest.eval.config.mts",
+    "check": "npm run lint && npm run lint:unused && npm run format:check && npm run typecheck && npm run scan:secrets && npm test && npm run test:integration && npm run build && npm run demos:select && npm run test:agents && npm run eval && npm run eval:routing:gate",
+    "demos:select": "node dist/evals/patterns/select.js",
+    "demos:record": "node --experimental-transform-types --disable-warning=ExperimentalWarning --import ./tools/demos/register.mjs tools/demos/record.mts",
+    "demos:reel": "node --experimental-transform-types --disable-warning=ExperimentalWarning --import ./tools/demos/register.mjs tools/demos/reel.mts",
+    "eval:routing": "npm run build && node dist/evals/routing/run.js",
+    "eval:routing:gate": "node dist/evals/routing/run.js --held-out --gate --out .tmp/routing-gate qwen3-8b-q4_k_m",
+    "report": "npm run build && node dist/evals/report.js",
+    "docs": "node --experimental-strip-types --disable-warning=ExperimentalWarning --import ./tools/demos/register.mjs tools/docs/render.mts",
+    "live:modules": "vitest run --config vitest.live.config.mts",
+    "scan:secrets": "node --experimental-transform-types --disable-warning=ExperimentalWarning --import ./tools/demos/register.mjs tools/oss/scan-secrets.mts",
+    "oss:check": "node --experimental-transform-types --disable-warning=ExperimentalWarning --import ./tools/demos/register.mjs tools/oss/check-cli.mts",
+    "oss:export": "node --experimental-transform-types --disable-warning=ExperimentalWarning --import ./tools/demos/register.mjs tools/oss/export-cli.mts",
+    "oss:scan-markers": "node --experimental-transform-types --disable-warning=ExperimentalWarning --import ./tools/demos/register.mjs tools/oss/scan-markers.mts",
+    "release": "node --experimental-strip-types --disable-warning=ExperimentalWarning tools/release/pack.mts",
+    "decisions": "node --experimental-strip-types --disable-warning=ExperimentalWarning --import ./tools/demos/register.mjs tools/decision-queue/server.mts decisions/queue.json",
+    "portal:screenshots": "vitest run --config vitest.screenshots.config.mts"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "~22.13.0",
+    "@vitest/coverage-v8": "5.0.2",
+    "eslint": "10.12.0",
+    "eslint-plugin-sonarjs": "4.2.2",
+    "globals": "17.13.0",
+    "knip": "6.39.0",
+    "marked": "18.0.14",
+    "playwright-core": "1.63.0",
+    "prettier": "3.9.9",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.1",
+    "vitest": "^5.0.2"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "1.9.1",
+    "@opentelemetry/core": "2.11.0",
+    "@opentelemetry/exporter-trace-otlp-http": "0.222.0",
+    "@opentelemetry/sdk-trace": "2.11.0"
+  }
+}

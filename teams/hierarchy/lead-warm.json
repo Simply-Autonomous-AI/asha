@@ -1,0 +1,25 @@
+{
+  "id": "lead-warm",
+  "image": "hello-world",
+  "description": "Leads the warm-colour workers.",
+  "prompt": "you lead the warm-colour workers, red-1 and orange-1.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "lead-warm.md",
+      "fullText": true
+    }
+  ],
+  "nestedCalls": true
+}

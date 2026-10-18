@@ -1,0 +1,37 @@
+{
+  "pattern": "P8",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:23:38.632Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p08-critic-loop",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 35080,
+  "bytes": 2321453,
+  "sha256": "5ead5d47680384c0e89af59e43bcfea757996c44ffb723c491bfbfa27ae63ea6",
+  "frames": 700,
+  "framesPerSecond": 20,
+  "longestGapMs": 79,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P8 · Generator–critic loop",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5047,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p08-a",
+      "outcome": "pass"
+    },
+    {
+      "id": "p08-b",
+      "outcome": "pass"
+    }
+  ]
+}

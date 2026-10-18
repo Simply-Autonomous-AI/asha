@@ -1,0 +1,24 @@
+{
+  "id": "debater-b",
+  "image": "hello-world",
+  "description": "Trusts the common school count.",
+  "prompt": "you trust the common school count.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "debater-b.md",
+      "fullText": true
+    }
+  ]
+}

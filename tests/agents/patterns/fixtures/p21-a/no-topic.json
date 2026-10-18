@@ -1,0 +1,50 @@
+{
+  "scenario": "p21-a",
+  "breaks": "the message is posted to topic weather, to everyone (channel.posted with topic weather and to null)",
+  "note": "Posted to everyone with no topic.",
+  "team": "topics",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Rain expected tomorrow."
+  },
+  "recipients": [
+    "weather-desk-1",
+    "front-page-1"
+  ],
+  "messages": [
+    {
+      "from": "weather-desk-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "weather-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "weather-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "weather-desk-1",
+      "kind": "output",
+      "text": "weather-desk-1 noted: Rain expected tomorrow.",
+      "working": [
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "output",
+      "text": "front-page-1 noted: Rain expected tomorrow.",
+      "working": []
+    }
+  ],
+  "ms": 6000
+}

@@ -1,0 +1,452 @@
+<!doctype html>
+<!-- Generated from docs/architecture/extending.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Extending asha</title>
+<meta name="description" content="How to extend asha: add a recipe, an agent image built on the agent SDK, a pinned model, a module, or an adapter behind an existing contract such as ContainerRuntime or ModelServer — with the steps, the files to touch and the tests to add.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="architecture">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha Architecture</a> / Extending asha</nav>
+<h1>Extending asha</h1>
+<p class="lede">Five ways to extend the harness, smallest first: a recipe, an agent image, a model, a module, and an adapter behind an existing contract.</p>
+<div class="facts"><span>verified 2026-09-27</span><span>gate: <code>npm run check</code></span><span>specifications: <a href="recipes.html">Recipes and configuration</a> · <a href="models.html">Models</a></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>A new agent from existing parts is one JSON file, a recipe; new behaviour is an image; a new model is a catalogue entry; a tool or hosted model from outside is a module; a new platform is an adapter.</li>
+<li>Every change carries tests, docs in the same commit, one review, and a green <code>npm run check</code>.</li>
+<li>An image uses only the agent SDK (with the OpenTelemetry packages it sends spans with) and Node's standard library; <code>hello-world</code> is the reference.</li>
+<li>An adapter is wired only in <code>productionDependencies</code>; if a consumer must change, the contract leaks.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#every-change">What every change carries</a></li>
+<li><a href="#recipe">Add a recipe</a></li>
+<li><a href="#team">Add a team</a></li>
+<li><a href="#image">Add an agent image</a></li>
+<li><a href="#model">Add a model</a></li>
+<li><a href="#module">Write a module</a></li>
+<li><a href="#adapter">Add an adapter behind an existing contract</a></li>
+</ol>
+</nav>
+<section id="every-change">
+<h2>What every change carries</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 350" role="img" aria-labelledby="ex-t ex-d">
+  <title id="ex-t">The four ways to extend asha, step by step</title>
+  <desc id="ex-d">Four rows, smallest first. A recipe: write recipes/name.json with every field, write the description other agents read and set temperature 0 if a test asserts its output, then add a Definitions test and an agent-suite scenario. An image: write images/name with main.ts, agent.ts and a copied Dockerfile, add a recipe naming it, then npm run build and add unit and agent-suite tests. A model: write catalogue/id.json pinned by revision sha, sha256 per file and licence, record every value's source and date on the Models page, then point a recipe at it and, for a chat model, run the routing eval. An adapter: justify it in writing, implement the existing contract in its module folder, then wire it in productionDependencies and map new errors in classify. Every row ends at the same gate: npm run check, the docs in the same commit, and one adversarial review.</desc>
+  <defs><marker id="ex-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <!-- row labels -->
+  <rect class="box accent" x="10" y="14" width="90" height="62" rx="6"/>
+  <text class="label title" x="55" y="42" text-anchor="middle">recipe</text>
+  <text class="label small" x="55" y="60" text-anchor="middle">smallest</text>
+  <rect class="box accent" x="10" y="96" width="90" height="62" rx="6"/>
+  <text class="label title" x="55" y="132" text-anchor="middle">image</text>
+  <rect class="box accent" x="10" y="178" width="90" height="62" rx="6"/>
+  <text class="label title" x="55" y="214" text-anchor="middle">model</text>
+  <rect class="box accent" x="10" y="260" width="90" height="62" rx="6"/>
+  <text class="label title" x="55" y="288" text-anchor="middle">adapter</text>
+  <text class="label small" x="55" y="306" text-anchor="middle">largest</text>
+
+  <!-- recipe row -->
+  <rect class="box" x="110" y="14" width="160" height="62" rx="6"/>
+  <text class="label mono" x="190" y="38" text-anchor="middle">recipes/&lt;name&gt;.json</text>
+  <text class="label small" x="190" y="58" text-anchor="middle">every field; id = name</text>
+  <rect class="box" x="283" y="14" width="160" height="62" rx="6"/>
+  <text class="label small" x="363" y="38" text-anchor="middle">description for list_agents</text>
+  <text class="label small" x="363" y="58" text-anchor="middle">temperature 0 if asserted</text>
+  <rect class="box" x="456" y="14" width="160" height="62" rx="6"/>
+  <text class="label small" x="536" y="38" text-anchor="middle">Definitions test</text>
+  <text class="label small" x="536" y="58" text-anchor="middle">agent-suite scenario</text>
+
+  <!-- image row -->
+  <rect class="box" x="110" y="96" width="160" height="62" rx="6"/>
+  <text class="label mono" x="190" y="116" text-anchor="middle">images/&lt;name&gt;/</text>
+  <text class="label small" x="190" y="134" text-anchor="middle">main.ts · agent.ts</text>
+  <text class="label small" x="190" y="150" text-anchor="middle">copied Dockerfile</text>
+  <rect class="box" x="283" y="96" width="160" height="62" rx="6"/>
+  <text class="label small" x="363" y="120" text-anchor="middle">a recipe whose</text>
+  <text class="label mono" x="363" y="140" text-anchor="middle">image: &lt;name&gt;</text>
+  <rect class="box" x="456" y="96" width="160" height="62" rx="6"/>
+  <text class="label mono" x="536" y="120" text-anchor="middle">npm run build</text>
+  <text class="label small" x="536" y="140" text-anchor="middle">unit + agent-suite tests</text>
+
+  <!-- model row -->
+  <rect class="box" x="110" y="178" width="160" height="62" rx="6"/>
+  <text class="label mono" x="190" y="198" text-anchor="middle">catalogue/&lt;id&gt;.json</text>
+  <text class="label small" x="190" y="216" text-anchor="middle">revision sha · sha256</text>
+  <text class="label small" x="190" y="232" text-anchor="middle">per file · licence</text>
+  <rect class="box" x="283" y="178" width="160" height="62" rx="6"/>
+  <text class="label small" x="363" y="202" text-anchor="middle">Models page: every</text>
+  <text class="label small" x="363" y="220" text-anchor="middle">value's source and date</text>
+  <rect class="box" x="456" y="178" width="160" height="62" rx="6"/>
+  <text class="label small" x="536" y="198" text-anchor="middle">a recipe's model or</text>
+  <text class="label small" x="536" y="214" text-anchor="middle">embeddingModel;</text>
+  <text class="label small" x="536" y="230" text-anchor="middle">routing eval for chat</text>
+
+  <!-- adapter row -->
+  <rect class="box" x="110" y="260" width="160" height="62" rx="6"/>
+  <text class="label small" x="190" y="284" text-anchor="middle">written justification</text>
+  <text class="label small" x="190" y="302" text-anchor="middle">(PRINCIPLES §7)</text>
+  <rect class="box" x="283" y="260" width="160" height="62" rx="6"/>
+  <text class="label small" x="363" y="284" text-anchor="middle">implement the contract</text>
+  <text class="label small" x="363" y="302" text-anchor="middle">in its module folder</text>
+  <rect class="box" x="456" y="260" width="160" height="62" rx="6"/>
+  <text class="label mono" x="536" y="284" text-anchor="middle">productionDependencies</text>
+  <text class="label mono" x="536" y="302" text-anchor="middle">classify</text>
+
+  <!-- gate -->
+  <rect class="box accent" x="634" y="14" width="116" height="308" rx="8"/>
+  <text class="label title" x="692" y="140" text-anchor="middle">the gate</text>
+  <text class="label mono" x="692" y="162" text-anchor="middle">npm run check</text>
+  <text class="label small" x="692" y="184" text-anchor="middle">docs in the</text>
+  <text class="label small" x="692" y="198" text-anchor="middle">same commit</text>
+  <text class="label small" x="692" y="220" text-anchor="middle">one adversarial</text>
+  <text class="label small" x="692" y="234" text-anchor="middle">review</text>
+
+  <!-- edges -->
+  <path class="edge" d="M270 45 H281" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M443 45 H454" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M616 45 H632" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M270 127 H281" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M443 127 H454" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M616 127 H632" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M270 209 H281" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M443 209 H454" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M616 209 H632" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M270 291 H281" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M443 291 H454" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M616 291 H632" marker-end="url(#ex-a)"/>
+</svg>
+<figcaption>Each row is one kind of extension, smallest first; every row ends at the same gate.</figcaption>
+</figure>
+<ul>
+<li><strong>Tests</strong> for every change to logic; a new guard is proven to fail (PRINCIPLES §3).</li>
+<li><strong>Docs in the same commit</strong> (PRINCIPLES §15, AGENTS.md §4), new pages listed in <a href="../index.html"><code>docs/index.html</code></a>; <strong>the code-review loop</strong> in <code>sdlc/</code>, converged (AGENTS.md §5).</li>
+<li><strong>A green gate:</strong> <code>npm run check</code> (lint → format check → typecheck → secret scan → unit → integration → build → demo selection → agents → eval → routing).</li>
+</ul>
+<div class="callout warning">
+<p class="callout-title">Simplicity first (PRINCIPLES §7)</p>
+<p>A second model backend or container runtime is a new moving part: justify it in writing first (AGENTS.md §2). A paid API needs a written estimate and the owner's approval.</p>
+</div>
+</section>
+<section id="recipe">
+<h2>Add a recipe</h2>
+<ol>
+<li>Write <code>recipes/&lt;name&gt;.json</code> with every required field (<a href="recipes.html#recipe">spec</a>); <code>id</code> equals <code>&lt;name&gt;</code> and matches <code>/^[a-z0-9][a-z0-9._-]*$/</code>.</li>
+<li>Write the <code>description</code> for other agents: <code>list_agents</code> shows it when they choose whom to delegate to (<a href="models.html#choice"><code>delegate-by-role</code></a>).</li>
+<li>Write its <code>prompt</code>: the agent's role, which goes into its instructions as <code>Your role: &lt;prompt&gt;</code> on every turn. The image carries none: the same image with another prompt is another agent.</li>
+<li>Optionally, name Markdown <code>documents</code> in the recipe's folder — a numbered workflow, guidance — each <code>{&quot;path&quot;, &quot;fullText&quot;}</code> (<a href="recipes.html#documents">documents</a>). A full-text document is in the system prompt on every turn (all of them together at most 8 KiB); the rest the agent reads with its file tools. A recipe with documents selects the four file tools.</li>
+<li>If a test asserts its output exactly, set <code>&quot;chat&quot;: { &quot;temperature&quot;: 0 }</code> (AGENTS.md §3).</li>
+<li>Select its tools in <code>tools</code>: any of the six common tools, its image's own, <code>reply_with_files</code> for an agent that returns files to the user and <code>ask_user</code> for one that asks the user and waits for the answer (<a href="channel.html#tools">agent tools</a>, <a href="channel.html#files">returning files</a>, <a href="channel.html#asking">asking the user</a>); <code>[]</code> for none. At most 11 with any granted module tools; a name no source declares, or an image tool of class <code>command</code> or <code>network</code>, fails the launch before anything starts.</li>
+<li>Try it: <code>./asha recipe=&lt;name&gt; message=&quot;…&quot;</code>.</li>
+</ol>
+<div class="callout tip">
+<p class="callout-title">No restart needed</p>
+<p>The daemon reads recipes at every launch; an agent already online keeps its old recipe until stopped (<a href="recipes.html#loading">loading</a>).</p>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Touch</th><th>Test</th></tr></thead>
+<tbody>
+<tr><td><code>recipes/&lt;name&gt;.json</code></td><td>A <code>Definitions</code> case in <a href="../../tests/unit/definitions.test.ts"><code>tests/unit/definitions.test.ts</code></a> asserting every field, like &quot;loads the checked-in memory recipe, whose embedding model is the pinned Qwen3-Embedding-0.6B&quot;; an agent-suite scenario in <code>tests/agents/</code>.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="team">
+<h2>Add a team</h2>
+<p>A team is several agents launched together on one channel, each under its own name — the unit of a multi-agent demo (<a href="recipes.html#team">team spec</a>).</p>
+<ol>
+<li>Create <code>teams/&lt;team&gt;/</code> and, in it, one recipe per kind of member (as <a href="#recipe">above</a>; two members may share a recipe) and every document those recipes name. Nothing a member needs may live outside the folder: a document that links out fails the launch.</li>
+<li>Write <code>teams/&lt;team&gt;/team.json</code>: <code>{&quot;id&quot;: &quot;&lt;team&gt;&quot;, &quot;description&quot;: &quot;…&quot;, &quot;members&quot;: [{&quot;name&quot;: &quot;lead&quot;, &quot;recipe&quot;: &quot;lead.json&quot;}, …]}</code> — 1 to 10 members, in launch order. Each <code>name</code> is the member's handle base, so <code>lead</code> is <code>lead-1</code> on a fresh channel and other members address it by that; it matches <code>/^[a-z][a-z0-9-]{0,31}$/</code>, is not <code>user</code> or <code>asha</code>, and does not end in <code>-&lt;digits&gt;</code>.</li>
+<li>Try it: <code>./asha --launch team=&lt;team&gt;</code> prints every member's handle; <code>./asha to=lead-1 message=&quot;…&quot;</code> then talks to one of them.</li>
+</ol>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Touch</th><th>Test</th></tr></thead>
+<tbody>
+<tr><td><code>teams/&lt;team&gt;/</code></td><td>Every committed team loads (<code>tests/unit/teams.test.ts</code>, &quot;every committed team folder …&quot;); an agent-suite scenario that launches it with <code>--launch team=&lt;team&gt;</code>, like <a href="../../tests/agents/teams.test.ts"><code>tests/agents/teams.test.ts</code></a>.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="image">
+<h2>Add an agent image</h2>
+<p>An image is a Dockerfile, a tool manifest <code>image.json</code> and TypeScript under <code>images/&lt;name&gt;/</code>, importing only the agent SDK (<a href="../../src/agent-sdk/index.ts"><code>src/agent-sdk</code></a>, <a href="channel.html#sdk">described here</a>) and the shared contracts (<a href="../../src/shared/protocol.ts"><code>src/shared</code></a>). <code>readAgentEnvironment(process.env)</code> finds the harness; <code>AgentTelemetry.forHarness</code> sends the agent's spans to it; <code>HarnessClient</code> returns model failures as <code>{ok: false, reason}</code>; <code>serveAgent</code> checks <code>/workspace</code>, the channel's file space <code>/channel</code> (each a writable directory, else the agent fails before it joins: <code>WorkspaceUnavailable</code>, <code>ChannelSpaceUnavailable</code>) and the image's tools, joins as <code>name</code> (numbered <code>name-1</code>, …), builds the tools its recipe selects (<code>context.tools</code>), calls <code>handler(delivery, context)</code> per delivery inside its span, and flushes the spans before each ack (<a href="channel.html#spans">spans</a>). The handler passes <code>context.tools</code> to <code>decide</code>, which runs the tool rounds (<a href="channel.html#tools">agent tools</a>).</p>
+<div class="callout note">
+<p class="callout-title">No npm in an image</p>
+<p>Besides the compiled code and <code>image.json</code>, only the runtime files of the harness's own pinned <code>dependencies</code> are staged into the build context, copied from the build's clean install of the lockfile, <code>dist/agent-packages/</code> (never the checkout's <code>node_modules/</code>); no <code>npm install</code> runs at a launch and the image build has no network (<a href="recipes.html#image">image spec</a>). A new npm package for an image is a new dependency: it needs the owner's approval and passes the <a href="index.html#otel-licences">dependency guard</a>.</p>
+</div>
+<p class="pre-label">images/hello-world/src/main.ts — wiring only</p><pre><code>import {
+  AgentTelemetry,
+  exitOnFailure,
+  HarnessClient,
+  JsonLinesAgentLog,
+  nodeAgentProcess,
+  readAgentEnvironment,
+  readImageManifest,
+  REPLY_WITH_FILES_TIMEOUT_MS,
+  serveAgent,
+} from &#39;../../../src/agent-sdk/index.js&#39;;
+import { AGENT_CHAT_TIMEOUT_MS, AGENT_DRAIN_MS } from &#39;../../../src/shared/protocol.js&#39;;
+import { NAME, handleHelloWorld } from &#39;./agent.js&#39;;
+import { HOLD, holdHandler } from &#39;./hold.js&#39;;
+
+const environment = readAgentEnvironment(process.env);
+// Spans to the harness; an export failure is one JSON line on stdout, in the agent&#39;s log.
+const telemetry = AgentTelemetry.forHarness(environment, (line) =&gt; process.stdout.write(`${line}\n`));
+const client = new HarnessClient({
+  environment,
+  chatTimeoutMs: AGENT_CHAT_TIMEOUT_MS,
+  requestTimeoutMs: 10_000,
+  // An output with files waits on the daemon&#39;s copies: 30 s, not 10 (docs/plans/agent-files.md R12).
+  filesRequestTimeoutMs: REPLY_WITH_FILES_TIMEOUT_MS,
+  streamIdleTimeoutMs: 45_000,
+  fetch: globalThis.fetch,
+  telemetry,
+});
+
+// One log for the SDK and the image&#39;s own tool, which announces itself in it (hold.started).
+const log = new JsonLinesAgentLog({ write: (line) =&gt; process.stdout.write(line), clock: () =&gt; new Date() });
+
+console.log(`joining the channel as ${NAME}`);
+await exitOnFailure(
+  async () =&gt; {
+  await serveAgent({
+    client,
+    telemetry,
+    name: NAME,
+    handler: handleHelloWorld,
+    process: nodeAgentProcess(process),
+    // image.json is staged beside the compiled code. Its one tool, hold, is offered only to a recipe that selects it
+    // (docs/plans/patterns-phase-2.md R7).
+    imageTools: { manifest: await readImageManifest(new URL(&#39;../image.json&#39;, import.meta.url)), handlers: { [HOLD]: holdHandler(log) } },
+    workspace: &#39;/workspace&#39;,
+    // The channel&#39;s file space, mounted by the harness in every agent container (docs/plans/agent-files.md R4, R10).
+    channelSpace: &#39;/channel&#39;,
+    log,
+    // On SIGTERM, the bound on finishing started work; shorter than the harness&#39;s stop grace.
+    drainMs: AGENT_DRAIN_MS,
+    onJoined: ({ handle, channel }) =&gt; console.log(`joined channel &quot;${channel}&quot; as ${handle}`),
+  });
+  console.log(&#39;the harness closed the channel; exiting&#39;);
+  },
+  nodeAgentProcess(process),
+  // Captured in the agent&#39;s log, then exit 1 at once (exitOnFailure); serveAgent has flushed the spans.
+  (error) =&gt; console.error(&#39;failed&#39;, error),
+);
+</code></pre>
+<p>A main runs <code>serveAgent</code> through <code>exitOnFailure</code> (<a href="../../src/agent-sdk/index.ts"><code>src/agent-sdk/index.ts</code></a>): a failure is reported, then the process exits 1 at once. Setting only <code>process.exitCode</code> left a failed agent running — its channel stream and timers keep Node's loop alive — connected and silent until the harness's delivery bound killed it (agent-persistence's agent suite, 2026-09-29). A unit test (<a href="../../tests/unit/agent-exit.test.ts"><code>tests/unit/agent-exit.test.ts</code></a>) checks that every image's main does this.</p>
+<p class="pre-label">images/hello-world/src/agent.ts — the handler, with the persona its recipe gives it</p><pre><code>/** The base name this agent joins the channel under; the channel numbers it (hewo-1, hewo-2, …). */
+export const NAME = &#39;hewo&#39;;
+
+/**
+ * Bound on generated tokens per model call. 1,024 since agent calls (docs/plans/agent-calls.md R20): a nine-request
+ * consult took 180–196 tokens and nine parallel send_message calls 271, against the former 256 (probe P2). A bound,
+ * not a target: at temperature 0 it changes no output that completed within the old bound.
+ */
+export const MAX_TOKENS = 1_024;
+
+/** Bound on list_agents rounds in one turn. */
+export const MAX_ROUNDS = 3;
+
+/** Bound on invalid replies or messages sent back to the model to fix, per message. */
+export const MAX_CORRECTIONS = 2;
+
+/**
+ * The model request for one message, with the persona its recipe gives it: the prompt as its role and the tools it
+ * selects. The routing eval runs exactly this, with the persona read from recipes/hello-world.json.
+ */
+export function helloWorldTurn(message: ConversationMessage, handle: string, others: readonly string[], persona: AgentPersona): ChatRequest {
+  // hello-world recalls nothing: its per-agent block is the identity line and the message.
+  return channelTurn({ handle, others, persona, message, maxTokens: MAX_TOKENS, memory: &#39;&#39; });
+}
+
+export const handleHelloWorld: DeliveryHandler = async (delivery, context) =&gt; {
+  const { message } = delivery;
+  const roster = await context.roster();
+  const others = roster.map((a) =&gt; a.handle);
+  const calls = await decide({
+    model: context.model,
+    request: helloWorldTurn(message, context.handle, others, { role: context.prompt, guidance: context.guidance, tools: context.tools.definitions }),
+    message,
+    roster,
+    maxRounds: MAX_ROUNDS,
+    maxCorrections: MAX_CORRECTIONS,
+    tools: context.tools,
+  });
+  for (const call of calls.filter((c) =&gt; c.name === PASS)) console.log(`pass: ${String(call.arguments[&#39;reason&#39;])}`);
+  await act(calls, others, delivery, context);
+};
+</code></pre>
+<p><strong>Implementing a tool of the image's own.</strong> Declare it in <code>images/&lt;name&gt;/image.json</code> — <code>{&quot;tools&quot;: [{&quot;name&quot;, &quot;description&quot;, &quot;parameters&quot;, &quot;class&quot;: &quot;files&quot;, &quot;timeoutMs&quot;}]}</code>, <code>parameters</code> in the JSON Schema subset <code>src/shared/tools.ts</code> checks (<code>type: &quot;object&quot;</code>, <code>properties</code> of <code>string</code>, <code>integer</code>, <code>number</code> or <code>boolean</code>, optional <code>required</code>, <code>minimum</code>, <code>enum</code>), <code>timeoutMs</code> at most 60,000 (<a href="recipes.html#image">the manifest</a>) — and pass one handler per declared tool in <code>serveAgent</code>'s <code>imageTools.handlers</code>: <code>(args, signal) =&gt; Promise&lt;{ok: true, value} | {ok: false, reason}&gt;</code>, where <code>reason</code> is one of <a href="channel.html#tools">the closed set</a>, <code>value</code> serializes to at most 8 KiB, and <code>signal</code> aborts at the bound. Arguments are checked before the handler runs; a throw fails the turn and is logged as <code>tool.crashed</code>. A declared tool with no handler, or a handler with no declaration, fails the agent's start. A tool that runs a command or sends a request is never an image tool: it is a <a href="#module">module</a>. A recipe then selects it by name in <code>tools</code>. <code>hello-world</code>'s one tool, <code>hold</code> (<a href="../../images/hello-world/src/hold.ts"><code>hold.ts</code></a>, <a href="channel.html#tools">agent tools</a>), is the example: its handler is built in <code>main.ts</code> with the agent's log and passed as <code>handlers: { [HOLD]: holdHandler(log) }</code>.</p>
+<p><strong><code>/workspace</code>.</strong> Every image creates <code>/workspace</code> owned by <code>node</code> (the Dockerfiles' <code>RUN … mkdir -p /workspace &amp;&amp; chown node:node /workspace</code>), where the file tools act; <code>serveAgent</code> refuses to start without it (<code>WorkspaceUnavailable</code>).</p>
+<p>The larger example, <code>images/memory</code>, adds <a href="memory.html#cycle">memory</a> around <code>decide</code> and <code>act</code>.</p>
+<h3 id="image-steps">Steps</h3>
+<ol>
+<li>Create <code>images/&lt;name&gt;/src/main.ts</code> (wiring) and <code>images/&lt;name&gt;/src/agent.ts</code> with your <code>NAME</code> (a base name matching <code>/^[a-z][a-z0-9-]{0,31}$/</code>, not <code>user</code>) and handler. The handler builds its persona from <code>context.prompt</code>, <code>context.guidance</code> and <code>context.tools.definitions</code>: the role is the recipe's, never the image's (<code>tests/unit/image-prompts.test.ts</code> fails on an image module exporting one). Keep the handler's work inside the recipe's <code>messageTimeoutMs</code>, or the harness stops the agent; work it starts and does not await (as the memory agent's write) goes to <code>context.background</code>, so a stop waits for it (<a href="channel.html#stop">stopping</a>); pass <code>drainMs: AGENT_DRAIN_MS</code> to <code>serveAgent</code>; a recipe that selects tools needs a bound at which 11 model calls fit (<a href="channel.html#tools">the tool loop</a>).</li>
+<li>Create <code>images/&lt;name&gt;/image.json</code>: <code>{&quot;tools&quot;: []}</code>, or the tools the image implements (above).</li>
+<li>Copy <a href="../../images/hello-world/Dockerfile"><code>images/hello-world/Dockerfile</code></a>, changing only the <code>ENTRYPOINT</code> path to <code>/app/images/&lt;name&gt;/src/main.js</code>; keep the base image pinned by digest, and keep the <code>/workspace</code> line.</li>
+<li>Add a recipe whose <code>image</code> is <code>&lt;name&gt;</code> and whose <code>tools</code> selects what it needs (<a href="#recipe">above</a>).</li>
+<li><code>npm run build</code>: <code>tsconfig.build.json</code> already includes <code>images/*/src/**/*.ts</code>. The daemon builds the image on first use as <code>asha-image-&lt;name&gt;:&lt;digest hex&gt;</code>, and builds a new tag when the staged files' digest (<code>asha.source</code>) changes.</li>
+<li><code>./asha recipe=&lt;recipe&gt; message=&quot;…&quot;</code>; the container's output is in <code>&lt;home&gt;/logs/agents/&lt;container&gt;.log</code>.</li>
+</ol>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Touch</th><th>Test</th></tr></thead>
+<tbody>
+<tr><td><code>images/&lt;name&gt;/Dockerfile</code>, <code>src/main.ts</code>, <code>src/agent.ts</code></td><td>Handler unit tests with a fake <code>ModelClient</code> and a recording <code>post</code>, asserting the exact posts and model requests (<code>serveAgent with the hello-world handler</code> in <a href="../../tests/unit/agent-sdk.test.ts"><code>tests/unit/agent-sdk.test.ts</code></a>; <a href="../../tests/unit/memory/agent.test.ts"><code>tests/unit/memory/agent.test.ts</code></a>).</td></tr>
+<tr><td><code>recipes/&lt;recipe&gt;.json</code>, a docs page</td><td>The <code>Definitions</code> case above; <code>tests/agents/&lt;name&gt;.test.ts</code> with <code>agentSuite</code> from <a href="../../tests/agents/support.ts"><code>tests/agents/support.ts</code></a>, through <code>./asha</code>, rendered by <code>npm run report</code> into the <a href="../testing/agent-tests.html">agent test report</a>.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="model">
+<h2>Add a model</h2>
+<p>The procedure, with the API calls and the routing-eval run, is <a href="models.html#adding">Models — adding a model</a>. It enforces AGENTS.md §3:</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td><strong>Pinned by Hugging Face commit sha and a sha256 per file</strong></td><td>A name or a branch (<code>main</code>) is never a pin.</td></tr>
+<tr><td><strong>Licence verified for the exact repo and revision</strong></td><td>Not the family's (PRINCIPLES §12): its id, URL at that revision, and date read.</td></tr>
+<tr><td><strong>No licence file?</strong></td><td>The card's <code>README.md</code> at that revision is pinned in <code>files</code> and <code>license.source</code> (the owner, 2026-09-26).</td></tr>
+<tr><td><strong>Commercially permissive licences only</strong></td><td>The owner's requirement.</td></tr>
+<tr><td><strong>GGUF or safetensors only</strong></td><td>The schema rejects <code>.bin</code>, <code>.pt</code>, <code>.pth</code>, <code>.pkl</code>, <code>.ckpt</code>.</td></tr>
+</tbody>
+</table>
+</div>
+<p>The entry's fields: <a href="recipes.html#catalogue">catalogue spec</a>. The first <code>npm run check</code> using it downloads and verifies it.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Touch</th><th>Test</th></tr></thead>
+<tbody>
+<tr><td><code>catalogue/&lt;id&gt;.json</code>, <a href="models.html#pinned"><code>docs/architecture/models.html</code></a></td><td>A <code>Definitions</code> case loading it through <code>chatModel</code> or <code>embeddingModel</code>.</td></tr>
+<tr><td>the recipe that uses it</td><td>The agent suite with that recipe: the real download, digest check and <code>llama-server</code> launch. If the eval asserts exact output, update the expectation, never loosen it.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module">
+<h2>Write a module</h2>
+<p>A module adds a tool an agent calls, or a hosted model a recipe names, without touching <code>src/</code> and without a build: a directory with a manifest, installed with <code>asha --install-module</code>. What the harness does with it — the sandbox, the egress proxy, approvals, the meter — is on <a href="modules.html">Modules</a>. This walkthrough builds from the reference <a href="modules-tavily.html"><code>tavily</code></a> module; <a href="modules-bedrock.html"><code>bedrock</code></a> is the model provider's version of the same steps.</p>
+<ol>
+<li><strong>Write the code</strong> as one plain ES module, <code>index.mjs</code>, with no dependency — <code>fetch</code> is enough, and the module base sends it through the egress proxy. A tool module exports <code>call(tool, args, context)</code>; a provider exports <code>chat(args, context)</code> and optionally <code>embed</code> and <code>lifecycle</code>. Take the key from <code>context.secrets.&lt;NAME&gt;</code>, bound every request (<code>AbortSignal.timeout</code>, inside the tool's <code>timeoutMs</code>), and answer <code>{ok: true, result, usage?}</code> or <code>{ok: false, reason, detail}</code> with a reason from the closed set — never throw for a vendor's failure. <a href="../../modules/tavily/index.mjs"><code>modules/tavily/index.mjs</code></a> is 40 lines.</li>
+</ol>
+<pre><code class="language-js">export async function call(tool, args, context) {
+  if (tool !== &#39;search&#39;) return { ok: false, reason: &#39;unknown_tool&#39;, detail: `no tool ${tool}` };
+  const response = await fetch(&#39;https://api.example.com/search&#39;, {
+    method: &#39;POST&#39;,
+    headers: { &#39;content-type&#39;: &#39;application/json&#39;, authorization: `Bearer ${context.secrets.EXAMPLE_KEY}` },
+    body: JSON.stringify({ query: args.query }),
+    signal: AbortSignal.timeout(25_000),
+  }).catch((error) =&gt; error);
+  if (response instanceof Error) return { ok: false, reason: &#39;module_unavailable&#39;, detail: response.message };
+  if (!response.ok) return { ok: false, reason: &#39;module_unavailable&#39;, detail: `HTTP ${response.status}` };
+  return { ok: true, result: await response.json(), usage: { units: 1 } };
+}
+</code></pre>
+<ol start="2">
+<li><p><strong>Write <code>module.json</code></strong>, the closed manifest (<a href="modules.html#manifest">fields</a>): <code>id</code> (lower case, digits, <code>_</code>), <code>kind</code>, <code>version</code>, <code>entry</code>, the sha256 of each file (<code>shasum -a 256 index.mjs package-lock.json</code>), the licence with its URL and the date you read it, every host, every secret, each tool with a description the model reads, its classes and its <code>timeoutMs</code>, and the cost model. A tool that returns text from outside is <code>untrusted-input</code>; every tool of a module with a host is <code>egress</code>; one that changes something outside the machine is <code>consequential</code>, and is never called without the user's approval. A paid service needs a written estimate on the module's page and the owner's approval in <code>cost.approved</code> before any live call (PRINCIPLES §7). Add a <code>package-lock.json</code> listing no package.</p>
+</li>
+<li><p><strong>Test it against a fake, never the vendor.</strong> The <a href="../../tests/helpers/module-contract.ts">contract suite</a> (<code>runContract</code>) runs your entry through the real module runtime with <code>fetch</code> replaced by a fake built from the vendor's documented answer, and checks the framing, the reason set, the hosts and that each secret goes only into the <code>Authorization</code> header to a listed host. Assert the exact request and result of every path, as <a href="../../tests/unit/reference-module-calls.test.ts"><code>tests/unit/reference-module-calls.test.ts</code></a> does, and prove each guard fails (<a href="../../tests/unit/reference-modules.test.ts"><code>reference-modules.test.ts</code></a> recomputes the sha256 values).</p>
+</li>
+<li><p><strong>Install it and grant it.</strong></p>
+</li>
+</ol>
+<pre><code>asha --stop
+asha --install-module path=modules/&lt;id&gt;
+printf &#39;%s&#39; &quot;$KEY&quot; | asha --set-secret module=&lt;id&gt; name=&lt;NAME&gt;
+asha --enable-module id=&lt;id&gt; conversation=0.10 day=1 month=10    # a metered module only
+</code></pre>
+<p>These are the commands the CLI's own tests run against a temporary home (<a href="../../tests/unit/cli-modules.test.ts"><code>tests/unit/cli-modules.test.ts</code></a>); installing a tool module also builds its image in colima. Then in a recipe, <code>&quot;modules&quot;: [&quot;&lt;id&gt;/&lt;tool&gt;&quot;]</code> with a <code>messageTimeoutMs</code> of at least the tool's <code>timeoutMs</code> + 125,000 (<a href="recipes.html#recipe">recipe spec</a>).</p>
+<ol start="5">
+<li><strong>Write its page</strong> in <code>docs/architecture/</code>: what it does, its manifest, what leaves the machine, its estimate and the approval line <code>**Approved:** by &lt;who&gt;, &lt;date&gt;, cap $&lt;cap&gt; a month</code> (the docs guard compares it with the manifest), its vendor-side limit, and a threat model — its secrets, its egress, injection through its output, its consequential actions and what an agent could do with it. Its review covers the same.</li>
+</ol>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Touch</th><th>Test</th></tr></thead>
+<tbody>
+<tr><td><code>modules/&lt;id&gt;/index.mjs</code>, <code>module.json</code>, <code>package-lock.json</code></td><td>The contract suite and exact unit tests against a fake; <code>reference-modules.test.ts</code>' manifest and sha256 checks</td></tr>
+<tr><td><code>docs/architecture/modules-&lt;id&gt;.md</code></td><td>The docs guard: the approval line, and a provider's price read within 90 days</td></tr>
+<tr><td>a live check, once approved</td><td><code>ASHA_LIVE_MODULE=&lt;id&gt; npm run live:modules</code>, outside the gate, recording what the vendor did (<a href="../deployments/index.html#live-modules">Deployments</a>)</td></tr>
+</tbody>
+</table>
+</div>
+<p>A command plugin is the same steps with a Dockerfile in place of the JavaScript and the program's release archive pinned by sha256 and supplied by the user at install; <a href="modules-aws-cli.html"><code>aws_cli</code></a> is the reference.</p>
+</section>
+<section id="adapter">
+<h2>Add an adapter behind an existing contract</h2>
+<p>Implementations are chosen only in <code>productionDependencies</code> in <a href="../../src/daemon/compose.ts"><code>src/daemon/compose.ts</code></a>, the composition root (PRINCIPLES §10); tests call <code>startDaemon</code> with fakes.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Contract</th><th>Methods</th><th>Today</th><th>Fake</th></tr></thead>
+<tbody>
+<tr><td><code>ContainerRuntime</code> — <a href="../../src/daemon/container-runtime/index.ts"><code>container-runtime/index.ts</code></a></td><td><code>hostAddress</code>; <code>ensureReady()</code> → <code>&#39;ready&#39; | &#39;started&#39; | &#39;installed&#39;</code>; <code>ensureImage(spec)</code> → <code>{tag, status: &#39;current&#39; | &#39;built&#39;}</code> (one tag per source digest, <code>imageTag</code>; build only a missing tag, never replace one); <code>start(spec)</code> → <code>{exited}</code> (env passed by name); <code>stop(name, mode)</code> (<code>drain</code>: SIGTERM, SIGKILL after <code>AGENT_STOP_GRACE_MS</code>; <code>kill</code>: at once)</td><td><code>ColimaRuntime</code> (colima + docker CLI, Homebrew install)</td><td><code>FakeRuntime</code></td></tr>
+<tr><td><code>ModelServer</code> — <a href="../../src/daemon/model-server/index.ts"><code>model-server/index.ts</code></a></td><td><code>ensureServing(entry, cached)</code> → <code>ModelEndpoint {baseUrl, model}</code>, an OpenAI-compatible server on loopback answering to the catalogue id; <code>stopAll()</code></td><td><code>LlamaCppServer</code> (<code>llama-server</code>, Metal)</td><td><code>FakeModelServer</code></td></tr>
+<tr><td><code>ModelStore</code> — <a href="../../src/daemon/model-store/index.ts"><code>model-store/index.ts</code></a></td><td><code>ensure(entry)</code> → <code>CachedModel {dir, weightsPath, status}</code>, every file verified</td><td><code>HuggingFaceModelStore</code></td><td><code>FakeStore</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Fakes are in <a href="../../tests/helpers/daemon-fakes.ts"><code>tests/helpers/daemon-fakes.ts</code></a>; the process-level fakes (<code>FakeRunner</code>, <code>FakeLauncher</code>, <code>FakeFetch</code>, <code>RecordingLogger</code>) in <a href="../../tests/helpers/fakes.ts"><code>tests/helpers/fakes.ts</code></a>.</p>
+<p class="pre-label">src/daemon/compose.ts — productionDependencies</p><pre><code>export function productionDependencies(paths: HarnessPaths, logger: Logger): DaemonDependencies {
+  const runner = new ExecCommandRunner();
+  const launcher = new SpawnProcessLauncher();
+  return {
+    runtime: new ColimaRuntime({ runner, launcher, logger, profile: &#39;default&#39; }),
+    modelServer: new LlamaCppServer({
+      runner,
+      launcher,
+      logger,
+      fetch: globalThis.fetch,
+      logDir: paths.logsDir,
+      readyTimeoutMs: 120_000,
+    }),
+    store: new HuggingFaceModelStore({
+      modelsDir: paths.modelsDir,
+      baseUrl: &#39;https://huggingface.co&#39;,
+      fetch: globalThis.fetch,
+      logger,
+      stallTimeoutMs: 60_000,
+      pid: process.pid,
+      isAlive,
+    }),
+    fetch: globalThis.fetch,
+  };
+}
+</code></pre>
+<h3 id="adapter-steps">Steps</h3>
+<ol>
+<li><strong>Justify it in writing</strong> (PRINCIPLES §7, AGENTS.md §2): the closest thing that exists, why it cannot be extended, and what the adapter costs.</li>
+<li><strong>Implement the contract</strong> in its module folder: a <code>readonly</code> props interface, every call bounded, every failure a typed error with its cause (PRINCIPLES §10, §11); export it from <code>index.ts</code>.</li>
+<li><strong>Wire it</strong> in <code>productionDependencies</code>.</li>
+<li><strong>Map any new error class</strong> to a wire reason in <code>classify</code> (<a href="../../src/daemon/agents/index.ts"><code>src/daemon/agents/index.ts</code></a>); an unmapped error becomes <code>internal</code>.</li>
+</ol>
+<div class="callout warning">
+<p class="callout-title">If a consumer must change, the contract is leaking</p>
+<p>No consumer — <code>AgentSupervisor</code>, the gateway, the server — should change when an adapter is added.</p>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Touch</th><th>Test</th></tr></thead>
+<tbody>
+<tr><td>the adapter</td><td>Unit tests with <code>FakeRunner</code> / <code>FakeLauncher</code> / <code>FakeFetch</code> asserting exact commands, arguments, env, failures and bounds, like <a href="../../tests/unit/model-server.test.ts"><code>tests/unit/model-server.test.ts</code></a> and <a href="../../tests/unit/container-runtime.test.ts"><code>tests/unit/container-runtime.test.ts</code></a>.</td></tr>
+<tr><td><code>src/daemon/compose.ts</code>, <a href="index.html">Architecture</a>, this page</td><td>The agent suite and eval, on the adapter's platform (PRINCIPLES §14).</td></tr>
+</tbody>
+</table>
+</div>
+<p>A second container runtime and a CUDA build of llama.cpp for a PC are <span class="badge planned">planned: pc-cuda</span>; the pc-cuda plan (<code>docs/plans/pc-cuda.md</code>) has the design.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/architecture/extending.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

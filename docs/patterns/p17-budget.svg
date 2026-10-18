@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" role="img" aria-labelledby="p17-t p17-d">
+  <title id="p17-t">P17 · Budgets and circuit breaker</title>
+  <desc id="p17-d">p17-a: ping-1 and pong-1 send ping and pong to each other; the eighth post is the budget's last; the ninth is refused, the conversation ends budget_exceeded, and the user's command prints the error. p17-b: the same with a budget of 6,000 tokens, ended after the call that passes it.</desc>
+  <defs><marker id="p17-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="8" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="76" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M76 44 V394"/>
+  <rect class="box" x="210" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="278" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M278 44 V394"/>
+  <rect class="box accent" x="412" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="480" y="32" text-anchor="middle">ping-1</text>
+  <path class="edge dim" d="M480 44 V394"/>
+  <rect class="box accent" x="614" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="682" y="32" text-anchor="middle">pong-1</text>
+  <path class="edge dim" d="M682 44 V394"/>
+  <path class="edge" d="M76 80 H478" marker-end="url(#p17-a)"/>
+  <text class="label small" x="277" y="74" text-anchor="middle">Start. (posts=8)</text>
+  <path class="edge" d="M480 112 H680" marker-end="url(#p17-a)"/>
+  <text class="label small" x="580" y="106" text-anchor="middle">ping (post 1)</text>
+  <path class="edge" d="M682 144 H482" marker-end="url(#p17-a)"/>
+  <text class="label small" x="580" y="138" text-anchor="middle">pong (post 2)</text>
+  <text class="label small" x="580" y="174" text-anchor="middle">… alternating …</text>
+  <path class="edge" d="M682 206 H482" marker-end="url(#p17-a)"/>
+  <text class="label small" x="580" y="200" text-anchor="middle">pong (post 8)</text>
+  <path class="edge" d="M480 238 H280" marker-end="url(#p17-a)"/>
+  <text class="label small" x="380" y="232" text-anchor="middle">ping (post 9): refused</text>
+  <text class="label small" x="200" y="266" text-anchor="end">ended: budget_exceeded</text>
+  <path class="edge" d="M278 290 H78" marker-end="url(#p17-a)"/>
+  <text class="label small" x="177" y="284" text-anchor="middle">error: budget_exceeded</text>
+  <text class="label small" x="16" y="334">p17-b: tokens=6000 — the call that takes the conversation</text>
+  <text class="label small" x="16" y="354">past 6,000 tokens ends it; that call's post is refused</text>
+</svg>

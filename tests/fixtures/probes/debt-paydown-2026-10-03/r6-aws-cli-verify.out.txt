@@ -1,0 +1,36 @@
+# R6 (D50): the AWS CLI archives' PGP signatures, verified at the build commit
+date: 2026-10-03T09:04:58.253Z
+harness commit: ab964a6c614501eb80d5014c90885a623ce0b7f2
+harness dirty: yes:
+?? evals/probes/debt-paydown-2026-10-03/r6-aws-cli-verify.out.txt
+hardware: Apple M4 Pro, Mac16,8, 48 GiB
+macOS: 26.5.2 (25F84)
+colima: colima version 0.10.3; VM default    Running    aarch64    4       8GiB      200GiB    docker
+docker: Docker version 29.8.1, build 4a63305d74; server 29.2.1
+node: v22.13.1
+key block read from https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html at 2026-10-03T09:04:59.233Z: 1656 bytes, sha256 279541b6dd1c831a260ee0f9fb71d63bbcc14ebc4bf62c605336e86c11d4eefb
+aarch64: https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.37.8.zip in 1350 ms, .sig in 56 ms; sha256 00c4bac1cac8624b728d991f821428d5de1e0cb56e3803045b85bff63bedee8b (pinned 00c4bac1cac8624b728d991f821428d5de1e0cb56e3803045b85bff63bedee8b); .sig sha256 2297bb794b4007270fa7e5decc005efb86d89ec03a6c8788acae7968ca2e33ce
+x86_64: https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.37.8.zip in 975 ms, .sig in 63 ms; sha256 6a2f98fee0901ff623ff9abb5c80f4d67c40e5c0ac5e2ad7afa2ba756a7d5088 (pinned 6a2f98fee0901ff623ff9abb5c80f4d67c40e5c0ac5e2ad7afa2ba756a7d5088); .sig sha256 3fb1fdd69888d8d6bfbe08aa730991153e40c0a3737e0b4e77bbe40cbebc9ad4
+
+container: exit 0
+gnupg: gpg (GnuPG) 2.4.9
+imported: FB5DB77FD5C118B80511ADA8A6310ACC4672475C
+colons: pub:-:4096:1:A6310ACC4672475C:1568845749:1814472778::-:::scSC::::::23::0:
+colons: uid:-::::1782936778::ACB997A39E953ECD4793664F781CBD190301422F::AWS CLI Team <aws-cli@amazon.com>::::::::::0:
+verify awscli-exe-linux-aarch64-2.37.8.zip: exit 0; VALIDSIG FB5DB77FD5C118B80511ADA8A6310ACC4672475C 
+verify awscli-exe-linux-x86_64-2.37.8.zip: exit 0; VALIDSIG FB5DB77FD5C118B80511ADA8A6310ACC4672475C 
+verify tampered.zip: exit 1; BADSIG A6310ACC4672475C
+key: validity "-", created 2019-09-18, expires 2027-07-01
+
+containers labelled asha.probe=debt-paydown-2026-10-03 left: ""; downloads removed
+
+## Verdicts
+PASS the guide's key block is byte-identical to the one P6 kept (p5-aws-cli-public-key.asc.txt, sha256 279541b6dd1c831a260ee0f9fb71d63bbcc14ebc4bf62c605336e86c11d4eefb)
+PASS aarch64: the downloaded archive is the pinned one
+PASS x86_64: the downloaded archive is the pinned one
+PASS the guide's key has the manifest's fingerprint FB5DB77FD5C118B80511ADA8A6310ACC4672475C
+PASS the key is neither expired nor revoked; it expires 2027-07-01
+PASS awscli-exe-linux-aarch64-2.37.8.zip: a valid signature by FB5DB77FD5C118B80511ADA8A6310ACC4672475C: verify awscli-exe-linux-aarch64-2.37.8.zip: exit 0; VALIDSIG FB5DB77FD5C118B80511ADA8A6310ACC4672475C 
+PASS awscli-exe-linux-x86_64-2.37.8.zip: a valid signature by FB5DB77FD5C118B80511ADA8A6310ACC4672475C: verify awscli-exe-linux-x86_64-2.37.8.zip: exit 0; VALIDSIG FB5DB77FD5C118B80511ADA8A6310ACC4672475C 
+PASS control: the tampered copy fails: verify tampered.zip: exit 1; BADSIG A6310ACC4672475C 
+EXIT=0

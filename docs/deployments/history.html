@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- Generated from docs/deployments/history.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deployments History</title>
+<meta name="description" content="Dated decisions and evaluations behind the asha deployment choices, newest first.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="deployments">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha Deployments</a> / Deployments History</nav>
+<h1>Deployments history</h1>
+<p class="lede">What was evaluated and decided on the way to today's <a href="index.html">deployments</a>. The durable page says what is true now; this page keeps how it got there.</p>
+<div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>macOS only for now; Linux, Windows and the PC path wait (2026-09-27).</li>
+<li>vLLM was set aside for llama.cpp (2026-09-26).</li>
+</ul>
+</div>
+</header>
+<section id="macos-only">
+<h2>2026-09-27: macOS only for now</h2>
+<p>The owner: &quot;Mac OSX only for now - linux and windows later&quot; (decisions/queue.json at <code>f538cb7</code>, record <code>pc-platform</code>). The same day the owner chose Docker Engine for the PC path when it resumes (record <code>docker-runtime</code>) and an optional launchd job for boot-time start-up (record <code>run-before-login</code>).</p>
+</section>
+<section id="vllm">
+<h2>2026-09-26: vLLM set aside</h2>
+<p>vLLM was evaluated and set aside by the owner, because llama.cpp covers Metal and CUDA with one fewer moving part.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/deployments/history.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

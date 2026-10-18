@@ -1,0 +1,641 @@
+{
+ "suite": "p24-group-chat",
+ "commit": "751ba3195e3a426d8ef28cb5d1443170afefcc00",
+ "dirty": false,
+ "startedAt": "2026-10-16T11:43:19.277Z",
+ "finishedAt": "2026-10-16T11:43:54.585Z",
+ "modelCalls": [
+  {
+   "at": "2026-10-16T11:43:33.099Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "manager-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 5893,
+   "promptTokens": 2116,
+   "cachedTokens": 0
+  },
+  {
+   "at": "2026-10-16T11:43:36.273Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "alpha-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 3159,
+   "promptTokens": 1120,
+   "cachedTokens": 0
+  },
+  {
+   "at": "2026-10-16T11:43:37.582Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "manager-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 1298,
+   "promptTokens": 2161,
+   "cachedTokens": 2085
+  },
+  {
+   "at": "2026-10-16T11:43:40.832Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "beta-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 3238,
+   "promptTokens": 1124,
+   "cachedTokens": 0
+  },
+  {
+   "at": "2026-10-16T11:43:42.204Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "manager-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 1363,
+   "promptTokens": 2163,
+   "cachedTokens": 2117
+  },
+  {
+   "at": "2026-10-16T11:43:45.510Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "gamma-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 3292,
+   "promptTokens": 1124,
+   "cachedTokens": 24
+  },
+  {
+   "at": "2026-10-16T11:43:46.633Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "manager-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 1115,
+   "promptTokens": 2172,
+   "cachedTokens": 2117
+  },
+  {
+   "at": "2026-10-16T11:43:47.166Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "manager-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 423,
+   "promptTokens": 2107,
+   "cachedTokens": 2085
+  },
+  {
+   "at": "2026-10-16T11:43:48.408Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "manager-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 1237,
+   "promptTokens": 2221,
+   "cachedTokens": 2101
+  },
+  {
+   "at": "2026-10-16T11:43:49.064Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "beta-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 647,
+   "promptTokens": 1118,
+   "cachedTokens": 1096
+  },
+  {
+   "at": "2026-10-16T11:43:50.258Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "manager-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 1184,
+   "promptTokens": 2152,
+   "cachedTokens": 2085
+  },
+  {
+   "at": "2026-10-16T11:43:50.929Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "alpha-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 661,
+   "promptTokens": 1119,
+   "cachedTokens": 1096
+  },
+  {
+   "at": "2026-10-16T11:43:52.101Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "manager-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 1163,
+   "promptTokens": 2153,
+   "cachedTokens": 2108
+  },
+  {
+   "at": "2026-10-16T11:43:52.722Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "gamma-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 612,
+   "promptTokens": 1116,
+   "cachedTokens": 1090
+  },
+  {
+   "at": "2026-10-16T11:43:53.477Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "manager-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 748,
+   "promptTokens": 2154,
+   "cachedTokens": 2108
+  }
+ ],
+ "scenarios": [
+  {
+   "scenario": {
+    "id": "launch",
+    "title": "./asha --launch team=group-chat",
+    "agents": [],
+    "expectation": "Every member comes online on channel main: manager-1, alpha-1, beta-1, gamma-1."
+   },
+   "runs": [
+    {
+     "args": [
+      "--verbose",
+      "--launch",
+      "team=group-chat"
+     ],
+     "code": 0,
+     "stdout": "manager-1\nalpha-1\nbeta-1\ngamma-1\n",
+     "stderr": "› started the asha daemon (pid 27753); log: $TMPDIR/asha-run-17908-JM5ab5/asha-agents-p24-group-chat-fQcyTK/logs/server.log\n› member manager (recipe manager)\n› container_runtime: ready\n› model: qwen3-8b-q4_k_m cached\n› model_server: qwen3-8b-q4_k_m serving\n› image: asha-image-hello-world current\n› manager-1: Hi\n› member alpha (recipe alpha)\n› container_runtime: ready\n› model: qwen3-8b-q4_k_m cached\n› model_server: qwen3-8b-q4_k_m serving\n› image: asha-image-hello-world current\n› alpha-1: Hi\n› member beta (recipe beta)\n› container_runtime: ready\n› model: qwen3-8b-q4_k_m cached\n› model_server: qwen3-8b-q4_k_m serving\n› image: asha-image-hello-world current\n› beta-1: Hi\n› member gamma (recipe gamma)\n› container_runtime: ready\n› model: qwen3-8b-q4_k_m cached\n› model_server: qwen3-8b-q4_k_m serving\n› image: asha-image-hello-world current\n› gamma-1: Hi\n",
+     "startedAt": "2026-10-16T11:43:19.278Z",
+     "ms": 7834,
+     "events": [
+      {
+       "type": "progress",
+       "text": "started the asha daemon (pid 27753); log: $TMPDIR/asha-run-17908-JM5ab5/asha-agents-p24-group-chat-fQcyTK/logs/server.log"
+      },
+      {
+       "type": "progress",
+       "text": "member manager (recipe manager)"
+      },
+      {
+       "type": "progress",
+       "text": "container_runtime: ready"
+      },
+      {
+       "type": "progress",
+       "text": "model: qwen3-8b-q4_k_m cached"
+      },
+      {
+       "type": "progress",
+       "text": "model_server: qwen3-8b-q4_k_m serving"
+      },
+      {
+       "type": "progress",
+       "text": "image: asha-image-hello-world current"
+      },
+      {
+       "type": "status",
+       "from": "manager-1",
+       "text": "Hi"
+      },
+      {
+       "type": "progress",
+       "text": "member alpha (recipe alpha)"
+      },
+      {
+       "type": "progress",
+       "text": "container_runtime: ready"
+      },
+      {
+       "type": "progress",
+       "text": "model: qwen3-8b-q4_k_m cached"
+      },
+      {
+       "type": "progress",
+       "text": "model_server: qwen3-8b-q4_k_m serving"
+      },
+      {
+       "type": "progress",
+       "text": "image: asha-image-hello-world current"
+      },
+      {
+       "type": "status",
+       "from": "alpha-1",
+       "text": "Hi"
+      },
+      {
+       "type": "progress",
+       "text": "member beta (recipe beta)"
+      },
+      {
+       "type": "progress",
+       "text": "container_runtime: ready"
+      },
+      {
+       "type": "progress",
+       "text": "model: qwen3-8b-q4_k_m cached"
+      },
+      {
+       "type": "progress",
+       "text": "model_server: qwen3-8b-q4_k_m serving"
+      },
+      {
+       "type": "progress",
+       "text": "image: asha-image-hello-world current"
+      },
+      {
+       "type": "status",
+       "from": "beta-1",
+       "text": "Hi"
+      },
+      {
+       "type": "progress",
+       "text": "member gamma (recipe gamma)"
+      },
+      {
+       "type": "progress",
+       "text": "container_runtime: ready"
+      },
+      {
+       "type": "progress",
+       "text": "model: qwen3-8b-q4_k_m cached"
+      },
+      {
+       "type": "progress",
+       "text": "model_server: qwen3-8b-q4_k_m serving"
+      },
+      {
+       "type": "progress",
+       "text": "image: asha-image-hello-world current"
+      },
+      {
+       "type": "status",
+       "from": "gamma-1",
+       "text": "Hi"
+      }
+     ]
+    }
+   ],
+   "state": "pass",
+   "errors": []
+  },
+  {
+   "scenario": {
+    "id": "p24-a",
+    "title": "p24-a: round robin: manager-1 asks alpha-1, beta-1, gamma-1 in turn",
+    "agents": [
+     "manager-1",
+     "alpha-1",
+     "beta-1",
+     "gamma-1"
+    ],
+    "expectation": "Three calls, one participant each, in team.json's order; each question carries every earlier line; manager-1 replies with the three lines in order."
+   },
+   "runs": [
+    {
+     "args": [
+      "--verbose",
+      "to=manager-1",
+      "user=alice",
+      "message=Write a three-line poem about rain, one line from each participant."
+     ],
+     "code": 0,
+     "stdout": "The moon whispers secrets to the night.\nStars blink in silent agreement.\nThe wind carries their tales through the trees.\n",
+     "stderr": "› alice → manager-1 on main: Write a three-line poem about rain, one line from each participant.\n› manager-1 consult: {\"requests\": [{\"to\": \"alpha-1\", \"text\": \"Poem so far: (none yet). Add one line.\"}]}\n› manager-1: ok\n› internal manager-1 → alpha-1: Poem so far: (none yet). Add one line.\n› alpha-1 reply: {\"text\": \"The moon whispers secrets to the night.\"}\n› internal alpha-1 → manager-1: The moon whispers secrets to the night.\n› internal asha → manager-1: Answers to manager-1's call: 1 answered.\n› manager-1 consult: {\"requests\": [{\"to\": \"beta-1\", \"text\": \"Poem so far: The moon whispers secrets to the night. Add one line.\"}]}\n› manager-1: ok\n› internal manager-1 → beta-1: Poem so far: The moon whispers secrets to the night. Add one line.\n› beta-1 reply: {\"text\": \"Stars blink in silent agreement.\"}\n› internal beta-1 → manager-1: Stars blink in silent agreement.\n› internal asha → manager-1: Answers to manager-1's call: 1 answered.\n› manager-1 consult: {\"requests\": [{\"to\": \"gamma-1\", \"text\": \"Poem so far: The moon whispers secrets to the night. Stars blink in silent agreement. Add one line.\"}]}\n› manager-1: ok\n› internal manager-1 → gamma-1: Poem so far: The moon whispers secrets to the night. Stars blink in silent agreement. Add one line.\n› gamma-1 reply: {\"text\": \"The wind carries their tales through the trees.\"}\n› internal gamma-1 → manager-1: The wind carries their tales through the trees.\n› internal asha → manager-1: Answers to manager-1's call: 1 answered.\n› manager-1 reply: {\"text\": \"The moon whispers secrets to the night.\\nStars blink in silent agreement.\\nThe wind carries their tales through the trees.\"}\n› manager-1: ok\n› output manager-1 → alice:\n",
+     "startedAt": "2026-10-16T11:43:27.113Z",
+     "ms": 19533,
+     "events": [
+      {
+       "type": "posted",
+       "from": "alice",
+       "to": "manager-1",
+       "text": "Write a three-line poem about rain, one line from each participant."
+      },
+      {
+       "type": "progress",
+       "text": "manager-1 consult: {\"requests\": [{\"to\": \"alpha-1\", \"text\": \"Poem so far: (none yet). Add one line.\"}]}"
+      },
+      {
+       "type": "status",
+       "from": "manager-1",
+       "text": "ok"
+      },
+      {
+       "type": "internal",
+       "from": "manager-1",
+       "to": "alpha-1",
+       "text": "Poem so far: (none yet). Add one line."
+      },
+      {
+       "type": "progress",
+       "text": "alpha-1 reply: {\"text\": \"The moon whispers secrets to the night.\"}"
+      },
+      {
+       "type": "internal",
+       "from": "alpha-1",
+       "to": "manager-1",
+       "text": "The moon whispers secrets to the night."
+      },
+      {
+       "type": "internal",
+       "from": "asha",
+       "to": "manager-1",
+       "text": "Answers to manager-1's call: 1 answered."
+      },
+      {
+       "type": "progress",
+       "text": "manager-1 consult: {\"requests\": [{\"to\": \"beta-1\", \"text\": \"Poem so far: The moon whispers secrets to the night. Add one line.\"}]}"
+      },
+      {
+       "type": "status",
+       "from": "manager-1",
+       "text": "ok"
+      },
+      {
+       "type": "internal",
+       "from": "manager-1",
+       "to": "beta-1",
+       "text": "Poem so far: The moon whispers secrets to the night. Add one line."
+      },
+      {
+       "type": "progress",
+       "text": "beta-1 reply: {\"text\": \"Stars blink in silent agreement.\"}"
+      },
+      {
+       "type": "internal",
+       "from": "beta-1",
+       "to": "manager-1",
+       "text": "Stars blink in silent agreement."
+      },
+      {
+       "type": "internal",
+       "from": "asha",
+       "to": "manager-1",
+       "text": "Answers to manager-1's call: 1 answered."
+      },
+      {
+       "type": "progress",
+       "text": "manager-1 consult: {\"requests\": [{\"to\": \"gamma-1\", \"text\": \"Poem so far: The moon whispers secrets to the night. Stars blink in silent agreement. Add one line.\"}]}"
+      },
+      {
+       "type": "status",
+       "from": "manager-1",
+       "text": "ok"
+      },
+      {
+       "type": "internal",
+       "from": "manager-1",
+       "to": "gamma-1",
+       "text": "Poem so far: The moon whispers secrets to the night. Stars blink in silent agreement. Add one line."
+      },
+      {
+       "type": "progress",
+       "text": "gamma-1 reply: {\"text\": \"The wind carries their tales through the trees.\"}"
+      },
+      {
+       "type": "internal",
+       "from": "gamma-1",
+       "to": "manager-1",
+       "text": "The wind carries their tales through the trees."
+      },
+      {
+       "type": "internal",
+       "from": "asha",
+       "to": "manager-1",
+       "text": "Answers to manager-1's call: 1 answered."
+      },
+      {
+       "type": "progress",
+       "text": "manager-1 reply: {\"text\": \"The moon whispers secrets to the night.\\nStars blink in silent agreement.\\nThe wind carries their tales through the trees.\"}"
+      },
+      {
+       "type": "status",
+       "from": "manager-1",
+       "text": "ok"
+      },
+      {
+       "type": "output",
+       "from": "manager-1",
+       "to": "alice"
+      }
+     ]
+    }
+   ],
+   "state": "pass",
+   "errors": [],
+   "proof": [
+    {
+     "claim": "three calls, each manager-1 → one participant, in the order alpha-1, beta-1, gamma-1 (team.json's order: round robin, T = 3)",
+     "evidence": "call a1b3d49f6311da7a manager-1 → alpha-1 | call fb50039c50eab800 manager-1 → beta-1 | call fcca4771a259ce03 manager-1 → gamma-1"
+    },
+    {
+     "claim": "call k's question contains every earlier call's answer text, in order",
+     "evidence": "call 1: \"Poem so far: (none yet). Add one line.\"; call 2: \"Poem so far: The moon whispers secrets to the night. Add one line.\"; call 3: \"Poem so far: The moon whispers secrets to the night. Stars blink in silent agreement. Add one line.\""
+    },
+    {
+     "claim": "no participant posts an internal message other than its call answer",
+     "evidence": "participants' internal messages: 3, each a call answer"
+    },
+    {
+     "claim": "exactly one output, from manager-1, after the last gather, holding the three answers' texts in order",
+     "evidence": "› output manager-1 → alice: \"The moon whispers secrets to the night.\\nStars blink in silent agreement.\\nThe wind carries their tales through the trees.\""
+    },
+    {
+     "claim": "the command exits 0",
+     "evidence": "exit 0"
+    },
+    {
+     "claim": "the request completes within the pattern's bound",
+     "evidence": "19533 ms of 32000 ms"
+    }
+   ]
+  },
+  {
+   "scenario": {
+    "id": "p24-b",
+    "title": "p24-b: selector: manager-1 asks the keeper of each digit in turn",
+    "agents": [
+     "manager-1",
+     "alpha-1",
+     "beta-1",
+     "gamma-1"
+    ],
+    "expectation": "Three calls, one participant each, in the order beta-1, alpha-1, gamma-1; each question carries the digits so far; no digit is in the manager's files; manager-1 replies 528."
+   },
+   "runs": [
+    {
+     "args": [
+      "--verbose",
+      "to=manager-1",
+      "user=alice",
+      "message=Find the vault code."
+     ],
+     "code": 0,
+     "stdout": "The vault code is 528.\n",
+     "stderr": "› alice → manager-1 on main: Find the vault code.\n› manager-1 list_agents: {}\n› manager-1 consult: {\"requests\": [{\"to\": \"beta-1\", \"text\": \"Digits so far: none. What is your digit?\"}]}\n› manager-1: ok\n› internal manager-1 → beta-1: Digits so far: none. What is your digit?\n› beta-1 reply: {\"text\": \"5. Next: alpha-1.\"}\n› internal beta-1 → manager-1: 5. Next: alpha-1.\n› internal asha → manager-1: Answers to manager-1's call: 1 answered.\n› manager-1 consult: {\"requests\": [{\"to\": \"alpha-1\", \"text\": \"Digits so far: 5. What is your digit?\"}]}\n› manager-1: ok\n› internal manager-1 → alpha-1: Digits so far: 5. What is your digit?\n› alpha-1 reply: {\"text\": \"2. Next: gamma-1.\"}\n› internal alpha-1 → manager-1: 2. Next: gamma-1.\n› internal asha → manager-1: Answers to manager-1's call: 1 answered.\n› manager-1 consult: {\"requests\": [{\"to\": \"gamma-1\", \"text\": \"Digits so far: 5, 2. What is your digit?\"}]}\n› manager-1: ok\n› internal manager-1 → gamma-1: Digits so far: 5, 2. What is your digit?\n› gamma-1 reply: {\"text\": \"8. Next: none.\"}\n› internal gamma-1 → manager-1: 8. Next: none.\n› internal asha → manager-1: Answers to manager-1's call: 1 answered.\n› manager-1 reply: {\"text\": \"The vault code is 528.\"}\n› manager-1: ok\n› output manager-1 → alice:\n",
+     "startedAt": "2026-10-16T11:43:46.653Z",
+     "ms": 6836,
+     "events": [
+      {
+       "type": "posted",
+       "from": "alice",
+       "to": "manager-1",
+       "text": "Find the vault code."
+      },
+      {
+       "type": "progress",
+       "text": "manager-1 list_agents: {}"
+      },
+      {
+       "type": "progress",
+       "text": "manager-1 consult: {\"requests\": [{\"to\": \"beta-1\", \"text\": \"Digits so far: none. What is your digit?\"}]}"
+      },
+      {
+       "type": "status",
+       "from": "manager-1",
+       "text": "ok"
+      },
+      {
+       "type": "internal",
+       "from": "manager-1",
+       "to": "beta-1",
+       "text": "Digits so far: none. What is your digit?"
+      },
+      {
+       "type": "progress",
+       "text": "beta-1 reply: {\"text\": \"5. Next: alpha-1.\"}"
+      },
+      {
+       "type": "internal",
+       "from": "beta-1",
+       "to": "manager-1",
+       "text": "5. Next: alpha-1."
+      },
+      {
+       "type": "internal",
+       "from": "asha",
+       "to": "manager-1",
+       "text": "Answers to manager-1's call: 1 answered."
+      },
+      {
+       "type": "progress",
+       "text": "manager-1 consult: {\"requests\": [{\"to\": \"alpha-1\", \"text\": \"Digits so far: 5. What is your digit?\"}]}"
+      },
+      {
+       "type": "status",
+       "from": "manager-1",
+       "text": "ok"
+      },
+      {
+       "type": "internal",
+       "from": "manager-1",
+       "to": "alpha-1",
+       "text": "Digits so far: 5. What is your digit?"
+      },
+      {
+       "type": "progress",
+       "text": "alpha-1 reply: {\"text\": \"2. Next: gamma-1.\"}"
+      },
+      {
+       "type": "internal",
+       "from": "alpha-1",
+       "to": "manager-1",
+       "text": "2. Next: gamma-1."
+      },
+      {
+       "type": "internal",
+       "from": "asha",
+       "to": "manager-1",
+       "text": "Answers to manager-1's call: 1 answered."
+      },
+      {
+       "type": "progress",
+       "text": "manager-1 consult: {\"requests\": [{\"to\": \"gamma-1\", \"text\": \"Digits so far: 5, 2. What is your digit?\"}]}"
+      },
+      {
+       "type": "status",
+       "from": "manager-1",
+       "text": "ok"
+      },
+      {
+       "type": "internal",
+       "from": "manager-1",
+       "to": "gamma-1",
+       "text": "Digits so far: 5, 2. What is your digit?"
+      },
+      {
+       "type": "progress",
+       "text": "gamma-1 reply: {\"text\": \"8. Next: none.\"}"
+      },
+      {
+       "type": "internal",
+       "from": "gamma-1",
+       "to": "manager-1",
+       "text": "8. Next: none."
+      },
+      {
+       "type": "internal",
+       "from": "asha",
+       "to": "manager-1",
+       "text": "Answers to manager-1's call: 1 answered."
+      },
+      {
+       "type": "progress",
+       "text": "manager-1 reply: {\"text\": \"The vault code is 528.\"}"
+      },
+      {
+       "type": "status",
+       "from": "manager-1",
+       "text": "ok"
+      },
+      {
+       "type": "output",
+       "from": "manager-1",
+       "to": "alice"
+      }
+     ]
+    }
+   ],
+   "state": "pass",
+   "errors": [],
+   "proof": [
+    {
+     "claim": "three calls, each manager-1 → one participant, in the order beta-1, alpha-1, gamma-1 (the keepers of the first, second and third digit; not team.json's order)",
+     "evidence": "call 08417cfc35661581 manager-1 → beta-1 | call fbbacc9e66761054 manager-1 → alpha-1 | call 33fd54fcb25c5f19 manager-1 → gamma-1"
+    },
+    {
+     "claim": "each question contains the digits so far, in order",
+     "evidence": "call 1: \"Digits so far: none. What is your digit?\"; call 2: \"Digits so far: 5. What is your digit?\"; call 3: \"Digits so far: 5, 2. What is your digit?\""
+    },
+    {
+     "claim": "each digit of the code is in its keeper's guidance only — in no other file of the team, the manager's included — step numbers aside",
+     "evidence": "2 only in alpha.md, 5 only in beta.md, 8 only in gamma.md; none in the manager's files"
+    },
+    {
+     "claim": "no participant posts an internal message other than its call answer",
+     "evidence": "participants' internal messages: 3, each a call answer"
+    },
+    {
+     "claim": "exactly one output, from manager-1, after the last gather, containing 528",
+     "evidence": "› output manager-1 → alice: \"The vault code is 528.\""
+    },
+    {
+     "claim": "the command exits 0",
+     "evidence": "exit 0"
+    },
+    {
+     "claim": "the request completes within the pattern's bound",
+     "evidence": "6836 ms of 32000 ms"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "rainbow",
+  "description": "P4, fan-out / fan-in: the supervisor consults nine members at once, each knowing one number and its colour, and orders the rainbow's numbers from their answers.",
+  "members": [
+    {
+      "name": "supervisor",
+      "recipe": "supervisor.json"
+    },
+    {
+      "name": "fact-red",
+      "recipe": "fact-red.json"
+    },
+    {
+      "name": "fact-orange",
+      "recipe": "fact-orange.json"
+    },
+    {
+      "name": "fact-yellow",
+      "recipe": "fact-yellow.json"
+    },
+    {
+      "name": "fact-green",
+      "recipe": "fact-green.json"
+    },
+    {
+      "name": "fact-blue",
+      "recipe": "fact-blue.json"
+    },
+    {
+      "name": "fact-indigo",
+      "recipe": "fact-indigo.json"
+    },
+    {
+      "name": "fact-violet",
+      "recipe": "fact-violet.json"
+    },
+    {
+      "name": "fact-pink",
+      "recipe": "fact-pink.json"
+    },
+    {
+      "name": "fact-brown",
+      "recipe": "fact-brown.json"
+    }
+  ]
+}

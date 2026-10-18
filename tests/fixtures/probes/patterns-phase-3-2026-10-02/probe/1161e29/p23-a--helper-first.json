@@ -1,0 +1,80 @@
+{
+  "commit": "1161e2983ed4e002563968326a13660eaec586f9",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p23-a/helper-first",
+  "control": false,
+  "change": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": null,
+      "problem": "first round recorded",
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "ask_user",
+              "arguments": {
+                "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1336,
+          "completionTokens": 45
+        }
+      ],
+      "ms": 4011,
+      "board": [],
+      "requestSha256": "0a5de0e8388e10f3fb6ffef62181f397e5bd5ae5abe30c124d485532cf5588d1",
+      "ok": true
+    },
+    {
+      "calls": null,
+      "problem": "first round recorded",
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "ask_user",
+              "arguments": {
+                "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1336,
+          "completionTokens": 45
+        }
+      ],
+      "ms": 1020,
+      "board": [],
+      "requestSha256": "0a5de0e8388e10f3fb6ffef62181f397e5bd5ae5abe30c124d485532cf5588d1",
+      "ok": true
+    },
+    {
+      "calls": null,
+      "problem": "first round recorded",
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "ask_user",
+              "arguments": {
+                "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1336,
+          "completionTokens": 45
+        }
+      ],
+      "ms": 1016,
+      "board": [],
+      "requestSha256": "0a5de0e8388e10f3fb6ffef62181f397e5bd5ae5abe30c124d485532cf5588d1",
+      "ok": true
+    }
+  ]
+}

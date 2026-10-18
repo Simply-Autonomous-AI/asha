@@ -1,0 +1,167 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p06-plan-execute.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan And Execute Demo</title>
+<meta name="description" content="P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers: A planner writes a task ledger, runs each step through the agent that does it, records every attempt in a progress ledger with a stall count, and re-plans a step that keeps failing. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Plan And Execute Demo</nav>
+<h1>P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers</h1>
+<p class="lede">A planner writes a task ledger, runs each step through the agent that does it, records every attempt in a progress ledger with a stall count, and re-plans a step that keeps failing.</p>
+<div class="facts"><span>written 2026-09-29</span><span>status: <span class="badge built">built</span> 2026-09-29, three recorded runs and one under its bound, after R6's remedies, all green; listed once the <a href="../testing/index.html#selection">demo selector</a> was built</span><span>team: <a href="../../teams/plan-execute/team.json"><code>teams/plan-execute/</code></a></span><span>test: <a href="../../tests/agents/p06-plan-execute.test.ts"><code>tests/agents/p06-plan-execute.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-2.md</code></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p06-a</code>, as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>Built: its three recorded runs with every member on <code>qwen3-8b-q4_k_m</code> passed after R6's remedies, then one under the bound they set, at <code>3e2b8cd</code> (runs (<code>docs/plans/patterns-phase-2.md</code>)); moved 2026-10-10 by <code>docs/plans/demo-model-pico.md</code> R3, with its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code>: three recorded runs passed at <code>6eed097</code> with the move, then one under the bound they set at <code>8dd3a26</code> (runs (<code>evals/probes/demo-model-pico-runs-2026-10-09/README.md</code>)); it joined the built demos once the demo selector existed (patterns-phase-2 R13), and its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>planner</code> on <code>qwen3-8b-q4_k_m</code>; <code>half-a</code>, <code>half-b</code>, <code>backup</code> on <code>pico-v2-q8_0</code>.</li>
+<li>The ledgers are files in the planner's own <code>/workspace</code>, written with the file tools; the test reads them from the container after the request. The re-plan threshold is one stall (S = 1, within Magentic-One's ≤ 2).</li>
+<li><code>half-b</code> fails by design on every attempt (its guidance answers <code>ERROR: unavailable</code>): a fault that does not depend on the model (orchestration-patterns R9).</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p06-plan-execute.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>pico-v2-q8_0</code> and <code>qwen3-8b-q4_k_m</code> (<a href="videos/p06-plan-execute.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 48 s, every scenario passed. In half-b, <code>ERROR: unavailable</code> is its simulated failure. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when a task has several steps whose progress must survive between turns, and a step that stalls should change the plan rather than be retried for ever.</p>
+<p><strong>Do not use it</strong> for a single step, or when the steps need no memory between turns (a pipeline, P3).</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 532" role="img" aria-labelledby="p06-t p06-d">
+  <title id="p06-t">P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers</title>
+  <desc id="p06-d">planner-1 writes the task ledger, asks half-a-1, then half-b-1 twice (both fail, stall count 1 then 2), appends plan 2 naming backup-1, asks it, and replies sunflower.</desc>
+  <defs><marker id="p06-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="7.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="63" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M63 44 V526"/>
+  <rect class="box accent" x="134.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="190" y="32" text-anchor="middle">planner-1</text>
+  <path class="edge dim" d="M190 44 V526"/>
+  <rect class="box" x="261.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="317" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M317 44 V526"/>
+  <rect class="box accent" x="387.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="443" y="32" text-anchor="middle">half-a-1</text>
+  <path class="edge dim" d="M443 44 V526"/>
+  <rect class="box accent" x="514.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="570" y="32" text-anchor="middle">half-b-1</text>
+  <path class="edge dim" d="M570 44 V526"/>
+  <rect class="box accent" x="641.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="697" y="32" text-anchor="middle">backup-1</text>
+  <path class="edge dim" d="M697 44 V526"/>
+  <path class="edge" d="M63 80 H188" marker-end="url(#p06-a)"/>
+  <text class="label small" x="127" y="74" text-anchor="middle">What is the password?</text>
+  <text class="label small" x="198" y="114">write_file task-ledger.md</text>
+  <path class="edge" d="M190 148 H441" marker-end="url(#p06-a)"/>
+  <text class="label small" x="317" y="142" text-anchor="middle">(step 1, attempt 1)</text>
+  <path class="edge" d="M443 182 H192" marker-end="url(#p06-a)"/>
+  <text class="label small" x="317" y="176" text-anchor="middle">sun</text>
+  <text class="label small" x="198" y="216">read ledgers, append progress</text>
+  <path class="edge" d="M190 250 H568" marker-end="url(#p06-a)"/>
+  <text class="label small" x="380" y="244" text-anchor="middle">(step 2, attempt 1)</text>
+  <path class="edge" d="M570 284 H192" marker-end="url(#p06-a)"/>
+  <text class="label small" x="380" y="278" text-anchor="middle">ERROR (stalls 1)</text>
+  <path class="edge" d="M190 318 H568" marker-end="url(#p06-a)"/>
+  <text class="label small" x="380" y="312" text-anchor="middle">(step 2, attempt 2)</text>
+  <path class="edge" d="M570 352 H192" marker-end="url(#p06-a)"/>
+  <text class="label small" x="380" y="346" text-anchor="middle">ERROR (stalls 2)</text>
+  <text class="label small" x="198" y="386">append plan 2: backup-1</text>
+  <path class="edge" d="M190 420 H695" marker-end="url(#p06-a)"/>
+  <text class="label small" x="444" y="414" text-anchor="middle">(plan 2, step 2, attempt 3)</text>
+  <path class="edge" d="M697 454 H192" marker-end="url(#p06-a)"/>
+  <text class="label small" x="444" y="448" text-anchor="middle">flower</text>
+  <path class="edge" d="M190 488 H65" marker-end="url(#p06-a)"/>
+  <text class="label small" x="127" y="482" text-anchor="middle">output: sunflower</text>
+</svg>
+<figcaption>planner-1 writes the task ledger, asks half-a-1, then half-b-1 twice (both fail, stall count 1 then 2), appends plan 2 naming backup-1, asks it, and replies sunflower.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 45,000 ms since 2026-10-10, set from its three recorded runs with its sub-agents on <code>pico-v2-q8_0</code> (<code>docs/plans/demo-model-pico.md</code> R3) — the largest request, p06-a's 38,506 ms in run 2 at <code>6eed097</code> with the move, times 1.5 (57,759, over the cap, so the cap); the cap is 45,000 ms. <em>Before, with every member on <code>qwen3-8b-q4_k_m</code>:</em> 45,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-2.md</code> R4) — the largest request, p06-a's 36,091 ms at <code>1978c01</code>, times 1.5 (54,137, over the cap, so the cap), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=plan-execute
+# bound: 45000 ms
+# p06-a
+./asha to=planner-1 user=alice message=&quot;What is the password?&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>8dd3a26</code> (clean tree), <code>docs/plans/demo-model-pico.md</code>'s fourth run (R3 (d)), with its sub-agents on <code>pico-v2-q8_0</code>, from its results file <code>evals/probes/demo-model-pico-runs-2026-10-09/run-4/results/p06-plan-execute.json</code>: each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' tool calls as they stream — lines such as <code>› &lt;handle&gt; &lt;tool&gt;: …</code>, one fragment each (D38) — are left out here; the results file holds them. The transcript before, with every member on <code>qwen3-8b-q4_k_m</code>, is in this page's history (<code>git show 8dd3a26:docs/patterns/p06-plan-execute.md</code>).</p>
+<p><strong>p06-a</strong> — exit 0, 34,643 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=planner-1 user=alice message=&quot;What is the password?&quot;
+› alice → planner-1 on main: What is the password?
+› planner-1: ok
+› internal planner-1 → half-a-1: What is your half of the password? (step 1, attempt 1)
+› internal half-a-1 → planner-1: sun
+› internal asha → planner-1: Answers to planner-1&#39;s call: 1 answered.
+› planner-1: ok
+› internal planner-1 → half-b-1: What is your half of the password? (step 2, attempt 1)
+› internal half-b-1 → planner-1: ERROR: unavailable
+› internal asha → planner-1: Answers to planner-1&#39;s call: 1 answered.
+› planner-1: ok
+› internal planner-1 → half-b-1: What is your half of the password? (step 2, attempt 2)
+› internal half-b-1 → planner-1: ERROR: unavailable
+› internal asha → planner-1: Answers to planner-1&#39;s call: 1 answered.
+› planner-1: ok
+› internal planner-1 → backup-1: What is your half of the password? (plan 2, step 2, attempt 3)
+› internal backup-1 → planner-1: flower
+› internal asha → planner-1: Answers to planner-1&#39;s call: 1 answered.
+› planner-1: ok
+› output planner-1 → alice:
+sunflower
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/plan-execute/team.json"><code>teams/plan-execute/team.json</code></a>: the team — <code>planner</code>, <code>half-a</code>, <code>half-b</code>, <code>backup</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>.</li>
+<li><code>planner</code>: <a href="../../teams/plan-execute/planner.json"><code>planner.json</code></a>, its recipe, and <a href="../../teams/plan-execute/planner.md"><code>planner.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>half-a</code>: <a href="../../teams/plan-execute/half-a.json"><code>half-a.json</code></a>, its recipe, and <a href="../../teams/plan-execute/half-a.md"><code>half-a.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>half-b</code>: <a href="../../teams/plan-execute/half-b.json"><code>half-b.json</code></a>, its recipe, and <a href="../../teams/plan-execute/half-b.md"><code>half-b.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>backup</code>: <a href="../../teams/plan-execute/backup.json"><code>backup.json</code></a>, its recipe, and <a href="../../teams/plan-execute/backup.md"><code>backup.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><a href="../../tests/agents/p06-plan-execute.test.ts"><code>tests/agents/p06-plan-execute.test.ts</code></a>: launches the team and sends each scenario's message from this page, then asserts each scenario only through its checker, <code>P06_A</code> in <a href="../../tests/agents/patterns/phase-2.ts"><code>tests/agents/patterns/phase-2.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p06-a/pass.json"><code>tests/agents/patterns/fixtures/p06-a/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>With its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code> (demo-model-pico, 2026-10-10): its largest request took 38,506 ms in the three recorded runs and 34,643 ms in the fourth, under its bound of 45,000 ms. The limits after it were measured with every member on <code>qwen3-8b-q4_k_m</code>, before the move; one about a sub-agent was not measured again on <code>pico-v2-q8_0</code>.</li>
+<li>The slowest phase-2 demo: measured in the premise probes (2026-09-29, <code>0be190f</code>), its chain of model turns took 39.1 s with cold prompts and 21.0 s warm, the nearest to the 45,000 ms cap (<code>docs/plans/patterns-phase-2.md</code>).</li>
+<li>Each gather shows only the latest call, so each question carries its step and attempt — <code>(step 2, attempt 2)</code>, backup-1's <code>(plan 2, step 2, attempt 3)</code> — and the stall count follows from the attempt; the last turn reads &quot;sun&quot; from the progress ledger and has &quot;flower&quot; in its gather.</li>
+<li>The re-plan was the model's weak point: after the second failure it asked half-b-1 again without appending &quot;plan 2&quot;, in the probes and in the first recorded run (sixteen calls, over the cap). With the attempt in every question and the re-plan its own step, keyed on the line just written, three recorded runs passed at about 36 s (<code>docs/plans/patterns-phase-2.md</code>, R6).</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p06">agent test report, P6 · Plan-and-execute with simulated failure, re-plan, task and progress ledgers</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p06-plan-execute.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

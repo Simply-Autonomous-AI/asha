@@ -1,0 +1,328 @@
+<!doctype html>
+<!-- Generated from docs/project/documentation.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documentation Contract</title>
+<meta name="description" content="How the asha documentation is written as Markdown, rendered to committed HTML, structured, styled, linked, marked and kept true, with a page template to copy.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="project">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha Project Details</a> / Documentation Contract</nav>
+<h1>Documentation contract</h1>
+<p class="lede">Every page under <code>docs/</code> is a Markdown source rendered to committed HTML, linked from one index, styled by one stylesheet, loading nothing from the network, with every gap marked and future work only in the plans. It carries out PRINCIPLES §17 and §19 (2026-09-27), as AGENTS.md §4 applies them.</p>
+<div class="facts"><span>verified 2026-09-27</span><span>renderer: <code>tools/docs/render.mts</code></span><span>stylesheet: <code>docs/assets/docs.css</code></span><span>guard: <code>tests/unit/docs.test.ts</code></span><span>sources: PRINCIPLES.md §15, §17, §19, AGENTS.md §4</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Edit the <code>.md</code>, run <code>npm run docs</code>, commit both; never hand-edit an <code>.html</code>.</li>
+<li>Link every page directly from <code>docs/index.md</code> or its section index.</li>
+<li>Open with a lede and a summary of 3–5 bullets stating what is true or what to do; use only the classes in <code>docs/assets/docs.css</code>.</li>
+<li>Mark gaps with <code>TODO&#58;</code>; unbuilt work is only a planned badge naming its plan.</li>
+<li><code>tests/unit/docs.test.ts</code> fails the gate on any breach; each of its checks was proven to fail (<a href="history.html#guard-proofs">History</a>).</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#hierarchy">Hierarchy</a></li>
+<li><a href="#source">Markdown source and render</a></li>
+<li><a href="#template">Page template</a></li>
+<li><a href="#styling">Styling and the class vocabulary</a></li>
+<li><a href="#diagrams">SVG diagram conventions</a></li>
+<li><a href="#links">Deep links to code</a></li>
+<li><a href="#markers">TODO and planned markers</a></li>
+<li><a href="#generated">Generated pages</a></li>
+<li><a href="#guard">The guard test</a></li>
+<li><a href="#done">What &quot;done&quot; means for a doc change</a></li>
+</ol>
+</nav>
+<section id="hierarchy">
+<h2>Hierarchy</h2>
+<p><a href="../index.html">docs/index.md</a> is the one table of contents, each section has a <code>docs/&lt;section&gt;/index.md</code>, and pages sit in their section folder.</p>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 866 260" role="img" aria-labelledby="dc-h-t dc-h-d">
+  <title id="dc-h-t">Documentation hierarchy</title>
+  <desc id="dc-h-d">docs/index.md links to eight section indexes: project, cli, portal, architecture, quality, testing, deployments and plans. Each section index links its pages directly, for example project links to workflows and documentation, testing links to the generated agent-tests page, and plans links to the template, the debt register and each plan. Each .md source is rendered to the .html next to it, and every rendered page links the one stylesheet in docs/assets.</desc>
+  <defs><marker id="dc-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box accent" x="343" y="10" width="180" height="44" rx="6"/>
+  <text class="label mono" x="433" y="37" text-anchor="middle">docs/index.md</text>
+
+  <rect class="box" x="10" y="100" width="98" height="40" rx="5"/><text class="label mono" x="59" y="124" text-anchor="middle">project/</text>
+  <rect class="box" x="116" y="100" width="98" height="40" rx="5"/><text class="label mono" x="165" y="124" text-anchor="middle">cli/</text>
+  <rect class="box planned" x="222" y="100" width="98" height="40" rx="5"/><text class="label mono" x="271" y="124" text-anchor="middle">portal/</text>
+  <rect class="box" x="328" y="100" width="104" height="40" rx="5"/><text class="label mono" x="380" y="124" text-anchor="middle">architecture/</text>
+  <rect class="box" x="440" y="100" width="98" height="40" rx="5"/><text class="label mono" x="489" y="124" text-anchor="middle">quality/</text>
+  <rect class="box" x="546" y="100" width="98" height="40" rx="5"/><text class="label mono" x="595" y="124" text-anchor="middle">testing/</text>
+  <rect class="box" x="652" y="100" width="98" height="40" rx="5"/><text class="label mono" x="701" y="124" text-anchor="middle">deployments/</text>
+  <rect class="box" x="758" y="100" width="98" height="40" rx="5"/><text class="label mono" x="807" y="124" text-anchor="middle">plans/</text>
+
+  <path class="edge" d="M433 54 V78 H59 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M165 78 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M271 78 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M380 78 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M433 78 H807 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M701 78 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M489 78 V98" marker-end="url(#dc-arr)"/>
+  <path class="edge" d="M595 78 V98" marker-end="url(#dc-arr)"/>
+
+  <rect class="box" x="10" y="180" width="98" height="30" rx="4"/><text class="label small" x="59" y="199" text-anchor="middle">workflows.md</text>
+  <rect class="box" x="10" y="218" width="98" height="30" rx="4"/><text class="label small" x="59" y="237" text-anchor="middle">documentation.md</text>
+  <path class="edge" d="M59 140 V178" marker-end="url(#dc-arr)"/>
+
+  <rect class="box" x="328" y="180" width="104" height="30" rx="4"/><text class="label small" x="380" y="199" text-anchor="middle">channel, models, …</text>
+  <path class="edge" d="M380 140 V178" marker-end="url(#dc-arr)"/>
+
+  <rect class="box" x="546" y="180" width="98" height="30" rx="4"/><text class="label small" x="595" y="199" text-anchor="middle">agent-tests.html</text>
+  <text class="label small" x="595" y="226" text-anchor="middle">generated</text>
+  <path class="edge" d="M595 140 V178" marker-end="url(#dc-arr)"/>
+
+  <rect class="box" x="758" y="180" width="98" height="30" rx="4"/><text class="label small" x="807" y="199" text-anchor="middle">template, debt, …</text>
+  <path class="edge" d="M807 140 V178" marker-end="url(#dc-arr)"/>
+</svg>
+<figcaption>Top-level index, then section index, then page. A page not linked directly from the top-level index or its own section index fails the guard test.</figcaption>
+</figure>
+<ul>
+<li><strong>Linked directly:</strong> every page from <code>docs/index.md</code> or its own section index; reachable through another page is not enough. The top-level index links every section index; a section index links each of its pages, usually as <code>.cards</code>.</li>
+<li><strong>Plans:</strong> docs/plans/ (<code>docs/plans/index.md</code>) holds all future work (PRINCIPLES §19): the plans index with status, the plan template (<code>docs/plans/template.md</code>), the debt register (<code>docs/plans/debt.md</code>) (§20), and one page per plan. Every other section describes the system as it exists.</li>
+<li><strong>History:</strong> a section's dated corrections, superseded results and proofs go on its <code>history.md</code>, linked from the section index, so the durable pages stay short and corrections stay visible (§12).</li>
+<li><strong>Files:</strong> each <code>docs/**/&lt;name&gt;.md</code> renders to <code>&lt;name&gt;.html</code> beside it. The only other files are <code>assets/docs.css</code>, the <code>*.svg</code> diagrams and the <a href="#generated">generated reports</a>. The root Markdown (<code>README.md</code>, <code>AGENTS.md</code>, <code>CLAUDE.md</code>, <code>PRINCIPLES.md</code>) is not rendered.</li>
+</ul>
+</section>
+<section id="source">
+<h2>Markdown source and render</h2>
+<div class="callout decision">
+<p class="callout-title">The owner, 2026-09-27</p>
+<p>The Markdown is the source of truth and the HTML is a render of it, file for file.</p>
+</div>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 250" role="img" aria-labelledby="dc-rp-t dc-rp-d">
+  <title id="dc-rp-t">From Markdown source to committed HTML</title>
+  <desc id="dc-rp-d">The author edits a Markdown source, docs/section/page.md. npm run docs runs tools/docs/render.mts, which parses it with marked, inlines any .svg diagram beside it, and writes page.html next to the source. Both files are committed together. In npm test, tests/unit/docs.test.ts renders every source again in memory and compares: if a committed .html differs from its fresh render, the guard fails and names the file and the command npm run docs.</desc>
+  <defs><marker id="dc-rp-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box accent" x="10" y="40" width="160" height="80" rx="6"/>
+  <text class="label title" x="90" y="66" text-anchor="middle">Markdown source</text>
+  <text class="label mono" x="90" y="86" text-anchor="middle">&lt;page&gt;.md</text>
+  <text class="label small" x="90" y="104" text-anchor="middle">+ &lt;diagram&gt;.svg beside it</text>
+
+  <rect class="box" x="220" y="40" width="200" height="80" rx="6"/>
+  <text class="label title" x="320" y="66" text-anchor="middle">npm run docs</text>
+  <text class="label mono" x="320" y="86" text-anchor="middle">tools/docs/render.mts</text>
+  <text class="label small" x="320" y="104" text-anchor="middle">marked 18.0.14; SVG inlined</text>
+
+  <rect class="box" x="470" y="40" width="160" height="80" rx="6"/>
+  <text class="label title" x="550" y="66" text-anchor="middle">Render</text>
+  <text class="label mono" x="550" y="86" text-anchor="middle">&lt;page&gt;.html</text>
+  <text class="label small" x="550" y="104" text-anchor="middle">never hand-edited</text>
+
+  <rect class="box host" x="660" y="40" width="90" height="80" rx="6"/>
+  <text class="label title" x="705" y="72" text-anchor="middle">git</text>
+  <text class="label small" x="705" y="92" text-anchor="middle">both, one</text>
+  <text class="label small" x="705" y="106" text-anchor="middle">commit</text>
+
+  <path class="edge" d="M170 80 H218" marker-end="url(#dc-rp-arr)"/>
+  <path class="edge" d="M420 80 H468" marker-end="url(#dc-rp-arr)"/>
+  <path class="edge" d="M630 80 H658" marker-end="url(#dc-rp-arr)"/>
+
+  <rect class="box" x="220" y="165" width="410" height="60" rx="6"/>
+  <text class="label mono" x="425" y="188" text-anchor="middle">tests/unit/docs.test.ts (npm test)</text>
+  <text class="label small" x="425" y="208" text-anchor="middle">re-renders every source in memory; a committed .html that differs fails</text>
+
+  <path class="edge dim" d="M90 120 V195 H218" marker-end="url(#dc-rp-arr)"/>
+  <path class="edge dim" d="M550 120 V163" marker-end="url(#dc-rp-arr)"/>
+  <text class="label small" x="130" y="185" text-anchor="middle">re-rendered</text>
+  <text class="label small" x="592" y="148" text-anchor="middle">compared</text>
+</svg>
+<figcaption>Each Markdown source is rendered by tools/docs/render.mts, with marked, to the .html beside it; both are committed. The guard re-renders every source in memory and fails on any committed .html that differs.</figcaption>
+</figure>
+<h3 id="writing-a-source">Writing a source</h3>
+<ul>
+<li><strong>Front matter</strong> opens every source between two <code>---</code> lines, as plain <code>key: value</code> lines: <code>title</code> (two to four words), <code>description</code> (one sentence), and on a plan page under <code>docs/plans/</code> other than <code>index.md</code>, <code>template.md</code> and <code>debt.md</code>, a <code>status</code> of <code>draft</code>, <code>ready</code>, <code>in-progress</code> or <code>done</code>, rendered as a badge. A missing, unknown or repeated key or an invalid status fails the render, naming the file and key.</li>
+<li><strong>Exactly one <code>#</code> heading,</strong> the page's <code>h1</code>. Before the first <code>##</code> is the header: the first paragraph becomes the <code>.lede</code>, and a raw <code>&lt;div class=&quot;facts&quot;&gt;</code> carries the verified date.</li>
+<li><strong>Each <code>##</code> starts a <code>&lt;section&gt;</code>.</strong> A trailing <code>{#id}</code> sets the id, else it is a slug of the text; a duplicate id fails the render. Keep an id stable once anything links to it. The renderer adds a <code>nav.toc</code> to a page with more than three <code>##</code> sections.</li>
+<li><strong>Link pages by their <code>.md</code> source</strong>, with any <code>#fragment</code>: <code>[Workflows](workflows.md#review)</code>; the renderer rewrites it to the <code>.html</code>. Links to code, <code>.svg</code> and external pages are unchanged.</li>
+<li><strong>Diagrams</strong> are <code>.svg</code> files beside the page, alone in their paragraph as <code>![caption](name.svg)</code>, inlined in a <code>figure.diagram</code> (<a href="#diagrams">conventions</a>). A network image, a non-<code>.svg</code> image, or a diagram sharing its paragraph fails the render.</li>
+<li><strong>Callouts</strong> are quotes starting <code>&gt; [!KIND] optional title</code>, <code>KIND</code> one of <code>SUMMARY</code>, <code>NOTE</code>, <code>TIP</code>, <code>WARNING</code> or <code>DECISION</code>, rendered as a <code>div.callout</code> titled by the title or the kind's default (&quot;In short&quot; for <code>SUMMARY</code>). An unknown kind fails the render.</li>
+<li><strong>At most one folder deep:</strong> <code>docs/index.md</code>, <code>docs/&lt;section&gt;/index.md</code>, <code>docs/&lt;section&gt;/&lt;page&gt;.md</code>.</li>
+<li><strong>Raw HTML</strong> for what Markdown lacks: cards, number tiles (<code>.stats</code>), badges, <code>.facts</code>, <code>.pre-label</code>.</li>
+<li><strong>Gaps are auto-marked:</strong> a literal <code>TODO&#58;</code> in prose renders to the end of its text run (the line, a table cell, or the next inline element such as a link) inside <code>span.todo</code>; written <code>TODO&amp;#58;</code> it is only a mention (<a href="#markers">markers</a>).</li>
+</ul>
+<div class="callout warning">
+<p class="callout-title">Raw HTML blocks</p>
+<p>Under Markdown's HTML-block rule (the parser is <code>marked</code>), a block starts with a tag at the start of a line and ends at the next blank line, and Markdown inside it is not parsed. Write <code>&lt;code&gt;</code>, <code>&lt;strong&gt;</code> and <code>&lt;a&gt;</code> as HTML there. A <code>&lt;pre&gt;</code> block is the exception: it runs to its <code>&lt;/pre&gt;</code>, blank lines included.</p>
+</div>
+<h3 id="rendering">Rendering</h3>
+<ul>
+<li><strong><code>npm run docs</code></strong> renders every source; <code>npm run docs -- project/workflows.md quality/index.md</code> renders only those (paths relative to <code>docs/</code>). The output is deterministic.</li>
+<li><strong>Commit the render; never hand-edit it.</strong> Its footer and top comment say so, and the guard fails on a committed <code>.html</code> that differs from a fresh render.</li>
+<li><strong>One renderer:</strong> <a href="../../tools/docs/render.mts"><code>tools/docs/render.mts</code></a>. <code>AGENTS.md</code> records its sha256, and the guard fails on a mismatch. Its header comment is the short form of this section.</li>
+<li><strong>Its one dependency:</strong> <code>marked</code>, pinned exactly at <code>18.0.14</code>: MIT licence, no dependencies of its own, ESM only (npm registry, 2026-09-27). Not <code>markdown-it</code>, which has six dependencies where a GFM parser is all that is needed (PRINCIPLES §7). A newer <code>marked</code> is adopted only by re-pinning it in both repos, re-rendering, and keeping the guard green.</li>
+</ul>
+</section>
+<section id="template">
+<h2>Page template</h2>
+<p>The renderer writes the chrome: the doctype and <code>&lt;html lang=&quot;en&quot;&gt;</code>, the charset and viewport metas, the <code>&lt;title&gt;</code> and meta description from the front matter, the stylesheet link, the breadcrumbs (docs index → section index → page), the table of contents, and a footer naming the source. Copy this for a section page:</p>
+<p class="pre-label">docs/&lt;section&gt;/&lt;page&gt;.md</p><pre><code class="language-markdown">---
+title: Two To Four Words
+description: One sentence: what this page answers.
+---
+
+# Page title
+
+Two sentences: what this is and why a reader cares. This paragraph is the lede.
+
+&lt;div class=&quot;facts&quot;&gt;&lt;span&gt;verified YYYY-MM-DD&lt;/span&gt;&lt;span&gt;code: &lt;a href=&quot;../../src/…&quot;&gt;src/…&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;
+
+&gt; [!SUMMARY]
+&gt; - 3–5 bullets stating what is true or what to do.
+
+## First topic {#first}
+
+Prose, lists and tables in plain Markdown. Link pages by their source,
+[Workflows](../project/workflows.md#review), and code by relative path,
+[`src/daemon/log.ts`](../../src/daemon/log.ts).
+
+![One sentence on what the diagram shows.](first-topic.svg)
+
+&gt; [!TIP]
+&gt; A callout is a quote, so `code` and [links](../index.md) inside it are Markdown.
+
+## Second topic {#second}
+</code></pre>
+<p>A section index has the same shape, linking its pages from a <code>&lt;div class=&quot;cards&quot;&gt;</code> of <code>&lt;a class=&quot;card&quot;&gt;</code> tiles.</p>
+</section>
+<section id="styling">
+<h2>Styling and the class vocabulary</h2>
+<ul>
+<li><strong>One stylesheet,</strong> <a href="../assets/docs.css"><code>docs/assets/docs.css</code></a>, light theme only (<code>color-scheme: light</code>), no inline colours. <code>AGENTS.md</code> records its sha256, and the guard fails on a mismatch. Something new goes into the stylesheet for every page.</li>
+<li><strong>One exception:</strong> the two CLI pages (<a href="../cli/guide.html">guide</a>, <a href="../cli/index.html">reference</a>) keep their terminal-transcript styles (gutters, <code>td:first-child</code> wrapping) in a page-local <code>&lt;style&gt;</code> block, which would change every other page if global.</li>
+<li><strong>Nothing from the network:</strong> no external scripts, stylesheets, fonts or images. The font stacks name IBM Plex first and fall back to system fonts.</li>
+<li><strong>Short:</strong> a summary of answers after the lede, short paragraphs, tables for comparisons, code only where it matters most.</li>
+</ul>
+<p><em>Rendered</em> classes come from the renderer; the rest are raw HTML in the source.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Class / element</th><th>Use</th></tr></thead>
+<tbody>
+<tr><td><code>header.page</code>, <code>nav.crumbs</code>, <code>.lede</code>, <code>nav.toc</code>, <code>footer.page</code></td><td>Page chrome (<em>rendered</em>)</td></tr>
+<tr><td><code>.facts</code></td><td>Monospace header facts, including <code>verified YYYY-MM-DD</code></td></tr>
+<tr><td><code>.callout.summary</code> / <code>.note</code> / <code>.tip</code> / <code>.warning</code> / <code>.decision</code></td><td>A <code>&gt; [!KIND]</code> quote: the answers, a side fact, a shortcut, a real trap or limit, a recorded decision (<em>rendered</em>)</td></tr>
+<tr><td><code>.stats</code> &gt; <code>.stat</code></td><td>Number tiles: a <code>&lt;b&gt;</code> figure and a <code>&lt;span&gt;</code> label</td></tr>
+<tr><td><code>.cards</code> &gt; <code>a.card</code></td><td>A section's pages, each with an <code>h3</code> and a <code>p</code></td></tr>
+<tr><td><code>.badge.built</code> / <code>.planned</code> / <code>.placeholder</code> / <code>.pass</code> / <code>.fail</code></td><td>Status: <span class="badge built">built</span> <span class="badge planned">planned: pc-cuda</span> <span class="badge placeholder">placeholder</span> <span class="badge pass">pass</span> <span class="badge fail">fail</span>. Outside <code>docs/plans/</code>, <code>.planned</code> is always a <code>&lt;span&gt;</code> naming the plan, <code>planned: &lt;slug&gt;</code>, never a link: the plans are not published (<code>docs/plans/oss-release.md</code> R37, 2026-10-16)</td></tr>
+<tr><td><code>.badge.draft</code> / <code>.ready</code> / <code>.progress</code> / <code>.done</code></td><td>A plan's front matter <code>status</code> (<code>in-progress</code> renders as <code>.progress</code>) (<em>rendered</em>)</td></tr>
+<tr><td><code>.note</code>, <code>.tip</code></td><td>Raw-HTML caution (blue, &quot;i&quot;) or context (green, &quot;✓&quot;)</td></tr>
+<tr><td><code>.placeholder-box</code></td><td>A whole section not written yet (amber, &quot;!&quot;)</td></tr>
+<tr><td><code>.todo</code></td><td>A <code>TODO&#58;</code> gap: <span class="todo">TODO: example</span> (<em>rendered</em>)</td></tr>
+<tr><td><code>.table-wrap</code></td><td>Lets every table scroll sideways on a phone (<em>rendered</em>)</td></tr>
+<tr><td><code>.pre-label</code></td><td>A caption above a code block, such as the file name</td></tr>
+<tr><td><code>figure.diagram</code></td><td>An inlined SVG and its <code>figcaption</code> (<em>rendered</em>)</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="diagrams">
+<h2>SVG diagram conventions</h2>
+<ul>
+<li><strong>One <code>.svg</code> per diagram</strong>, beside its page, starting <code>&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; …&gt;</code> so it opens on its own.</li>
+<li><strong>Accessible:</strong> <code>role=&quot;img&quot;</code> and <code>aria-labelledby</code> pointing to a <code>&lt;title&gt;</code> and a <code>&lt;desc&gt;</code> that states the mechanism in words. No <code>&lt;title&gt;</code> fails the render.</li>
+<li><strong>The real mechanism:</strong> real component names, routes, file paths and call directions. No decorative boxes.</li>
+<li><strong>Scale with <code>viewBox</code>:</strong> the stylesheet sets <code>width: 100%; height: auto</code>. Stay roughly 760 units wide or less, with labels of 11 px or more, so text is legible at 360 px; keep labels clear of box borders.</li>
+<li><strong>Page-prefixed unique ids</strong> for every <code>title</code>, <code>desc</code> and <code>marker</code> (for example <code>id=&quot;dc-arr&quot;</code>), since diagrams are inlined.</li>
+<li><strong>Classes:</strong> shapes <code>.box</code>, <code>.box.accent</code> (the focus), <code>.box.host</code> (a dashed boundary, such as &quot;your machine&quot;), <code>.box.planned</code> (not built); text <code>.label</code>, <code>.label.small</code>, <code>.label.mono</code>, <code>.label.title</code>; lines <code>.edge</code>, <code>.edge.dim</code> (optional or planned).</li>
+<li><strong>Arrowheads:</strong> one <code>&lt;marker&gt;</code> per diagram filled <code>#0e6b66</code>, the only literal colour allowed, because markers do not inherit CSS.</li>
+</ul>
+</section>
+<section id="links">
+<h2>Deep links to code</h2>
+<ul>
+<li>Link files by relative path, naming the symbol, not the line: &quot;<code>JsonLinesLogger</code> in <a href="../../src/daemon/log.ts">src/daemon/log.ts</a>&quot;. Line numbers drift; names are searchable.</li>
+<li>Every relative link in the render must resolve, or the guard fails.</li>
+<li>Keep code samples short and copied from the real file.</li>
+</ul>
+</section>
+<section id="markers">
+<h2>TODO and planned markers</h2>
+<p>Gaps are marked, never papered over (PRINCIPLES §5, §17).</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Situation</th><th>Write</th></tr></thead>
+<tbody>
+<tr><td>Unknown or unwritten</td><td>A line starting <code>TODO&#58;</code>: what is missing and, where known, who supplies it. Renders as <code>span.todo</code></td></tr>
+<tr><td>Mentioning the marker</td><td>The colon as an entity, <code>TODO&amp;#58;</code>; neither the renderer nor the grep counts it</td></tr>
+<tr><td>Not built yet</td><td>A plan in docs/plans/ (<code>docs/plans/index.md</code>); on durable pages only <code>&lt;span class=&quot;badge planned&quot;&gt;planned: &lt;slug&gt;&lt;/span&gt;</code>. In diagrams, <code>.box.planned</code> and <code>.edge.dim</code></td></tr>
+<tr><td>A sketch never run</td><td>A label saying it is an unverified sketch, never a working command (PRINCIPLES §14)</td></tr>
+</tbody>
+</table>
+</div>
+<p>The design lives in the plan, never on the durable page (§19). Remove the badge in the commit that completes the plan, and re-verify the page date. List every open gap from the repo root:</p>
+<pre><code class="language-sh">grep -rn &quot;TODO[:]&quot; docs --include=&#39;*.md&#39;
+</code></pre>
+</section>
+<section id="generated">
+<h2>Generated pages</h2>
+<p>No <code>.html</code> under <code>docs/</code> is written by hand; change its source or generator and re-run it.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Page</th><th>Generator</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>Every <code>docs/**/&lt;name&gt;.html</code> with a <code>&lt;name&gt;.md</code></td><td><a href="../../tools/docs/render.mts"><code>tools/docs/render.mts</code></a></td><td><code>npm run docs</code></td></tr>
+<tr><td><a href="../testing/agent-tests.html">docs/testing/agent-tests.html</a></td><td><a href="../../evals/report.ts"><code>evals/report.ts</code></a>, from <code>tests/agents/results/*.json</code></td><td><code>npm run report</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><code>testing/agent-tests.html</code> has no Markdown source; the guard exempts it by name (<code>EXEMPT</code> in <code>tests/unit/docs.test.ts</code>). Commit a regenerated report with the results it came from, which record their commit (PRINCIPLES §13).</p>
+</section>
+<section id="guard">
+<h2>The guard test</h2>
+<p><a href="../../tests/unit/docs.test.ts"><code>tests/unit/docs.test.ts</code></a> runs in <code>npm test</code>, so in the gate. Every check below was broken on purpose and seen to fail naming the offender: <a href="history.html#guard-proofs">the proofs</a>.</p>
+<h3 id="checks-on-the-sources">Checks on the sources</h3>
+<p>It renders every source in memory and fails when:</p>
+<ul>
+<li>a source does not render: bad front matter, not exactly one <code>#</code> heading, a duplicate id, nesting too deep, or a diagram missing, without <code>&lt;title&gt;</code>, not <code>.svg</code> or from the network;</li>
+<li>a committed <code>.html</code> differs from its fresh render, naming the file and <code>npm run docs</code>;</li>
+<li>an <code>.html</code> under <code>docs/</code> has no <code>.md</code> source and is not exempt (<code>testing/agent-tests.html</code>), or an <code>.svg</code> is used by no source;</li>
+<li><code>tools/docs/render.mts</code> or <code>docs/assets/docs.css</code> no longer matches the sha256 recorded in <code>AGENTS.md</code>;</li>
+<li>a page outside <code>docs/plans/</code> does not open with exactly one summary callout in its header;</li>
+<li>a plan's <code>status</code> does not match its Status badge in the plans index, or a plan not done is checked off there;</li>
+<li>a file under <code>docs/</code> is not a source, a render, a diagram, the stylesheet or a generated page;</li>
+<li>a source other than <code>cli/guide.md</code> and <code>cli/index.md</code> has a <code>&lt;style&gt;</code> block;</li>
+<li>a plan other than the template writes <code>TODO&amp;#58;</code> outside a code span, hiding a gap from the grep;</li>
+<li>a plan line holds a second checkbox after its first — a duplicated criterion or step (added 2026-09-29, from model-streaming's completion review);</li>
+<li><a href="../testing/index.html#unit">Testing</a>'s unit table does not list a <code>tests/unit/**/*.test.ts</code> file, lists one that is gone, or lists one twice (added 2026-09-29, from cli-interactive's completion review, finding 4: nine files had gone unlisted; its proof: <code>evals/probes/cli-interactive-2026-09-29/proof-unit-table-guard.log.txt</code>); the row counts are not checked, needing a run, and are dated by the note under the table;</li>
+<li>a source holds a character that is invisible or changes text direction — a C0 control but tab and newline, a C1 control, or a format character (Unicode category <code>Cf</code>: bidirectional controls, zero-width characters, the byte order mark) — naming the file, line and code point (added 2026-10-01, from extension-modules' amendment for O4, review finding 1: a raw U+202E, meant as the escape <code>\u202e</code>, reversed the rendered page's text; its proof: <a href="history.html#guard-proofs">History</a>);</li>
+<li><code>package.json</code> does not require exactly the Node versions both the installed Vitest and the installed ESLint declare — the intersection of their ranges, <code>^22.13.0 || ^24.0.0 || &gt;=26.0.0</code> for Vitest 5.0.2 and ESLint 10.12.0 (since 2026-10-14, <code>docs/plans/lint-format.md</code> R10 (b); Vitest's range alone before it) — or that floor is not the <code>@types/node</code> major.minor or is below 22.6, the first Node with <code>--experimental-strip-types</code> (22.12 has it: Node v22.12.0 CLI docs, read 2026-09-27).</li>
+</ul>
+<h3 id="checks-on-the-rendered-html">Checks on the rendered HTML</h3>
+<ul>
+<li>a relative <code>href</code> or <code>src</code> does not resolve, or a <code>#fragment</code> names an <code>id</code> its page lacks; a link points at a <code>.md</code> under <code>docs/</code>; an <code>id</code> repeats in a page;</li>
+<li>a relative link targets a file git ignores (<code>git check-ignore</code>), which exists only on the machine that made it and not in a clean checkout;</li>
+<li>a page is not linked directly by an <code>&lt;a&gt;</code> from <code>docs/index.html</code> or its section's <code>index.html</code> (a section index from <code>docs/index.html</code>; the plans index, which <code>docs/index.md</code> names as code, is a root of its own);</li>
+<li>a page does not link <code>docs/assets/docs.css</code> by a correct relative path, or lacks <code>&lt;!doctype html&gt;</code>, a <code>&lt;title&gt;</code> or a viewport meta;</li>
+<li>anything loads from the network: a remote <code>src</code>, <code>data</code>, <code>poster</code> or <code>xlink:href</code>; a remote entry in <code>srcset</code> or <code>imagesrcset</code>; a remote <code>href</code> on <code>&lt;link&gt;</code>, <code>&lt;script&gt;</code> or SVG <code>&lt;image&gt;</code>, <code>&lt;use&gt;</code>, <code>&lt;feImage&gt;</code>; a CSS <code>@import</code> or <code>url()</code> off the machine (a remote <code>&lt;a href&gt;</code> is a link, not a load);</li>
+<li>a link from <code>README.md</code>, <code>AGENTS.md</code> or <code>CLAUDE.md</code> into <code>docs/</code> does not resolve, or its <code>#fragment</code> names no <code>id</code>;</li>
+<li>outside <code>docs/plans/</code>, a <code>badge planned</code> is not a <code>&lt;span&gt;</code> reading <code>planned: &lt;slug&gt;</code>, or (with the plans present) names no plan in <code>docs/plans/</code>; or a page outside <code>docs/plans/</code>, the README or the guidance links into a path the public export leaves out (<code>tools/oss/manifest.json</code>; <code>docs/plans/oss-release.md</code> R13, R37, 2026-10-16). The plans' own checks — each status and its index row, the counts, the debt lines — are <code>tests/unit/docs-plans.test.ts</code>'s, internal.</li>
+</ul>
+<p>Comments and script and style bodies are ignored, and escaped markup (<code>&amp;lt;a href…</code>) is text, so the template above is not mistaken for a link.</p>
+</section>
+<section id="done">
+<h2>What &quot;done&quot; means for a doc change</h2>
+<ol>
+<li>Every claim is true now; every command shown was run; every external fact carries its source and date (PRINCIPLES §12, §14).</li>
+<li>The <code>.md</code> was edited, never the <code>.html</code>; it follows the <a href="#template">template</a> and the stylesheet's classes; <code>npm run docs</code> was run.</li>
+<li>It is linked directly from its section index or <a href="../index.html">docs/index.md</a>, which describes it.</li>
+<li>Gaps carry <code>TODO&#58;</code>; unbuilt work is only a <span class="badge planned">planned: pc-cuda</span> badge, naming its plan.</li>
+<li>It was looked at in a browser, including at phone width (PRINCIPLES §3).</li>
+<li>It passes the <a href="workflows.html#check-docs">documentation checklist</a> and its <a href="workflows.html#review">adversarial review</a>, and <code>npm run check</code> is green.</li>
+<li>It is committed with the code it describes (PRINCIPLES §15).</li>
+</ol>
+</section>
+<footer class="page"><span>Source: <code>docs/project/documentation.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

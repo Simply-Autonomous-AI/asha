@@ -1,0 +1,11 @@
+{
+  "tools": [
+    {
+      "name": "hold",
+      "description": "Hold the question: this call waits until it is stopped and returns no result.",
+      "parameters": { "type": "object", "properties": {} },
+      "class": "files",
+      "timeoutMs": 60000
+    }
+  ]
+}

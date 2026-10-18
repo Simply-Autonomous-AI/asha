@@ -1,0 +1,202 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p11-blackboard.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blackboard Demo</title>
+<meta name="description" content="P11 · Blackboard: Agents build the answer on the channel's shared board, each reading what others posted, and never send each other their work. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Blackboard Demo</nav>
+<h1>P11 · Blackboard</h1>
+<p class="lede">Agents build the answer on a shared board: each posts what it alone knows, later ones read the board and build on what earlier ones posted, and the answer is read from the board — no agent sends another its work.</p>
+<div class="facts"><span>written 2026-10-03</span><span>status: <span class="badge built">built</span> 2026-10-03, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/blackboard/team.json"><code>teams/blackboard/</code></a></span><span>test: <a href="../../tests/agents/p11-blackboard.test.ts"><code>tests/agents/p11-blackboard.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-4.md</code>, its runs</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p11-a</code>, a shopping list each contributor adds one item to, and <code>p11-b</code>, a meeting notice each member reads from the board and extends, as <code>docs/plans/patterns-phase-4.md</code> specifies them.</li>
+<li>Built: its three recorded runs with every member on <code>qwen3-8b-q4_k_m</code> passed, then one under the bound they set, at <code>d06bd2b</code> (runs (<code>docs/plans/patterns-phase-4.md</code>)); moved 2026-10-10 by <code>docs/plans/demo-model-pico.md</code> R3, with its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code>: three recorded runs passed at <code>6eed097</code> with the move, then one under the bound they set at <code>8dd3a26</code> (runs (<code>evals/probes/demo-model-pico-runs-2026-10-09/README.md</code>)); its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>editor</code> on <code>qwen3-8b-q4_k_m</code>; <code>contrib-a</code>, <code>contrib-b</code>, <code>contrib-c</code> on <code>pico-v2-q8_0</code>; <code>planner</code> on <code>qwen3-8b-q4_k_m</code>; <code>note-day</code>, <code>note-room</code>, <code>note-time</code> on <code>pico-v2-q8_0</code>.</li>
+<li>The board is the channel's blackboard (<a href="../architecture/channel.html#blackboard">the blackboard</a>): agents post with <code>blackboard_post</code> and read with <code>blackboard_read</code>; the test reads it through the control API, <code>GET /v1/blackboard?channel=main</code> (<a href="../architecture/index.html#apis">APIs</a>).</li>
+<li>The proof that work travels only through the board: no question, answer or gather of the conversation holds an item or a fact, and each fact is in one member's files only — yet the replies hold them all.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p11-blackboard.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>pico-v2-q8_0</code> and <code>qwen3-8b-q4_k_m</code> (<a href="videos/p11-blackboard.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 65 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when several agents each hold part of what the answer needs, and later work depends on what others have already contributed: each reads the shared state and adds to it, and nobody has to know who else exists or pass work along. The control — here a lead that decides whose turn it is — need not carry, or even see, the content.</p>
+<p><strong>Do not use it</strong> when one agent can ask the others and combine their answers itself (fan-out, P4; orchestrator–workers, P5): a call's gather already brings the answers back. Nor when the work is a fixed relay of one result through stages (pipeline, P3), where each stage hands its output to the next.</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 420" role="img" aria-labelledby="p11-t p11-d">
+  <title id="p11-t">P11 · Blackboard</title>
+  <desc id="p11-d">p11-a: you ask editor-1 for the shopping list; it consults contrib-a-1, contrib-b-1 and contrib-c-1 in one call; each posts its item to the channel's blackboard and answers only "posted"; editor-1 reads the board and replies with the items. p11-b: you ask planner-1 for the meeting notice; it consults note-day-1, then note-room-1, then note-time-1, one call each; note-day-1 posts "notice: meeting on Thursday"; note-room-1 and note-time-1 each read the board and post the last notice extended with their own fact; planner-1 reads the board and replies with the notice. No question or answer carries an item or a fact: they travel only through the board.</desc>
+  <defs><marker id="p11-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <text class="label" x="20" y="24">p11-a · the shopping list</text>
+  <rect class="box" x="20" y="40" width="80" height="34" rx="5"/>
+  <text class="label mono" x="60" y="62" text-anchor="middle">you</text>
+  <rect class="box accent" x="140" y="40" width="110" height="34" rx="5"/>
+  <text class="label mono" x="195" y="62" text-anchor="middle">editor-1</text>
+  <path class="edge" d="M100 57 H138" marker-end="url(#p11-a)"/>
+  <rect class="box" x="300" y="34" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="53" text-anchor="middle">contrib-a-1</text>
+  <rect class="box" x="300" y="70" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="89" text-anchor="middle">contrib-b-1</text>
+  <rect class="box" x="300" y="106" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="125" text-anchor="middle">contrib-c-1</text>
+  <path class="edge" d="M250 57 L298 48" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M250 60 L298 84" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M250 64 L298 118" marker-end="url(#p11-a)"/>
+  <text class="label small" x="262" y="150">consult; answers "posted"</text>
+  <rect class="box accent" x="480" y="40" width="180" height="96" rx="5"/>
+  <text class="label mono small" x="490" y="58">blackboard (channel main)</text>
+  <text class="label mono small" x="490" y="80">item: saffron</text>
+  <text class="label mono small" x="490" y="98">item: quince jam</text>
+  <text class="label mono small" x="490" y="116">item: rye flour</text>
+  <path class="edge" d="M420 84 H478" marker-end="url(#p11-a)"/>
+  <text class="label small" x="425" y="78">post</text>
+  <path class="edge" d="M570 136 C570 175 195 175 195 76" marker-end="url(#p11-a)"/>
+  <text class="label small" x="330" y="182">editor-1 reads the board, then replies with the items</text>
+  <text class="label" x="20" y="222">p11-b · the meeting notice</text>
+  <rect class="box" x="20" y="238" width="80" height="34" rx="5"/>
+  <text class="label mono" x="60" y="260" text-anchor="middle">you</text>
+  <rect class="box accent" x="140" y="238" width="110" height="34" rx="5"/>
+  <text class="label mono" x="195" y="260" text-anchor="middle">planner-1</text>
+  <path class="edge" d="M100 255 H138" marker-end="url(#p11-a)"/>
+  <rect class="box" x="300" y="232" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="251" text-anchor="middle">1 note-day-1</text>
+  <rect class="box" x="300" y="268" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="287" text-anchor="middle">2 note-room-1</text>
+  <rect class="box" x="300" y="304" width="120" height="28" rx="5"/>
+  <text class="label mono small" x="360" y="323" text-anchor="middle">3 note-time-1</text>
+  <path class="edge" d="M250 252 L298 246" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M250 256 L298 282" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M250 260 L298 316" marker-end="url(#p11-a)"/>
+  <text class="label small" x="218" y="350">one call at a time, in turn</text>
+  <rect class="box accent" x="460" y="232" width="200" height="100" rx="5"/>
+  <text class="label mono small" x="470" y="250">blackboard (channel main)</text>
+  <text class="label mono small" x="470" y="272">notice: … Thursday</text>
+  <text class="label mono small" x="470" y="292">… Thursday, in the Juniper room</text>
+  <text class="label mono small" x="470" y="312">… Juniper room, at 14:30</text>
+  <path class="edge" d="M420 246 H458" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M458 282 H422" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M422 290 H458" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M458 312 H422" marker-end="url(#p11-a)"/>
+  <path class="edge" d="M422 324 H458" marker-end="url(#p11-a)"/>
+  <text class="label small" x="425" y="350">read, then post the notice extended</text>
+  <path class="edge" d="M560 332 C560 395 195 395 195 274" marker-end="url(#p11-a)"/>
+  <text class="label small" x="300" y="408">planner-1 reads the board, then replies with the notice</text>
+</svg>
+<figcaption>p11-a: you ask editor-1 for the shopping list; it consults contrib-a-1, contrib-b-1 and contrib-c-1 in one call; each posts its item to the channel's blackboard and answers only &quot;posted&quot;; editor-1 reads the board and replies with the items. p11-b: you ask planner-1 for the meeting notice; it consults note-day-1, then note-room-1, then note-time-1, one call each; note-day-1 posts &quot;notice: meeting on Thursday&quot;; note-room-1 and note-time-1 each read the board and post the last notice extended with their own fact; planner-1 reads the board and replies with the notice. No question or answer carries an item or a fact: they travel only through the board.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send each scenario's message, p11-a first: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 43,000 ms since 2026-10-10, set from its three recorded runs with its sub-agents on <code>pico-v2-q8_0</code> (<code>docs/plans/demo-model-pico.md</code> R3) — the largest request, p11-b's 28,128 ms in run 1 at <code>6eed097</code> with the move, times 1.5 (42,192), rounded up to a whole second; the cap is 45,000 ms. <em>Before, with every member on <code>qwen3-8b-q4_k_m</code>:</em> 41,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-4.md</code> R8) — the largest request, p11-b's 26,700 ms at <code>92b5f15</code>, times 1.5 (40,050), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=blackboard
+# bound: 43000 ms
+# p11-a
+./asha to=editor-1 user=alice message=&quot;Assemble the shopping list.&quot;
+# p11-b
+./asha to=planner-1 user=alice message=&quot;Write the meeting notice.&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>8dd3a26</code> (clean tree), <code>docs/plans/demo-model-pico.md</code>'s fourth run (R3 (d)), with its sub-agents on <code>pico-v2-q8_0</code>, from its results file <code>evals/probes/demo-model-pico-runs-2026-10-09/run-4/results/p11-blackboard.json</code>: each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' tool calls as they stream — lines such as <code>› &lt;handle&gt; &lt;tool&gt;: …</code>, one fragment each (D38) — are left out here; the results file holds them. The transcript before, with every member on <code>qwen3-8b-q4_k_m</code>, is in this page's history (<code>git show 8dd3a26:docs/patterns/p11-blackboard.md</code>). <strong>Kept:</strong> every <code>blackboard_read</code> line and p11-b's <code>blackboard_post</code> lines, because the reads and posts are the pattern; p11-a's contributors post at once, in interleaved fragments, which are left out.</p>
+<p><strong>p11-a</strong> — exit 0, 18,889 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=editor-1 user=alice message=&quot;Assemble the shopping list.&quot;
+› alice → editor-1 on main: Assemble the shopping list.
+› editor-1: ok
+› internal editor-1 → contrib-a-1: Post your item to the blackboard.
+› internal editor-1 → contrib-b-1: Post your item to the blackboard.
+› internal editor-1 → contrib-c-1: Post your item to the blackboard.
+› internal contrib-b-1 → editor-1: posted
+› internal contrib-c-1 → editor-1: posted
+› internal contrib-a-1 → editor-1: posted
+› internal asha → editor-1: Answers to editor-1&#39;s call: 3 answered.
+› editor-1 blackboard_read: {}
+› editor-1: ok
+› output editor-1 → alice:
+The shopping list is:
+- quince jam
+- rye flour
+- saffron
+</code></pre>
+<p><strong>p11-b</strong> — exit 0, 25,970 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=planner-1 user=alice message=&quot;Write the meeting notice.&quot;
+› alice → planner-1 on main: Write the meeting notice.
+› planner-1: ok
+› internal planner-1 → note-day-1: Add your part to the notice on the blackboard.
+› note-day-1 blackboard_post: {&quot;text&quot;: &quot;notice: meeting on Thursday&quot;}
+› internal note-day-1 → planner-1: posted
+› internal asha → planner-1: Answers to planner-1&#39;s call: 1 answered.
+› planner-1: ok
+› internal planner-1 → note-room-1: Add your part to the notice on the blackboard.
+› note-room-1 blackboard_read: {}
+› note-room-1 blackboard_post: {&quot;text&quot;: &quot;notice: meeting on Thursday, in the Juniper room&quot;}
+› internal note-room-1 → planner-1: posted
+› internal asha → planner-1: Answers to planner-1&#39;s call: 1 answered.
+› planner-1: ok
+› internal planner-1 → note-time-1: Add your part to the notice on the blackboard.
+› note-time-1 blackboard_read: {}
+› note-time-1 blackboard_post: {&quot;text&quot;: &quot;notice: meeting on Thursday, in the Juniper room, at 14:30&quot;}
+› internal note-time-1 → planner-1: posted
+› internal asha → planner-1: Answers to planner-1&#39;s call: 1 answered.
+› planner-1 blackboard_read: {}
+› planner-1: ok
+› output planner-1 → alice:
+The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30.
+</code></pre>
+<p>Neither the planner's questions nor the members' answers hold Thursday, Juniper or 14:30: each member found the earlier parts on the board.</p>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/blackboard/team.json"><code>teams/blackboard/team.json</code></a>: the team, eight members — <code>editor</code> and <code>contrib-a</code>, <code>contrib-b</code>, <code>contrib-c</code> (p11-a); <code>planner</code> and <code>note-day</code>, <code>note-room</code>, <code>note-time</code> (p11-b) — each joining as <code>&lt;name&gt;-1</code>.</li>
+<li>Each member's recipe and guidance, a full-text document in its system prompt: <a href="../../teams/blackboard/editor.json"><code>editor.json</code></a> and <a href="../../teams/blackboard/editor.md"><code>editor.md</code></a> (<code>blackboard_read</code>); <a href="../../teams/blackboard/contrib-a.json"><code>contrib-a.json</code></a>, <a href="../../teams/blackboard/contrib-b.json"><code>contrib-b.json</code></a>, <a href="../../teams/blackboard/contrib-c.json"><code>contrib-c.json</code></a> and their documents (<code>blackboard_post</code>); <a href="../../teams/blackboard/planner.json"><code>planner.json</code></a> and <a href="../../teams/blackboard/planner.md"><code>planner.md</code></a> (<code>blackboard_read</code>); <a href="../../teams/blackboard/note-day.json"><code>note-day.json</code></a> (<code>blackboard_post</code>), <a href="../../teams/blackboard/note-room.json"><code>note-room.json</code></a> and <a href="../../teams/blackboard/note-time.json"><code>note-time.json</code></a> (both board tools) and their documents. Every recipe also selects the four file tools.</li>
+<li><a href="../../tests/agents/p11-blackboard.test.ts"><code>tests/agents/p11-blackboard.test.ts</code></a>: launches the team and sends each scenario's command from this page; before and after each, reads the board through the control API (<code>readBoard</code> in <a href="../../tests/agents/support.ts"><code>tests/agents/support.ts</code></a>), so the checker sees exactly the entries the scenario posted; then asserts each scenario only through its checker, <code>P11_A</code> and <code>P11_B</code> in <a href="../../tests/agents/patterns/phase-4.ts"><code>tests/agents/patterns/phase-4.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p11-a/pass.json"><code>tests/agents/patterns/fixtures/p11-a/</code></a> and <a href="../../tests/agents/patterns/fixtures/p11-b/pass.json"><code>p11-b/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>With its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code> (demo-model-pico, 2026-10-10): its largest request took 28,128 ms in the three recorded runs and 25,970 ms in the fourth, under its bound of 43,000 ms. The limits after it were measured with every member on <code>qwen3-8b-q4_k_m</code>, before the move; one about a sub-agent was not measured again on <code>pico-v2-q8_0</code>.</li>
+<li><strong>The board is in the daemon's memory.</strong> It is lost when the daemon stops, unless the team names <code>persist: [&quot;board&quot;]</code> (<a href="../architecture/recipes.html#team">team</a>); this team does not, so every run starts with an empty board. The test reads it through <code>GET /v1/blackboard</code>, which any holder of the control credential can call.</li>
+<li><strong>p11-b's control is a fixed schedule.</strong> planner-1 asks the members in an order its guidance gives, and reads the board only at the end; a member does not check the board's state before it acts — given a board with no notice, note-room-1 still posts one, built from the shopping list's items (the plan's control C2). A step telling the members to post nothing until a notice is there broke their main step on <code>qwen3-8b-q4_k_m</code> under two wordings (premise probes (<code>docs/plans/patterns-phase-4.md</code>)). What p11-b shows is the blackboard's information path: work built on work through the shared space.</li>
+<li><strong>The tool-call lines show what the model asked for.</strong> The checker's &quot;reads before it posts&quot; claims read the <code>--verbose</code> lines of each tool call; the board's entries — each later one starting with the earlier one's text — show what happened.</li>
+<li>The editor and the planner reply in their own words (a heading and bullets, a sentence around the notice); the checker reads the content: the board's items in the board's order, and the notice's three facts.</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line, log record or board entry that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p11">agent test report, P11 · Blackboard</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p11-blackboard.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

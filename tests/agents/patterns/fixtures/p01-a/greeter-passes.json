@@ -1,0 +1,47 @@
+{
+  "scenario": "p01-a",
+  "breaks": "the command exits 0",
+  "note": "greeter-1 passes, so nobody answers and the harness does: exit 1.",
+  "team": "delegation",
+  "input": {
+    "user": "alice",
+    "to": "lead-1",
+    "text": "Please ask greeter-1 to say Hello World."
+  },
+  "recipients": [
+    "lead-1"
+  ],
+  "messages": [
+    {
+      "from": "lead-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "lead-1",
+      "kind": "internal",
+      "text": "Say: Hello World",
+      "to": "greeter-1",
+      "working": [
+        "lead-1",
+        "greeter-1"
+      ]
+    },
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "pass: not mine"
+    },
+    {
+      "from": "asha",
+      "kind": "output",
+      "text": "No agent could answer this:\n- greeter-1 passed: not mine"
+    }
+  ],
+  "ms": 6518
+}

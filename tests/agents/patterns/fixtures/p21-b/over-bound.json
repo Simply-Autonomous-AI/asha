@@ -1,0 +1,51 @@
+{
+  "scenario": "p21-b",
+  "breaks": "the request completes within the pattern's bound",
+  "note": "One millisecond over the page's bound.",
+  "team": "topics",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "The home team won.",
+    "topic": "sports"
+  },
+  "recipients": [
+    "sports-desk-1",
+    "front-page-1"
+  ],
+  "messages": [
+    {
+      "from": "sports-desk-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "sports-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "sports-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "sports-desk-1",
+      "kind": "output",
+      "text": "sports-desk-1 noted: The home team won.",
+      "working": [
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "output",
+      "text": "front-page-1 noted: The home team won.",
+      "working": []
+    }
+  ],
+  "ms": "bound+1"
+}

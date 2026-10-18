@@ -1,0 +1,36 @@
+{
+  "pattern": "P22",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:39:18.502Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p22-escalation",
+  "models": [
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 13240,
+  "bytes": 755113,
+  "sha256": "76fe8bb6e52ab6c45d7e8204e4f752f3d64f7234cebd3b3641652e3ab2af38d6",
+  "frames": 265,
+  "framesPerSecond": 20.1,
+  "longestGapMs": 56,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P22 · Escalation to a human (the summary)",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5032,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p22-a",
+      "outcome": "pass"
+    },
+    {
+      "id": "p22-b",
+      "outcome": "pass"
+    }
+  ]
+}

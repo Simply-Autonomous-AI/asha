@@ -1,0 +1,33 @@
+{
+  "pattern": "P5",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:19:31.889Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p05-orchestrator-workers",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 28920,
+  "bytes": 1824008,
+  "sha256": "49140854b8f31a60c8fcb0665b7260a4a8ce89b1c0da7db9df8971fd387a7410",
+  "frames": 576,
+  "framesPerSecond": 19.9,
+  "longestGapMs": 86,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P5 · Orchestrator–workers",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5054,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p05-a",
+      "outcome": "pass"
+    }
+  ]
+}

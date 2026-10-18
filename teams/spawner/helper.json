@@ -1,0 +1,24 @@
+{
+  "id": "helper",
+  "image": "hello-world",
+  "description": "Holds a word.",
+  "prompt": "you hold a word.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 30000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "helper.md",
+      "fullText": true
+    }
+  ]
+}

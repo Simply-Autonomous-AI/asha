@@ -1,0 +1,647 @@
+{
+ "suite": "p12-self-selection",
+ "commit": "47fb901bea55b18a2b40ec0cd28b0e41ee9b0a9a",
+ "dirty": false,
+ "startedAt": "2026-10-16T02:51:25.402Z",
+ "finishedAt": "2026-10-16T02:51:45.689Z",
+ "modelCalls": [
+  {
+   "at": "2026-10-16T02:51:39.705Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "translator-1",
+   "model": "pico-v2-q8_0",
+   "ms": 8793,
+   "promptTokens": 1732,
+   "cachedTokens": 0
+  },
+  {
+   "at": "2026-10-16T02:51:40.415Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "greeter-1",
+   "model": "pico-v2-q8_0",
+   "ms": 9508,
+   "promptTokens": 1729,
+   "cachedTokens": 0
+  },
+  {
+   "at": "2026-10-16T02:51:41.070Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "greeter-1",
+   "model": "pico-v2-q8_0",
+   "ms": 533,
+   "promptTokens": 1726,
+   "cachedTokens": 1711
+  },
+  {
+   "at": "2026-10-16T02:51:42.987Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "translator-1",
+   "model": "pico-v2-q8_0",
+   "ms": 2451,
+   "promptTokens": 1729,
+   "cachedTokens": 1714
+  },
+  {
+   "at": "2026-10-16T02:51:43.956Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "translator-1",
+   "model": "pico-v2-q8_0",
+   "ms": 859,
+   "promptTokens": 1731,
+   "cachedTokens": 1714
+  },
+  {
+   "at": "2026-10-16T02:51:44.378Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "greeter-1",
+   "model": "pico-v2-q8_0",
+   "ms": 1280,
+   "promptTokens": 1728,
+   "cachedTokens": 1711
+  }
+ ],
+ "scenarios": [
+  {
+   "scenario": {
+    "id": "launch",
+    "title": "./asha --launch team=self-select",
+    "agents": [],
+    "expectation": "Every member comes online on channel main: greeter-1, translator-1."
+   },
+   "runs": [
+    {
+     "args": [
+      "--verbose",
+      "--launch",
+      "team=self-select"
+     ],
+     "code": 0,
+     "stdout": "greeter-1\ntranslator-1\n",
+     "stderr": "› started the asha daemon (pid 22541); log: $TMPDIR/asha-run-18545-ZWpzdz/asha-agents-p12-self-selection-sGVl1c/logs/server.log\n› member greeter (recipe greeter)\n› container_runtime: ready\n› model: pico-v2-q8_0 cached\n› model_server: pico-v2-q8_0 serving\n› image: asha-image-hello-world current\n› greeter-1: Hi\n› member translator (recipe translator)\n› container_runtime: ready\n› model: pico-v2-q8_0 cached\n› model_server: pico-v2-q8_0 serving\n› image: asha-image-hello-world current\n› translator-1: Hi\n",
+     "startedAt": "2026-10-16T02:51:25.403Z",
+     "ms": 5407,
+     "events": [
+      {
+       "type": "progress",
+       "text": "started the asha daemon (pid 22541); log: $TMPDIR/asha-run-18545-ZWpzdz/asha-agents-p12-self-selection-sGVl1c/logs/server.log"
+      },
+      {
+       "type": "progress",
+       "text": "member greeter (recipe greeter)"
+      },
+      {
+       "type": "progress",
+       "text": "container_runtime: ready"
+      },
+      {
+       "type": "progress",
+       "text": "model: pico-v2-q8_0 cached"
+      },
+      {
+       "type": "progress",
+       "text": "model_server: pico-v2-q8_0 serving"
+      },
+      {
+       "type": "progress",
+       "text": "image: asha-image-hello-world current"
+      },
+      {
+       "type": "status",
+       "from": "greeter-1",
+       "text": "Hi"
+      },
+      {
+       "type": "progress",
+       "text": "member translator (recipe translator)"
+      },
+      {
+       "type": "progress",
+       "text": "container_runtime: ready"
+      },
+      {
+       "type": "progress",
+       "text": "model: pico-v2-q8_0 cached"
+      },
+      {
+       "type": "progress",
+       "text": "model_server: pico-v2-q8_0 serving"
+      },
+      {
+       "type": "progress",
+       "text": "image: asha-image-hello-world current"
+      },
+      {
+       "type": "status",
+       "from": "translator-1",
+       "text": "Hi"
+      }
+     ]
+    }
+   ],
+   "state": "pass",
+   "errors": []
+  },
+  {
+   "scenario": {
+    "id": "p12-a",
+    "title": "p12-a: a translation to everyone",
+    "agents": [
+     "greeter-1",
+     "translator-1"
+    ],
+    "expectation": "translator-1 replies \"Bonjour\"; greeter-1 passes; no agent forwards it."
+   },
+   "runs": [
+    {
+     "args": [
+      "--verbose",
+      "user=alice",
+      "message=Please translate 'good morning' into French."
+     ],
+     "code": 0,
+     "stdout": "Bonjour\n",
+     "stderr": "› alice → main: Please translate 'good morning' into French.\n› greeter-1 pass: {\n› translator-1 reply: {\n› greeter-1 pass: \"\n› translator-1 reply: \"\n› greeter-1 pass: reason\n› translator-1 reply: text\n› greeter-1 pass: \":\n› translator-1 reply: \":\n› greeter-1 pass:  \"\n› translator-1 reply:  \"\n› greeter-1 pass: A\n› translator-1 reply: Bon\n› greeter-1 pass:  request\n› translator-1 reply: jour\n› greeter-1 pass:  for\n› translator-1 reply: \"}\n› greeter-1 pass:  a translation\n› translator-1: ok\n› output translator-1 → alice:\n› greeter-1 pass:  is for translator-1, which has already received it from the user.\"}\n› greeter-1: pass: A request for a translation is for translator-1, which has already received it from the user.\n",
+     "startedAt": "2026-10-16T02:51:30.812Z",
+     "ms": 9620,
+     "events": [
+      {
+       "type": "posted",
+       "from": "alice",
+       "to": null,
+       "text": "Please translate 'good morning' into French."
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: {"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 reply: {"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: \""
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 reply: \""
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: reason"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 reply: text"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: \":"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 reply: \":"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  \""
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 reply:  \""
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: A"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 reply: Bon"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  request"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 reply: jour"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  for"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 reply: \"}"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  a translation"
+      },
+      {
+       "type": "status",
+       "from": "translator-1",
+       "text": "ok"
+      },
+      {
+       "type": "output",
+       "from": "translator-1",
+       "to": "alice"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  is for translator-1, which has already received it from the user.\"}"
+      },
+      {
+       "type": "status",
+       "from": "greeter-1",
+       "text": "pass: A request for a translation is for translator-1, which has already received it from the user."
+      }
+     ]
+    }
+   ],
+   "state": "pass",
+   "errors": [],
+   "proof": [
+    {
+     "claim": "exactly one output, from translator-1, matching /bonjour/i",
+     "evidence": "› output translator-1 → alice: \"Bonjour\""
+    },
+    {
+     "claim": "greeter-1 posts exactly one \"pass: …\" status",
+     "evidence": "› greeter-1: pass: A request for a translation is for translator-1, which has already received it from the user."
+    },
+    {
+     "claim": "no agent posts an internal message",
+     "evidence": "no \"› internal\" line in the transcript"
+    },
+    {
+     "claim": "the command exits 0",
+     "evidence": "exit 0"
+    },
+    {
+     "claim": "the request completes within the pattern's bound",
+     "evidence": "9620 ms of 15000 ms"
+    }
+   ]
+  },
+  {
+   "scenario": {
+    "id": "p12-b",
+    "title": "p12-b: a \"say\" to everyone",
+    "agents": [
+     "greeter-1",
+     "translator-1"
+    ],
+    "expectation": "greeter-1 replies \"Hello World\"; translator-1 passes."
+   },
+   "runs": [
+    {
+     "args": [
+      "--verbose",
+      "user=alice",
+      "message=Please say: Hello World."
+     ],
+     "code": 0,
+     "stdout": "Hello World.\n",
+     "stderr": "› alice → main: Please say: Hello World.\n› translator-1 pass: {\n› greeter-1 reply: {\n› translator-1 pass: \"\n› greeter-1 reply: \"\n› translator-1 pass: reason\n› greeter-1 reply: text\n› translator-1 pass: \":\n› greeter-1 reply: \":\n› translator-1 pass:  \"\n› greeter-1 reply:  \"\n› translator-1 pass: A\n› greeter-1 reply: Hello\n› translator-1 pass:  message\n› greeter-1 reply:  World\n› translator-1 pass:  that\n› greeter-1 reply: .\"\n› translator-1 pass:  does\n› greeter-1 reply: }\n› translator-1 pass:  not\n› greeter-1: ok\n› output greeter-1 → alice:\n› translator-1 pass:  ask for a French translation, such as a request to say words, is not yours: call pass and nothing else. Never call send_message: every agent on the channel already has the message, and the one whose role covers it answers.\"}\n› translator-1: pass: A message that does not ask for a French translation, such as a request to say words, is not yours: call pass and nothing else. Never call send_message: every agent on the channel already has the message, and the one whose role covers it answers.\n",
+     "startedAt": "2026-10-16T02:51:40.439Z",
+     "ms": 2563,
+     "events": [
+      {
+       "type": "posted",
+       "from": "alice",
+       "to": null,
+       "text": "Please say: Hello World."
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: {"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 reply: {"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: \""
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 reply: \""
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: reason"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 reply: text"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: \":"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 reply: \":"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  \""
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 reply:  \""
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: A"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 reply: Hello"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  message"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 reply:  World"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  that"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 reply: .\""
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  does"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 reply: }"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  not"
+      },
+      {
+       "type": "status",
+       "from": "greeter-1",
+       "text": "ok"
+      },
+      {
+       "type": "output",
+       "from": "greeter-1",
+       "to": "alice"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  ask for a French translation, such as a request to say words, is not yours: call pass and nothing else. Never call send_message: every agent on the channel already has the message, and the one whose role covers it answers.\"}"
+      },
+      {
+       "type": "status",
+       "from": "translator-1",
+       "text": "pass: A message that does not ask for a French translation, such as a request to say words, is not yours: call pass and nothing else. Never call send_message: every agent on the channel already has the message, and the one whose role covers it answers."
+      }
+     ]
+    }
+   ],
+   "state": "pass",
+   "errors": [],
+   "proof": [
+    {
+     "claim": "exactly one output, from greeter-1, matching /^hello,? world\\.?$/i",
+     "evidence": "› output greeter-1 → alice: \"Hello World.\""
+    },
+    {
+     "claim": "translator-1 posts exactly one \"pass: …\" status",
+     "evidence": "› translator-1: pass: A message that does not ask for a French translation, such as a request to say words, is not yours: call pass and nothing else. Never call send_message: every agent on the channel already has the message, and the one whose role covers it answers."
+    },
+    {
+     "claim": "no agent posts an internal message",
+     "evidence": "no \"› internal\" line in the transcript"
+    },
+    {
+     "claim": "the command exits 0",
+     "evidence": "exit 0"
+    },
+    {
+     "claim": "the request completes within the pattern's bound",
+     "evidence": "2563 ms of 15000 ms"
+    }
+   ]
+  },
+  {
+   "scenario": {
+    "id": "p12-c",
+    "title": "p12-c: work no member does, to everyone",
+    "agents": [
+     "greeter-1",
+     "translator-1"
+    ],
+    "expectation": "Both pass; the harness says no agent could answer, listing both; the command exits 1."
+   },
+   "runs": [
+    {
+     "args": [
+      "--verbose",
+      "user=alice",
+      "message=Please book me a flight to Paris."
+     ],
+     "code": 1,
+     "stdout": "No agent could answer this:\n- greeter-1 passed: A request for a translation is for translator-1, which has already received it from the user.\n- translator-1 passed: This does not ask for a French translation.\n",
+     "stderr": "› alice → main: Please book me a flight to Paris.\n› translator-1 pass: {\n› greeter-1 pass: {\n› translator-1 pass: \"\n› greeter-1 pass: \"\n› translator-1 pass: reason\n› greeter-1 pass: reason\n› translator-1 pass: \":\n› greeter-1 pass: \":\n› translator-1 pass:  \"\n› greeter-1 pass:  \"\n› translator-1 pass: This\n› greeter-1 pass: A\n› translator-1 pass:  does\n› greeter-1 pass:  request\n› translator-1 pass:  not\n› greeter-1 pass:  for\n› translator-1 pass:  ask\n› greeter-1 pass:  a\n› translator-1 pass:  for\n› greeter-1 pass:  translation\n› translator-1 pass:  a\n› greeter-1 pass:  is\n› translator-1 pass:  French\n› greeter-1 pass:  for\n› translator-1 pass:  translation\n› greeter-1 pass:  translator\n› translator-1 pass: .\"\n› greeter-1 pass: -\n› translator-1 pass: }\n› greeter-1 pass: 1,\n› translator-1: pass: This does not ask for a French translation.\n› greeter-1 pass:  which has already received it from the user.\"}\n› greeter-1: pass: A request for a translation is for translator-1, which has already received it from the user.\n› output asha → alice:\n",
+     "startedAt": "2026-10-16T02:51:43.003Z",
+     "ms": 1387,
+     "events": [
+      {
+       "type": "posted",
+       "from": "alice",
+       "to": null,
+       "text": "Please book me a flight to Paris."
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: {"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: {"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: \""
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: \""
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: reason"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: reason"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: \":"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: \":"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  \""
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  \""
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: This"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: A"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  does"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  request"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  not"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  for"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  ask"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  a"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  for"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  translation"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  a"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  is"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  French"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  for"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass:  translation"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  translator"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: .\""
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: -"
+      },
+      {
+       "type": "progress",
+       "text": "translator-1 pass: }"
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass: 1,"
+      },
+      {
+       "type": "status",
+       "from": "translator-1",
+       "text": "pass: This does not ask for a French translation."
+      },
+      {
+       "type": "progress",
+       "text": "greeter-1 pass:  which has already received it from the user.\"}"
+      },
+      {
+       "type": "status",
+       "from": "greeter-1",
+       "text": "pass: A request for a translation is for translator-1, which has already received it from the user."
+      },
+      {
+       "type": "output",
+       "from": "asha",
+       "to": "alice"
+      }
+     ]
+    }
+   ],
+   "state": "pass",
+   "errors": [],
+   "proof": [
+    {
+     "claim": "greeter-1 posts exactly one \"pass: …\" status",
+     "evidence": "› greeter-1: pass: A request for a translation is for translator-1, which has already received it from the user."
+    },
+    {
+     "claim": "translator-1 posts exactly one \"pass: …\" status",
+     "evidence": "› translator-1: pass: This does not ask for a French translation."
+    },
+    {
+     "claim": "the harness's output \"No agent could answer this:\" lists both members, and no member posts an output",
+     "evidence": "› output asha → alice: \"No agent could answer this:\\n- greeter-1 passed: A request for a translation is for translator-1, which has already received it from the user.\\n- translator-1 passed: This does not ask for a French translation.\""
+    },
+    {
+     "claim": "the command exits 1",
+     "evidence": "exit 1"
+    },
+    {
+     "claim": "no agent posts an internal message",
+     "evidence": "no \"› internal\" line in the transcript"
+    },
+    {
+     "claim": "the request completes within the pattern's bound",
+     "evidence": "1387 ms of 15000 ms"
+    }
+   ]
+  }
+ ]
+}

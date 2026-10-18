@@ -1,0 +1,224 @@
+<!doctype html>
+<!-- Generated from docs/deployments/index.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asha Deployments</title>
+<meta name="description" content="Running the asha daemon on your own machine: the ephemeral server that exists today, the plan for an optional persistent server on macOS, and the deferred Linux, Windows and PC plans.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="deployments">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / asha Deployments</nav>
+<h1>Deployments</h1>
+<p class="lede">asha runs on your own machine, as an ephemeral daemon that ends when stopped or at reboot.</p>
+<div class="facts"><span>verified 2026-09-27</span><span>run on: macOS, Apple Silicon</span><span>state: <code>ASHA_HOME</code></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Run <code>./asha --server</code>, or just send a message and the CLI starts the daemon.</li>
+<li>Needs macOS on Apple Silicon, Homebrew and Node, and a built checkout (<code>npm install &amp;&amp; npm run build</code>).</li>
+<li><code>asha --status</code> checks, <code>asha --stop</code> stops (<code>./asha</code> in a checkout); state lives in <code>~/.simplyautonomous/harness</code>.</li>
+<li>A release is <code>npm run release</code> at a tagged commit: a tarball of the commit and its build (<a href="#release">release</a>).</li>
+<li>No persistent server yet; past decisions are in <a href="history.html">history</a>.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#overview">What exists</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#ephemeral">Ephemeral server <span class="badge built">built</span></a></li>
+<li><a href="#release">Releases</a></li>
+<li><a href="#publish">Publishing</a></li>
+<li><a href="#live-modules">The opt-in live-vendor check</a></li>
+<li><a href="#state">Where state and logs live</a></li>
+<li><a href="#persistent">Persistent server</a></li>
+<li><a href="#platforms">Platform notes</a></li>
+</ol>
+</nav>
+<section id="overview">
+<h2>What exists</h2>
+<p>Local only: no deploy path, no remote hosting (<a href="../../AGENTS.md">AGENTS.md</a> §2), and everything binds to <code>127.0.0.1</code>.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Deployment</th><th>Status</th><th>Survives reboot</th></tr></thead>
+<tbody>
+<tr><td>Ephemeral, in the foreground: <code>./asha --server</code></td><td><span class="badge built">built</span></td><td>No</td></tr>
+<tr><td>Ephemeral, started by the CLI in the background</td><td><span class="badge built">built</span></td><td>No</td></tr>
+<tr><td>Persistent on macOS (launchd)</td><td><span class="badge planned">planned: persistent-macos</span></td><td>Not built</td></tr>
+<tr><td>Persistent on Linux (systemd)</td><td><span class="badge planned">planned: persistent-linux</span>, deferred</td><td>Not built</td></tr>
+<tr><td>Persistent on Windows</td><td><span class="badge planned">planned: persistent-windows</span>, deferred</td><td>Not built</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites</h2>
+<ul>
+<li><strong>macOS on Apple Silicon</strong> (the only platform tested); <code>llama-server</code> uses Metal.</li>
+<li>A built checkout: <strong>Node.js <code>^22.13.0 || ^24.0.0 || &gt;=26.0.0</code></strong> (<code>engines.node</code> in <a href="../../package.json">package.json</a>, the range both Vitest 5 and ESLint 10 support), <strong>bash</strong> for the <a href="../../asha"><code>./asha</code></a> launcher, and <code>npm install &amp;&amp; npm run build</code> once (without <code>dist/</code>, <code>./asha</code> exits 1 naming that command).</li>
+<li><strong>Installed on demand</strong>, in a checkout, with <code>brew install</code>: <code>colima</code>, <code>docker</code> (the CLI) and <code>llama.cpp</code> (<code>llama-server</code>). Each install is bounded to 15 minutes, <code>colima start</code> to 10.</li>
+<li><strong>Network on first use</strong> for models from Hugging Face; the chat model <code>qwen3-8b-q4_k_m</code> is 5,027,783,488 bytes (<a href="../../catalogue/qwen3-8b-q4_k_m.json">catalogue/qwen3-8b-q4_k_m.json</a>). The pattern demos' sub-agents in 18 teams name <code>pico-v2-q8_0</code>, 9,028,871,552 bytes (<a href="../../catalogue/pico-v2-q8_0.json">catalogue/pico-v2-q8_0.json</a>), downloaded the first time such a demo runs. A daemon running one of the 13 whose routers name <code>qwen3-8b-q4_k_m</code> serves both models until it stops, about 24.6 GiB resident together at their largest in its recorded runs; P3, P12, P25, P15 and P17 have no router and load <code>pico-v2-q8_0</code> alone (since 2026-10-10, <code>docs/plans/demo-model-pico.md</code>).</li>
+</ul>
+<div class="callout warning">
+<p class="callout-title">Homebrew must already be installed</p>
+<p>The harness never installs it. When a tool is needed, the daemon fails with <code>PrerequisiteMissing</code> and points to https://brew.sh (<code>ensureHostTool</code> in <a href="../../src/daemon/host-tools/index.ts"><code>src/daemon/host-tools/index.ts</code></a>).</p>
+</div>
+<p><span class="todo">TODO: minimum RAM, disk and macOS version are not measured or recorded.</span></p>
+<p><strong>Disk in colima's VM.</strong> Each build of an agent, harness, module or plugin image is a new tag, and every daemon start removes asha's versions that are not the newest of their image, are older than 24 hours and are used by no container — at most 50 per start, never another project's image, never Docker's build cache or dangling layers (<a href="../architecture/recipes.html#prune">the image prune</a>; since 2026-10-03, <code>docs/plans/debt-paydown-2.md</code>). Its record is <code>image.pruned</code> in the daemon's log; <code>DOCKER_HOST=unix://$HOME/.colima/default/docker.sock docker image ls &#39;asha-*&#39;</code> lists the versions kept.</p>
+</section>
+<section id="ephemeral">
+<h2>Ephemeral server <span class="badge built">built</span></h2>
+<p>One daemon per harness home, on an ephemeral port on <code>127.0.0.1</code>, until SIGINT, SIGTERM or SIGHUP; nothing restarts it.</p>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 240" role="img" aria-labelledby="dp-eph-t dp-eph-d">
+  <title id="dp-eph-t">Ephemeral daemon lifecycle</title>
+  <desc id="dp-eph-d">The daemon is started either in the foreground by ./asha --server, or in the background by a CLI command that found no daemon answering, which spawns a detached ./asha --server logging to logs/server.log. At start the daemon takes daemon.lock, listens on 127.0.0.1 on port 0, and writes daemon.json with its pid and port. The CLI finds it through daemon.json and GET /v1/health. ./asha --stop sends SIGTERM; the daemon removes daemon.json, closes its listener, stops every agent and model server, and releases the lock.</desc>
+  <defs><marker id="dp-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="10" y="20" width="200" height="54" rx="6"/>
+  <text class="label mono" x="110" y="44" text-anchor="middle">./asha --server</text>
+  <text class="label small" x="110" y="62" text-anchor="middle">foreground, logs on stderr</text>
+
+  <rect class="box" x="10" y="100" width="200" height="54" rx="6"/>
+  <text class="label mono" x="110" y="124" text-anchor="middle">./asha message=…</text>
+  <text class="label small" x="110" y="142" text-anchor="middle">no daemon answers → spawn</text>
+
+  <rect class="box accent" x="280" y="20" width="220" height="134" rx="6"/>
+  <text class="label title" x="390" y="44" text-anchor="middle">daemon</text>
+  <text class="label small" x="390" y="68" text-anchor="middle">1 take daemon.lock (pid lock)</text>
+  <text class="label small" x="390" y="88" text-anchor="middle">2 listen 127.0.0.1:0</text>
+  <text class="label small" x="390" y="108" text-anchor="middle">3 write daemon.json {pid, port}</text>
+  <text class="label small" x="390" y="128" text-anchor="middle">4 serve until SIGINT / SIGTERM</text>
+
+  <rect class="box" x="570" y="20" width="180" height="134" rx="6"/>
+  <text class="label title" x="660" y="44" text-anchor="middle">on SIGTERM</text>
+  <text class="label small" x="660" y="68" text-anchor="middle">remove daemon.json</text>
+  <text class="label small" x="660" y="88" text-anchor="middle">close the listener</text>
+  <text class="label small" x="660" y="108" text-anchor="middle">stop agents, model servers</text>
+  <text class="label small" x="660" y="128" text-anchor="middle">release the lock</text>
+
+  <path class="edge" d="M210 47 H278" marker-end="url(#dp-arr)"/>
+  <path class="edge" d="M210 127 H278" marker-end="url(#dp-arr)"/>
+  <text class="label small" x="244" y="120" text-anchor="middle">detached</text>
+  <path class="edge" d="M500 87 H568" marker-end="url(#dp-arr)"/>
+
+  <rect class="box" x="10" y="180" width="200" height="44" rx="6"/>
+  <text class="label mono" x="110" y="207" text-anchor="middle">./asha --stop</text>
+  <path class="edge" d="M210 202 H660 V156" marker-end="url(#dp-arr)"/>
+  <text class="label small" x="430" y="196" text-anchor="middle">SIGTERM, then wait up to 30 s</text>
+</svg>
+<figcaption>From <a href="../../src/cli/commands.ts">src/cli/commands.ts</a> (<code>server</code>, <code>startServer</code>, <code>stop</code>) and <a href="../../src/daemon/compose.ts">src/daemon/compose.ts</a> (<code>startDaemon</code>).</figcaption>
+</figure>
+<p><strong>In the foreground:</strong></p>
+<pre><code>./asha --server
+</code></pre>
+<p>It prints <code>asha &lt;version&gt; serving on 127.0.0.1:&lt;port&gt; (pid &lt;pid&gt;); home &lt;home&gt;</code> on stdout and every log record as a JSON line on stderr. Ctrl-C (SIGINT) stops it, as does closing its terminal (SIGHUP); a second Ctrl-C during the stop is logged and ignored. A second daemon on that home fails with <code>LockHeld</code>.</p>
+<p><strong>Started by the CLI:</strong> a message (or a message of an <code>--interactive</code> session), <code>/watch on</code>, <code>--launch</code> or <code>--watch</code> that finds no daemon spawns a detached <code>asha --server</code>, prints <code>› started the asha daemon (pid N); log: …/logs/server.log</code> with <code>--verbose</code>, and waits up to 20 s for it. Racing CLIs share the winner's daemon.</p>
+<div class="callout decision">
+<p class="callout-title">Decision</p>
+<p>The one deliberate automatic behaviour (AGENTS.md §3), announced on stderr only with <code>--verbose</code> (the owner's answer of 2026-09-27, record <code>auto-start-announcement</code>; <em>changed 2026-09-28: this said &quot;unless <code>--quiet</code> is given&quot;, and before 2026-09-27 &quot;always&quot;</em>).</p>
+</div>
+<p><strong>Check and stop:</strong></p>
+<pre><code>./asha --status   # running: pid, port, version, build, started; then each agent
+./asha --stop     # SIGTERM; prints &quot;stopped (pid N)&quot;, or exits 1 if still alive after 90 s
+</code></pre>
+<p>The 90 s bound is <code>timing.serverStopMs</code> in <a href="../../src/cli/main.ts"><code>src/cli/main.ts</code></a>: 45 s until the stop-time fix <code>c088357</code> (2026-09-27), which raised an agent's stop grace to 70 s; this page's line was updated in <code>c766499</code>, whose message names only the before-login line.</p>
+<p>After a rebuild the CLI warns that the daemon's build differs; <code>./asha --stop</code> picks up the new one. The colima VM (profile <code>default</code>) is never stopped.</p>
+</section>
+<section id="release">
+<h2>Releases</h2>
+<p>A release is a tarball of one tagged commit plus its build. There is no published tap for Homebrew and no npm package (the owner's answer <code>oss-distribution</code> (a), 2026-10-03, <code>docs/plans/oss-release.md</code> R31): the ways in are a built checkout (<a href="#prerequisites">prerequisites</a>) and, once one is published, a release's tarball and its sha256. Plan and evidence: <code>docs/plans/brew-install.md</code>.</p>
+<p><strong>1. Cut the release</strong> on a clean <code>main</code> whose gate is green, with <code>package.json</code>'s <code>version</code> set:</p>
+<pre><code>git tag -a v0.1.1 -m &quot;asha 0.1.1&quot;
+npm run --silent release
+</code></pre>
+<p><code>npm run release</code> (<a href="../../tools/release/pack.mts"><code>tools/release/pack.mts</code></a>) refuses, writing nothing, when the tree is dirty, when <code>HEAD</code> is not the commit tagged <code>v&lt;version&gt;</code>, or when <code>build/release/v&lt;version&gt;/</code> already exists. Otherwise it builds; stages the tracked entries from <code>git archive HEAD</code> (so no ignored file among them ships) less the agent suite's fixtures, <code>teams/suite-*</code> and the test-only <code>images/suite-*</code>, the fresh <code>dist/</code> less <code>dist/images/suite-*</code> (the build compiles every image), and refuses a finished tarball that still holds any <code>suite-</code> path (guarded by <a href="../../tests/unit/release.test.ts"><code>tests/unit/release.test.ts</code></a>), and the agent packages' runtime files from the build's <code>dist/agent-packages/</code>, never from the checkout's <code>node_modules/</code>: since 2026-10-03 (<code>docs/plans/debt-paydown.md</code> R10, R11) <code>npm run build</code> itself ends with a clean <code>npm ci --omit=dev --ignore-scripts --offline --no-audit --no-fund --loglevel=error --no-dry-run</code> of <code>package.json</code> and <code>package-lock.json</code> (<a href="../../tools/agent-packages/build.mts"><code>tools/agent-packages/build.mts</code></a>), and the release runs none of its own (from <code>d231ad0</code>, 2026-09-27, the release ran that install in its run directory; until then a stray or edited file inside a locked package's folder shipped, although this line said &quot;so no ignored file ships&quot;). The build, and with it the release, fails when the npm cache does not hold an intact copy of a locked package (npm checks each against the lockfile's <code>integrity</code>): <code>build: the npm cache does not hold an intact copy of &lt;url&gt;, which package-lock.json locks; run npm ci in the checkout, then retry</code>. The last two flags override the <code>npm_config_loglevel</code> and <code>npm_config_dry_run</code> that <code>npm run --silent build</code> and <code>npm run release --dry-run</code> pass to every npm a script starts, which would otherwise hide the cache miss or install nothing or the lockfile marks an agent package dev; writes the tarball and the formula into a run directory; and promotes that to <code>build/release/v&lt;version&gt;/</code>. It prints four lines: <code>version</code>, <code>commit</code>, <code>sha256</code> and <code>url</code>. Push the tag: <code>git push origin v&lt;version&gt;</code>.</p>
+<p><strong>What a release holds</strong> (<code>ENTRIES</code> in <a href="../../tools/release/pack.mts"><code>tools/release/pack.mts</code></a>): one folder, <code>asha-&lt;version&gt;/</code>, with <code>LICENSE</code>, <code>asha</code>, <code>catalogue/</code>, <code>decider/</code>, the fresh <code>dist/</code> less the test-only images, <code>harness-images/</code>, <code>images/</code> less <code>images/suite-*</code>, <code>modules/</code>, the agent packages' runtime files in <code>node_modules/</code> (never <code>playwright</code>), <code>package.json</code>, <code>package-lock.json</code>, <code>portal/</code>, <code>recipes/</code> and <code>teams/</code> less <code>teams/suite-*</code>. <code>npm run release</code> also writes a Homebrew formula for the maintainers' local tap, which is not published (<code>docs/plans/brew-install.md</code>, its section on the local tap's procedure). Each release's run logs are internal records (<code>tools/release/evidence/</code>).</p>
+</section>
+<section id="publish">
+<h2>Publishing</h2>
+<p>asha 0.2.0 was published on 2026-10-18 with gates G1–G3 waived in part by the owner, each row saying what stands in its place (<code>docs/plans/oss-release.md</code>). asha is published only by these manual commands, and only once the release plan's Status table (<code>docs/plans/oss-release.md</code>, internal) records the three owner-side gates — <code>gate G1</code>, the company filed and the code assigned to it; <code>gate G2</code>, the GitHub organization <code>SimplyAutonomous-AI</code> and the name-holding <code>simplyautonomous</code>; <code>gate G3</code>, the Terms of Service, the Privacy Policy and the contributor licence agreement reviewed — each dated, with its evidence (R33). Each outward step below waits for the owner's explicit consent to that step, given in conversation and recorded in that table with its date; the export repository's pre-push hook refuses a push until a <code>publish consent</code> row dated that day names the version (R35).</p>
+<p><strong>Before it, that day,</strong> in this repository at the commit to publish, clean:</p>
+<pre><code class="language-sh">ASHA_OSS_MARKERS=&lt;the owner&#39;s markers file&gt; npm run oss:check -- &lt;commit&gt;
+</code></pre>
+<p>Every step must pass: the export, the marker scan, gitleaks over the export's history and tree, the size check, then a clone with nothing beside it — <code>npm ci</code>, the build, the unit and integration tests, the secret scan, the release and its tarball. The run's folder, printed at the end, holds <code>run.log</code>, every step's output and exit status. Then check that <code>LICENSE</code>'s first <code>Required Notice:</code> line, the README's licence section and <code>package.json</code>'s <code>author</code> name the company as G1 filed it, that <code>package.json</code>'s <code>repository</code>, <code>homepage</code> and <code>bugs</code> name G2's organization, and re-read the plan's external facts; a mismatch is fixed here, committed, and checked again.</p>
+<p><strong>The first release:</strong></p>
+<pre><code class="language-sh">npm run oss:export -- &lt;commit&gt; ../asha-public          # a new repository: one commit, tagged v&lt;version&gt;, no remote
+cd ../asha-public
+gh repo create SimplyAutonomous-AI/asha --public --source . --remote origin    # consent: creating the repository
+git push origin main v&lt;version&gt;                         # consent: the push (the hook checks it)
+gh release create v&lt;version&gt; &lt;the tarball and its sha256 from oss:check&#39;s run&gt; --title &quot;asha &lt;version&gt;&quot;   # consent: the release
+</code></pre>
+<p><strong>A later release</strong> is one commit more on the published history, never a force-push: clone the published repository, then <code>npm run oss:export -- &lt;commit&gt; &lt;the clone&gt; [--co-author &quot;Name &lt;email&gt;&quot;]…</code> — each outside contributor named must be in the signers file <code>ASHA_CLA_SIGNERS</code> names (R39) — and push and release as above.</p>
+<p><strong>After it,</strong> check the published repository against reality (R34): its <code>main</code> tree is the export's (<code>git ls-remote origin main</code>), its first CI run is green, and a <code>git clone</code> from GitHub followed by the README's quickstart prints <code>Hello World.</code>.</p>
+</section>
+<section id="live-modules">
+<h2>The opt-in live-vendor check</h2>
+<p><code>npm run live:modules</code> (<a href="../../tests/live/modules.test.ts"><code>tests/live/modules.test.ts</code></a>, <a href="../../src/daemon/modules/live.ts"><code>liveCheck</code></a>) checks one installed <a href="../architecture/modules.html">module</a> against its real vendor, outside the gate: it is the only thing in this repository that calls a vendor, and it spends. Name the module, and for a tool module the call:</p>
+<pre><code>ASHA_LIVE_MODULE=bedrock npm run live:modules
+ASHA_LIVE_MODULE=tavily ASHA_LIVE_TOOL=search ASHA_LIVE_ARGS=&#39;{&quot;query&quot;:&quot;asha&quot;}&#39; npm run live:modules
+</code></pre>
+<p>It runs in the home <code>ASHA_HOME</code> names, holding its <code>daemon.lock</code>, so no daemon may run meanwhile. It refuses, before anything reaches the network, a module whose manifest carries no owner's approval of its cost (<code>cost.approved</code>), and a command plugin (not yet supported, D52). Then, through the module's own container and the egress proxy, as a launch uses them: for a model provider, each chat model's lifecycle state first — anything but <code>ACTIVE</code> refused before any chat — then one chat requiring a tool call, recording whether the vendor honoured the forced tool choice and reported its usage; for a tool module, the named call. It removes what it made (the reclaim) and writes its record, with the commit and whether the tree was dirty, to <code>evals/probes/extension-modules-live-&lt;date&gt;/&lt;module&gt;-&lt;time&gt;.json</code>. Run on 2026-10-02 in its refusal paths only (no module named; a metered module with no approval, refused with no network call); no vendor has been called: the keys are the owner's to enter, and the Bedrock credential is created only with the owner's consent.</p>
+</section>
+<section id="state">
+<h2>Where state and logs live</h2>
+<p>Everything is under <code>ASHA_HOME</code> (default <code>~/.simplyautonomous/harness</code>; set it to run a separate daemon). <code>ASHA_MODELS_DIR</code> moves the model cache. Paths come from <code>harnessPaths</code> in <a href="../../src/shared/paths.ts"><code>src/shared/paths.ts</code></a>. A home that does not exist is created with mode <code>0700</code> by the daemon or the CLI (<code>ensureHome</code>); an existing one keeps its mode, so an older home stays <code>0755</code> unless you <code>chmod 700</code> it. Each home's agent containers run on their own Docker network, <code>asha-&lt;homeId&gt;</code> (<a href="../architecture/index.html#host-inference">reaching the host</a>).</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Path under ASHA_HOME</th><th>What</th></tr></thead>
+<tbody>
+<tr><td><code>daemon.lock</code></td><td>The pid lock: one daemon per home</td></tr>
+<tr><td><code>daemon.json</code></td><td><code>{pid, port, credential}</code> of the running daemon, mode <code>0600</code>, removed on a clean stop. The credential is the control API's (<a href="../architecture/index.html#apis">the two APIs</a>)</td></tr>
+<tr><td><code>model-server.key</code></td><td>The key every <code>llama-server</code> of this daemon requires, mode <code>0600</code>, removed on a clean stop</td></tr>
+<tr><td><code>users.json</code></td><td>Highest user number per channel, so IDs are never reused</td></tr>
+<tr><td><code>logs/daemon.jsonl</code></td><td>Every daemon log record, as JSON lines</td></tr>
+<tr><td><code>logs/server.log</code></td><td>Output of a CLI-started daemon</td></tr>
+<tr><td><code>logs/model-server-&lt;id&gt;.log</code></td><td><code>llama-server</code> output</td></tr>
+<tr><td><code>logs/agents/&lt;container&gt;.log</code></td><td>An agent container's output; the daemon log's <code>agent.connected</code> names its handle</td></tr>
+<tr><td><code>models/sha256-&lt;digest&gt;/</code></td><td>Verified model cache</td></tr>
+<tr><td><code>staging/</code></td><td>Per-build docker contexts</td></tr>
+</tbody>
+</table>
+</div>
+<p>Every failure the daemon saw (<a href="../architecture/index.html#logs">more on logs</a>):</p>
+<pre><code>jq -c &#39;select(.level==&quot;error&quot;)&#39; ~/.simplyautonomous/harness/logs/daemon.jsonl
+</code></pre>
+</section>
+<section id="persistent">
+<h2>Persistent server</h2>
+<p>Not built: no service definition exists in the repo. <strong>macOS only for now</strong> (the owner, 2026-09-27: &quot;Mac OSX only for now - linux and windows later&quot;; decisions/queue.json at <code>f538cb7</code>, record <code>pc-platform</code>).</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Platform</th><th>Plan</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>macOS (launchd)</td><td><span class="badge planned">planned: persistent-macos</span></td><td>Optional launchd job at boot (record <code>run-before-login</code>); starting before anyone logs in was confirmed by the owner on 2026-09-27 (record <code>service-boot-confirmation</code>). With FileVault on, the owner answered the same day (record <code>service-filevault-boot</code>): the service starts as soon as the disk is unlocked at FileVault's screen, with no other action (<code>docs/plans/persistent-macos.md</code> R1). <em>Corrected 2026-09-27: this said what &quot;before login&quot; means was still an open owner question.</em> Settles <code>--stop</code>, <code>--status</code> and auto-start.</td></tr>
+<tr><td>Linux (systemd)</td><td><span class="badge planned">planned: persistent-linux</span></td><td>Deferred; needs the PC adapters.</td></tr>
+<tr><td>Windows</td><td><span class="badge planned">planned: persistent-windows</span></td><td>Deferred; bash, Homebrew and colima are not native.</td></tr>
+</tbody>
+</table>
+</div>
+<p><span class="todo">TODO: a persistent deployment, for each platform, once its plan is done; record the working service definition and commands here with the date verified.</span></p>
+</section>
+<section id="platforms">
+<h2>Platform notes</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Concern</th><th>macOS (built)</th></tr></thead>
+<tbody>
+<tr><td>Container runtime</td><td>colima + docker CLI (<code>ColimaRuntime</code> in <a href="../../src/daemon/container-runtime/index.ts">src/daemon/container-runtime/index.ts</a>)</td></tr>
+<tr><td>Model server</td><td><code>llama-server</code> from <code>brew install llama.cpp</code>, Metal, on the host (<code>LlamaCppServer</code> in <a href="../../src/daemon/model-server/index.ts">src/daemon/model-server/index.ts</a>)</td></tr>
+<tr><td>Why models run on the host</td><td>colima's Linux VM has no Metal GPU</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>PC path</strong> <span class="badge planned">planned: pc-cuda</span>, deferred: a CUDA build of llama.cpp with Docker Engine (record <code>docker-runtime</code>, 2026-09-27). See <a href="../../AGENTS.md">AGENTS.md</a> §3, <a href="../architecture/index.html">Architecture</a> and <a href="../architecture/models.html">Models</a>.</p>
+<p>Sources: <a href="../../src/cli/main.ts">src/cli/main.ts</a>, <a href="../../src/cli/commands.ts">src/cli/commands.ts</a>, <a href="../../src/daemon/compose.ts">src/daemon/compose.ts</a>, <a href="../../src/shared/paths.ts">src/shared/paths.ts</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/deployments/index.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p23-consensus.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consensus Debate Demo</title>
+<meta name="description" content="P23 · Iterative consensus debate: Debaters with different first answers see each other's answers round after round and revise their own, until they agree or the rounds run out; a moderator reports the outcome. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Consensus Debate Demo</nav>
+<h1>P23 · Iterative consensus debate</h1>
+<p class="lede">Debaters with different first answers see each other's answers round after round and revise their own, until they agree or the rounds run out; a moderator reports the outcome.</p>
+<div class="facts"><span>written 2026-09-29</span><span>status: <span class="badge built">built</span> 2026-09-29, three recorded runs and one under its bound, after R6's remedies, all green; listed once the <a href="../testing/index.html#selection">demo selector</a> was built</span><span>team: <a href="../../teams/consensus/team.json"><code>teams/consensus/</code></a></span><span>test: <a href="../../tests/agents/p23-consensus.test.ts"><code>tests/agents/p23-consensus.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-2.md</code></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p23-a</code>, as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>Built: its three recorded runs on the pinned model passed after R6's remedies, then one under the bound they set, at <code>e82c5e4</code> (runs (<code>docs/plans/patterns-phase-2.md</code>)); it joined the built demos once the demo selector existed (patterns-phase-2 R13), and its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>moderator</code>, <code>debater-a</code>, <code>debater-b</code>, <code>debater-c</code> on <code>qwen3-8b-q4_k_m</code>.</li>
+<li>No judge decides: each debater revises its own answer from the previous round's answers, which the moderator quotes in its next question. At most three rounds.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p23-consensus.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>qwen3-8b-q4_k_m</code> (<a href="videos/p23-consensus.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 41 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when several agents should converge on one answer by reading each other's reasoning (multi-agent debate, Du et al.).</p>
+<p><strong>Do not use it</strong> when a decision is needed without convergence (debate with a judge, P9) or when independence matters more (voting, P10).</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 362" role="img" aria-labelledby="p23-t p23-d">
+  <title id="p23-t">P23 · Iterative consensus debate</title>
+  <desc id="p23-d">moderator-1 consults the three debaters each round; round 1 disagrees, so round 2 quotes every answer; when every answer agrees the moderator states the consensus and the round.</desc>
+  <defs><marker id="p23-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="95" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M95 44 V356"/>
+  <rect class="box accent" x="210" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="285" y="32" text-anchor="middle">moderator-1</text>
+  <path class="edge dim" d="M285 44 V356"/>
+  <rect class="box" x="400" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="475" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M475 44 V356"/>
+  <rect class="box accent" x="590" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="665" y="32" text-anchor="middle">debater-a-1, -b-1, -c-1</text>
+  <path class="edge dim" d="M665 44 V356"/>
+  <path class="edge" d="M95 80 H283" marker-end="url(#p23-a)"/>
+  <text class="label small" x="190" y="74" text-anchor="middle">Get the debaters to agree: … 6, 7, 8.</text>
+  <path class="edge" d="M285 114 H663" marker-end="url(#p23-a)"/>
+  <text class="label small" x="475" y="108" text-anchor="middle">Round 1. …</text>
+  <path class="edge" d="M665 148 H287" marker-end="url(#p23-a)"/>
+  <text class="label small" x="475" y="142" text-anchor="middle">ANSWER: 7 · 7 · 6</text>
+  <path class="edge" d="M475 182 H287" marker-end="url(#p23-a)"/>
+  <text class="label small" x="380" y="176" text-anchor="middle">gather: 3 answered (they differ)</text>
+  <path class="edge" d="M285 216 H663" marker-end="url(#p23-a)"/>
+  <text class="label small" x="475" y="210" text-anchor="middle">Round 2. … Previous answers: …</text>
+  <path class="edge" d="M665 250 H287" marker-end="url(#p23-a)"/>
+  <text class="label small" x="475" y="244" text-anchor="middle">ANSWER: 7 · 7 · 7</text>
+  <path class="edge" d="M475 284 H287" marker-end="url(#p23-a)"/>
+  <text class="label small" x="380" y="278" text-anchor="middle">gather: 3 answered (all equal)</text>
+  <path class="edge" d="M285 318 H97" marker-end="url(#p23-a)"/>
+  <text class="label small" x="190" y="312" text-anchor="middle">output: Consensus: 7, reached in round 2.</text>
+</svg>
+<figcaption>moderator-1 consults the three debaters each round; round 1 disagrees, so round 2 quotes every answer; when every answer agrees the moderator states the consensus and the round.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 44,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-2.md</code> R4) — the largest request, p23-a's 29,092 ms at <code>c267b82</code>, times 1.5 (43,638), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=consensus
+# bound: 44000 ms
+# p23-a
+./asha to=moderator-1 user=alice message=&quot;Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8.&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>e82c5e4</code> (clean tree), the run under its bound, from its results file as committed in <code>c929f30</code> (<code>git show c929f30:tests/agents/results/p23-consensus.json</code>): each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' output as it streams — lines such as &quot;› delegator-1 consult: {…&quot; printed one fragment each (D38) — is left out here; the results file holds it.</p>
+<p><strong>p23-a</strong> — exit 0, 29,464 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=moderator-1 user=alice message=&quot;Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8.&quot;
+› alice → moderator-1 on main: Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8.
+› moderator-1: ok
+› internal moderator-1 → debater-a-1: Round 1. How many colours does a rainbow have? Choose from 6, 7, 8.
+› internal moderator-1 → debater-b-1: Round 1. How many colours does a rainbow have? Choose from 6, 7, 8.
+› internal moderator-1 → debater-c-1: Round 1. How many colours does a rainbow have? Choose from 6, 7, 8.
+› internal debater-b-1 → moderator-1: Schools teach seven colours. ANSWER: 7
+› internal debater-a-1 → moderator-1: Red to violet gives seven. ANSWER: 7
+› internal debater-c-1 → moderator-1: Indigo and violet are one colour. ANSWER: 6
+› internal asha → moderator-1: Answers to moderator-1&#39;s call: 3 answered.
+› moderator-1: ok
+› internal moderator-1 → debater-a-1: Round 2. How many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Red to violet gives seven. ANSWER: 7 debater-b-1: Schools teach seven colours. ANSWER: 7 debater-c-1: Indigo and violet are one colour. ANSWER: 6
+› internal moderator-1 → debater-b-1: Round 2. How many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Red to violet gives seven. ANSWER: 7 debater-b-1: Schools teach seven colours. ANSWER: 7 debater-c-1: Indigo and violet are one colour. ANSWER: 6
+› internal moderator-1 → debater-c-1: Round 2. How many colours does a rainbow have? Choose from 6, 7, 8. Previous answers: debater-a-1: Red to violet gives seven. ANSWER: 7 debater-b-1: Schools teach seven colours. ANSWER: 7 debater-c-1: Indigo and violet are one colour. ANSWER: 6
+› internal debater-c-1 → moderator-1: Most of us say 7. ANSWER: 7
+› internal debater-a-1 → moderator-1: Most of us say 7. ANSWER: 7
+› internal debater-b-1 → moderator-1: Most of us say 7. ANSWER: 7
+› internal asha → moderator-1: Answers to moderator-1&#39;s call: 3 answered.
+› moderator-1: ok
+› output moderator-1 → alice:
+Consensus: 7, reached in round 2.
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/consensus/team.json"><code>teams/consensus/team.json</code></a>: the team — <code>moderator</code>, <code>debater-a</code>, <code>debater-b</code>, <code>debater-c</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>.</li>
+<li><code>moderator</code>: <a href="../../teams/consensus/moderator.json"><code>moderator.json</code></a>, its recipe, and <a href="../../teams/consensus/moderator.md"><code>moderator.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>debater-a</code>: <a href="../../teams/consensus/debater-a.json"><code>debater-a.json</code></a>, its recipe, and <a href="../../teams/consensus/debater-a.md"><code>debater-a.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>debater-b</code>: <a href="../../teams/consensus/debater-b.json"><code>debater-b.json</code></a>, its recipe, and <a href="../../teams/consensus/debater-b.md"><code>debater-b.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>debater-c</code>: <a href="../../teams/consensus/debater-c.json"><code>debater-c.json</code></a>, its recipe, and <a href="../../teams/consensus/debater-c.md"><code>debater-c.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><a href="../../tests/agents/p23-consensus.test.ts"><code>tests/agents/p23-consensus.test.ts</code></a>: launches the team and sends each scenario's message from this page, then asserts each scenario only through its checker, <code>P23_A</code> in <a href="../../tests/agents/patterns/phase-2.ts"><code>tests/agents/patterns/phase-2.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p23-a/pass.json"><code>tests/agents/patterns/fixtures/p23-a/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>Measured in the premise probes (2026-09-29, <code>0be190f</code>), its chain of model turns took 22.7 s with cold prompts and 13.4 s warm; a third round would add two turns (<code>docs/plans/patterns-phase-2.md</code>).</li>
+<li>Expected on the pinned model, not asserted: consensus on 7 in round 2, as every recorded run reached it (28–29 s). The proof checks the rounds and the outcome against what the gathers hold, whatever they hold.</li>
+<li>Copying the answers is the model's weak point: the first two recorded cycles failed because the moderator quoted the debaters' numbers only; each debater's round-1 answer is now given whole in its guidance, and the moderator's guidance shows a whole answer copied (<code>docs/plans/patterns-phase-2.md</code>, R6).</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p23">agent test report, P23 · Iterative consensus debate</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p23-consensus.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

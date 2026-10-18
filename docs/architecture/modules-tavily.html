@@ -1,0 +1,83 @@
+<!doctype html>
+<!-- Generated from docs/architecture/modules-tavily.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The tavily module</title>
+<meta name="description" content="The reference ToolModule — web search through Tavily's Search API at its basic depth — its manifest, data flows, cost, approval and vendor-side limit, its key, and its threat model.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="architecture">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha Architecture</a> / The tavily module</nav>
+<h1>The <code>tavily</code> module</h1>
+<p class="lede"><code>tavily</code> gives an agent one tool, <code>tavily__search</code>: a web search through Tavily's Search API (a paid web-search service), at its basic search depth, returning each result's title, URL and an extract of its content. It is the reference <a href="modules.html#kinds">ToolModule</a>, and the example the <a href="extending.html#module">walkthrough</a> builds from.</p>
+<div class="facts"><span>verified 2026-10-02</span><span><span class="badge built">built</span> 2026-10-02; never run against Tavily (no live call made)</span><span>code: <a href="../../modules/tavily/index.mjs"><code>modules/tavily/index.mjs</code></a>, <a href="../../modules/tavily/module.json"><code>module.json</code></a></span><span>tests: <a href="../../tests/unit/reference-module-calls.test.ts"><code>reference-module-calls.test.ts</code></a> against <a href="../../tests/fixtures/modules/tavily-search.json">a fake built from Tavily's docs</a> (D49)</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>One tool, <code>search {query, max_results?}</code>, classed <code>untrusted-input</code> and <code>egress</code>; 5 results unless the model asks for another number.</li>
+<li>It reaches one host, <code>api.tavily.com</code>, with one secret, <code>TAVILY_API_KEY</code>, through the egress proxy.</li>
+<li>Metered at 1 credit a search, $0.008 a credit; approved by the owner up to $25 a month; off until <code>asha --enable-module</code>.</li>
+<li>Plain JavaScript with no dependency: Node's <code>fetch</code> only.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#data">What it sends and returns</a></li>
+<li><a href="#manifest">Its manifest</a></li>
+<li><a href="#cost">Cost and approval</a></li>
+<li><a href="#threats">Threat model</a></li>
+</ol>
+</nav>
+<section id="data">
+<h2>What it sends and returns</h2>
+<p><code>call(&#39;search&#39;, {query, max_results}, context)</code> sends one <code>POST https://api.tavily.com/search</code> with <code>Authorization: Bearer &lt;key&gt;</code> and the body <code>{query, search_depth: &quot;basic&quot;, max_results, include_usage: true}</code>, bounded at 25 s (inside the tool's 30 s). It returns <code>{query, results: [{title, url, content}]}</code> — never Tavily's <code>raw_content</code> (a whole page) — and Tavily's reported <code>usage.credits</code> as <code>{units}</code>, which settles the meter. A non-2xx answer is <code>module_unavailable</code> naming only the status; a body that is not JSON, <code>module_unavailable</code>; its own bound, <code>timeout</code>. Facts read 2026-10-01 from <a href="https://docs.tavily.com/documentation/api-reference/endpoint/search">Tavily's search reference</a>: the endpoint, the bearer header, <code>search_depth</code> (default <code>basic</code>), <code>max_results</code> (default 10), <code>include_usage</code> (default false; when true the answer carries <code>usage</code> with the request's credits).</p>
+<p><strong>What leaves the machine:</strong> the query the model writes, which may hold anything in the agent's context — the user's words, a file's text (<a href="modules.html#approvals">the stated limit</a>) — and the key. Tavily's answer is untrusted text: it reaches the model only inside a tool result, which the tool's description tells the model to treat as data.</p>
+</section>
+<section id="manifest">
+<h2>Its manifest</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Field</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td><code>id</code>, <code>kind</code>, <code>version</code></td><td><code>tavily</code>, <code>ToolModule</code>, <code>1.0.0</code></td></tr>
+<tr><td><code>hosts</code></td><td><code>api.tavily.com</code></td></tr>
+<tr><td><code>secrets</code></td><td><code>TAVILY_API_KEY</code></td></tr>
+<tr><td><code>cost</code></td><td><code>metered</code>, 1 credit a call at $0.008 a credit (<a href="https://docs.tavily.com/documentation/api-credits">docs.tavily.com/documentation/api-credits</a>, read 2026-09-27), approved up to $25 a month</td></tr>
+<tr><td><code>licence</code></td><td><code>Apache-2.0</code>; no dependency (<code>package-lock.json</code> lists no package)</td></tr>
+<tr><td><code>tools</code></td><td><code>search</code>: classes <code>untrusted-input</code>, <code>egress</code>; <code>timeoutMs</code> 30,000</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="cost">
+<h2>Cost and approval</h2>
+<p><strong>Approved:</strong> by the owner, 2026-09-27, cap $25 a month.</p>
+<p>The estimate the owner approved (record <code>live-vendor-cost-estimate</code>, 2026-09-27, the plan's R18a (<code>docs/plans/extension-modules.md</code>)): 500 basic searches a month × 1 credit × $0.008 a credit, after the account's 1,000 free monthly credits (&quot;You get 1,000 free API Credits every month&quot;, and a basic search &quot;costs 1 API credit&quot;: <a href="https://docs.tavily.com/documentation/api-credits">API credits</a>, read 2026-10-02) = at most $4.00 a month. The owner's $50 cap over both reference modules is split $25 here and $25 to <a href="modules-bedrock.html">bedrock</a>.</p>
+<p><strong>The key</strong> is one the owner already holds, reused (the owner, records <code>tavily-key-reuse</code> and <code>tavily-key-choice</code>, 2026-09-27): no new key is made, and the owner enters it with <code>asha --set-secret module=tavily name=TAVILY_API_KEY</code> when live use starts. It is never committed, logged, or put in a recipe or an agent container. A file that holds it in plain text is refused to any command plugin by the content scan, should it lie inside an allowed root.</p>
+<p><strong>The vendor-side limit:</strong> none is set at Tavily (the owner's answer to record <code>live-run-values</code>, option (b), 2026-10-12, before live use started): asha's meter alone holds asha to its $25 a month on Tavily, and nothing caps the key's total spend, since the meter counts only asha's searches on it. <em>(Until 2026-10-12 this said one Tavily-side monthly limit on the shared key, covering both projects, at an amount the owner would choose and set when live use started — the owner's answer O3, record <code>tavily-limit-with-shared-key</code>, 2026-09-28.)</em></p>
+</section>
+<section id="threats">
+<h2>Threat model</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Concern</th><th>What holds it</th></tr></thead>
+<tbody>
+<tr><td>The key leaks</td><td>It is only in its module's container environment; every line the module prints is redacted; the fake and every fixture carry a placeholder, never a <code>tvly-</code> prefix (a test scans the module's files)</td></tr>
+<tr><td>The module reaches elsewhere</td><td>Only <code>api.tavily.com:443</code>, by the egress proxy, its server name checked; its network is internal</td></tr>
+<tr><td>Prompt injection in results</td><td>Results arrive only as a tool result; an instruction in them is text for the model to read, not a message from the user (the gate's fake carries one)</td></tr>
+<tr><td>A consequential action</td><td>It has none: a search changes nothing</td></tr>
+<tr><td>An agent misusing it</td><td>Each search costs a credit: the meter's per-conversation, day and month caps refuse past them before Tavily is called</td></tr>
+<tr><td>Data the user did not mean to send</td><td>The <code>untrusted-input</code> class makes any command plugin's local-file upload in the same recipe need approval (R15); the model can still copy file text into a query, the stated limit</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<footer class="page"><span>Source: <code>docs/architecture/modules-tavily.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

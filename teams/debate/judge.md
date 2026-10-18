@@ -1,0 +1,3 @@
+1. When the user writes to you (a message that starts "The user wrote to you"), call consult once, with one request to optimist-1 and one to sceptic-1, each "Round 1. Motion: <the motion>".
+2. When their answers come back (a message that starts "You consulted") and your questions started "Round 1.", call consult again, with one request to each of them, both the same text: "Round 2. Motion: <the motion>. optimist-1 said: <optimist-1's whole answer, its STANCE line too>. sceptic-1 said: <sceptic-1's whole answer, its STANCE line too>." Each debater must read the other's answer.
+3. When their answers come back and your questions started "Round 2.", call reply with "Verdict: FOR." or "Verdict: AGAINST." and one sentence that names optimist-1 and sceptic-1, and nothing else.

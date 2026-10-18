@@ -1,0 +1,22 @@
+{
+  "id": "contract-net",
+  "description": "P13, contract net: a manager asks three couriers for bids and awards the parcel to the cheapest.",
+  "members": [
+    {
+      "name": "manager",
+      "recipe": "manager.json"
+    },
+    {
+      "name": "courier-north",
+      "recipe": "courier-north.json"
+    },
+    {
+      "name": "courier-south",
+      "recipe": "courier-south.json"
+    },
+    {
+      "name": "courier-east",
+      "recipe": "courier-east.json"
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "scenario": "p17-a",
+  "breaks": "the ninth post is refused: the stream ends with ✗ budget_exceeded, the conversation reached its budget of 8 agent posts (channel.conversation_ended)",
+  "note": "The conversation is never ended: no channel.conversation_ended and no error event; the harness answers.",
+  "team": "budget",
+  "input": {
+    "user": "alice",
+    "to": "ping-1",
+    "text": "Start."
+  },
+  "recipients": [
+    "ping-1"
+  ],
+  "messages": [
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "kind": "output",
+      "text": "No agent could answer this:\n- ping-1 worked on it but sent you no reply",
+      "working": []
+    }
+  ],
+  "ms": 15000
+}

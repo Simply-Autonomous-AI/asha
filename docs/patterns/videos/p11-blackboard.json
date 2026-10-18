@@ -1,0 +1,37 @@
+{
+  "pattern": "P11",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:27:03.792Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p11-blackboard",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 64840,
+  "bytes": 4231457,
+  "sha256": "0f7b4eba23b3e5f252669777aab35c5e2db8079e9ced1d1bbf259f9c1f998c83",
+  "frames": 1287,
+  "framesPerSecond": 19.9,
+  "longestGapMs": 89,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P11 · Blackboard",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5047,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p11-a",
+      "outcome": "pass"
+    },
+    {
+      "id": "p11-b",
+      "outcome": "pass"
+    }
+  ]
+}

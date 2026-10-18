@@ -1,0 +1,191 @@
+{
+  "commit": "a9567ca9b7d7eb9cdec133f9a1120e105cdccc77",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p21-b/tasker-task-2",
+  "control": false,
+  "doc": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "done task 2"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "read_file",
+              "arguments": {
+                "path": "tasks.json"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1895,
+          "completionTokens": 19
+        },
+        {
+          "calls": [
+            {
+              "name": "write_file",
+              "arguments": {
+                "path": "tasks.json",
+                "content": "[1,2]"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1939,
+          "completionTokens": 28
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "done task 2"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1992,
+          "completionTokens": 20
+        }
+      ],
+      "ms": 2018,
+      "files": {
+        "tasks.json": "[1,2]"
+      },
+      "reply": "done task 2",
+      "requestSha256": "17d03986d1eeccfebb6b45e74ea2b385d976e1ea795b5ff4bfba461fd0d0f2a4",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "done task 2"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "read_file",
+              "arguments": {
+                "path": "tasks.json"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1895,
+          "completionTokens": 19
+        },
+        {
+          "calls": [
+            {
+              "name": "write_file",
+              "arguments": {
+                "path": "tasks.json",
+                "content": "[1,2]"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1939,
+          "completionTokens": 28
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "done task 2"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1992,
+          "completionTokens": 20
+        }
+      ],
+      "ms": 2026,
+      "files": {
+        "tasks.json": "[1,2]"
+      },
+      "reply": "done task 2",
+      "requestSha256": "17d03986d1eeccfebb6b45e74ea2b385d976e1ea795b5ff4bfba461fd0d0f2a4",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "done task 2"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "read_file",
+              "arguments": {
+                "path": "tasks.json"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1895,
+          "completionTokens": 19
+        },
+        {
+          "calls": [
+            {
+              "name": "write_file",
+              "arguments": {
+                "path": "tasks.json",
+                "content": "[1,2]"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1939,
+          "completionTokens": 28
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "done task 2"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1992,
+          "completionTokens": 20
+        }
+      ],
+      "ms": 2032,
+      "files": {
+        "tasks.json": "[1,2]"
+      },
+      "reply": "done task 2",
+      "requestSha256": "17d03986d1eeccfebb6b45e74ea2b385d976e1ea795b5ff4bfba461fd0d0f2a4",
+      "ok": true
+    }
+  ]
+}

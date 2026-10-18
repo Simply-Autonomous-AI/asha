@@ -1,0 +1,43 @@
+{
+  "scenario": "p21-a",
+  "breaks": "the command exits 0",
+  "note": "Neither replies: the harness answers and the command exits 1.",
+  "team": "topics",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Rain expected tomorrow.",
+    "topic": "weather"
+  },
+  "recipients": [
+    "weather-desk-1",
+    "front-page-1"
+  ],
+  "messages": [
+    {
+      "from": "weather-desk-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "weather-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "weather-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "kind": "output",
+      "text": "No agent could answer this:\n- weather-desk-1 worked on it but sent you no reply",
+      "working": []
+    }
+  ],
+  "ms": 6000
+}

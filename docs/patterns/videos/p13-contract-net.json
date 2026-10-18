@@ -1,0 +1,33 @@
+{
+  "pattern": "P13",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:29:52.259Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p13-contract-net",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 31400,
+  "bytes": 2129122,
+  "sha256": "9d8fce409c770f0a45fdf3046687ccdc27f018a95939a95fa0963a9b1294b7aa",
+  "frames": 627,
+  "framesPerSecond": 20,
+  "longestGapMs": 86,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P13 · Contract net (bidding)",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5060,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p13-a",
+      "outcome": "pass"
+    }
+  ]
+}

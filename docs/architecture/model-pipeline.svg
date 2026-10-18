@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 480" role="img" aria-labelledby="mp-t mp-d">
+  <title id="mp-t">Model pipeline: pin, cache, serve, call</title>
+  <desc id="mp-d">Left column: the catalogue entry feeds the model store, which downloads each file from Hugging Face at the pinned revision into a staging directory, checks size and sha256, and renames the directory into the content-addressed cache. Right column: the agent container calls the daemon's gateway with its bearer token; the gateway calls llama-server's OpenAI-compatible API. llama-server runs on the host with Metal and loads the weights from the cache.</desc>
+  <defs><marker id="mp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <text class="label small" x="130" y="22" text-anchor="middle">provisioning (once per entry)</text>
+  <text class="label small" x="390" y="22" text-anchor="middle">every model call</text>
+
+  <rect class="box" x="10" y="34" width="240" height="66" rx="6"/>
+  <text class="label title" x="130" y="56" text-anchor="middle">catalogue/&lt;id&gt;.json</text>
+  <text class="label mono" x="130" y="74" text-anchor="middle">repo · revision (sha)</text>
+  <text class="label mono" x="130" y="90" text-anchor="middle">files[path, size, sha256]</text>
+
+  <rect class="box accent" x="10" y="130" width="240" height="112" rx="6"/>
+  <text class="label title" x="130" y="152" text-anchor="middle">model store</text>
+  <text class="label mono" x="130" y="170" text-anchor="middle">GET …/resolve/&lt;revision&gt;/&lt;path&gt;</text>
+  <text class="label mono" x="130" y="188" text-anchor="middle">→ .staging-&lt;random&gt;/</text>
+  <text class="label small" x="130" y="206" text-anchor="middle">size + sha256 checked per file</text>
+  <text class="label mono" x="130" y="226" text-anchor="middle">rename → sha256-&lt;tree&gt;/</text>
+
+  <rect class="box" x="10" y="272" width="240" height="56" rx="6"/>
+  <text class="label title" x="130" y="294" text-anchor="middle">model cache</text>
+  <text class="label mono" x="130" y="314" text-anchor="middle">models/sha256-&lt;tree digest&gt;/</text>
+
+  <rect class="box" x="270" y="34" width="240" height="66" rx="6"/>
+  <text class="label title" x="390" y="56" text-anchor="middle">agent container</text>
+  <text class="label mono" x="390" y="74" text-anchor="middle">HarnessClient.chat / embed</text>
+  <text class="label small" x="390" y="90" text-anchor="middle">Bearer ASHA_AGENT_TOKEN</text>
+
+  <rect class="box accent" x="270" y="130" width="240" height="112" rx="6"/>
+  <text class="label title" x="390" y="152" text-anchor="middle">daemon gateway</text>
+  <text class="label mono" x="390" y="170" text-anchor="middle">/agent/v1/model/chat</text>
+  <text class="label mono" x="390" y="188" text-anchor="middle">/agent/v1/model/embed</text>
+  <text class="label small" x="390" y="206" text-anchor="middle">merges sampling, bounds the call</text>
+  <text class="label small" x="390" y="226" text-anchor="middle">failures → {ok:false, reason}</text>
+
+  <rect class="box host" x="110" y="372" width="300" height="92" rx="6"/>
+  <text class="label title" x="260" y="396" text-anchor="middle">llama-server (host, Metal)</text>
+  <text class="label mono" x="260" y="416" text-anchor="middle">one process per model · 127.0.0.1:&lt;port&gt;</text>
+  <text class="label mono" x="260" y="434" text-anchor="middle">/v1/chat/completions</text>
+  <text class="label mono" x="260" y="452" text-anchor="middle">/v1/embeddings</text>
+
+  <path class="edge" d="M130 100 V128" marker-end="url(#mp-a)"/>
+  <path class="edge" d="M130 242 V270" marker-end="url(#mp-a)"/>
+  <path class="edge" d="M130 328 V370" marker-end="url(#mp-a)"/>
+  <text class="label small" x="136" y="354">loads weights</text>
+  <path class="edge" d="M390 100 V128" marker-end="url(#mp-a)"/>
+  <path class="edge" d="M390 242 V370" marker-end="url(#mp-a)"/>
+  <text class="label small" x="396" y="306">OpenAI-compatible</text>
+  <text class="label small" x="396" y="322">HTTP, bounded</text>
+</svg>

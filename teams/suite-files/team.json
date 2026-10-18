@@ -1,0 +1,14 @@
+{
+  "id": "suite-files",
+  "description": "Agent-suite fixture (agent-files A3, A6, A11), test-only: two scripted agents on the test-only image images/suite-files, no model call.",
+  "members": [
+    {
+      "name": "a",
+      "recipe": "scribe.json"
+    },
+    {
+      "name": "b",
+      "recipe": "scribe.json"
+    }
+  ]
+}

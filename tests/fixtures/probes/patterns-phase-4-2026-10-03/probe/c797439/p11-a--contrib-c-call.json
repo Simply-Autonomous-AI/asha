@@ -1,0 +1,165 @@
+{
+  "commit": "c79743931a18a108d9eb0944e59055b5cfa4c14c",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p11-a/contrib-c-call",
+  "control": false,
+  "doc": null,
+  "dropStep": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "item: rye flour"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1191,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1279,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 3826,
+      "seed": [],
+      "board": [
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "c317e53e0d46a4ab1a1b8b07a4430298ce5216957893ad22762bb13dd40b2b0e",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "item: rye flour"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1191,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1279,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 1222,
+      "seed": [],
+      "board": [
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "c317e53e0d46a4ab1a1b8b07a4430298ce5216957893ad22762bb13dd40b2b0e",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "item: rye flour"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1191,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1279,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 1247,
+      "seed": [],
+      "board": [
+        {
+          "author": "contrib-c-1",
+          "text": "item: rye flour",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "c317e53e0d46a4ab1a1b8b07a4430298ce5216957893ad22762bb13dd40b2b0e",
+      "ok": true
+    }
+  ]
+}

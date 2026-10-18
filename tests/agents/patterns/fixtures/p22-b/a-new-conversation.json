@@ -1,0 +1,56 @@
+{
+  "scenario": "p22-b",
+  "breaks": "command 2's message is posted in the same conversation, to helper-1, answering its ask (channel.posted with answers)",
+  "note": "Command 2 is a new message, not an answer: its input carries no answers. (Its ask gone too: an input answers only an ask.)",
+  "team": "escalation",
+  "input": {
+    "user": "alice",
+    "to": "helper-1",
+    "text": "Convert 3 metres to centimetres, then book a meeting room for 3 pm."
+  },
+  "recipients": [
+    "helper-1"
+  ],
+  "messages": [
+    {
+      "from": "helper-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "helper-1",
+      "kind": "output",
+      "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"
+    }
+  ],
+  "next": [
+    {
+      "input": {
+        "user": "alice",
+        "to": "helper-1",
+        "text": "Also convert 5 metres to centimetres."
+      },
+      "recipients": [
+        "helper-1"
+      ],
+      "messages": [
+        {
+          "from": "helper-1",
+          "kind": "status",
+          "text": "pass: The user has answered the escalation",
+          "working": [
+            "helper-1"
+          ]
+        },
+        {
+          "from": "asha",
+          "kind": "output",
+          "text": "No agent could answer this:\n- helper-1 passed: The user has answered the escalation",
+          "working": []
+        }
+      ],
+      "ms": 1500
+    }
+  ],
+  "ms": 4000
+}

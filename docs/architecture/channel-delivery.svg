@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" role="img" aria-labelledby="cd-t cd-d">
+  <title id="cd-t">A delivery's life: pending, then ack, timeout or leave</title>
+  <desc id="cd-d">Channel.postToConversation creates one delivery per recipient, starts a timer of the recipient's messageTimeoutMs, stores it as pending and hands it to the agent's stream. While it is pending the agent is in the conversation's working set. It leaves the pending map in one of three ways: the agent acks it (serveAgent acks when the handler returns), the timer fires (expire logs channel.delivery_timeout and the supervisor stops the agent), or the agent leaves the channel (container exited or stream closed) and its deliveries are cleared. After each, concludeIfUnanswered runs: if nobody is working and no reply was posted, the harness posts its own output as asha and logs channel.no_reply. Then a status (or, on leave, agent_left) event carries the new working set, and the CLI's ConversationTracker settles when it is empty: exit 0 if an agent's output arrived, 1 otherwise.</desc>
+  <defs><marker id="cd-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="10" y="10" width="230" height="78" rx="6"/>
+  <text class="label title" x="125" y="30" text-anchor="middle">postToConversation</text>
+  <text class="label small" x="125" y="48" text-anchor="middle">one delivery per recipient</text>
+  <text class="label mono" x="125" y="66" text-anchor="middle">timer = messageTimeoutMs</text>
+  <text class="label small" x="125" y="82" text-anchor="middle">(output: no recipients)</text>
+
+  <rect class="box accent" x="265" y="10" width="230" height="78" rx="6"/>
+  <text class="label title" x="380" y="30" text-anchor="middle">pending</text>
+  <text class="label mono" x="380" y="50" text-anchor="middle">deliveryId → handle</text>
+  <text class="label small" x="380" y="68" text-anchor="middle">working = handles holding</text>
+  <text class="label small" x="380" y="82" text-anchor="middle">one in this conversation</text>
+
+  <rect class="box" x="520" y="10" width="230" height="78" rx="6"/>
+  <text class="label title" x="635" y="30" text-anchor="middle">agent</text>
+  <text class="label mono" x="635" y="50" text-anchor="middle">serveAgent → handler</text>
+  <text class="label small" x="635" y="68" text-anchor="middle">one delivery at a time,</text>
+  <text class="label small" x="635" y="82" text-anchor="middle">over its channel stream</text>
+
+  <path class="edge" d="M240 49 H263" marker-end="url(#cd-a)"/>
+  <path class="edge" d="M495 49 H518" marker-end="url(#cd-a)"/>
+
+  <rect class="box" x="520" y="128" width="230" height="74" rx="6"/>
+  <text class="label title" x="635" y="148" text-anchor="middle">ack</text>
+  <text class="label mono" x="635" y="167" text-anchor="middle">POST …/channel/ack</text>
+  <text class="label small" x="635" y="186" text-anchor="middle">when the handler returns</text>
+
+  <rect class="box" x="265" y="128" width="230" height="74" rx="6"/>
+  <text class="label title" x="380" y="148" text-anchor="middle">timeout: expire()</text>
+  <text class="label mono" x="380" y="167" text-anchor="middle">channel.delivery_timeout</text>
+  <text class="label small" x="380" y="186" text-anchor="middle">the supervisor stops the agent</text>
+
+  <rect class="box" x="10" y="128" width="230" height="74" rx="6"/>
+  <text class="label title" x="125" y="148" text-anchor="middle">leave()</text>
+  <text class="label small" x="125" y="167" text-anchor="middle">container exited or stream closed</text>
+  <text class="label small" x="125" y="186" text-anchor="middle">its pending deliveries cleared</text>
+
+  <path class="edge" d="M635 88 V126" marker-end="url(#cd-a)"/>
+  <path class="edge" d="M380 88 V126" marker-end="url(#cd-a)"/>
+  <path class="edge" d="M300 88 V108 H125 V126" marker-end="url(#cd-a)"/>
+
+  <rect class="box accent" x="10" y="240" width="740" height="64" rx="6"/>
+  <text class="label title" x="380" y="262" text-anchor="middle">concludeIfUnanswered(conversation)</text>
+  <text class="label small" x="380" y="282" text-anchor="middle">nobody working and no reply yet → the harness posts its own output as asha,</text>
+  <text class="label small" x="380" y="297" text-anchor="middle">listing what each agent did (logged as channel.no_reply)</text>
+
+  <path class="edge" d="M125 202 V238" marker-end="url(#cd-a)"/>
+  <path class="edge" d="M380 202 V238" marker-end="url(#cd-a)"/>
+  <path class="edge" d="M635 202 V238" marker-end="url(#cd-a)"/>
+
+  <rect class="box" x="10" y="340" width="740" height="64" rx="6"/>
+  <text class="label title" x="380" y="362" text-anchor="middle">status or agent_left event, carrying working → the CLI's ConversationTracker</text>
+  <text class="label small" x="380" y="382" text-anchor="middle">settles when working is empty: exit 0 if an agent's output arrived,</text>
+  <text class="label small" x="380" y="397" text-anchor="middle">otherwise exit 1 with the harness's reply printed</text>
+  <path class="edge" d="M380 304 V338" marker-end="url(#cd-a)"/>
+</svg>

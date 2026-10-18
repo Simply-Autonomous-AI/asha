@@ -1,0 +1,51 @@
+{
+  "scenario": "p21-a",
+  "breaks": "the request completes within the pattern's bound",
+  "note": "One millisecond over the page's bound.",
+  "team": "topics",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Rain expected tomorrow.",
+    "topic": "weather"
+  },
+  "recipients": [
+    "weather-desk-1",
+    "front-page-1"
+  ],
+  "messages": [
+    {
+      "from": "weather-desk-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "weather-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "weather-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "weather-desk-1",
+      "kind": "output",
+      "text": "weather-desk-1 noted: Rain expected tomorrow.",
+      "working": [
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "output",
+      "text": "front-page-1 noted: Rain expected tomorrow.",
+      "working": []
+    }
+  ],
+  "ms": "bound+1"
+}

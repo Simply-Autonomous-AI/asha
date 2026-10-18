@@ -1,0 +1,10 @@
+{
+  "id": "restart",
+  "description": "P25, supervisor restart: an agent that exits on its own is restarted under its handle, at most twice in a minute, and the message it held is sent to it again.",
+  "members": [
+    {
+      "name": "worker",
+      "recipe": "worker.json"
+    }
+  ]
+}

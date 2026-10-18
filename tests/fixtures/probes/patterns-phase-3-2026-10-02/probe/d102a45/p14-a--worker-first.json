@@ -1,0 +1,101 @@
+{
+  "commit": "d102a45b4059a62f100af58747d186b1be299a95",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p14-a/worker-first",
+  "control": false,
+  "change": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Hello World."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Hello World."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1133,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 2993,
+      "board": [],
+      "requestSha256": "eac3b2a2e5a776b3fee0192a9064f71354d3e0956ae1a81f44f65b2cb39fb16d",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Hello World."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Hello World."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1133,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 431,
+      "board": [],
+      "requestSha256": "eac3b2a2e5a776b3fee0192a9064f71354d3e0956ae1a81f44f65b2cb39fb16d",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "Hello World."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "Hello World."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1133,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 431,
+      "board": [],
+      "requestSha256": "eac3b2a2e5a776b3fee0192a9064f71354d3e0956ae1a81f44f65b2cb39fb16d",
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "pattern": "P17",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:33:41.246Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p17-budget",
+  "models": [
+    "pico-v2-q8_0"
+  ],
+  "durationMs": 27360,
+  "bytes": 1644000,
+  "sha256": "440425403fdf424f7f6b5e06802ec0d4b56ce2575214f1e31713a09bb3139697",
+  "frames": 547,
+  "framesPerSecond": 20,
+  "longestGapMs": 71,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P17 · Budgets and circuit breaker",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5019,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p17-a",
+      "outcome": "pass"
+    },
+    {
+      "id": "p17-b",
+      "outcome": "pass"
+    }
+  ]
+}

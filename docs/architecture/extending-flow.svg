@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 350" role="img" aria-labelledby="ex-t ex-d">
+  <title id="ex-t">The four ways to extend asha, step by step</title>
+  <desc id="ex-d">Four rows, smallest first. A recipe: write recipes/name.json with every field, write the description other agents read and set temperature 0 if a test asserts its output, then add a Definitions test and an agent-suite scenario. An image: write images/name with main.ts, agent.ts and a copied Dockerfile, add a recipe naming it, then npm run build and add unit and agent-suite tests. A model: write catalogue/id.json pinned by revision sha, sha256 per file and licence, record every value's source and date on the Models page, then point a recipe at it and, for a chat model, run the routing eval. An adapter: justify it in writing, implement the existing contract in its module folder, then wire it in productionDependencies and map new errors in classify. Every row ends at the same gate: npm run check, the docs in the same commit, and one adversarial review.</desc>
+  <defs><marker id="ex-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <!-- row labels -->
+  <rect class="box accent" x="10" y="14" width="90" height="62" rx="6"/>
+  <text class="label title" x="55" y="42" text-anchor="middle">recipe</text>
+  <text class="label small" x="55" y="60" text-anchor="middle">smallest</text>
+  <rect class="box accent" x="10" y="96" width="90" height="62" rx="6"/>
+  <text class="label title" x="55" y="132" text-anchor="middle">image</text>
+  <rect class="box accent" x="10" y="178" width="90" height="62" rx="6"/>
+  <text class="label title" x="55" y="214" text-anchor="middle">model</text>
+  <rect class="box accent" x="10" y="260" width="90" height="62" rx="6"/>
+  <text class="label title" x="55" y="288" text-anchor="middle">adapter</text>
+  <text class="label small" x="55" y="306" text-anchor="middle">largest</text>
+
+  <!-- recipe row -->
+  <rect class="box" x="110" y="14" width="160" height="62" rx="6"/>
+  <text class="label mono" x="190" y="38" text-anchor="middle">recipes/&lt;name&gt;.json</text>
+  <text class="label small" x="190" y="58" text-anchor="middle">every field; id = name</text>
+  <rect class="box" x="283" y="14" width="160" height="62" rx="6"/>
+  <text class="label small" x="363" y="38" text-anchor="middle">description for list_agents</text>
+  <text class="label small" x="363" y="58" text-anchor="middle">temperature 0 if asserted</text>
+  <rect class="box" x="456" y="14" width="160" height="62" rx="6"/>
+  <text class="label small" x="536" y="38" text-anchor="middle">Definitions test</text>
+  <text class="label small" x="536" y="58" text-anchor="middle">agent-suite scenario</text>
+
+  <!-- image row -->
+  <rect class="box" x="110" y="96" width="160" height="62" rx="6"/>
+  <text class="label mono" x="190" y="116" text-anchor="middle">images/&lt;name&gt;/</text>
+  <text class="label small" x="190" y="134" text-anchor="middle">main.ts · agent.ts</text>
+  <text class="label small" x="190" y="150" text-anchor="middle">copied Dockerfile</text>
+  <rect class="box" x="283" y="96" width="160" height="62" rx="6"/>
+  <text class="label small" x="363" y="120" text-anchor="middle">a recipe whose</text>
+  <text class="label mono" x="363" y="140" text-anchor="middle">image: &lt;name&gt;</text>
+  <rect class="box" x="456" y="96" width="160" height="62" rx="6"/>
+  <text class="label mono" x="536" y="120" text-anchor="middle">npm run build</text>
+  <text class="label small" x="536" y="140" text-anchor="middle">unit + agent-suite tests</text>
+
+  <!-- model row -->
+  <rect class="box" x="110" y="178" width="160" height="62" rx="6"/>
+  <text class="label mono" x="190" y="198" text-anchor="middle">catalogue/&lt;id&gt;.json</text>
+  <text class="label small" x="190" y="216" text-anchor="middle">revision sha · sha256</text>
+  <text class="label small" x="190" y="232" text-anchor="middle">per file · licence</text>
+  <rect class="box" x="283" y="178" width="160" height="62" rx="6"/>
+  <text class="label small" x="363" y="202" text-anchor="middle">Models page: every</text>
+  <text class="label small" x="363" y="220" text-anchor="middle">value's source and date</text>
+  <rect class="box" x="456" y="178" width="160" height="62" rx="6"/>
+  <text class="label small" x="536" y="198" text-anchor="middle">a recipe's model or</text>
+  <text class="label small" x="536" y="214" text-anchor="middle">embeddingModel;</text>
+  <text class="label small" x="536" y="230" text-anchor="middle">routing eval for chat</text>
+
+  <!-- adapter row -->
+  <rect class="box" x="110" y="260" width="160" height="62" rx="6"/>
+  <text class="label small" x="190" y="284" text-anchor="middle">written justification</text>
+  <text class="label small" x="190" y="302" text-anchor="middle">(PRINCIPLES §7)</text>
+  <rect class="box" x="283" y="260" width="160" height="62" rx="6"/>
+  <text class="label small" x="363" y="284" text-anchor="middle">implement the contract</text>
+  <text class="label small" x="363" y="302" text-anchor="middle">in its module folder</text>
+  <rect class="box" x="456" y="260" width="160" height="62" rx="6"/>
+  <text class="label mono" x="536" y="284" text-anchor="middle">productionDependencies</text>
+  <text class="label mono" x="536" y="302" text-anchor="middle">classify</text>
+
+  <!-- gate -->
+  <rect class="box accent" x="634" y="14" width="116" height="308" rx="8"/>
+  <text class="label title" x="692" y="140" text-anchor="middle">the gate</text>
+  <text class="label mono" x="692" y="162" text-anchor="middle">npm run check</text>
+  <text class="label small" x="692" y="184" text-anchor="middle">docs in the</text>
+  <text class="label small" x="692" y="198" text-anchor="middle">same commit</text>
+  <text class="label small" x="692" y="220" text-anchor="middle">one adversarial</text>
+  <text class="label small" x="692" y="234" text-anchor="middle">review</text>
+
+  <!-- edges -->
+  <path class="edge" d="M270 45 H281" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M443 45 H454" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M616 45 H632" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M270 127 H281" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M443 127 H454" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M616 127 H632" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M270 209 H281" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M443 209 H454" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M616 209 H632" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M270 291 H281" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M443 291 H454" marker-end="url(#ex-a)"/>
+  <path class="edge" d="M616 291 H632" marker-end="url(#ex-a)"/>
+</svg>

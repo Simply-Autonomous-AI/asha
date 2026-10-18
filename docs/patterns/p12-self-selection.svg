@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 246" role="img" aria-labelledby="p12-t p12-d">
+  <title id="p12-t">Self-selection: a message to everyone, and only the agent whose role covers it acts</title>
+  <desc id="p12-d">You write to everyone. Both members get the message. translator-1, whose role covers translation, replies Bonjour to you. greeter-1, whose role does not, posts pass and nothing else: it neither answers nor forwards the request.</desc>
+  <defs><marker id="p12-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="65" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="140" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M140 44 V240"/>
+  <rect class="box accent" x="305" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="380" y="32" text-anchor="middle">greeter-1</text>
+  <path class="edge dim" d="M380 44 V240"/>
+  <rect class="box accent" x="545" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="620" y="32" text-anchor="middle">translator-1</text>
+  <path class="edge dim" d="M620 44 V240"/>
+  <path class="edge" d="M140 80 H378" marker-end="url(#p12-a)"/>
+  <text class="label small" x="260" y="74" text-anchor="middle">to everyone: Please translate &#x27;good morning&#x27; into French.</text>
+  <path class="edge" d="M140 124 H618" marker-end="url(#p12-a)"/>
+  <text class="label small" x="380" y="118" text-anchor="middle">(the same message)</text>
+  <text class="label small" x="388" y="158">pass: not my role</text>
+  <path class="edge" d="M620 192 H142" marker-end="url(#p12-a)"/>
+  <text class="label small" x="380" y="186" text-anchor="middle">output: Bonjour</text>
+</svg>

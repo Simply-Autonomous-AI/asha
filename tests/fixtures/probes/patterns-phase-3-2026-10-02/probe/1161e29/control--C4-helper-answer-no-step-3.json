@@ -1,0 +1,103 @@
+{
+  "commit": "1161e2983ed4e002563968326a13660eaec586f9",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "control/C4-helper-answer-no-step-3",
+  "control": true,
+  "change": {
+    "doc": "1. If every part of a request is a length conversion, call reply with the answers.\n2. If any part is something else, call ask_user with \"ESCALATE: done: \" and the conversions you did, then \"; left: \" and what is left, and nothing more.\n"
+  },
+  "passes": 0,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1327,
+          "completionTokens": 44
+        }
+      ],
+      "ms": 3989,
+      "board": [],
+      "requestSha256": "c91593aec63b51215ee1a42bf8b71f22c669aef59e2099a069d5dbe251b21682",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1327,
+          "completionTokens": 44
+        }
+      ],
+      "ms": 999,
+      "board": [],
+      "requestSha256": "c91593aec63b51215ee1a42bf8b71f22c669aef59e2099a069d5dbe251b21682",
+      "ok": false
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1327,
+          "completionTokens": 44
+        }
+      ],
+      "ms": 993,
+      "board": [],
+      "requestSha256": "c91593aec63b51215ee1a42bf8b71f22c669aef59e2099a069d5dbe251b21682",
+      "ok": false
+    }
+  ]
+}

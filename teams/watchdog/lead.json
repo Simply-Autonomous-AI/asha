@@ -1,0 +1,24 @@
+{
+  "id": "lead",
+  "image": "hello-world",
+  "description": "Gives a task to a worker and reassigns it if the worker times out.",
+  "prompt": "you give a task to a worker, and give it to another worker if the first does not answer in time.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "lead.md",
+      "fullText": true
+    }
+  ]
+}

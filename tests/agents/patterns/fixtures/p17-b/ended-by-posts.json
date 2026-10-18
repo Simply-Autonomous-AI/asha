@@ -1,0 +1,75 @@
+{
+  "scenario": "p17-b",
+  "breaks": "the token budget ends it: the stream ends with ✗ budget_exceeded, the conversation used its tokens past its budget of 6000 (channel.conversation_ended)",
+  "note": "The conversation ended for its posts, not its tokens.",
+  "team": "budget",
+  "input": {
+    "user": "alice",
+    "to": "ping-1",
+    "text": "Start."
+  },
+  "recipients": [
+    "ping-1"
+  ],
+  "messages": [
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "from": "pong-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "pong-1",
+      "to": "ping-1",
+      "kind": "internal",
+      "text": "pong",
+      "working": [
+        "ping-1"
+      ]
+    },
+    {
+      "from": "ping-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "ping-1",
+      "to": "pong-1",
+      "kind": "internal",
+      "text": "ping",
+      "working": [
+        "pong-1"
+      ]
+    },
+    {
+      "log": {
+        "level": "error",
+        "event": "channel.conversation_ended",
+        "channel": "main",
+        "conversation": "c1",
+        "reason": "budget_exceeded",
+        "detail": "conversation c1 reached its budget of 32 agent posts"
+      }
+    },
+    {
+      "error": {
+        "reason": "budget_exceeded",
+        "detail": "conversation c1 reached its budget of 32 agent posts"
+      }
+    }
+  ],
+  "ms": 4000
+}

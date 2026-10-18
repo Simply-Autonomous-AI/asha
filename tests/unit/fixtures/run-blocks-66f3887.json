@@ -1,0 +1,382 @@
+{
+ "commit": "66f3887",
+ "note": "Each pattern page's run-command block as it stood at 66f3887, and what evals/patterns/run-block.ts parsed it to then (one command per scenario): patterns-phase-3 R9 requires every one to parse to the same commands after the run block gains scenarios of several commands.",
+ "pages": {
+  "docs/patterns/p01-delegation.md": {
+   "block": "```asha-run\n./asha --launch team=delegation\n# bound: 20000 ms\n# p01-a\n./asha to=lead-1 user=alice message=\"Please ask greeter-1 to say Hello World.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=delegation"
+   ],
+   "team": "delegation",
+   "boundMs": 20000,
+   "scenarios": [
+    [
+     "p01-a",
+     [
+      "to=lead-1",
+      "user=alice",
+      "message=Please ask greeter-1 to say Hello World."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p02-router.md": {
+   "block": "```asha-run\n./asha --launch team=router\n# bound: 18000 ms\n# p02-a\n./asha to=router-1 user=alice message=\"Please translate 'thank you' into French.\"\n# p02-b\n./asha to=router-1 user=alice message=\"What is 17 plus 25?\"\n# p02-c\n./asha to=router-1 user=alice message=\"Please have the right agent say: Hello World.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=router"
+   ],
+   "team": "router",
+   "boundMs": 18000,
+   "scenarios": [
+    [
+     "p02-a",
+     [
+      "to=router-1",
+      "user=alice",
+      "message=Please translate 'thank you' into French."
+     ]
+    ],
+    [
+     "p02-b",
+     [
+      "to=router-1",
+      "user=alice",
+      "message=What is 17 plus 25?"
+     ]
+    ],
+    [
+     "p02-c",
+     [
+      "to=router-1",
+      "user=alice",
+      "message=Please have the right agent say: Hello World."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p03-pipeline.md": {
+   "block": "```asha-run\n./asha --launch team=pipeline\n# bound: 24000 ms\n# p03-a\n./asha to=stage-a-1 user=alice message=\"Build the colour list.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=pipeline"
+   ],
+   "team": "pipeline",
+   "boundMs": 24000,
+   "scenarios": [
+    [
+     "p03-a",
+     [
+      "to=stage-a-1",
+      "user=alice",
+      "message=Build the colour list."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p04-fan-out.md": {
+   "block": "```asha-run\n./asha --launch team=rainbow\n# bound: 45000 ms\n# p04-a\n./asha to=supervisor-1 user=alice message=\"Which sequence of the numbers lists their colours in rainbow order?\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=rainbow"
+   ],
+   "team": "rainbow",
+   "boundMs": 45000,
+   "scenarios": [
+    [
+     "p04-a",
+     [
+      "to=supervisor-1",
+      "user=alice",
+      "message=Which sequence of the numbers lists their colours in rainbow order?"
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p05-orchestrator-workers.md": {
+   "block": "```asha-run\n./asha --launch team=orchestrator\n# bound: 27000 ms\n# p05-a\n./asha to=lead-1 user=alice message=\"Please do three things: translate 'thank you' into French, add 17 and 25, and say Hello World.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=orchestrator"
+   ],
+   "team": "orchestrator",
+   "boundMs": 27000,
+   "scenarios": [
+    [
+     "p05-a",
+     [
+      "to=lead-1",
+      "user=alice",
+      "message=Please do three things: translate 'thank you' into French, add 17 and 25, and say Hello World."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p06-plan-execute.md": {
+   "block": "```asha-run\n./asha --launch team=plan-execute\n# bound: 45000 ms\n# p06-a\n./asha to=planner-1 user=alice message=\"What is the password?\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=plan-execute"
+   ],
+   "team": "plan-execute",
+   "boundMs": 45000,
+   "scenarios": [
+    [
+     "p06-a",
+     [
+      "to=planner-1",
+      "user=alice",
+      "message=What is the password?"
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p08-critic-loop.md": {
+   "block": "```asha-run\n./asha --launch team=critic-loop\n# bound: 20000 ms\n# p08-a\n./asha to=writer-1 user=alice message=\"Write one sentence about the harbour at night.\"\n# p08-b\n./asha to=writer-1 user=alice message=\"Write one sentence about the harbour at night; have strict-critic-1 check it.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=critic-loop"
+   ],
+   "team": "critic-loop",
+   "boundMs": 20000,
+   "scenarios": [
+    [
+     "p08-a",
+     [
+      "to=writer-1",
+      "user=alice",
+      "message=Write one sentence about the harbour at night."
+     ]
+    ],
+    [
+     "p08-b",
+     [
+      "to=writer-1",
+      "user=alice",
+      "message=Write one sentence about the harbour at night; have strict-critic-1 check it."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p09-debate.md": {
+   "block": "```asha-run\n./asha --launch team=debate\n# bound: 34000 ms\n# p09-a\n./asha to=judge-1 user=alice message=\"Judge the motion: The town should build a second bridge.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=debate"
+   ],
+   "team": "debate",
+   "boundMs": 34000,
+   "scenarios": [
+    [
+     "p09-a",
+     [
+      "to=judge-1",
+      "user=alice",
+      "message=Judge the motion: The town should build a second bridge."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p10-voting.md": {
+   "block": "```asha-run\n./asha --launch team=vote\n# bound: 29000 ms\n# p10-a\n./asha to=aggregator-1 user=alice message=\"Ask the voters to pick the team lunch: SOUP, SALAD or PIZZA.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=vote"
+   ],
+   "team": "vote",
+   "boundMs": 29000,
+   "scenarios": [
+    [
+     "p10-a",
+     [
+      "to=aggregator-1",
+      "user=alice",
+      "message=Ask the voters to pick the team lunch: SOUP, SALAD or PIZZA."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p12-self-selection.md": {
+   "block": "```asha-run\n./asha --launch team=self-select\n# bound: 15000 ms\n# p12-a\n./asha user=alice message=\"Please translate 'good morning' into French.\"\n# p12-b\n./asha user=alice message=\"Please say: Hello World.\"\n# p12-c\n./asha user=alice message=\"Please book me a flight to Paris.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=self-select"
+   ],
+   "team": "self-select",
+   "boundMs": 15000,
+   "scenarios": [
+    [
+     "p12-a",
+     [
+      "user=alice",
+      "message=Please translate 'good morning' into French."
+     ]
+    ],
+    [
+     "p12-b",
+     [
+      "user=alice",
+      "message=Please say: Hello World."
+     ]
+    ],
+    [
+     "p12-c",
+     [
+      "user=alice",
+      "message=Please book me a flight to Paris."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p13-contract-net.md": {
+   "block": "```asha-run\n./asha --launch team=contract-net\n# bound: 31000 ms\n# p13-a\n./asha to=manager-1 user=alice message=\"Get parcel 17 delivered by the cheapest courier.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=contract-net"
+   ],
+   "team": "contract-net",
+   "boundMs": 31000,
+   "scenarios": [
+    [
+     "p13-a",
+     [
+      "to=manager-1",
+      "user=alice",
+      "message=Get parcel 17 delivered by the cheapest courier."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p14-watchdog.md": {
+   "block": "```asha-run\n./asha --launch team=watchdog\n# bound: 42000 ms\n# p14-a\n./asha to=lead-1 user=alice message=\"Please get someone to say Hello World.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=watchdog"
+   ],
+   "team": "watchdog",
+   "boundMs": 42000,
+   "scenarios": [
+    [
+     "p14-a",
+     [
+      "to=lead-1",
+      "user=alice",
+      "message=Please get someone to say Hello World."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p16-guardrail.md": {
+   "block": "```asha-run\n./asha --launch team=guardrail\n# bound: 19000 ms\n# p16-a\n./asha to=writer-1 user=alice message=\"How can I reach support? Our records say: phone 5550123456, email help@example.com.\"\n# p16-b\n./asha to=writer-1 user=alice message=\"Greet the world.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=guardrail"
+   ],
+   "team": "guardrail",
+   "boundMs": 19000,
+   "scenarios": [
+    [
+     "p16-a",
+     [
+      "to=writer-1",
+      "user=alice",
+      "message=How can I reach support? Our records say: phone 5550123456, email help@example.com."
+     ]
+    ],
+    [
+     "p16-b",
+     [
+      "to=writer-1",
+      "user=alice",
+      "message=Greet the world."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p18-agent-tool.md": {
+   "block": "```asha-run\n./asha --launch team=agent-tool\n# bound: 14000 ms\n# p18-a\n./asha to=delegator-1 user=alice message=\"Get worker-1 to say Hello World, then tell me yourself what it said.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=agent-tool"
+   ],
+   "team": "agent-tool",
+   "boundMs": 14000,
+   "scenarios": [
+    [
+     "p18-a",
+     [
+      "to=delegator-1",
+      "user=alice",
+      "message=Get worker-1 to say Hello World, then tell me yourself what it said."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p22-escalation.md": {
+   "block": "```asha-run\n./asha --launch team=escalation\n# bound: 6000 ms\n# p22-a\n./asha to=helper-1 user=alice message=\"Convert 3 metres to centimetres, then book a meeting room for 3 pm.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=escalation"
+   ],
+   "team": "escalation",
+   "boundMs": 6000,
+   "scenarios": [
+    [
+     "p22-a",
+     [
+      "to=helper-1",
+      "user=alice",
+      "message=Convert 3 metres to centimetres, then book a meeting room for 3 pm."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p23-consensus.md": {
+   "block": "```asha-run\n./asha --launch team=consensus\n# bound: 44000 ms\n# p23-a\n./asha to=moderator-1 user=alice message=\"Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=consensus"
+   ],
+   "team": "consensus",
+   "boundMs": 44000,
+   "scenarios": [
+    [
+     "p23-a",
+     [
+      "to=moderator-1",
+      "user=alice",
+      "message=Get the debaters to agree: how many colours does a rainbow have? Choose from 6, 7, 8."
+     ]
+    ]
+   ]
+  },
+  "docs/patterns/p24-group-chat.md": {
+   "block": "```asha-run\n./asha --launch team=group-chat\n# bound: 32000 ms\n# p24-a\n./asha to=manager-1 user=alice message=\"Write a three-line poem about rain, one line from each participant.\"\n# p24-b\n./asha to=manager-1 user=alice message=\"Find the vault code.\"\n```\n",
+   "launch": [
+    "--launch",
+    "team=group-chat"
+   ],
+   "team": "group-chat",
+   "boundMs": 32000,
+   "scenarios": [
+    [
+     "p24-a",
+     [
+      "to=manager-1",
+      "user=alice",
+      "message=Write a three-line poem about rain, one line from each participant."
+     ]
+    ],
+    [
+     "p24-b",
+     [
+      "to=manager-1",
+      "user=alice",
+      "message=Find the vault code."
+     ]
+    ]
+   ]
+  }
+ }
+}

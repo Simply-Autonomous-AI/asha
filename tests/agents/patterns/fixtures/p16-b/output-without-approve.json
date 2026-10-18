@@ -1,0 +1,28 @@
+{
+  "scenario": "p16-b",
+  "breaks": "exactly one output, from writer-1, after the last gather, equal to the last text policy-1 approved (after \"Check:\", trimmed)",
+  "note": "The umbrella's second mutation: an output with no APPROVE before it (no call at all).",
+  "team": "guardrail",
+  "input": {
+    "user": "alice",
+    "to": "writer-1",
+    "text": "Greet the world."
+  },
+  "recipients": [
+    "writer-1"
+  ],
+  "messages": [
+    {
+      "from": "writer-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "writer-1",
+      "kind": "output",
+      "text": "Hello, world!"
+    }
+  ],
+  "log": [],
+  "ms": 12000
+}

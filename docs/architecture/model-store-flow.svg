@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 524" role="img" aria-labelledby="ms-t ms-d">
+  <title id="ms-t">HuggingFaceModelStore.ensure: check, lock, then download and verify each file, promote</title>
+  <desc id="ms-d">ensure computes the cache directory sha256-tree-digest from the entry's files. If it exists, the result is cached. Otherwise it takes the pid lock models/.lock: a live holder makes it throw LockHeld at once, and a dead holder's lock is cleared with lock.stale_cleared. Holding the lock it checks the directory again. Then, for each file in turn, it fetches the file from huggingface.co at the pinned revision into .staging-12-hex, bounded by 60 seconds of inactivity, and verifies that file's size and sha256 against the pin before starting the next. The first failure, in the download or the verification, throws and stops the loop, so later files are never fetched. When every file has passed, one rename promotes the staging directory to the cache directory and the result is downloaded. The staging directory is always removed and the lock released.</desc>
+  <defs><marker id="ms-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="40" y="10" width="380" height="50" rx="6"/>
+  <text class="label title" x="230" y="30" text-anchor="middle">1 dir = models/sha256-&lt;treeDigest&gt;/</text>
+  <text class="label small" x="230" y="48" text-anchor="middle">exists? A directory that exists is complete</text>
+
+  <rect class="box" x="40" y="90" width="380" height="50" rx="6"/>
+  <text class="label title" x="230" y="110" text-anchor="middle">2 acquirePidLock(models/.lock)</text>
+  <text class="label small" x="230" y="128" text-anchor="middle">a dead holder's lock is cleared: lock.stale_cleared</text>
+
+  <rect class="box" x="40" y="170" width="380" height="36" rx="6"/>
+  <text class="label title" x="230" y="193" text-anchor="middle">3 dir exists now? (checked again under the lock)</text>
+
+  <!-- the per-file loop -->
+  <rect class="box host" x="14" y="228" width="420" height="178" rx="8"/>
+  <text class="label small" x="24" y="244">4 for each file, in order</text>
+
+  <rect class="box accent" x="40" y="252" width="380" height="60" rx="6"/>
+  <text class="label title" x="230" y="270" text-anchor="middle">4a download it</text>
+  <text class="label mono" x="230" y="287" text-anchor="middle">GET …/&lt;repo&gt;/resolve/&lt;revision&gt;/&lt;path&gt;</text>
+  <text class="label mono" x="230" y="303" text-anchor="middle">→ .staging-&lt;12 hex&gt;/ (wx, hashed as it streams)</text>
+
+  <rect class="box accent" x="40" y="340" width="380" height="50" rx="6"/>
+  <text class="label title" x="230" y="360" text-anchor="middle">4b verify it: bytes = size, sha256 = pin</text>
+  <text class="label small" x="230" y="378" text-anchor="middle">before the next file starts</text>
+
+  <path class="edge" d="M230 312 V338" marker-end="url(#ms-a)"/>
+  <path class="edge" d="M40 365 H28 V282 H38" marker-end="url(#ms-a)"/>
+  <text class="label small" x="46" y="330">next file</text>
+
+  <rect class="box" x="40" y="436" width="380" height="50" rx="6"/>
+  <text class="label title" x="230" y="456" text-anchor="middle">5 rename(staging, dir)</text>
+  <text class="label small" x="230" y="474" text-anchor="middle">one atomic promotion</text>
+
+  <path class="edge" d="M230 60 V88" marker-end="url(#ms-a)"/>
+  <text class="label small" x="238" y="79">no</text>
+  <path class="edge" d="M230 140 V168" marker-end="url(#ms-a)"/>
+  <path class="edge" d="M230 206 V250" marker-end="url(#ms-a)"/>
+  <text class="label small" x="238" y="222">no</text>
+  <path class="edge" d="M230 406 V434" marker-end="url(#ms-a)"/>
+  <text class="label small" x="238" y="425">every file passed</text>
+
+  <!-- outcomes -->
+  <rect class="box" x="500" y="10" width="250" height="50" rx="6"/>
+  <text class="label title" x="625" y="30" text-anchor="middle">cached</text>
+  <text class="label mono" x="625" y="48" text-anchor="middle">model.cache_hit</text>
+  <path class="edge" d="M420 35 H498" marker-end="url(#ms-a)"/>
+  <text class="label small" x="458" y="29" text-anchor="middle">yes</text>
+  <path class="edge" d="M420 188 H460 V50 H498" marker-end="url(#ms-a)"/>
+  <text class="label small" x="440" y="182" text-anchor="middle">yes</text>
+
+  <rect class="box" x="500" y="90" width="250" height="50" rx="6"/>
+  <text class="label title" x="625" y="110" text-anchor="middle">LockHeld, at once</text>
+  <text class="label small" x="625" y="128" text-anchor="middle">a live holder: it never waits</text>
+  <path class="edge" d="M420 115 H498" marker-end="url(#ms-a)"/>
+
+  <rect class="box" x="500" y="252" width="250" height="60" rx="6"/>
+  <text class="label title" x="625" y="270" text-anchor="middle">ModelFetchFailed</text>
+  <text class="label mono" x="625" y="287" text-anchor="middle">http_status · network</text>
+  <text class="label mono" x="625" y="303" text-anchor="middle">stalled (60 s no bytes)</text>
+  <path class="edge" d="M420 282 H498" marker-end="url(#ms-a)"/>
+
+  <rect class="box" x="500" y="340" width="250" height="50" rx="6"/>
+  <text class="label mono" x="625" y="360" text-anchor="middle">ModelFetchFailed size_mismatch</text>
+  <text class="label mono" x="625" y="378" text-anchor="middle">ModelDigestMismatch (never retried)</text>
+  <path class="edge" d="M420 365 H498" marker-end="url(#ms-a)"/>
+
+  <text class="label small" x="625" y="414" text-anchor="middle">either failure stops the loop:</text>
+  <text class="label small" x="625" y="428" text-anchor="middle">later files are never fetched</text>
+
+  <rect class="box" x="500" y="436" width="250" height="50" rx="6"/>
+  <text class="label title" x="625" y="456" text-anchor="middle">downloaded</text>
+  <text class="label mono" x="625" y="474" text-anchor="middle">model.downloaded</text>
+  <path class="edge" d="M420 461 H498" marker-end="url(#ms-a)"/>
+
+  <text class="label small" x="14" y="512">in finally blocks: the staging directory is always removed (steps 4–5), and the lock always released (steps 3–5)</text>
+</svg>

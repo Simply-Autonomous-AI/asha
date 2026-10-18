@@ -1,0 +1,25 @@
+{
+  "id": "contrib-b",
+  "image": "hello-world",
+  "description": "Adds one item to the list.",
+  "prompt": "you add your one item to the shopping list on the blackboard.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file",
+    "blackboard_post"
+  ],
+  "documents": [
+    {
+      "path": "contrib-b.md",
+      "fullText": true
+    }
+  ]
+}

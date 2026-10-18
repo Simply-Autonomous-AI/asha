@@ -1,0 +1,36 @@
+{
+  "pattern": "P15",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:32:16.819Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p15-approval",
+  "models": [
+    "pico-v2-q8_0"
+  ],
+  "durationMs": 14840,
+  "bytes": 791801,
+  "sha256": "66b6ca243593cf11a86a633966267e6ec9829ff47559e5abc048ceead8927d12",
+  "frames": 297,
+  "framesPerSecond": 20,
+  "longestGapMs": 70,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P15 · Human approval gate",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5024,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p15-a",
+      "outcome": "pass"
+    },
+    {
+      "id": "p15-b",
+      "outcome": "pass"
+    }
+  ]
+}

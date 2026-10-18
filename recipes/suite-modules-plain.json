@@ -1,0 +1,11 @@
+{
+  "id": "suite-modules-plain",
+  "image": "hello-world",
+  "description": "Test only (extension-modules A38 (c)): the same recipe granting nothing.",
+  "prompt": "you say what you are asked to say, word for word.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 200000,
+  "chat": { "temperature": 0 },
+  "tools": []
+}

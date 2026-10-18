@@ -1,0 +1,149 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p22-escalation.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escalation Pattern Demo</title>
+<meta name="description" content="P22 · Escalation to a human (the summary): An agent that cannot finish a request does what it can, then hands the rest to the user with a summary of what it did and what is left, and takes no further action in that conversation. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Escalation Pattern Demo</nav>
+<h1>P22 · Escalation to a human (the summary)</h1>
+<p class="lede">An agent that cannot finish a request does what it can, then hands the rest to the user with a summary of what it did and what is left, and takes no further action in that conversation.</p>
+<div class="facts"><span>written 2026-09-29</span><span>updated 2026-10-02: the take-over, p22-b (<code>docs/plans/patterns-phase-3.md</code> R28)</span><span>status: <span class="badge built">built</span> 2026-09-29; with p22-b 2026-10-02, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/escalation/team.json"><code>teams/escalation/</code></a></span><span>test: <a href="../../tests/agents/p22-escalation.test.ts"><code>tests/agents/p22-escalation.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-1.md</code>, its runs</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p22-a</code>, the summary, and <code>p22-b</code>, the take-over, as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>The helper escalates with <code>ask_user</code> (<a href="../architecture/channel.html#asking">asking the user</a>): its summary is its question, and the conversation waits for the user. The user's answer comes back to it framed with its escalation, and it passes, whatever the answer asks — even work in its role: it has handed the conversation to the user.</li>
+<li>Built: p22-a's three recorded runs on the pinned model passed in phase 1 (runs (<code>docs/plans/patterns-phase-1.md</code>)); with p22-b, three more and one under the bound they set, at <code>01184ad</code> (runs (<code>docs/plans/patterns-phase-3.md</code>)); each checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>helper</code> on <code>qwen3-8b-q4_k_m</code>.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p22-escalation.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>qwen3-8b-q4_k_m</code> (<a href="videos/p22-escalation.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 13 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when an agent may meet requests only partly in its role, and the user, not another agent, should decide what happens to the rest.</p>
+<p><strong>Do not use it</strong> when another agent can do the rest (hand it off, P1, or route it, P2), or when the user should approve a step rather than take over (human approval, P15).</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 330" role="img" aria-labelledby="p22-t p22-d">
+  <title id="p22-t">Escalation: the helper does its part and hands the rest back to you</title>
+  <desc id="p22-d">You ask helper-1, alone on the channel, to convert 3 metres to centimetres and to book a meeting room. The conversion is its work; the booking is not. It escalates once with ask_user: ESCALATE: done: 300 centimetres; left: the meeting room, and the conversation waits for you. In p22-b you answer in that conversation with a conversion inside its role; it reaches helper-1 framed with its escalation, and it passes; asha then tells you no agent could answer, naming helper-1 as passed.</desc>
+  <defs><marker id="p22-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="40" y="10" width="140" height="34" rx="5"/>
+  <text class="label mono" x="110" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M110 44 V324"/>
+  <rect class="box" x="250" y="10" width="140" height="34" rx="5"/>
+  <text class="label mono" x="320" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M320 44 V324"/>
+  <rect class="box accent" x="460" y="10" width="140" height="34" rx="5"/>
+  <text class="label mono" x="530" y="32" text-anchor="middle">helper-1</text>
+  <path class="edge dim" d="M530 44 V324"/>
+  <path class="edge" d="M110 80 H528" marker-end="url(#p22-a)"/>
+  <text class="label small" x="320" y="74" text-anchor="middle">Convert 3 metres to centimetres, then book a meeting room for 3 pm.</text>
+  <text class="label small" x="522" y="106" text-anchor="end">ask_user (guidance step 2)</text>
+  <path class="edge" d="M530 130 H112" marker-end="url(#p22-a)"/>
+  <text class="label small" x="320" y="124" text-anchor="middle">output (asks): ESCALATE: done: … 300 …; left: … meeting room …</text>
+  <text class="label small" x="118" y="150">? helper-1 is waiting for your answer — the conversation waits</text>
+  <text class="label small" x="320" y="182" text-anchor="middle">p22-b · conversation=&lt;id&gt;: Also convert 5 metres to centimetres.</text>
+  <path class="edge" d="M110 190 H528" marker-end="url(#p22-a)"/>
+  <text class="label small" x="522" y="214" text-anchor="end">framed "The user answered … What you asked them: ESCALATE …"</text>
+  <text class="label small" x="522" y="232" text-anchor="end">pass (guidance step 3)</text>
+  <path class="edge" d="M530 256 H322" marker-end="url(#p22-a)"/>
+  <text class="label small" x="425" y="250" text-anchor="middle">pass: …</text>
+  <path class="edge" d="M320 290 H112" marker-end="url(#p22-a)"/>
+  <text class="label small" x="215" y="284" text-anchor="middle">No agent could answer this: helper-1 passed</text>
+</svg>
+<figcaption>Each arrow is one message the channel carries, in order; a note under a lifeline is the tool the agent's guidance tells it to call.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 7,000 ms, set from its three recorded runs with p22-b (<code>docs/plans/patterns-phase-3.md</code> R4, R5) — the largest request, p22-a's 4,144 ms at <code>1b361ea</code>, times 1.5 (6,216), rounded up to a whole second; the cap is 45,000 ms. (<em>Updated 2026-10-02:</em> it was 6,000 ms, from phase 1's runs, p22-a's 3,906 ms at <code>2192408</code>, when the helper escalated with <code>reply</code>.)</p>
+<pre><code class="language-asha-run">./asha --launch team=escalation
+# bound: 7000 ms
+# p22-a
+./asha to=helper-1 user=alice message=&quot;Convert 3 metres to centimetres, then book a meeting room for 3 pm.&quot;
+# p22-b
+./asha to=helper-1 user=alice message=&quot;Convert 3 metres to centimetres, then book a meeting room for 3 pm.&quot;
+./asha user=alice conversation=@previous message=&quot;Also convert 5 metres to centimetres.&quot;
+</code></pre>
+<p>p22-b's second command answers the first in its conversation: <code>@previous</code> stands for the conversation id the first command's waiting line prints (<code>? helper-1 is waiting for your answer: asha user=alice conversation=&lt;id&gt; message=&quot;…&quot;</code>), which the suite fills in.</p>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>91a4762</code> (clean tree), its third recorded run with p22-b, from its results file as committed in <code>abc12df</code> (<code>git show abc12df:tests/agents/results/p22-escalation.json</code>): each scenario's commands as the suite ran them (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines; p22-b's second command carries the conversation id its first printed), the stderr, then the stdout. The waiting line, <code>? …</code>, is stderr's, printed always. The models' output as it streams is left out here; the results file holds it.</p>
+<p><strong>p22-a</strong> — exit 0, 4,142 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=helper-1 user=alice message=&quot;Convert 3 metres to centimetres, then book a meeting room for 3 pm.&quot;
+› alice → helper-1 on main: Convert 3 metres to centimetres, then book a meeting room for 3 pm.
+› helper-1: ok
+› output helper-1 → alice:
+? helper-1 is waiting for your answer: asha user=alice conversation=68625e69685220ac message=&quot;…&quot;
+ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm
+</code></pre>
+<p><strong>p22-b</strong> — exit 0, 1,132 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=helper-1 user=alice message=&quot;Convert 3 metres to centimetres, then book a meeting room for 3 pm.&quot;
+› alice → helper-1 on main: Convert 3 metres to centimetres, then book a meeting room for 3 pm.
+› helper-1: ok
+› output helper-1 → alice:
+? helper-1 is waiting for your answer: asha user=alice conversation=ab820f96525f21bb message=&quot;…&quot;
+ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm
+</code></pre>
+<p><strong>p22-b</strong> — exit 1, 752 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose user=alice conversation=ab820f96525f21bb message=&quot;Also convert 5 metres to centimetres.&quot;
+› alice → helper-1 on main: Also convert 5 metres to centimetres.
+› helper-1: pass: User has answered the escalation request
+› output asha → alice:
+No agent could answer this:
+- helper-1 passed: User has answered the escalation request
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/escalation/team.json"><code>teams/escalation/team.json</code></a>: the team — <code>helper</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>.</li>
+<li><code>helper</code>: <a href="../../teams/escalation/helper.json"><code>helper.json</code></a>, its recipe, and <a href="../../teams/escalation/helper.md"><code>helper.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><a href="../../tests/agents/p22-escalation.test.ts"><code>tests/agents/p22-escalation.test.ts</code></a>: launches the team and sends each scenario's commands from this page, then asserts each scenario only through its checker — <code>P22_A</code> in <a href="../../tests/agents/patterns/phase-1.ts"><code>tests/agents/patterns/phase-1.ts</code></a>, <code>P22_B</code> in <a href="../../tests/agents/patterns/phase-3.ts"><code>tests/agents/patterns/phase-3.ts</code></a> — and records the checker's proof for the report.</li>
+<li>The checkers' fixtures, one passing conversation and one per mutation the plans list (p22-b's also one breaking every other claim): <a href="../../tests/agents/patterns/fixtures/p22-a/pass.json"><code>fixtures/p22-a/</code></a> and <a href="../../tests/agents/patterns/fixtures/p22-b/pass.json"><code>fixtures/p22-b/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>The helper is alone on its channel, where the general instructions say to pass on work outside its role; its prompt names escalating as its work, and its guidance says how.</li>
+<li>Its third step fires on the frame of the user's answer, which starts &quot;The user answered&quot; and carries the escalation as its question. Without that step the model converts the 5 metres (the plan's control C4, 0/3); with it, it passes 3/3 (premise probes (<code>docs/plans/patterns-phase-3.md</code>)).</li>
+<li>Measured (2026-09-29, runs (<code>docs/plans/patterns-phase-1.md</code>)): passed its first run at <code>90c3eec</code> with no change to its guidance, one model turn of 3.9–4.0 s, so its bound is 6 s. p22-b, the take-over, was added by <code>docs/plans/patterns-phase-3.md</code> (2026-10-02).</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p22">agent test report, P22 · Escalation to a human (the summary)</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p22-escalation.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

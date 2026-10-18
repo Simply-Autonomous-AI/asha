@@ -1,0 +1,19 @@
+{
+  "id": "suite-files-hello",
+  "image": "hello-world",
+  "description": "Test-only (agent-files A9): answers the user's questions about the files they share, reading them with its file tools, and returns files.",
+  "prompt": "you answer the user's questions about the files they share with you, reading the files with your file tools.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 120000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file",
+    "reply_with_files"
+  ]
+}

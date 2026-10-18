@@ -1,0 +1,36 @@
+{
+  "pattern": "P25",
+  "commit": "4dfa2d0b94f3ac84705372b62a2029e7ba7fcbe2",
+  "startedAt": "2026-10-16T23:30:02.018Z",
+  "runFolder": "<tmp>/asha-record-nTDBZo/p25-restart",
+  "models": [
+    "pico-v2-q8_0"
+  ],
+  "durationMs": 72960,
+  "bytes": 2970870,
+  "sha256": "025d49cd004aa7e50e5e1dc9641c30937abacdf5200d51029e434656c89da738",
+  "frames": 1456,
+  "framesPerSecond": 20,
+  "longestGapMs": 108,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P25 · Supervisor restart",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5027,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p25-a",
+      "outcome": "pass"
+    },
+    {
+      "id": "p25-b",
+      "outcome": "pass"
+    }
+  ]
+}

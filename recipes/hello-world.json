@@ -1,0 +1,11 @@
+{
+  "id": "hello-world",
+  "image": "hello-world",
+  "description": "Says whatever it is asked to say.",
+  "prompt": "you say what you are asked to say, word for word. That is the only work you do: you cannot translate, write, summarise or look anything up.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": { "temperature": 0 },
+  "tools": ["list_files", "read_file", "write_file", "append_file", "blackboard_read", "blackboard_post"]
+}

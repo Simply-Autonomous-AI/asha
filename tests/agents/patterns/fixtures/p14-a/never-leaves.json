@@ -1,0 +1,174 @@
+{
+  "scenario": "p14-a",
+  "breaks": "channel.delivery_timeout for stuck-1, and then stuck-1 leaves the channel (channel.left)",
+  "note": "stuck-1's delivery times out, but it never leaves the channel (no channel.left).",
+  "team": "watchdog",
+  "input": {
+    "user": "alice",
+    "to": "lead-1",
+    "text": "Please get someone to say Hello World."
+  },
+  "recipients": [
+    "lead-1"
+  ],
+  "messages": [
+    {
+      "from": "lead-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "lead-1",
+      "to": "stuck-1",
+      "kind": "internal",
+      "text": "Please get someone to say Hello World.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "lead-1",
+        "stuck-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "Answers to lead-1's call: 1 timed out.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "leaves": "stuck-1",
+      "detail": "container exited with code 137",
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "lead-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "lead-1",
+      "to": "backup-1",
+      "kind": "internal",
+      "text": "Please get someone to say Hello World.",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "lead-1",
+        "backup-1"
+      ]
+    },
+    {
+      "from": "backup-1",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "Hello World",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "Answers to lead-1's call: 1 answered.",
+      "call": {
+        "id": "k2",
+        "role": "gather"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "lead-1",
+      "kind": "output",
+      "text": "Hello World"
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "lead-1",
+      "addressees": [
+        "stuck-1"
+      ]
+    },
+    {
+      "level": "warn",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "lead-1",
+      "counts": {
+        "answered": 0,
+        "passed": 0,
+        "timed_out": 1,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k2",
+      "caller": "lead-1",
+      "addressees": [
+        "backup-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k2",
+      "caller": "lead-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "error",
+      "event": "channel.delivery_timeout",
+      "channel": "main",
+      "handle": "stuck-1",
+      "deliveryId": "d2"
+    }
+  ],
+  "agentLogs": {
+    "stuck-1": [
+      {
+        "level": "info",
+        "event": "hold.started",
+        "tool": "hold"
+      }
+    ]
+  },
+  "ms": 28000
+}

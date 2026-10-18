@@ -1,0 +1,24 @@
+{
+  "id": "half-b",
+  "image": "hello-world",
+  "description": "Was to hold the second half; always fails.",
+  "prompt": "you were to hold the password's second half, and you always fail.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "half-b.md",
+      "fullText": true
+    }
+  ]
+}

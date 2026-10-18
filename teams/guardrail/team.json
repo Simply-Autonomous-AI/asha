@@ -1,0 +1,14 @@
+{
+  "id": "guardrail",
+  "description": "P16, guardrail: a writer replies only with text a policy agent approved.",
+  "members": [
+    {
+      "name": "writer",
+      "recipe": "writer.json"
+    },
+    {
+      "name": "policy",
+      "recipe": "policy.json"
+    }
+  ]
+}

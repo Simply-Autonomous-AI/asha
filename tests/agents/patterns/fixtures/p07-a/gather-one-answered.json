@@ -1,0 +1,292 @@
+{
+  "scenario": "p07-a",
+  "breaks": "one gather to top-1, with two answered",
+  "note": "top-1's gather counts one answered.",
+  "team": "hierarchy",
+  "input": {
+    "user": "alice",
+    "to": "top-1",
+    "text": "Which numbers stand for the warm colours and for the cool colours?"
+  },
+  "recipients": [
+    "top-1"
+  ],
+  "messages": [
+    {
+      "from": "top-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "channel.call_opened",
+        "channel": "main",
+        "conversation": "c1",
+        "call": "k1",
+        "caller": "top-1",
+        "addressees": [
+          "lead-warm-1",
+          "lead-cool-1"
+        ]
+      }
+    },
+    {
+      "from": "top-1",
+      "to": "lead-warm-1",
+      "kind": "internal",
+      "text": "What are your colours' numbers?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      }
+    },
+    {
+      "from": "top-1",
+      "to": "lead-cool-1",
+      "kind": "internal",
+      "text": "What are your colours' numbers?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      }
+    },
+    {
+      "from": "lead-warm-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "channel.call_opened",
+        "channel": "main",
+        "conversation": "c1",
+        "call": "k2",
+        "caller": "lead-warm-1",
+        "addressees": [
+          "red-1",
+          "orange-1"
+        ],
+        "parent": "k1"
+      }
+    },
+    {
+      "from": "lead-warm-1",
+      "to": "red-1",
+      "kind": "internal",
+      "text": "What is your number?",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      }
+    },
+    {
+      "from": "lead-warm-1",
+      "to": "orange-1",
+      "kind": "internal",
+      "text": "What is your number?",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      }
+    },
+    {
+      "from": "lead-cool-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "channel.call_opened",
+        "channel": "main",
+        "conversation": "c1",
+        "call": "k3",
+        "caller": "lead-cool-1",
+        "addressees": [
+          "blue-1",
+          "violet-1"
+        ],
+        "parent": "k1"
+      }
+    },
+    {
+      "from": "lead-cool-1",
+      "to": "blue-1",
+      "kind": "internal",
+      "text": "What is your number?",
+      "call": {
+        "id": "k3",
+        "role": "question"
+      }
+    },
+    {
+      "from": "lead-cool-1",
+      "to": "violet-1",
+      "kind": "internal",
+      "text": "What is your number?",
+      "call": {
+        "id": "k3",
+        "role": "question"
+      }
+    },
+    {
+      "from": "red-1",
+      "to": "lead-warm-1",
+      "kind": "internal",
+      "text": "4",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      }
+    },
+    {
+      "from": "orange-1",
+      "to": "lead-warm-1",
+      "kind": "internal",
+      "text": "7",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      }
+    },
+    {
+      "from": "asha",
+      "to": "lead-warm-1",
+      "kind": "internal",
+      "text": "Answers to lead-warm-1's call: 2 answered.",
+      "call": {
+        "id": "k2",
+        "role": "gather"
+      },
+      "working": [
+        "lead-warm-1"
+      ]
+    },
+    {
+      "from": "lead-warm-1",
+      "to": "top-1",
+      "kind": "internal",
+      "text": "4, 7",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      }
+    },
+    {
+      "from": "blue-1",
+      "to": "lead-cool-1",
+      "kind": "internal",
+      "text": "3",
+      "call": {
+        "id": "k3",
+        "role": "answer"
+      }
+    },
+    {
+      "from": "violet-1",
+      "to": "lead-cool-1",
+      "kind": "internal",
+      "text": "2",
+      "call": {
+        "id": "k3",
+        "role": "answer"
+      }
+    },
+    {
+      "from": "asha",
+      "to": "lead-cool-1",
+      "kind": "internal",
+      "text": "Answers to lead-cool-1's call: 2 answered.",
+      "call": {
+        "id": "k3",
+        "role": "gather"
+      },
+      "working": [
+        "lead-cool-1"
+      ]
+    },
+    {
+      "from": "lead-cool-1",
+      "to": "top-1",
+      "kind": "internal",
+      "text": "3, 2",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      }
+    },
+    {
+      "from": "asha",
+      "to": "top-1",
+      "kind": "internal",
+      "text": "Answers to top-1's call: 2 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "top-1"
+      ]
+    },
+    {
+      "from": "top-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "top-1",
+      "kind": "output",
+      "text": "warm: 4, 7; cool: 3, 2"
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k2",
+      "caller": "lead-warm-1",
+      "counts": {
+        "answered": 2,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 3000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k3",
+      "caller": "lead-cool-1",
+      "counts": {
+        "answered": 2,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 3000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "top-1",
+      "counts": {
+        "answered": 1,
+        "passed": 1,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 3000
+    }
+  ],
+  "ms": 20000
+}

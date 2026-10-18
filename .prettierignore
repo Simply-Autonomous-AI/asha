@@ -1,0 +1,24 @@
+# Prettier formats the code, TypeScript and JavaScript (docs/quality/index.md#format). It also reads .gitignore, so
+# dependencies and build output are skipped. Every other kind of file it knows stays as written:
+#   *.md   — prose; docs/ sources render through the pinned renderer, and their line breaks are the authors';
+#   *.json — data the harness and its tools write themselves (decisions/queue.json, recorded runs, results), files
+#            pinned by sha256 (module.json), and npm's own package.json and package-lock.json;
+#   *.html, *.css — rendered docs, the portal's page, and docs/assets/docs.css, pinned by sha256 in AGENTS.md;
+#   *.yaml, *.yml — the CI workflow (.github/workflows/check.yml), written by hand and checked by oss-files.test.ts;
+#   *.jsonc — knip's config, knip.jsonc, written by hand with its comments.
+*.md
+*.json
+*.html
+*.css
+*.yaml
+*.jsonc
+*.yml
+
+# Kept out of git by .git/info/exclude, which Prettier does not read: agents' own whole checkouts, and the sdlc
+# reviews' runs. And the dated probes, kept byte for byte as they ran, the record their plans cite, and the copies of
+# them that shipped tests read (tests/fixtures/README.md).
+.claude/
+.qa/
+evals/probes/
+tests/fixtures/probes/
+tests/fixtures/agent-results/

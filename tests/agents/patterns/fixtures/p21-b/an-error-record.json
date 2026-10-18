@@ -1,0 +1,61 @@
+{
+  "scenario": "p21-b",
+  "breaks": "no error-level record",
+  "note": "An error record in the conversation.",
+  "team": "topics",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "The home team won.",
+    "topic": "sports"
+  },
+  "recipients": [
+    "sports-desk-1",
+    "front-page-1"
+  ],
+  "messages": [
+    {
+      "from": "sports-desk-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "sports-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "sports-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "log": {
+        "level": "error",
+        "event": "channel.delivery_timeout",
+        "channel": "main",
+        "handle": "sports-desk-1",
+        "deliveryId": "d9",
+        "conversation": "c1"
+      }
+    },
+    {
+      "from": "sports-desk-1",
+      "kind": "output",
+      "text": "sports-desk-1 noted: The home team won.",
+      "working": [
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "output",
+      "text": "front-page-1 noted: The home team won.",
+      "working": []
+    }
+  ],
+  "ms": 6000
+}

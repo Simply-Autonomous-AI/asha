@@ -1,0 +1,85 @@
+<!doctype html>
+<!-- Generated from docs/quality/history.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quality History</title>
+<meta name="description" content="Dated guard proofs, measurements and corrections behind the asha quality controls, newest first.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="quality">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha Quality Controls</a> / Quality History</nav>
+<h1>Quality history</h1>
+<p class="lede">The dated evidence behind <a href="index.html">Quality controls</a>. That page says what is true now; this one keeps the proofs, measurements and corrections (PRINCIPLES §12).</p>
+<div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Every compiler setting the guard covers was broken on 2026-09-27 and failed naming its canary.</li>
+<li>Three claims about TypeScript 7 were corrected on 2026-09-27; one was withdrawn.</li>
+<li>Hello-world replies were byte-identical 25 of 25 times on 2026-09-26.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#tsconfig-proof">2026-09-27: compiler-settings guard proof</a></li>
+<li><a href="#ts7-correction">2026-09-27: correction, TypeScript 7</a></li>
+<li><a href="#determinism">2026-09-26: determinism measured</a></li>
+<li><a href="#architecture-proofs">2026-09-26: guards proven in the former architecture doc</a></li>
+</ol>
+</nav>
+<section id="tsconfig-proof">
+<h2>2026-09-27: compiler-settings guard proof</h2>
+<p><a href="../../tests/unit/tsconfig.test.ts">tsconfig.test.ts</a> was proven by one change to <code>tsconfig.json</code> at a time (restored afterwards, md5 unchanged), or <code>@types/node</code> 22.20.4 installed without saving (restored with <code>npm ci</code>). Each break failed naming exactly these canaries:</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>How it was broken</th><th>The canaries named</th></tr></thead>
+<tbody>
+<tr><td><code>noImplicitAny: false</code></td><td><code>implicit-any.ts</code></td></tr>
+<tr><td><code>strictNullChecks: false</code></td><td><code>null-check.ts</code>, <code>unchecked-index.ts</code></td></tr>
+<tr><td><code>strict: false</code></td><td><code>implicit-any.ts</code>, <code>null-check.ts</code>, <code>unchecked-index.ts</code></td></tr>
+<tr><td><code>noUnusedLocals: false</code></td><td><code>unused-local.ts</code></td></tr>
+<tr><td><code>noUnusedParameters: false</code></td><td><code>unused-param.ts</code></td></tr>
+<tr><td><code>noImplicitReturns: false</code></td><td><code>implicit-return.ts</code></td></tr>
+<tr><td><code>noFallthroughCasesInSwitch: false</code></td><td><code>fallthrough.ts</code></td></tr>
+<tr><td><code>noUncheckedIndexedAccess: false</code></td><td><code>unchecked-index.ts</code></td></tr>
+<tr><td><code>noImplicitOverride: false</code></td><td><code>implicit-override.ts</code></td></tr>
+<tr><td><code>allowUnreachableCode</code> removed</td><td><code>unreachable.ts</code></td></tr>
+<tr><td><code>allowUnusedLabels</code> removed</td><td><code>unused-label.ts</code></td></tr>
+<tr><td><code>verbatimModuleSyntax: false</code></td><td><code>type-import.ts</code></td></tr>
+<tr><td><code>lib</code> plus <code>ES2025.Regexp</code></td><td><code>regexp-escape.ts</code></td></tr>
+<tr><td><code>lib: [&quot;ESNext&quot;]</code></td><td><code>float16.ts</code>, <code>promise-try.ts</code>, <code>regexp-escape.ts</code></td></tr>
+<tr><td><code>@types/node</code> 22.20.4 installed</td><td><code>node-api.ts</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="ts7-correction">
+<h2>2026-09-27: correction, TypeScript 7</h2>
+<p>The first version of the TypeScript 6.0.3 section said the <code>typescript@7.0.2</code> package &quot;exports only its version&quot;, which is true of its main entry only. It also said StrykerJS &quot;crashed on 7.0 in a scratch run&quot;, a run recorded nowhere in this repo (StrykerJS's TypeScript checker declares <code>typescript &gt;=3.6</code>), so that claim is withdrawn. It also gave, as the reason <code>exactOptionalPropertyTypes</code> is off, errors measured in the <code>web</code> repo, not here. The review of the change found all three.</p>
+</section>
+<section id="determinism">
+<h2>2026-09-26: determinism measured</h2>
+<p>25 of 25 hello-world replies were byte-identical, 5 of them across daemon restarts (the former <code>docs/architecture.md</code>, evidence section, at <code>719dad4</code>).</p>
+</section>
+<section id="architecture-proofs">
+<h2>2026-09-26: guards proven in the former architecture doc</h2>
+<p>The former <code>docs/architecture.md</code> (replaced by this site in <code>5adbdba</code>; read it with <code>git show 719dad4:docs/architecture.md</code>) records these guards as broken on purpose and seen to go red:</p>
+<ul>
+<li>the channel's ack bookkeeping</li>
+<li>the CLI's &quot;no reply&quot; failure</li>
+<li>the server's connect-before-headers order</li>
+<li>the model store's sha256 check</li>
+<li>the gateway's <code>stream:false</code></li>
+<li>the model server's <code>--port 0</code></li>
+<li>the image's staged SDK</li>
+</ul>
+</section>
+<footer class="page"><span>Source: <code>docs/quality/history.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

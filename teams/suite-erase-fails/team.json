@@ -1,0 +1,10 @@
+{
+  "id": "suite-erase-fails",
+  "description": "Agent-suite fixture (agent-persistence A17), test-only: one agent on the test-only image images/suite-erase-fails, whose erase-user exits 1, with its memory kept.",
+  "members": [
+    {
+      "name": "doomed",
+      "recipe": "doomed.json"
+    }
+  ]
+}

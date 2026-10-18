@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1504 210" role="img" aria-labelledby="qc-gate-t qc-gate-d">
+  <title id="qc-gate-t">The npm run check gate chain</title>
+  <desc id="qc-gate-d">Eleven links run in order: the linter (ESLint, every rule an error, no warning allowed), the unused-code check (knip: a file, an export or a dependency nothing uses), the format check (Prettier), typecheck (tsc), the secret scan (gitleaks over a copy of the tracked files), unit tests (tests/unit, all collaborators injected), integration tests (tests/integration, the real daemon HTTP server with a fake runtime and model server), the demo selection (a build, then demos:select writes selection.json from git), the agent suite (build, then real agents in colima on the real model), the eval (build, then the ./asha CLI end to end with exact replies), and the routing check on the eval's build. Any failure stops the chain, and the gate is red.</desc>
+  <defs><marker id="qc-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="10" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="68" y="56" text-anchor="middle">lint</text>
+  <text class="label mono" x="68" y="76" text-anchor="middle">eslint</text>
+  <text class="label small" x="68" y="96" text-anchor="middle">every rule an error</text>
+
+  <rect class="box" x="146" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="204" y="56" text-anchor="middle">unused</text>
+  <text class="label mono" x="204" y="76" text-anchor="middle">knip</text>
+  <text class="label small" x="204" y="96" text-anchor="middle">what nothing</text>
+  <text class="label small" x="204" y="110" text-anchor="middle">imports or uses</text>
+
+  <rect class="box" x="282" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="340" y="56" text-anchor="middle">format</text>
+  <text class="label mono" x="340" y="76" text-anchor="middle">prettier --check</text>
+  <text class="label small" x="340" y="96" text-anchor="middle">the code files</text>
+
+  <rect class="box" x="418" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="476" y="56" text-anchor="middle">typecheck</text>
+  <text class="label mono" x="476" y="76" text-anchor="middle">tsc --noEmit</text>
+  <text class="label small" x="476" y="96" text-anchor="middle">strict</text>
+
+  <rect class="box" x="554" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="612" y="56" text-anchor="middle">secrets</text>
+  <text class="label mono" x="612" y="76" text-anchor="middle">scan:secrets</text>
+  <text class="label small" x="612" y="96" text-anchor="middle">gitleaks, the</text>
+  <text class="label small" x="612" y="110" text-anchor="middle">tracked files</text>
+
+  <rect class="box" x="690" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="748" y="56" text-anchor="middle">unit</text>
+  <text class="label mono" x="748" y="76" text-anchor="middle">tests/unit</text>
+  <text class="label small" x="748" y="96" text-anchor="middle">all injected</text>
+
+  <rect class="box" x="826" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="884" y="56" text-anchor="middle">integration</text>
+  <text class="label mono" x="884" y="76" text-anchor="middle">tests/integration</text>
+  <text class="label small" x="884" y="96" text-anchor="middle">real HTTP, fakes</text>
+
+  <rect class="box" x="962" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="1020" y="56" text-anchor="middle">select</text>
+  <text class="label mono" x="1020" y="76" text-anchor="middle">demos:select</text>
+  <text class="label small" x="1020" y="96" text-anchor="middle">git → selection</text>
+  <text class="label small" x="1020" y="110" text-anchor="middle">.json</text>
+
+  <rect class="box accent" x="1098" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="1156" y="56" text-anchor="middle">agents</text>
+  <text class="label mono" x="1156" y="76" text-anchor="middle">tests/agents</text>
+  <text class="label small" x="1156" y="96" text-anchor="middle">real containers</text>
+  <text class="label small" x="1156" y="110" text-anchor="middle">+ real model</text>
+
+  <rect class="box accent" x="1234" y="30" width="116" height="90" rx="6"/>
+  <text class="label title" x="1292" y="56" text-anchor="middle">eval</text>
+  <text class="label mono" x="1292" y="76" text-anchor="middle">tests/eval</text>
+  <text class="label small" x="1292" y="96" text-anchor="middle">./asha end to end</text>
+  <text class="label small" x="1292" y="110" text-anchor="middle">exact replies</text>
+
+  <rect class="box accent" x="1370" y="30" width="124" height="90" rx="6"/>
+  <text class="label title" x="1432" y="56" text-anchor="middle">routing</text>
+  <text class="label mono" x="1432" y="76" text-anchor="middle">eval:routing:gate</text>
+  <text class="label small" x="1432" y="96" text-anchor="middle">on the eval's build</text>
+
+  <path class="edge" d="M126 75 H144" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M262 75 H280" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M398 75 H416" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M534 75 H552" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M670 75 H688" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M806 75 H824" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M942 75 H960" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M1078 75 H1096" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M1214 75 H1232" marker-end="url(#qc-arr)"/>
+  <path class="edge" d="M1350 75 H1368" marker-end="url(#qc-arr)"/>
+
+  <path class="edge dim" d="M68 120 V160 H1432 V122"/>
+  <text class="label small" x="820" y="180" text-anchor="middle">any link fails → the chain stops, the gate is red: fix the root cause, re-run (PRINCIPLES §8)</text>
+  <text class="label small" x="1156" y="140" text-anchor="middle">select, agents and eval each build dist/ first</text>
+</svg>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" role="img" aria-labelledby="msc-t msc-d">
+  <title id="msc-t">How memory is scoped to one user on one channel</title>
+  <desc id="msc-d">The user's claimed ID enters with ./asha user=, and Channel.claimUser records it as the conversation's asker. The channel stamps that user on the input and every later message, including agent-to-agent internal messages, and no agent can change it. The memory agent's scopeOf takes the message's channel and user as the scope, and throws if there is no user. scopeKey hashes "channel/user" with sha256 and keeps 16 hex digits, and that names one folder under /memory in the container holding session.json, episodic.json, semantic.json and procedural.json. So alice on main and alice on lab get different folders. The cache is keyed by scope key and tier, and writes are queued per scope so recall reads its own writes.</desc>
+  <defs><marker id="msc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <text class="label small" x="10" y="16">the harness (daemon)</text>
+  <rect class="box" x="10" y="24" width="230" height="58" rx="6"/>
+  <text class="label mono" x="125" y="46" text-anchor="middle">./asha user=alice …</text>
+  <text class="label small" x="125" y="66" text-anchor="middle">claimed, not authenticated (debt D2)</text>
+
+  <rect class="box" x="265" y="24" width="230" height="58" rx="6"/>
+  <text class="label mono" x="380" y="46" text-anchor="middle">Channel.claimUser</text>
+  <text class="label small" x="380" y="66" text-anchor="middle">the conversation's asker</text>
+
+  <rect class="box accent" x="520" y="24" width="230" height="58" rx="6"/>
+  <text class="label mono" x="635" y="46" text-anchor="middle">message.user</text>
+  <text class="label small" x="635" y="66" text-anchor="middle">set on every message; agents can't</text>
+
+  <path class="edge" d="M240 53 H263" marker-end="url(#msc-a)"/>
+  <path class="edge" d="M495 53 H518" marker-end="url(#msc-a)"/>
+
+  <text class="label small" x="10" y="122">the memory agent (container)</text>
+  <rect class="box" x="520" y="130" width="230" height="58" rx="6"/>
+  <text class="label mono" x="635" y="152" text-anchor="middle">scopeOf(message)</text>
+  <text class="label small" x="635" y="172" text-anchor="middle">(channel, user); no user → throws</text>
+
+  <rect class="box" x="265" y="130" width="230" height="58" rx="6"/>
+  <text class="label mono" x="380" y="152" text-anchor="middle">scopeKey(scope)</text>
+  <text class="label mono" x="380" y="172" text-anchor="middle">sha256("&lt;ch&gt;/&lt;user&gt;")[:16]</text>
+
+  <rect class="box" x="10" y="130" width="230" height="58" rx="6"/>
+  <text class="label mono" x="125" y="152" text-anchor="middle">MemoryCache key</text>
+  <text class="label mono" x="125" y="172" text-anchor="middle">&lt;scopeKey&gt;/&lt;tier&gt;</text>
+
+  <path class="edge" d="M635 82 V128" marker-end="url(#msc-a)"/>
+  <path class="edge" d="M520 159 H497" marker-end="url(#msc-a)"/>
+  <path class="edge" d="M265 159 H242" marker-end="url(#msc-a)"/>
+
+  <rect class="box host" x="10" y="224" width="740" height="150" rx="8"/>
+  <text class="label mono" x="240" y="246">/memory  (inside the container; nothing mounted)</text>
+
+  <rect class="box accent" x="30" y="260" width="330" height="100" rx="6"/>
+  <text class="label title" x="195" y="280" text-anchor="middle">scopeKey(main, alice)/</text>
+  <text class="label mono" x="195" y="302" text-anchor="middle">session.json · episodic.json</text>
+  <text class="label mono" x="195" y="320" text-anchor="middle">semantic.json · procedural.json</text>
+  <text class="label small" x="195" y="344" text-anchor="middle">alice on main</text>
+
+  <rect class="box" x="400" y="260" width="330" height="100" rx="6"/>
+  <text class="label title" x="565" y="280" text-anchor="middle">scopeKey(lab, alice)/</text>
+  <text class="label mono" x="565" y="302" text-anchor="middle">session.json · episodic.json</text>
+  <text class="label mono" x="565" y="320" text-anchor="middle">semantic.json · procedural.json</text>
+  <text class="label small" x="565" y="344" text-anchor="middle">a different user: IDs are per channel</text>
+
+  <path class="edge" d="M380 188 V206 H195 V258" marker-end="url(#msc-a)"/>
+
+  <text class="label small" x="10" y="400">writes are queued per scope; the next recall for that scope waits for them (read-your-writes)</text>
+</svg>

@@ -1,0 +1,22 @@
+{
+  "id": "group-chat",
+  "description": "P24, managed group chat: a manager chooses who speaks next, one participant at a time, in a fixed order or by who holds the next fact.",
+  "members": [
+    {
+      "name": "manager",
+      "recipe": "manager.json"
+    },
+    {
+      "name": "alpha",
+      "recipe": "alpha.json"
+    },
+    {
+      "name": "beta",
+      "recipe": "beta.json"
+    },
+    {
+      "name": "gamma",
+      "recipe": "gamma.json"
+    }
+  ]
+}

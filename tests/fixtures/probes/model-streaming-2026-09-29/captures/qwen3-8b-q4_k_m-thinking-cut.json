@@ -1,0 +1,299 @@
+{
+  "commit": "e273f7410cd3a4672fc1cf0b3bb4133095c17003",
+  "dirty": false,
+  "llamaServer": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "model": "qwen3-8b-q4_k_m",
+  "case": "thinking-cut",
+  "request": {
+    "temperature": 0,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0,
+    "presence_penalty": 1.5,
+    "chat_template_kwargs": {
+      "enable_thinking": true
+    },
+    "model": "qwen3-8b-q4_k_m",
+    "max_tokens": 40,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an agent in a chat shared by the user and other agents.\nYour role: you say what you are asked to say, word for word. That is the only work you do: you cannot translate, write, summarise or look anything up.\n\nAnswer every message with a tool call: reply to answer the user, send_message to message other agents, or pass to take no action.\n- A message written to you is yours to act on.\n- Every answer or result for the user goes through reply, even when the request came to everyone, or reached you as a task from another agent. The user sees nothing else.\n- If the user wants you to tell them yourself what another agent answers or does, call consult: the answers come back to you, and you then reply. If the user only asks you to ask another agent something or to get it to do something, send it to that agent with send_message, and that agent answers the user itself.\n- When the user or an agent asks you to get another agent to do something, send that agent the task written as an instruction to it — for example \"Say: Good morning\", not just \"Good morning\". Do not do the task yourself.\n- To see which agents are online and what each one does, call list_agents.\n- To find which agent can take a task outside your role, call list_agents first. If no agent's description covers it, call pass; ask \"all-agents\" only when the descriptions leave it unclear.\n- If an agent asks who can take a task, say you will take it only if your role is exactly that kind of work; otherwise call pass.\n- Only take on work your role covers, and only pass work to an agent whose description covers it. If nobody's role covers it, call pass.\n- A question about you or your role is always yours to answer, with your role exactly as given above."
+      },
+      {
+        "role": "user",
+        "content": "You are hewo-1, an agent in a chat shared by the user and other agents, with the role given above.\n\nThe user wrote to you:\nPlease say: Hello World."
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "reply",
+          "description": "Answer the user. The user sees only replies, so every answer or result goes here — whoever asked, and whoever the message was written to.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "The answer, as the user will read it"
+              }
+            },
+            "required": [
+              "text"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "send_message",
+          "description": "Message other agents. The user never sees these messages; answers for the user go through reply.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "to": {
+                "type": "string",
+                "enum": [
+                  "all-agents",
+                  "hewo-1",
+                  "hewo-2"
+                ],
+                "description": "An agent handle: a task or a question for that agent, which answers the user itself. \"all-agents\": a question to all other agents, such as who can take a task."
+              },
+              "text": {
+                "type": "string",
+                "description": "The message"
+              }
+            },
+            "required": [
+              "to",
+              "text"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "consult",
+          "description": "Ask other agents and get their answers back yourself, for when you are to tell the user the answers yourself. Each agent you name gets its text as a question or a task, and all their answers come back to you together, in one message, for you to use. The user sees none of it.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "requests": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 10,
+                "description": "One request per agent, each agent named once",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "to": {
+                      "type": "string",
+                      "enum": [
+                        "hewo-1",
+                        "hewo-2"
+                      ],
+                      "description": "An agent handle"
+                    },
+                    "text": {
+                      "type": "string",
+                      "description": "Your question or task for that agent"
+                    }
+                  },
+                  "required": [
+                    "to",
+                    "text"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "requests"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "list_agents",
+          "description": "List the other agents online on this channel, with what each one does, to decide which agent to ask. Returns JSON: [{handle, recipe, description}].",
+          "parameters": {
+            "type": "object",
+            "properties": {}
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "pass",
+          "description": "Take no action on this message: it is not something your role covers, or nothing is needed from you.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string",
+                "description": "Why, in a few words"
+              }
+            },
+            "required": [
+              "reason"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "list_files",
+          "description": "List one directory of your files: /workspace (yours; a relative path is under it) or /channel (shared with every agent on the channel). Not recursive. Returns JSON {entries: [{name, type: file|dir|link|other, size}], next_after?}; pass next_after as `after` for the rest.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "The directory, e.g. \".\" or \"/workspace/notes\""
+              },
+              "after": {
+                "type": "string",
+                "description": "List only names after this one (from next_after)"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "read_file",
+          "description": "Read a text file from /workspace or /channel, at most 8 KiB at a time. Returns JSON {content, size, next_offset?}; pass next_offset as `offset` to read on.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "The file, e.g. \"notes.txt\""
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Byte to start at (default 0)"
+              },
+              "length": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Bytes to read, at most 8192 (the default)"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "write_file",
+          "description": "Create or overwrite a text file in /workspace or /channel (at most 256 KiB), creating missing directories. Returns JSON {path, size}.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "The file, e.g. \"notes.txt\""
+              },
+              "content": {
+                "type": "string",
+                "description": "The whole new content"
+              }
+            },
+            "required": [
+              "path",
+              "content"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "append_file",
+          "description": "Append text to a file in /workspace or /channel, creating it if absent (at most 256 KiB in all). Returns JSON {path, size}.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "The file, e.g. \"log.txt\""
+              },
+              "content": {
+                "type": "string",
+                "description": "The text to add at the end"
+              }
+            },
+            "required": [
+              "path",
+              "content"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "blackboard_read",
+          "description": "Read the channel's blackboard: notes every agent on the channel can post and read, oldest first. Returns JSON {entries: [{id, author, ts, text}], more}; pass the last id as `since` to read on.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "since": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Only entries after this id"
+              }
+            },
+            "required": []
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "blackboard_post",
+          "description": "Post a note to the channel's blackboard for every agent on the channel to read (at most 8 KiB). It wakes no one. Returns the stored entry.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "The note"
+              }
+            },
+            "required": [
+              "text"
+            ]
+          }
+        }
+      }
+    ],
+    "tool_choice": "required"
+  },
+  "whole": {
+    "status": 200,
+    "type": "application/json; charset=utf-8",
+    "text": "{\"choices\":[{\"finish_reason\":\"length\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Okay, the user wants me to say \\\"Hello World\\\". Since I'm hewo-1, and the user directly addressed me, I should use the reply function to answer them.\"}}],\"created\":1790693216,\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":40,\"prompt_tokens\":1924,\"total_tokens\":1964,\"prompt_tokens_details\":{\"cached_tokens\":1923}},\"id\":\"chatcmpl-i8rloczBP4NPVx5rjZG1lzbOYGeMJYXG\",\"timings\":{\"cache_n\":1923,\"prompt_n\":1,\"prompt_ms\":23.42,\"prompt_per_token_ms\":23.42,\"prompt_per_second\":42.69854824935952,\"predicted_n\":40,\"predicted_ms\":884.662,\"predicted_per_token_ms\":22.683641025641027,\"predicted_per_second\":44.08463345322846}}"
+  },
+  "stream": {
+    "status": 200,
+    "type": "text/event-stream",
+    "text": "data: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\",\"prompt_progress\":{\"total\":1924,\"cache\":1923,\"processed\":1923,\"time_ms\":0}}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\",\"prompt_progress\":{\"total\":1924,\"cache\":1923,\"processed\":1924,\"time_ms\":22}}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\"Okay\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\",\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" the\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" user\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" wants\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" me\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" to\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" say\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" \\\"\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\"Hello\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" World\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\"\\\".\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" Since\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" I\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\"'m\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" h\"}}],\"created\":1790693216,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\"ew\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\"o\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\"-\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\"1\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\",\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" and\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" the\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" user\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" directly\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" addressed\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" me\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\",\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" I\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" should\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" use\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" the\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" reply\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" function\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" to\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" answer\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\" them\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"reasoning_content\":\".\"}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":\"length\",\"index\":0,\"delta\":{}}],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[],\"created\":1790693217,\"id\":\"chatcmpl-qJ5Y9gq5QrTq1T31vX0K73WLNRLWxRe1\",\"model\":\"qwen3-8b-q4_k_m\",\"system_fingerprint\":\"b11146-7fe450e19\",\"object\":\"chat.completion.chunk\",\"usage\":{\"completion_tokens\":40,\"prompt_tokens\":1924,\"total_tokens\":1964,\"prompt_tokens_details\":{\"cached_tokens\":1923}},\"timings\":{\"cache_n\":1923,\"prompt_n\":1,\"prompt_ms\":23.426,\"prompt_per_token_ms\":23.426,\"prompt_per_second\":42.68761205498165,\"predicted_n\":40,\"predicted_ms\":884.628,\"predicted_per_token_ms\":22.68276923076923,\"predicted_per_second\":44.08632781236858}}\n\ndata: [DONE]\n\n"
+  }
+}

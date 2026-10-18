@@ -1,0 +1,18 @@
+{
+  "id": "debate",
+  "description": "P9, debate with a judge: a judge runs two rounds between an optimist and a sceptic and gives a verdict.",
+  "members": [
+    {
+      "name": "judge",
+      "recipe": "judge.json"
+    },
+    {
+      "name": "optimist",
+      "recipe": "optimist.json"
+    },
+    {
+      "name": "sceptic",
+      "recipe": "sceptic.json"
+    }
+  ]
+}

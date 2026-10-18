@@ -1,0 +1,107 @@
+{
+  "commit": "d102a45b4059a62f100af58747d186b1be299a95",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p18/ping-on-pong",
+  "control": false,
+  "change": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "send_message",
+          "arguments": {
+            "to": "pong-1",
+            "text": "ping"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "send_message",
+              "arguments": {
+                "to": "pong-1",
+                "text": "ping"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1770,
+          "completionTokens": 26
+        }
+      ],
+      "ms": 696,
+      "board": [],
+      "requestSha256": "9289f0f24d332dd6bfa8a60b3decc03fbf586cca7fc276593497d722f984bf96",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "send_message",
+          "arguments": {
+            "to": "pong-1",
+            "text": "ping"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "send_message",
+              "arguments": {
+                "to": "pong-1",
+                "text": "ping"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1770,
+          "completionTokens": 26
+        }
+      ],
+      "ms": 600,
+      "board": [],
+      "requestSha256": "9289f0f24d332dd6bfa8a60b3decc03fbf586cca7fc276593497d722f984bf96",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "send_message",
+          "arguments": {
+            "to": "pong-1",
+            "text": "ping"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "send_message",
+              "arguments": {
+                "to": "pong-1",
+                "text": "ping"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1770,
+          "completionTokens": 26
+        }
+      ],
+      "ms": 602,
+      "board": [],
+      "requestSha256": "9289f0f24d332dd6bfa8a60b3decc03fbf586cca7fc276593497d722f984bf96",
+      "ok": true
+    }
+  ]
+}

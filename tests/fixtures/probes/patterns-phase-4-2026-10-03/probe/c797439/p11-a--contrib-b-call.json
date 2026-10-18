@@ -1,0 +1,165 @@
+{
+  "commit": "c79743931a18a108d9eb0944e59055b5cfa4c14c",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p11-a/contrib-b-call",
+  "control": false,
+  "doc": null,
+  "dropStep": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "item: quince jam"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1191,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1279,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 3862,
+      "seed": [],
+      "board": [
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "276a6246b0d6be3e4b7399022ac6b16066a16cf69b386a57886fc929b4f3fba5",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "item: quince jam"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1191,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1279,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 1226,
+      "seed": [],
+      "board": [
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "276a6246b0d6be3e4b7399022ac6b16066a16cf69b386a57886fc929b4f3fba5",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "posted"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "blackboard_post",
+              "arguments": {
+                "text": "item: quince jam"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1191,
+          "completionTokens": 23
+        },
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "posted"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1279,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 1248,
+      "seed": [],
+      "board": [
+        {
+          "author": "contrib-b-1",
+          "text": "item: quince jam",
+          "posted": true
+        }
+      ],
+      "reply": "posted",
+      "requestSha256": "276a6246b0d6be3e4b7399022ac6b16066a16cf69b386a57886fc929b4f3fba5",
+      "ok": true
+    }
+  ]
+}

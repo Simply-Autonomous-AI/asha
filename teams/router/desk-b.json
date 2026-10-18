@@ -1,0 +1,24 @@
+{
+  "id": "desk-b",
+  "image": "hello-world",
+  "description": "Adds whole numbers.",
+  "prompt": "you add whole numbers.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "desk-b.md",
+      "fullText": true
+    }
+  ]
+}

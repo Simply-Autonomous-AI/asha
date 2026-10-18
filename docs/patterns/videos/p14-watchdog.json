@@ -1,0 +1,33 @@
+{
+  "pattern": "P14",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:30:57.748Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p14-watchdog",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 39000,
+  "bytes": 2298919,
+  "sha256": "63887261d76523798b625627f559b277df3417cfb853c349272da6596070c9de",
+  "frames": 777,
+  "framesPerSecond": 19.9,
+  "longestGapMs": 116,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P14 · Watchdog and reassignment",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5031,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p14-a",
+      "outcome": "pass"
+    }
+  ]
+}

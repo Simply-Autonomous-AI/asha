@@ -1,0 +1,234 @@
+{
+  "scenario": "p08-b",
+  "breaks": null,
+  "note": "The passing conversation: strict-critic-1 sends every draft back; after the third the writer stops (K = 3) and replies with the third draft.",
+  "team": "critic-loop",
+  "input": {
+    "user": "alice",
+    "to": "writer-1",
+    "text": "Write one sentence about the harbour at night; have strict-critic-1 check it."
+  },
+  "recipients": [
+    "writer-1"
+  ],
+  "messages": [
+    {
+      "from": "writer-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "writer-1",
+      "to": "strict-critic-1",
+      "kind": "internal",
+      "text": "Round 1. Draft: The harbour sleeps under the stars.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "writer-1",
+        "strict-critic-1"
+      ]
+    },
+    {
+      "from": "strict-critic-1",
+      "to": "writer-1",
+      "kind": "internal",
+      "text": "Round 1: REVISE: write it again in other words.",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "writer-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "writer-1",
+      "kind": "internal",
+      "text": "Answers to writer-1's call: 1 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "writer-1"
+      ]
+    },
+    {
+      "from": "writer-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "writer-1",
+      "to": "strict-critic-1",
+      "kind": "internal",
+      "text": "Round 2. Draft: The quiet harbour sleeps under the stars.",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "writer-1",
+        "strict-critic-1"
+      ]
+    },
+    {
+      "from": "strict-critic-1",
+      "to": "writer-1",
+      "kind": "internal",
+      "text": "Round 2: REVISE: write it again in other words.",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "writer-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "writer-1",
+      "kind": "internal",
+      "text": "Answers to writer-1's call: 1 answered.",
+      "call": {
+        "id": "k2",
+        "role": "gather"
+      },
+      "working": [
+        "writer-1"
+      ]
+    },
+    {
+      "from": "writer-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "writer-1",
+      "to": "strict-critic-1",
+      "kind": "internal",
+      "text": "Round 3. Draft: The quiet harbour sleeps under a sky full of stars.",
+      "call": {
+        "id": "k3",
+        "role": "question"
+      },
+      "working": [
+        "writer-1",
+        "strict-critic-1"
+      ]
+    },
+    {
+      "from": "strict-critic-1",
+      "to": "writer-1",
+      "kind": "internal",
+      "text": "Round 3: STOP: no more rounds.",
+      "call": {
+        "id": "k3",
+        "role": "answer"
+      },
+      "working": [
+        "writer-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "writer-1",
+      "kind": "internal",
+      "text": "Answers to writer-1's call: 1 answered.",
+      "call": {
+        "id": "k3",
+        "role": "gather"
+      },
+      "working": [
+        "writer-1"
+      ]
+    },
+    {
+      "from": "writer-1",
+      "kind": "output",
+      "text": "The quiet harbour sleeps under a sky full of stars."
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "writer-1",
+      "addressees": [
+        "strict-critic-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "writer-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k2",
+      "caller": "writer-1",
+      "addressees": [
+        "strict-critic-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k2",
+      "caller": "writer-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k3",
+      "caller": "writer-1",
+      "addressees": [
+        "strict-critic-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k3",
+      "caller": "writer-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    }
+  ],
+  "ms": 18000
+}

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -10 760 480" role="img" aria-labelledby="rl-t rl-d">
+  <title id="rl-t">How a recipe, an image and catalogue entries combine at launch</title>
+  <desc id="rl-d">AgentSupervisor's private launch reads the three definitions in order: the recipe, the image it names, then its chat model entry and, if set, its embedding model entry; then the recipe's documents, from its folder. Each catalogue entry goes to the model store's ensure and then the model server's ensureServing, giving an endpoint. The image directory and the compiled code in dist are staged and digested, and ensureImage builds the tag asha-image-name:digest only when that tag is missing, never replacing a tag. The supervisor keeps an agent record keyed by a new token holding the recipe, the entries and their endpoints, then creates the container asha-channel-recipe-6-hex from that exact tag, with ASHA_URL and ASHA_AGENT_TOKEN, copies the recipe's documents into its /workspace, and starts it. At run time the recipe's description goes into the roster, its prompt and full-text documents reach the agent in its welcome and go into its system prompt, messageTimeoutMs bounds each delivery, startupTimeoutMs bounds coming online, and the recipe's chat block is merged over the entry's on every chat call.</desc>
+  <defs><marker id="rl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+    <rect class="box accent" x="10" y="24" width="235" height="62" rx="6"/>
+  <text class="label title" x="127" y="44" text-anchor="middle">recipes/&lt;name&gt;.json</text>
+  <text class="label mono" x="127" y="62" text-anchor="middle">definitions.recipe(name)</text>
+  <text class="label small" x="127" y="78" text-anchor="middle">names image · model · embeddingModel</text>
+
+  <rect class="box" x="262" y="24" width="235" height="62" rx="6"/>
+  <text class="label title" x="379" y="44" text-anchor="middle">catalogue/&lt;id&gt;.json</text>
+  <text class="label mono" x="379" y="62" text-anchor="middle">chatModel · embeddingModel</text>
+  <text class="label small" x="379" y="78" text-anchor="middle">wrong kind: DefinitionError</text>
+
+  <rect class="box" x="515" y="24" width="235" height="62" rx="6"/>
+  <text class="label title" x="632" y="44" text-anchor="middle">images/&lt;image&gt;/</text>
+  <text class="label mono" x="632" y="62" text-anchor="middle">definitions.image(name)</text>
+  <text class="label small" x="632" y="78" text-anchor="middle">its Dockerfile must exist</text>
+
+  <text class="label small" x="262" y="112">provision</text>
+  <rect class="box" x="262" y="120" width="235" height="62" rx="6"/>
+  <text class="label mono" x="379" y="142" text-anchor="middle">store.ensure(entry)</text>
+  <text class="label small" x="379" y="160" text-anchor="middle">download, verify, cache</text>
+  <text class="label small" x="379" y="175" text-anchor="middle">models/sha256-&lt;tree digest&gt;/</text>
+
+  <rect class="box" x="262" y="200" width="235" height="62" rx="6"/>
+  <text class="label mono" x="379" y="222" text-anchor="middle">modelServer.ensureServing</text>
+  <text class="label small" x="379" y="240" text-anchor="middle">one llama-server per entry</text>
+  <text class="label mono" x="379" y="255" text-anchor="middle">→ endpoint {baseUrl, model}</text>
+
+  <rect class="box" x="515" y="120" width="235" height="62" rx="6"/>
+  <text class="label mono" x="632" y="142" text-anchor="middle">stageAgentImage</text>
+  <text class="label small" x="632" y="160" text-anchor="middle">Dockerfile + dist/ → staging/</text>
+  <text class="label mono" x="632" y="175" text-anchor="middle">directoryDigest</text>
+
+  <rect class="box" x="515" y="200" width="235" height="62" rx="6"/>
+  <text class="label mono" x="632" y="222" text-anchor="middle">runtime.ensureImage</text>
+  <text class="label mono" x="632" y="240" text-anchor="middle">asha-image-&lt;name&gt;:&lt;digest&gt;</text>
+  <text class="label small" x="632" y="255" text-anchor="middle">built only when that tag is missing</text>
+
+  <path class="edge" d="M245 55 H260" marker-end="url(#rl-a)"/>
+  <path class="edge" d="M200 24 V10 H632 V22" marker-end="url(#rl-a)"/>
+  <text class="label mono" x="420" y="5">image</text>
+  <path class="edge" d="M379 86 V118" marker-end="url(#rl-a)"/>
+  <path class="edge" d="M379 182 V198" marker-end="url(#rl-a)"/>
+  <path class="edge" d="M632 86 V118" marker-end="url(#rl-a)"/>
+  <path class="edge" d="M632 182 V198" marker-end="url(#rl-a)"/>
+
+  <text class="label small" x="10" y="296">start</text>
+  <rect class="box accent" x="10" y="304" width="487" height="62" rx="6"/>
+  <text class="label title" x="253" y="324" text-anchor="middle">AgentRecord, keyed by a new token</text>
+  <text class="label mono" x="253" y="342" text-anchor="middle">recipe · entry + endpoint · embedding · container</text>
+  <text class="label small" x="253" y="358" text-anchor="middle">the gateway calls the endpoint; the container never sees it</text>
+
+  <rect class="box" x="515" y="304" width="235" height="62" rx="6"/>
+  <text class="label mono" x="632" y="324" text-anchor="middle">runtime.start: create, cp, start</text>
+  <text class="label mono" x="632" y="342" text-anchor="middle">asha-&lt;ch&gt;-&lt;recipe&gt;-&lt;6 hex&gt;</text>
+  <text class="label mono" x="632" y="358" text-anchor="middle">documents → /workspace</text>
+
+  <path class="edge" d="M127 86 V302" marker-end="url(#rl-a)"/>
+  <path class="edge" d="M379 262 V302" marker-end="url(#rl-a)"/>
+  <path class="edge" d="M632 262 V302" marker-end="url(#rl-a)"/>
+  <path class="edge" d="M497 335 H513" marker-end="url(#rl-a)"/>
+
+  <text class="label small" x="72" y="398">the recipe at run time</text>
+  <rect class="box host" x="10" y="406" width="740" height="56" rx="6"/>
+  <text class="label mono" x="20" y="428">description → roster (list_agents) · prompt, full-text documents → welcome → system prompt</text>
+  <text class="label mono" x="20" y="448">startupTimeoutMs → coming online · messageTimeoutMs → each delivery · chat → { ...entry.chat, ...recipe.chat }</text>
+  <path class="edge dim" d="M60 366 V404" marker-end="url(#rl-a)"/>
+</svg>

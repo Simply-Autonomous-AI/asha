@@ -1,0 +1,7 @@
+{
+  "tools": [],
+  "answerTools": ["save_facts", "save_procedures"],
+  "keepsMemory": true,
+  "eraseUser": true,
+  "stateSchema": 1
+}

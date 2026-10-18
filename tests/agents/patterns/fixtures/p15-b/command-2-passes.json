@@ -1,0 +1,66 @@
+{
+  "scenario": "p15-b",
+  "breaks": "command 2 exits 0",
+  "note": "Command 2 passes: the harness answers, exit 1.",
+  "team": "approval",
+  "input": {
+    "user": "alice",
+    "to": "clerk-1",
+    "text": "Post the announcement: Office closed Friday."
+  },
+  "recipients": [
+    "clerk-1"
+  ],
+  "messages": [
+    {
+      "model": {
+        "handle": "clerk-1",
+        "name": "ask_user",
+        "args": {
+          "text": "Approve posting \"Office closed Friday.\"? Answer yes or no."
+        }
+      }
+    },
+    {
+      "from": "clerk-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "clerk-1",
+      "kind": "output",
+      "text": "Approve posting \"Office closed Friday.\"? Answer yes or no.",
+      "asks": true
+    }
+  ],
+  "next": [
+    {
+      "input": {
+        "user": "alice",
+        "to": "clerk-1",
+        "text": "no"
+      },
+      "recipients": [
+        "clerk-1"
+      ],
+      "messages": [
+        {
+          "from": "clerk-1",
+          "kind": "status",
+          "text": "pass: unsure",
+          "working": [
+            "clerk-1"
+          ]
+        },
+        {
+          "from": "asha",
+          "kind": "output",
+          "text": "No agent could answer this:\n- clerk-1 passed: unsure",
+          "working": []
+        }
+      ],
+      "ms": 2500
+    }
+  ],
+  "ms": 3500
+}

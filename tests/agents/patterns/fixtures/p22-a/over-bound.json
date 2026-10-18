@@ -1,0 +1,27 @@
+{
+  "scenario": "p22-a",
+  "breaks": "the request completes within the pattern's bound",
+  "note": "The request took one millisecond more than its page's bound (patterns-phase-1 R4, A4).",
+  "team": "escalation",
+  "input": {
+    "user": "alice",
+    "to": "helper-1",
+    "text": "Convert 3 metres to centimetres, then book a meeting room for 3 pm."
+  },
+  "recipients": [
+    "helper-1"
+  ],
+  "messages": [
+    {
+      "from": "helper-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "helper-1",
+      "kind": "output",
+      "text": "ESCALATE: done: 3 metres is 300 centimetres; left: book a meeting room for 3 pm"
+    }
+  ],
+  "ms": "bound+1"
+}

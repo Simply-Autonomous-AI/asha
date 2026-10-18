@@ -1,0 +1,27 @@
+{
+  "scenario": "p02-b",
+  "breaks": "exactly one output, from desk-b-1, matching /\\b42\\b/",
+  "note": "router-1 answers the request itself.",
+  "team": "router",
+  "input": {
+    "user": "alice",
+    "to": "router-1",
+    "text": "What is 17 plus 25?"
+  },
+  "recipients": [
+    "router-1"
+  ],
+  "messages": [
+    {
+      "from": "router-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "router-1",
+      "kind": "output",
+      "text": "42"
+    }
+  ],
+  "ms": 5000
+}

@@ -1,0 +1,24 @@
+{
+  "id": "weather-desk",
+  "image": "hello-world",
+  "description": "Reports weather news.",
+  "prompt": "you report weather news.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "weather-desk.md",
+      "fullText": true
+    }
+  ]
+}

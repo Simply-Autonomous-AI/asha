@@ -1,0 +1,27 @@
+{
+  "scenario": "p02-a",
+  "breaks": "exactly one output, from desk-a-1, matching /merci/i",
+  "note": "router-1 answers the request itself.",
+  "team": "router",
+  "input": {
+    "user": "alice",
+    "to": "router-1",
+    "text": "Please translate 'thank you' into French."
+  },
+  "recipients": [
+    "router-1"
+  ],
+  "messages": [
+    {
+      "from": "router-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "router-1",
+      "kind": "output",
+      "text": "Merci"
+    }
+  ],
+  "ms": 5000
+}

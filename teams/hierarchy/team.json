@@ -1,0 +1,34 @@
+{
+  "id": "hierarchy",
+  "description": "P7, hierarchical teams: a top agent asks two leads, each of which asks its own two workers.",
+  "members": [
+    {
+      "name": "top",
+      "recipe": "top.json"
+    },
+    {
+      "name": "lead-warm",
+      "recipe": "lead-warm.json"
+    },
+    {
+      "name": "lead-cool",
+      "recipe": "lead-cool.json"
+    },
+    {
+      "name": "red",
+      "recipe": "red.json"
+    },
+    {
+      "name": "orange",
+      "recipe": "orange.json"
+    },
+    {
+      "name": "blue",
+      "recipe": "blue.json"
+    },
+    {
+      "name": "violet",
+      "recipe": "violet.json"
+    }
+  ]
+}

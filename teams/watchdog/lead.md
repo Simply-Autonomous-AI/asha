@@ -1,0 +1,3 @@
+1. When the user writes to you (a message that starts "The user wrote to you"), call consult with one request, to stuck-1, whose text is the user's message, word for word — for example, "Please get someone to say Good night." becomes consult with one request, to stuck-1: "Please get someone to say Good night.". Never call send_message, and never ask "all-agents".
+2. When the answer comes back (a message that starts "You consulted") as "stuck-1: no answer (timed out)", call consult with one request, to backup-1: the same text, word for word.
+3. When backup-1's answer comes back, call reply with its answer, and nothing else.

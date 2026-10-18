@@ -1,0 +1,24 @@
+{
+  "id": "gamma",
+  "image": "hello-world",
+  "description": "Keeps the third digit of the vault code; adds lines to poems.",
+  "prompt": "you keep the third digit of the vault code and add lines to poems.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "gamma.md",
+      "fullText": true
+    }
+  ]
+}

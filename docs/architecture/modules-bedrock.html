@@ -1,0 +1,89 @@
+<!doctype html>
+<!-- Generated from docs/architecture/modules-bedrock.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The bedrock module</title>
+<meta name="description" content="The reference ModelProvider — Mistral's Ministral 3 8B on Amazon Bedrock through its Chat Completions API — its manifest, the provider path, cost, approval, the credential and vendor-side limit, lifecycle risks, terms, and its threat model.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="architecture">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha Architecture</a> / The bedrock module</nav>
+<h1>The <code>bedrock</code> module</h1>
+<p class="lede"><code>bedrock</code> serves a hosted chat model to a recipe that names it: <code>model: &quot;bedrock/ministral&quot;</code> is Mistral AI's Ministral 3 8B on Amazon Bedrock (AWS's hosted-model service), in the company's AWS account, region <code>us-east-1</code>, the same model family as the local second chat model, so a local and a hosted run compare like for like. It is the reference <a href="modules.html#kinds">ModelProvider</a>.</p>
+<div class="facts"><span>verified 2026-10-02</span><span><span class="badge built">built</span> 2026-10-02; never run against Bedrock (no credential exists yet)</span><span>code: <a href="../../modules/bedrock/index.mjs"><code>modules/bedrock/index.mjs</code></a>, <a href="../../modules/bedrock/module.json"><code>module.json</code></a></span><span>tests: <a href="../../tests/unit/reference-module-calls.test.ts"><code>reference-module-calls.test.ts</code></a> against <a href="../../tests/fixtures/modules/">streams built from AWS's docs</a> (D49)</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>The agent's code does not change: its chat and embed calls go through the same routes, and the daemon sends them to this module's container instead of llama.cpp.</li>
+<li>It streams through Bedrock's OpenAI-compatible Chat Completions API with a bearer key, sends a required tool call as <code>tool_choice: &quot;required&quot;</code>, and returns the vendor's token usage.</li>
+<li>Pinned to <code>mistral.ministral-3-8b-instruct</code>; metered at $0.15 per million input and output tokens; approved up to $25 a month.</li>
+<li>A recipe naming it is cloud-granted: every prompt leaves the machine, so no image that keeps memory may use it.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#path">The provider path</a></li>
+<li><a href="#manifest">Its manifest</a></li>
+<li><a href="#cost">Cost and approval</a></li>
+<li><a href="#risks">Lifecycle risks</a></li>
+<li><a href="#threats">Threat model</a></li>
+</ol>
+</nav>
+<section id="path">
+<h2>The provider path</h2>
+<p>The gateway's provider path (<a href="../../src/daemon/modules/provider.ts"><code>providerChat</code></a>) reserves the call's worst case on the meter — the UTF-8 bytes of the messages and tools as input tokens, and <code>maxTokens</code> as output — then sends the module <code>{model, messages, maxTokens, tools?, requireToolCall?, settings}</code>: never llama.cpp's tool-call prefill, <code>return_progress</code> or prompt-store request, and no <code>model</code> or <code>model_server</code> launch phase. The module (<a href="../../modules/bedrock/index.mjs"><code>chat</code></a>) posts to <code>https://bedrock-runtime.us-east-1.amazonaws.com/openai/v1/chat/completions</code> with <code>Authorization: Bearer &lt;key&gt;</code>, <code>stream: true</code>, <code>stream_options: {include_usage: true}</code>, the recipe's <code>temperature</code> and <code>top_p</code> (the only settings it translates), and <code>tool_choice: &quot;required&quot;</code> when the agent's turn requires a tool call. Each streamed piece is a <code>model_delta</code> event; the last chunk's usage settles the meter. Facts read 2026-10-01 from AWS's <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/inference-chat-completions.html">Chat Completions guide</a> and <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html">API keys page</a>.</p>
+<p><code>lifecycle</code> reads <code>GetFoundationModel</code>'s <code>modelDetails.modelLifecycle.status</code> from <code>https://bedrock.us-east-1.amazonaws.com/foundation-models/&lt;id&gt;</code> (<a href="https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html">API reference</a>, read 2026-10-02); the opt-in live check refuses before any chat call unless it is <code>ACTIVE</code>. AWS's own data-retention examples call that control plane with the same bearer key (<code>PUT /data-retention</code>, <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html">data retention</a>, read 2026-10-02); <span class="todo">TODO: that </span><code>GetFoundationModel</code> accepts it is not yet shown — the first live run records it.</p>
+<p><strong>Not yet shown on the model</strong> (R19's probe, recorded by the first live run): that Ministral 3 8B honours <code>tool_choice: &quot;required&quot;</code> and reports usage in its stream. Until then the plan's R19 premise stands unproven on the vendor.</p>
+</section>
+<section id="manifest">
+<h2>Its manifest</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Field</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td><code>id</code>, <code>kind</code>, <code>version</code></td><td><code>bedrock</code>, <code>ModelProvider</code>, <code>1.0.0</code></td></tr>
+<tr><td><code>hosts</code></td><td><code>bedrock-runtime.us-east-1.amazonaws.com</code>, <code>bedrock.us-east-1.amazonaws.com</code> (the lifecycle read)</td></tr>
+<tr><td><code>secrets</code></td><td><code>AWS_BEARER_TOKEN_BEDROCK</code></td></tr>
+<tr><td><code>models</code></td><td><code>ministral</code>: <code>mistral.ministral-3-8b-instruct</code>, launched 2025-12-02, $0.15 / $0.15 per million tokens (<a href="https://aws.amazon.com/bedrock/pricing/">pricing</a>, read 2026-09-27), its card, terms and retention policy each by URL and date</td></tr>
+<tr><td><code>cost</code></td><td><code>metered</code>, approved up to $25 a month</td></tr>
+<tr><td><code>licence</code></td><td><code>Apache-2.0</code>; no dependency</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="cost">
+<h2>Cost and approval</h2>
+<p><strong>Approved:</strong> by the owner, 2026-09-27, cap $25 a month.</p>
+<p>The estimate the owner approved (record <code>live-vendor-cost-estimate</code>): 2,000 calls a month × (3,000 input + 500 output tokens) = 6 M input × $0.15 + 1 M output × $0.15 per million = $1.05 a month. The docs guard fails once the price was read more than 90 days before the day it runs: re-read the pricing page and update <code>prices.read</code>.</p>
+<p><strong>The credential</strong> (the planning agent's decision of 2026-09-27): a long-term Amazon Bedrock API key — a bearer token — expiring in at most 90 days, on an IAM user of its own whose policy allows only invoking the pinned model and reading its lifecycle, never the web site's deploy credential. AWS writes that &quot;Long-term keys are for exploration only&quot;; this module is a reference within a $25 cap, which is exploration, and the owner rotates the key before it expires. Creating it changes the AWS account, so it is done only with the owner's consent at that time, in one step that also creates the AWS Budget below and records the owner's acceptance of the model's third-party terms (<a href="https://aws.amazon.com/legal/bedrock/third-party-models/">aws.amazon.com/legal/bedrock/third-party-models</a>). <span class="todo">TODO: not done yet; record the key's IAM user, the budget, the terms' acceptance and each date here when it is.</span></p>
+<p><strong>The vendor-side limit:</strong> an AWS Budget over the account's Bedrock spend whose action attaches a deny-all policy to the module's IAM user at $25 (<em>corrected 2026-10-11: this said the budget was scoped to the module's IAM user; AWS's post on cost by IAM user (April 2026) says such tags &quot;only appear for activation after the IAM principal with the tags has made at least one API call&quot; and documents Cost Explorer, not Budgets, as the filter, as read 2026-10-02</em>). AWS Budgets information &quot;is updated up to three times a day&quot;, typically 8–12 hours apart (<a href="https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html">Managing your costs with AWS Budgets</a>, read 2026-10-02), so the action can act hours after the cap is passed: asha's meter is the prompt bound, the budget the backstop. The budget's email alert goes to <code>admin@SimplyAutonomous.AI</code> (the owner, 2026-10-12, record <code>live-run-values</code>); the budget is created with the owner's consent at the first live run, not yet.</p>
+<p><strong>Data retention:</strong> Bedrock's per-Region retention setting applies; under <code>default</code>, AWS may retain data for abuse detection and the model provider does not receive it; under <code>none</code>, Chat Completions requests are never retained (<a href="https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html">data retention</a>, read 2026-10-02; the manifest's <code>retention.read</code> said 2026-10-01 until the same day, when the page was read again and the manifest's date brought to it).</p>
+</section>
+<section id="risks">
+<h2>Lifecycle risks</h2>
+<p>Read 2026-09-27 from the model's card and Bedrock's lifecycle pages (<code>docs/plans/extension-modules.md</code> question 7): the model is <code>Active</code>, with an end-of-life date no sooner than 2026-12-02 — about 9 weeks from then; once Legacy, &quot;existing customers may lose access to Legacy models after 15 days of inactivity&quot;; and for models with end-of-life dates after February 1, 2026, after at least 3 months in Legacy the model enters public extended access, where &quot;you should expect higher pricing, which will be set by the model provider&quot;. The live check's lifecycle read refuses a model that is not <code>ACTIVE</code>.</p>
+</section>
+<section id="threats">
+<h2>Threat model</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Concern</th><th>What holds it</th></tr></thead>
+<tbody>
+<tr><td>The key leaks</td><td>It is only in its module's container environment; lines the module prints are redacted; fixtures carry placeholders. Its IAM policy allows only this model, so a leak costs at most spend on one model, bounded by the AWS Budget</td></tr>
+<tr><td>The module reaches elsewhere</td><td>Only its two hosts on 443, by the egress proxy</td></tr>
+<tr><td>Prompt injection through output</td><td>The model's reply is the agent's own turn, as a local model's is; tool results it is fed stay tool results</td></tr>
+<tr><td>Memory leaving the machine</td><td>A recipe naming it is cloud-granted: refused for an image that keeps memory, and never beside a memory agent on a channel</td></tr>
+<tr><td>An agent spending</td><td>Every chat is reserved against the meter's caps before it is sent</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<footer class="page"><span>Source: <code>docs/architecture/modules-bedrock.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

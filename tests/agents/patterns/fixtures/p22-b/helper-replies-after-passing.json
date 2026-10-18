@@ -1,0 +1,56 @@
+{
+  "scenario": "p22-b",
+  "breaks": "command 2 prints no output from helper-1, only the harness's no-reply output naming helper-1 as passed",
+  "note": "helper-1 replies after its pass: command 2 prints its output, no harness reply.",
+  "team": "escalation",
+  "input": {
+    "user": "alice",
+    "to": "helper-1",
+    "text": "Convert 3 metres to centimetres, then book a meeting room for 3 pm."
+  },
+  "recipients": [
+    "helper-1"
+  ],
+  "messages": [
+    {
+      "from": "helper-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "helper-1",
+      "kind": "output",
+      "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm",
+      "asks": true
+    }
+  ],
+  "next": [
+    {
+      "input": {
+        "user": "alice",
+        "to": "helper-1",
+        "text": "Also convert 5 metres to centimetres."
+      },
+      "recipients": [
+        "helper-1"
+      ],
+      "messages": [
+        {
+          "from": "helper-1",
+          "kind": "status",
+          "text": "pass: The user has answered the escalation",
+          "working": [
+            "helper-1"
+          ]
+        },
+        {
+          "from": "helper-1",
+          "kind": "output",
+          "text": "Handed to you."
+        }
+      ],
+      "ms": 1500
+    }
+  ],
+  "ms": 4000
+}

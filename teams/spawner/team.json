@@ -1,0 +1,10 @@
+{
+  "id": "spawner",
+  "description": "P19, dynamic spawning: a lead that brings a helper onto the channel when it needs one, and consults it.",
+  "members": [
+    {
+      "name": "lead",
+      "recipe": "lead.json"
+    }
+  ]
+}

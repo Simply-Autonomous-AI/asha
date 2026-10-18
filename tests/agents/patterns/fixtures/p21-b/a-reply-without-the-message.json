@@ -1,0 +1,51 @@
+{
+  "scenario": "p21-b",
+  "breaks": "two outputs, one from each of sports-desk-1 and front-page-1, each \"<its handle> noted:\" and the message",
+  "note": "front-page-1's reply does not hold the message.",
+  "team": "topics",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "The home team won.",
+    "topic": "sports"
+  },
+  "recipients": [
+    "sports-desk-1",
+    "front-page-1"
+  ],
+  "messages": [
+    {
+      "from": "sports-desk-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "sports-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "status",
+      "text": "ok",
+      "working": [
+        "sports-desk-1",
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "sports-desk-1",
+      "kind": "output",
+      "text": "sports-desk-1 noted: The home team won.",
+      "working": [
+        "front-page-1"
+      ]
+    },
+    {
+      "from": "front-page-1",
+      "kind": "output",
+      "text": "front-page-1 noted: something else",
+      "working": []
+    }
+  ],
+  "ms": 6000
+}

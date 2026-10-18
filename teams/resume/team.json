@@ -1,0 +1,18 @@
+{
+  "id": "resume",
+  "description": "P20, checkpoint and resume: a supervisor waiting on its call to a worker when the daemon stops is resumed after the restart and answers the user with no message sent again (p20-a); a long-running tasker keeps the tasks it has done in its saved workspace and, killed mid-task, finishes the rest after its relaunch (p20-b).",
+  "members": [
+    {
+      "name": "supervisor",
+      "recipe": "supervisor.json"
+    },
+    {
+      "name": "worker",
+      "recipe": "worker.json"
+    },
+    {
+      "name": "tasker",
+      "recipe": "tasker.json"
+    }
+  ]
+}

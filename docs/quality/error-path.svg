@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 230" role="img" aria-labelledby="qc-err-t qc-err-d">
+  <title id="qc-err-t">How a daemon failure becomes findable</title>
+  <desc id="qc-err-d">A failure anywhere in the daemon is passed to the one logging facade, JsonLinesLogger in src/daemon/log.ts, with the error. The facade serializes the error with its name, message, stack and cause chain, sets ts, level and event last so no field can hide them, and appends one JSON line synchronously to ASHA_HOME/logs/daemon.jsonl before echoing it to stderr. The 3am query, jq selecting level error on that file, finds every error record.</desc>
+  <defs><marker id="qc-err-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="10" y="50" width="150" height="90" rx="6"/>
+  <text class="label title" x="85" y="78" text-anchor="middle">A failure</text>
+  <text class="label small" x="85" y="98" text-anchor="middle">anywhere in</text>
+  <text class="label small" x="85" y="113" text-anchor="middle">the daemon</text>
+
+  <rect class="box accent" x="200" y="50" width="220" height="90" rx="6"/>
+  <text class="label mono" x="310" y="74" text-anchor="middle">JsonLinesLogger.error()</text>
+  <text class="label small" x="310" y="94" text-anchor="middle">name, message, stack, cause chain</text>
+  <text class="label small" x="310" y="110" text-anchor="middle">ts, level, event set last</text>
+  <text class="label small" x="310" y="126" text-anchor="middle">written synchronously</text>
+
+  <rect class="box" x="460" y="30" width="290" height="50" rx="6"/>
+  <text class="label mono" x="605" y="52" text-anchor="middle">&lt;ASHA_HOME&gt;/logs/daemon.jsonl</text>
+  <text class="label small" x="605" y="68" text-anchor="middle">one JSON line per record</text>
+
+  <rect class="box" x="460" y="110" width="200" height="40" rx="6"/>
+  <text class="label mono" x="560" y="135" text-anchor="middle">stderr (echo)</text>
+
+  <path class="edge" d="M160 95 H198" marker-end="url(#qc-err-arr)"/>
+  <path class="edge" d="M420 80 L458 58" marker-end="url(#qc-err-arr)"/>
+  <path class="edge" d="M420 110 L458 128" marker-end="url(#qc-err-arr)"/>
+
+  <rect class="box accent" x="460" y="175" width="290" height="44" rx="6"/>
+  <text class="label mono" x="605" y="202" text-anchor="middle">jq -c 'select(.level=="error")'</text>
+  <path class="edge dim" d="M710 80 V173" marker-end="url(#qc-err-arr)"/>
+  <text class="label small" x="450" y="201" text-anchor="end">the 3am query reads the file</text>
+</svg>

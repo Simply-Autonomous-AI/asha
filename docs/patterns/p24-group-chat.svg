@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 498" role="img" aria-labelledby="p24-t p24-d">
+  <title id="p24-t">P24 · Managed group chat</title>
+  <desc id="p24-d">For the vault code, manager-1 reads the roles, asks beta-1, then alpha-1, then gamma-1, one call each, each question carrying the digits so far, and replies 528.</desc>
+  <defs><marker id="p24-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="7.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="63" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M63 44 V492"/>
+  <rect class="box accent" x="134.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="190" y="32" text-anchor="middle">manager-1</text>
+  <path class="edge dim" d="M190 44 V492"/>
+  <rect class="box" x="261.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="317" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M317 44 V492"/>
+  <rect class="box accent" x="387.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="443" y="32" text-anchor="middle">beta-1</text>
+  <path class="edge dim" d="M443 44 V492"/>
+  <rect class="box accent" x="514.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="570" y="32" text-anchor="middle">alpha-1</text>
+  <path class="edge dim" d="M570 44 V492"/>
+  <rect class="box accent" x="641.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="697" y="32" text-anchor="middle">gamma-1</text>
+  <path class="edge dim" d="M697 44 V492"/>
+  <path class="edge" d="M63 80 H188" marker-end="url(#p24-a)"/>
+  <text class="label small" x="127" y="74" text-anchor="middle">Find the vault code.</text>
+  <text class="label small" x="198" y="114">list_agents, then consult</text>
+  <path class="edge" d="M190 148 H441" marker-end="url(#p24-a)"/>
+  <text class="label small" x="317" y="142" text-anchor="middle">Digits so far: none.</text>
+  <path class="edge" d="M443 182 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="317" y="176" text-anchor="middle">5. Next: alpha-1.</text>
+  <path class="edge" d="M317 216 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="254" y="210" text-anchor="middle">gather</text>
+  <path class="edge" d="M190 250 H568" marker-end="url(#p24-a)"/>
+  <text class="label small" x="380" y="244" text-anchor="middle">Digits so far: 5.</text>
+  <path class="edge" d="M570 284 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="380" y="278" text-anchor="middle">2. Next: gamma-1.</text>
+  <path class="edge" d="M317 318 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="254" y="312" text-anchor="middle">gather</text>
+  <path class="edge" d="M190 352 H695" marker-end="url(#p24-a)"/>
+  <text class="label small" x="444" y="346" text-anchor="middle">Digits so far: 5, 2.</text>
+  <path class="edge" d="M697 386 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="444" y="380" text-anchor="middle">8. Next: none.</text>
+  <path class="edge" d="M317 420 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="254" y="414" text-anchor="middle">gather</text>
+  <path class="edge" d="M190 454 H65" marker-end="url(#p24-a)"/>
+  <text class="label small" x="127" y="448" text-anchor="middle">output: 528</text>
+</svg>

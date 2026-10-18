@@ -1,0 +1,329 @@
+<!doctype html>
+<!-- Generated from docs/architecture/memory.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Memory</title>
+<meta name="description" content="The memory recipe's four memory tiers — session, episodic, semantic, procedural — scoped per (channel, user), read before each model call and written after the agent answers, where they live, and how they are built and tested.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="architecture">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha Architecture</a> / Agent Memory</nav>
+<h1>Agent memory</h1>
+<p class="lede">The <code>memory</code> recipe's agent (<code>memo</code>) remembers each user in four tiers — session, episodic, semantic and procedural. It recalls before each model call and extracts new memory after it has answered.</p>
+<div class="facts"><span>verified 2026-09-27</span><span><span class="badge built">built</span> 2026-09-26</span><span>tests: gate at <code>05555b1</code></span><span>code: <a href="../../images/memory/src/memory/index.ts"><code>images/memory/src/memory/</code></a></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Memory is per (channel, user) and lasts as long as the container — unless its recipe names <code>persist: [&quot;memory&quot;]</code>, when it is saved at every acknowledged turn and restored at the next launch of the same identity (<a href="#persisted">below</a>); identity is claimed, not authenticated (debt D2).</li>
+<li>Session is the last 8 turns with gaps of at most 30 minutes; episodic, semantic and procedural are searched by meaning, cosine ≥ 0.3.</li>
+<li>Recall runs before the model call; extraction runs after the reply without delaying it, and the next message waits for it.</li>
+<li>Files live at <code>/memory</code> inside the container, one folder per user and one JSON file per tier; the harness never reads or writes them.</li>
+<li>Every memory scenario passes at <code>05555b1</code>: 7 agent, 12 tiers, 3 crowd.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#status">Status</a></li>
+<li><a href="#cycle">One message: read before, write after</a></li>
+<li><a href="#identity">User identity</a></li>
+<li><a href="#where">Where memory lives</a></li>
+<li><a href="#tiers">The tiers as built</a></li>
+<li><a href="#embeddings">Embeddings</a></li>
+<li><a href="#code">Code map</a></li>
+<li><a href="#tests">Tests</a></li>
+</ol>
+</nav>
+<section id="status">
+<h2>Status</h2>
+<div class="stats"><div class="stat"><b>4</b><span>tiers, one folder per user</span></div><div class="stat"><b>7/7</b><span>memory-agent at 05555b1</span></div><div class="stat"><b>12/12</b><span>memory-tiers at 05555b1</span></div><div class="stat"><b>3/3</b><span>memory crowd at 05555b1</span></div></div><p>Built 2026-09-26 on the real chat and embedding models, from the owner's brief and the design it set out (<a href="history.html#brief">both in history</a>). Results from the gate at <code>05555b1</code>, committed in <code>c34f38e</code>; transcripts in the <a href="../testing/agent-tests.html">agent test report</a>.</p>
+</section>
+<section id="cycle">
+<h2>One message: read before, write after</h2>
+<p><code>memoryAgent</code> in <a href="../../images/memory/src/agent.ts"><code>images/memory/src/agent.ts</code></a> runs a pipeline of nodes, the &quot;agent graph&quot;, for each delivery.</p>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" role="img" aria-labelledby="mc-t mc-d">
+  <title id="mc-t">The memory agent's cycle and its four tiers</title>
+  <desc id="mc-d">For each delivery the agent identifies the scope from the harness-set user, recalls from the four tiers after waiting for that scope's pending writes, assembles a Memory section and the session window into the model request, decides and acts through the channel layer, and then, without being awaited, remembers the turn: the session tier slides, every turn is embedded into the episodic tier, and the chat model extracts facts into the semantic tier and techniques into the procedural tier. Each tier is one JSON file per scope in the container's /memory directory.</desc>
+  <defs><marker id="mc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="10" y="10" width="230" height="50" rx="6"/>
+  <text class="label title" x="125" y="31" text-anchor="middle">1 identify</text>
+  <text class="label small" x="125" y="49" text-anchor="middle">scope = (channel, message.user)</text>
+
+  <rect class="box accent" x="10" y="84" width="230" height="58" rx="6"/>
+  <text class="label title" x="125" y="105" text-anchor="middle">2 recall (read)</text>
+  <text class="label small" x="125" y="123" text-anchor="middle">waits for this scope's pending writes;</text>
+  <text class="label small" x="125" y="136" text-anchor="middle">embeds the message as a query</text>
+
+  <rect class="box" x="10" y="166" width="230" height="58" rx="6"/>
+  <text class="label title" x="125" y="187" text-anchor="middle">3 assemble</text>
+  <text class="label small" x="125" y="205" text-anchor="middle"># Memory in the system prompt;</text>
+  <text class="label small" x="125" y="218" text-anchor="middle">session window as chat turns</text>
+
+  <rect class="box" x="10" y="248" width="230" height="58" rx="6"/>
+  <text class="label title" x="125" y="269" text-anchor="middle">4 decide / act</text>
+  <text class="label small" x="125" y="287" text-anchor="middle">reply · send_message · pass</text>
+  <text class="label small" x="125" y="300" text-anchor="middle">(model call via the gateway)</text>
+
+  <rect class="box accent" x="10" y="330" width="230" height="58" rx="6"/>
+  <text class="label title" x="125" y="351" text-anchor="middle">5 remember (async write)</text>
+  <text class="label small" x="125" y="369" text-anchor="middle">not awaited; queued per scope;</text>
+  <text class="label small" x="125" y="382" text-anchor="middle">only replies and hand-offs</text>
+
+  <rect class="box host" x="270" y="74" width="240" height="324" rx="8"/>
+  <text class="label small" x="390" y="92" text-anchor="middle">tiers, per scope</text>
+
+  <rect class="box" x="282" y="100" width="216" height="66" rx="5"/>
+  <text class="label title" x="390" y="119" text-anchor="middle">session</text>
+  <text class="label small" x="390" y="137" text-anchor="middle">last 8 turns, gaps ≤ 30 min</text>
+  <text class="label small" x="390" y="154" text-anchor="middle">read: replayed as chat turns</text>
+
+  <rect class="box" x="282" y="174" width="216" height="66" rx="5"/>
+  <text class="label title" x="390" y="193" text-anchor="middle">episodic</text>
+  <text class="label small" x="390" y="211" text-anchor="middle">write: every turn, embedded</text>
+  <text class="label small" x="390" y="228" text-anchor="middle">read: top 4 with cosine ≥ 0.3</text>
+
+  <rect class="box" x="282" y="248" width="216" height="66" rx="5"/>
+  <text class="label title" x="390" y="267" text-anchor="middle">semantic</text>
+  <text class="label small" x="390" y="285" text-anchor="middle">write: ≤ 3 facts, de-duplicated</text>
+  <text class="label small" x="390" y="302" text-anchor="middle">read: top 6 with cosine ≥ 0.3</text>
+
+  <rect class="box" x="282" y="322" width="216" height="66" rx="5"/>
+  <text class="label title" x="390" y="341" text-anchor="middle">procedural</text>
+  <text class="label small" x="390" y="359" text-anchor="middle">write: ≤ 2 techniques, de-duplicated</text>
+  <text class="label small" x="390" y="376" text-anchor="middle">read: top 4 with cosine ≥ 0.3</text>
+
+  <rect class="box" x="10" y="440" width="500" height="66" rx="6"/>
+  <text class="label title" x="260" y="462" text-anchor="middle">/memory in the agent's container (nothing mounted)</text>
+  <text class="label mono" x="260" y="482" text-anchor="middle">/memory/&lt;sha256("channel/user")[:16]&gt;/&lt;tier&gt;.json</text>
+  <text class="label small" x="260" y="498" text-anchor="middle">LRU cache in front; saves queued per file; tmp file + rename</text>
+
+  <path class="edge" d="M125 60 V82" marker-end="url(#mc-a)"/>
+  <path class="edge" d="M125 142 V164" marker-end="url(#mc-a)"/>
+  <path class="edge" d="M125 224 V246" marker-end="url(#mc-a)"/>
+  <path class="edge" d="M125 306 V328" marker-end="url(#mc-a)"/>
+  <path class="edge dim" d="M268 113 H242" marker-end="url(#mc-a)"/>
+  <text class="label small" x="255" y="107" text-anchor="middle">read</text>
+  <path class="edge" d="M240 359 H268" marker-end="url(#mc-a)"/>
+  <text class="label small" x="255" y="353" text-anchor="middle">write</text>
+  <path class="edge dim" d="M390 398 V438" marker-start="url(#mc-a)" marker-end="url(#mc-a)"/>
+  <path class="edge dim" d="M125 388 V414 H4 V113 H8" marker-end="url(#mc-a)"/>
+  <text class="label small" x="132" y="410">next recall waits for these writes</text>
+</svg>
+<figcaption>The numbers are <code>DEFAULT_POLICY</code> in <a href="../../images/memory/src/memory/index.ts"><code>memory/index.ts</code></a> and the extraction limits in <a href="../../images/memory/src/memory/extract.ts"><code>memory/extract.ts</code></a>.</figcaption>
+</figure>
+<ol>
+<li><strong>identify:</strong> the user is <code>delivery.message.user</code>; a message without one is refused (<code>scopeOf</code> throws).</li>
+<li><strong>recall,</strong> each tier in parallel: the session window as real chat turns; for the other tiers, the top-k by cosine to the embedding of the message's text — or, for a <a href="channel.html#calls">gather</a>, of the message the call was made for (<code>call.context.text</code>), since a gather's own text is only the harness's count of answers — at or above <code>minScore</code>.</li>
+<li><strong>assemble</strong>: a <code># Memory</code> section with a reserved share per tier (<code>assemble</code>), passed to <code>channelTurn</code> as <code>memory</code>, where it opens the incoming message's user turn after the agent's identity line (an agent alone has none) — never the system prompt, which every memory agent on the channel shares byte for byte so the model server's prompt cache can reuse it (<a href="channel.html#prefix">the shared prefix</a>); then <code>withMemory</code> puts the session turns before the incoming message and leaves the system prompt untouched. Each session turn is framed by who wrote it, as its episode is (<code>writerOf</code> in <a href="../../images/memory/src/memory/session.ts"><code>memory/session.ts</code></a>): &quot;The user wrote:&quot; for the user's own, &quot;Agent <name>, for the user, wrote:&quot; for a task another agent passed on (the owner, 2026-10-12, record <code>memory-delegated-task-replay</code>, option (a)). <em>(Corrected 2026-10-12: every remembered turn was replayed as &quot;The user wrote:&quot;, whoever wrote it, so the model was told the user wrote a delegated task's words; found by the unit-test workflow's ninth review, R9-SEM-001.)</em></li>
+<li><strong>decide / act:</strong> the normal <a href="channel.html#acting">channel layer</a> (<code>reply</code>, <code>send_message</code>, <code>consult</code>, <code>pass</code>, and in a call turn only <code>reply</code> and <code>pass</code>, plus any tool its recipe selects, such as <code>reply_with_files</code> or <code>ask_user</code>) from <a href="../../src/agent-sdk/channel.ts"><code>src/agent-sdk/channel.ts</code></a>; <code>act</code> is given the whole delivery, so an answer in a call turn goes to the caller through the answer route.</li>
+<li><strong>remember,</strong> not awaited by the handler but registered as background work, which the agent finishes before it exits when stopped: append the turn to session and to episodic at once, embedded (recall skips episodes still in the window, so nothing moves between tiers — except a turn whose own episode could not be embedded, which the write after it stores as an episode once it slides out of the session window, its facts and procedures having been extracted anyway; a turn either tier already holds, by id, is not stored there again); extract semantic facts and procedures (reusable techniques that worked) with the chat model, de-duplicated and embedded; the model is shown the turn framed by who wrote it, as in step 3 (<em>until 2026-10-12, always as &quot;The user wrote:&quot;</em>). Replies, hand-offs, consults, replies with files and questions to the user are remembered (<code>responseOf</code>): a consult as <code>(consulted &lt;to&gt;: &lt;text&gt;)</code> per request, a reply with files as its text followed by <code>(gave the user files: &lt;name&gt;, …)</code>, each name the last part of its <code>/channel</code> path, and a question as <code>(asked the user: &lt;text&gt;)</code> (the owner, 2026-10-11, record <code>memory-remember-files-and-questions</code>, option (a)); a pass isn't a turn (<code>responseOf</code> returns <code>null</code>). <em>(Corrected 2026-10-11: this said only replies, hand-offs and consults were remembered, which was true of the code: a turn answered with files or a question was not remembered at all, so the user's own message in it was lost; found by the unit-test workflow's fifth review, R5-SEM-001.)</em> A call's question and a gather are never remembered (<code>message.call</code> set): their words are an agent's, not the user's; the turn that consulted is remembered. <em>(Corrected 2026-10-12: this also gave as a reason that every remembered turn is replayed as the user's, untrue since step 3 frames each turn by who wrote it.)</em></li>
+</ol>
+<div class="callout note">
+<p class="callout-title">The agent reads its own writes</p>
+<p>The next message's recall waits for that user's pending writes (<code>AgentMemory.recall</code> awaits <code>AgentMemory.settled</code>: the scope's queued <code>remember</code>, then <code>MemoryCache.settled</code>).</p>
+</div>
+<div class="callout note">
+<p class="callout-title">A write in flight at stop is finished, not failed</p>
+<p>Each <code>remember</code>, through its files being saved (<code>AgentMemory.settled</code>), is registered with the SDK as background work (<code>context.background(&#39;memory.remember&#39;, …)</code>). When the agent is stopped it waits for it, up to 65 s, before it exits, and the daemon keeps its model servers running until the agent has exited (<a href="channel.html#stop">stopping</a>). A write still unfinished at that bound is logged at error as <code>agent.drain_incomplete</code>, never dropped silently. Until 2026-09-27 a write in flight at <code>asha --stop</code> failed as <code>memory.write_failed</code> (&quot;fact extraction failed: unavailable: fetch failed&quot;), because the daemon stopped its server and model servers under it; the regression test is <code>a remember in flight when SIGTERM arrives is written to disk before the agent exits</code> in <a href="../../tests/unit/memory/agent.test.ts"><code>tests/unit/memory/agent.test.ts</code></a>. For a recipe that does not persist memory the finished write is still removed with the container (<code>docker run --rm</code>, <a href="#where">below</a>), so what the drain saves is a complete record and clean logs; for one that does, the SDK acks a persisted agent's delivery only after its background work settles, so the checkpoint that follows the ack holds the turn's writes (<a href="#persisted">persisted memory</a>).</p>
+</div>
+<p class="pre-label">images/memory/src/agent.ts — memoryAgent</p><pre><code>return async (delivery, context) =&gt; {
+  const { message } = delivery;
+  const scope = scopeOf(message);
+  // A gather&#39;s text is the harness&#39;s count; recall by the message the call was made for.
+  const recall = await props.memory.recall(scope, message.call?.role === &#39;gather&#39; ? message.call.context.text : message.text);
+  const roster = await context.roster();
+  const others = roster.map((a) =&gt; a.handle);
+  // Its role is its recipe&#39;s prompt; its tools are the ones its recipe selects.
+  const persona = { role: context.prompt, guidance: context.guidance, tools: context.tools.definitions, … };
+  const request = withMemory(channelTurn({ handle: context.handle, others, persona, message, maxTokens: MAX_TOKENS, memory: recall.context }), recall.history);
+  // One working status for the turn, whether reply_with_files (posted inside decide) or act() says it first.
+  const poster = turnPoster(delivery, context);
+  const calls = await decide({ model: context.model, request, message, roster, maxRounds: MAX_ROUNDS, maxCorrections: MAX_CORRECTIONS, tools: context.tools, replyWithFiles: poster.replyWithFiles });
+  …
+  await act(calls, others, delivery, context, poster);
+  const response = responseOf(calls);
+  // A call&#39;s question and a gather are not remembered.
+  if (response !== null &amp;&amp; message.call === undefined) {
+    …
+    // Not awaited: extraction takes model calls, and the user already has the answer. Registered, so an
+    // agent told to stop waits for the write to reach disk (serveAgent&#39;s drain) instead of losing it.
+    context.background(&#39;memory.remember&#39;, props.memory.remember(scope, turn).then(() =&gt; props.memory.settled(scope)));
+  }
+};
+</code></pre>
+<p><em>(Corrected 2026-10-11: this excerpt showed <code>persona: PERSONA</code>, <code>withMemory(…, recall)</code> and a <code>decide</code> without the message or tools — the agent before <code>docs/plans/collaborating-agents.md</code> R1, which took the role out of the image and into its recipe, and before the recalled memory moved into the per-agent block; found by the unit-test workflow's fifth review, R5-SEM-007.)</em></p>
+<p>Asked about themselves when it knows nothing yet, <code>memo</code> says so if addressed directly, but calls <code>pass</code> when the question went to everyone, so an agent that does know can answer (the owner's rule, 2026-09-26, commit <code>5b4e25c</code>; carried by its recipe's prompt, <a href="../../recipes/memory.json"><code>recipes/memory.json</code></a> — <em>corrected 2026-10-11: this said &quot;carried by the persona&quot;, the image's own prompt, which no longer exists</em>).</p>
+</section>
+<section id="identity">
+<h2>User identity</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" role="img" aria-labelledby="msc-t msc-d">
+  <title id="msc-t">How memory is scoped to one user on one channel</title>
+  <desc id="msc-d">The user's claimed ID enters with ./asha user=, and Channel.claimUser records it as the conversation's asker. The channel stamps that user on the input and every later message, including agent-to-agent internal messages, and no agent can change it. The memory agent's scopeOf takes the message's channel and user as the scope, and throws if there is no user. scopeKey hashes "channel/user" with sha256 and keeps 16 hex digits, and that names one folder under /memory in the container holding session.json, episodic.json, semantic.json and procedural.json. So alice on main and alice on lab get different folders. The cache is keyed by scope key and tier, and writes are queued per scope so recall reads its own writes.</desc>
+  <defs><marker id="msc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <text class="label small" x="10" y="16">the harness (daemon)</text>
+  <rect class="box" x="10" y="24" width="230" height="58" rx="6"/>
+  <text class="label mono" x="125" y="46" text-anchor="middle">./asha user=alice …</text>
+  <text class="label small" x="125" y="66" text-anchor="middle">claimed, not authenticated (debt D2)</text>
+
+  <rect class="box" x="265" y="24" width="230" height="58" rx="6"/>
+  <text class="label mono" x="380" y="46" text-anchor="middle">Channel.claimUser</text>
+  <text class="label small" x="380" y="66" text-anchor="middle">the conversation's asker</text>
+
+  <rect class="box accent" x="520" y="24" width="230" height="58" rx="6"/>
+  <text class="label mono" x="635" y="46" text-anchor="middle">message.user</text>
+  <text class="label small" x="635" y="66" text-anchor="middle">set on every message; agents can't</text>
+
+  <path class="edge" d="M240 53 H263" marker-end="url(#msc-a)"/>
+  <path class="edge" d="M495 53 H518" marker-end="url(#msc-a)"/>
+
+  <text class="label small" x="10" y="122">the memory agent (container)</text>
+  <rect class="box" x="520" y="130" width="230" height="58" rx="6"/>
+  <text class="label mono" x="635" y="152" text-anchor="middle">scopeOf(message)</text>
+  <text class="label small" x="635" y="172" text-anchor="middle">(channel, user); no user → throws</text>
+
+  <rect class="box" x="265" y="130" width="230" height="58" rx="6"/>
+  <text class="label mono" x="380" y="152" text-anchor="middle">scopeKey(scope)</text>
+  <text class="label mono" x="380" y="172" text-anchor="middle">sha256("&lt;ch&gt;/&lt;user&gt;")[:16]</text>
+
+  <rect class="box" x="10" y="130" width="230" height="58" rx="6"/>
+  <text class="label mono" x="125" y="152" text-anchor="middle">MemoryCache key</text>
+  <text class="label mono" x="125" y="172" text-anchor="middle">&lt;scopeKey&gt;/&lt;tier&gt;</text>
+
+  <path class="edge" d="M635 82 V128" marker-end="url(#msc-a)"/>
+  <path class="edge" d="M520 159 H497" marker-end="url(#msc-a)"/>
+  <path class="edge" d="M265 159 H242" marker-end="url(#msc-a)"/>
+
+  <rect class="box host" x="10" y="224" width="740" height="150" rx="8"/>
+  <text class="label mono" x="240" y="246">/memory  (inside the container; nothing mounted)</text>
+
+  <rect class="box accent" x="30" y="260" width="330" height="100" rx="6"/>
+  <text class="label title" x="195" y="280" text-anchor="middle">scopeKey(main, alice)/</text>
+  <text class="label mono" x="195" y="302" text-anchor="middle">session.json · episodic.json</text>
+  <text class="label mono" x="195" y="320" text-anchor="middle">semantic.json · procedural.json</text>
+  <text class="label small" x="195" y="344" text-anchor="middle">alice on main</text>
+
+  <rect class="box" x="400" y="260" width="330" height="100" rx="6"/>
+  <text class="label title" x="565" y="280" text-anchor="middle">scopeKey(lab, alice)/</text>
+  <text class="label mono" x="565" y="302" text-anchor="middle">session.json · episodic.json</text>
+  <text class="label mono" x="565" y="320" text-anchor="middle">semantic.json · procedural.json</text>
+  <text class="label small" x="565" y="344" text-anchor="middle">a different user: IDs are per channel</text>
+
+  <path class="edge" d="M380 188 V206 H195 V258" marker-end="url(#msc-a)"/>
+
+  <text class="label small" x="10" y="400">writes are queued per scope; the next recall for that scope waits for them (read-your-writes)</text>
+</svg>
+<figcaption>From the claimed ID to one folder per (channel, user): the same name on two channels is two scopes.</figcaption>
+</figure>
+<p>The channel sets <code>user</code> on every <code>ConversationMessage</code> (<a href="../../src/shared/protocol.ts"><code>src/shared/protocol.ts</code></a>), including agent-to-agent <code>internal</code> messages and statuses; no agent can change it, so a delegated task carries the same user's memory. The scope is (channel, user), never the ID alone: <code>user-1</code> on <code>main</code> isn't <code>user-1</code> on <code>lab</code>. The ID is whatever the caller claimed with <code>user=</code>, or by default the CLI user's login name, converted (<a href="channel.html#users">Users</a>): isolation holds between honest users, not against someone who names themselves as another, and login names that differ only in case, <code>.</code>, <code>_</code> or <code>-</code> are one user.</p>
+</section>
+<section id="where">
+<h2>Where memory lives</h2>
+<div class="callout decision">
+<p class="callout-title">The owner, 2026-09-26, option A</p>
+<p>Memory lives only in the agent container's own filesystem, at <code>/memory</code>, with nothing mounted from the host or a volume. The <a href="../../images/memory/Dockerfile"><code>images/memory/Dockerfile</code></a> creates <code>/memory</code> owned by <code>node</code>.</p>
+</div>
+<ul>
+<li><strong>One folder per user,</strong> named <code>sha256(&quot;&lt;channel&gt;/&lt;user&gt;&quot;)[:16]</code> (<code>scopeKey</code>), so raw IDs aren't in paths.</li>
+<li><strong>One file per tier:</strong> <code>session.json</code>, <code>episodic.json</code>, <code>semantic.json</code>, <code>procedural.json</code>.</li>
+</ul>
+<div class="callout warning">
+<p class="callout-title">Memory lasts as long as the container — unless its recipe persists it</p>
+<p>For every recipe that does not name <code>&quot;memory&quot;</code> in <code>persist</code> (<code>recipes/memory.json</code> does not), <code>./asha --stop</code>, a daemon restart, or a rebuilt image (which replaces the container) starts it empty, and &quot;previous conversations&quot; means those since the container started. The owner's decision above stays true for them.</p>
+</div>
+<h3 id="persisted">Persisted memory</h3>
+<p>A recipe may name <code>&quot;memory&quot;</code> in <code>persist</code> (<a href="recipes.html#recipe">recipes</a>; <code>docs/plans/agent-persistence.md</code> R1, R12, R16), and only on an image whose <code>image.json</code> declares <code>&quot;keepsMemory&quot;: true</code>, <code>&quot;eraseUser&quot;: true</code> and a <code>&quot;stateSchema&quot;</code> — the memory image does (<code>stateSchema</code> 1). Then:</p>
+<ul>
+<li><strong>Where it lives.</strong> Still only in the container at <code>/memory</code> while the agent runs; nothing is mounted. The daemon copies <code>/memory</code> out (<code>docker cp</code>, streamed through its tar reader) after every acknowledged turn and at a stop, into <code>ASHA_HOME/state/agents/&lt;channel&gt;/&lt;team or -&gt;/&lt;name&gt;/</code> (<a href="index.html#state">where things live</a>), and copies it back in before the next launch of the same identity starts the container. The identity is (channel, team or <code>-</code>, member name or recipe id), never the handle.</li>
+<li><strong>Bounded:</strong> at most 4,096 files, 64 MiB and 8,192 entries for the whole of <code>/memory</code> (<code>ASSET_BOUNDS</code> in <a href="../../src/daemon/state/store.ts"><code>src/daemon/state/store.ts</code></a>): every directory and file counts as an entry but the root, twice the files' bound, room for every file in a directory of its own. The bound is on the snapshot, not per user: once it is passed every later checkpoint of that agent fails <code>over_bound</code> — for every user of it — until <code>--reset-state</code> or an erase makes room; the agent keeps running and the channel shows <code>⚠ &lt;handle&gt;&#39;s state is not being saved (over_bound); …</code> (<a href="../cli/index.html#state">CLI</a>).</li>
+<li><strong>Validated at start.</strong> Before it joins, the memory image checks every restored file (<code>validateMemory</code> in <a href="../../images/memory/src/memory/persisted.ts"><code>images/memory/src/memory/persisted.ts</code></a>): only scope folders of 16 hex digits, each holding only <code>&lt;tier&gt;.json</code> documents that parse as their tier. The first invalid one makes the agent exit non-zero, logging <code>memory.invalid_at_start</code> with <code>MemoryFileInvalid</code> naming the file and, for a file that is not JSON, only <code>SyntaxError at position &lt;n&gt;</code> — never a byte of it (<code>jsonErrorPosition</code> in <a href="../../images/memory/src/memory/store.ts"><code>store.ts</code></a>). A failed write removes its temporary file — and if removing it fails too, rejects with <code>MemoryWriteCleanupFailed</code>, its message naming both failures by code and syscall (<em>corrected 2026-10-11: until then the removal's error replaced the write's own, which was lost; found by the unit-test workflow's sixth review, R6-SEM-001</em>); a write's temporary that a checkpoint's copy caught half done (<code>&lt;tier&gt;.json.tmp-&lt;ms&gt;-&lt;hex&gt;</code>) is removed at start and counted in the agent's log, its document being the one beside it — any other stray name is still refused.</li>
+<li><strong>Erasing one user</strong> (<code>asha --reset-state channel=… [name=… [team=…]] user=&lt;id&gt;</code>, <a href="../cli/index.html#state">CLI</a>): the daemon runs the agent's image once in erase mode, <code>erase-user --channel &lt;c&gt; --user &lt;u&gt;</code> (<code>runEraseMode</code>), with <code>--network none</code>, no <code>ASHA_URL</code> or token, and a copy of the saved <code>/memory</code> alone. It deletes that user's scope folder without parsing any file and prints one line, <code>{&quot;erased&quot;:{&quot;files&quot;:&lt;n&gt;,&quot;bytes&quot;:&lt;n&gt;}}</code> — <code>0</code> and <code>0</code> when the scope folder is absent, or is there but holds no regular file (an empty folder, as a scope's first failed write leaves, is then deleted) (<em>corrected 2026-10-11: this said &quot;only when the scope folder itself is absent&quot;, which the code never did; found by the unit-test workflow's tenth review, R10-SEM-004</em>); exit 0, 2 for arguments it does not take, 1 for any other failure (its reason on stderr, naming the scope by its key, never the user), a file or folder vanishing from inside a found scope folder included. <em>(Corrected 2026-10-11: a &quot;not found&quot; from anywhere inside the folder was taken as nothing there, so the erase printed <code>0</code> and <code>0</code>, exited 0 and left the user's folder in place — a false success the daemon reported as <code>no_memory</code>; found by the unit-test workflow's fifth review, R5-SEM-004.)</em> The daemon accepts the result only if the new <code>/memory</code> is the old one with entries removed and none added or changed, the removed files' count and bytes equal to the line's (<code>subsetProblem</code> in <a href="../../src/daemon/agents/index.ts"><code>src/daemon/agents/index.ts</code></a>), and promotes it as a new generation; the one-shot is bounded by 60 s and 4 KiB of stdout; anything else keeps the previous generation (<code>erase_not_subset</code>, <a href="index.html#logs">logs</a>).</li>
+<li><strong>What it cannot protect.</strong> Saved memory is served to anyone who claims the user name on that channel (D2); a reset or erase does not reach backups (Time Machine) made before it.</li>
+</ul>
+<p>The agent-suite scenarios that exercise this on the real model and containers — a fact recalled and each file byte-identical after <code>--stop</code> and relaunch, another member name holding none of it, a corrupted file refused at start, an erase leaving the other users byte-identical (agent-persistence A2, A9, A10, A17; <a href="../../tests/agents/persistence.test.ts"><code>tests/agents/persistence.test.ts</code></a>) — are green in <code>npm run test:agents</code> at <code>302eb14</code> (2026-09-29: 30 files, 111 tests passed).</p>
+</section>
+<section id="tiers">
+<h2>The tiers as built</h2>
+<p class="pre-label">images/memory/src/memory/index.ts — DEFAULT_POLICY</p><pre><code>export const DEFAULT_POLICY: MemoryPolicy = {
+  sessionIdleMs: 30 * 60_000,
+  sessionWindow: 8,
+  topK: { episodes: 4, facts: 6, procedures: 4 },
+  minScore: 0.3,
+  duplicateScore: 0.95,
+  caps: { episodes: 500, facts: 200, procedures: 100 },
+  budget: { chars: 4800, shares: { episodes: 0.35, facts: 0.35, procedures: 0.3 }, perItem: 480 },
+};
+</code></pre>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Tier</th><th>Read</th><th>Write</th><th>Cap</th></tr></thead>
+<tbody>
+<tr><td>session</td><td><code>currentSession</code>: turns with gaps ≤ 30 min, last 8, as <code>user</code>/<code>assistant</code> chat turns. Each <code>./asha message=…</code> is its own conversation, so a session is this user's recent turns.</td><td>append, unless the session already holds that turn's id; <code>slide</code> keeps the window</td><td>the window</td></tr>
+<tr><td>episodic</td><td><code>search</code>: top 4, cosine ≥ 0.3, excluding turns in the window</td><td>every turn as <code>episodeText</code>, embedded as a <code>document</code></td><td>500 newest</td></tr>
+<tr><td>semantic</td><td>top 6, cosine ≥ 0.3</td><td><code>extractFacts</code>: a forced <code>save_facts</code> call, at most 3, shown what is already known</td><td>200 newest</td></tr>
+<tr><td>procedural</td><td>top 4, cosine ≥ 0.3</td><td><code>extractProcedures</code>: a forced <code>save_procedures</code> call, at most 2, &quot;To &lt;accomplish what&gt;: &lt;the steps or technique that worked&gt;&quot;</td><td>100 newest</td></tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><strong>De-duplication</strong> (<code>addDistinct</code>): a new fact or procedure is dropped if its normalised text equals an existing one or its cosine to one is ≥ 0.95. Normalising sets aside case, punctuation and Unicode form (NFKC) and keeps every letter, combining mark and digit of any script, so &quot;The user likes 寿司.&quot; and &quot;The user likes 抹茶.&quot; are two facts. <em>(Corrected 2026-10-11: until then normalising deleted every letter outside ASCII, so different facts in another script, or differing only in such letters, were dropped as duplicates; found by the unit-test workflow's fourth review, R4-SEM-001.)</em></li>
+<li><strong>Budget</strong> (<code>assemble</code>): 4,800 characters (about 4 per token), 35% / 35% / 30% for episodes, facts and procedures, each item cut at 480 characters with <code>…</code>; shares above 1 throw. Sections: &quot;What you know about this user&quot;, &quot;Procedures that worked before&quot;, &quot;Earlier conversations with this user&quot;.</li>
+<li><strong>Search:</strong> ties go to the newer memory; vectors of different sizes throw.</li>
+<li><strong>Cache</strong> (<code>MemoryCache</code>): bounded at 400 documents (<code>maxDocs</code> in <a href="../../images/memory/src/main.ts"><code>main.ts</code></a>). Past the bound it drops the least recently used documents with no save pending, no update in progress and no failed last save, so it holds more while saves are slow or failing: a document whose last save failed stays cached until a later save of it succeeds, so the change reported as unsaved is never then lost by eviction (the owner, 2026-10-11, record <code>memory-cache-failed-save</code>, option (a)). <em>(Corrected 2026-10-11: this said &quot;at most 400 documents&quot;, which the code never promised — a document with a save pending was always kept past the bound (R5-SEM-016) — and a document whose save had failed could be dropped, losing its change (R5-SEM-005); both found by the unit-test workflow's fifth review.)</em></li>
+<li><strong>Files</strong> (<code>MemoryStore</code>): <code>{schemaVersion: 1, tier, updatedAt, turns | records}</code>, written to a temp file and renamed. A missing file reads as empty; a bad record is dropped and reported (<code>memory.records_dropped</code>); a file that is not a document of its tier is malformed (<code>MemoryFileInvalid</code>, with a reason naming what is wrong: <code>expected schemaVersion 1 and tier &quot;&lt;tier&gt;&quot;</code>, <code>no updatedAt string</code>, <code>no records array</code>). A running agent that reads a malformed file heals it: it is reported first, at error, as <code>memory.file_malformed</code> naming the file, then overwritten with its tier's empty document, which the read then returns — what was in it is lost, and only the log line records why (the owner, 2026-10-11, record <code>memory-unreadable-session-episodic</code>: a malformed tier file is a major defect, logged loudly for the failure scan, and the agent loop self-heals by overwriting it). A file that cannot be read at all (<code>EACCES</code>, <code>EIO</code>) is not malformed and is not overwritten: its read fails. At start, a persisted agent's restored file that is malformed still ends the launch (<a href="#persisted">validated at start</a>, agent-persistence R12). <em>(Corrected 2026-10-11: a malformed file threw on every read, so one bad file stopped that user's memory for good; found by the unit-test workflow's seventh review, R7-SEM-002.)</em></li>
+<li><strong>Failures:</strong> <code>memory.save_failed</code>, <code>memory.write_failed</code>, <code>memory.records_dropped</code> and <code>memory.file_malformed</code> go to the agent's log as one JSON error line each, with the scope as its hash, never the raw user ID. A failed embedding throws <code>EmbeddingFailed</code>, a failed extraction <code>ExtractionFailed</code> — including a <code>save_facts</code> or <code>save_procedures</code> reply with an item that is not text, of which nothing is then kept (the owner, 2026-10-11, record <code>memory-extract-non-string-items</code>, option (a); until then such an item was dropped silently). A turn's two extractions, and their saves, are independent: a failed one is reported and costs only its own tier, and the other tier's items are still saved (the owner, 2026-10-11, record <code>memory-extraction-partial-failure</code>, option (a); until then a failure in either discarded both). An episode that cannot be embedded is reported and costs only the episodic tier: the turn's facts and procedures are still extracted and saved (the owner, 2026-10-11, record <code>memory-episode-failure-extraction</code>, option (a); until then the write stopped there and the turn's facts and procedures were never extracted). So does every other tier: a session or episodic document that cannot be read, and a facts or procedures document that cannot be read, is reported once with its own error and costs only its own tier — a failed session step leaves the turn itself as the only episode — while the turn's facts and procedures are still extracted and saved (the owner, 2026-10-11, record <code>memory-unreadable-session-episodic</code>, option (a); until then such a document stopped the whole write, R7-SEM-002).</li>
+</ul>
+</section>
+<section id="embeddings">
+<h2>Embeddings</h2>
+<p>A catalogue entry for <strong>Qwen3-Embedding-0.6B (Q8_0)</strong>, <a href="models.html#qwen3-embedding"><code>qwen3-embedding-0.6b-q8_0</code></a>, recommended by the 2026-09-26 research, runs on a second <code>llama-server</code> (<code>--embeddings --pooling last</code>, since one server serves one model): about 0.9 GB more memory and $0 per call, with nothing leaving the machine. The agent calls <code>POST /agent/v1/model/embed</code>, authenticated like <code>/model/chat</code> (<a href="models.html#gateway">the gateway</a>), through <code>harnessEmbedder</code>, which wraps <code>HarnessClient.embed</code>. A recipe names its <code>embeddingModel</code> (<a href="recipes.html#recipe">recipe spec</a>). Neither <code>Qwen/Qwen3-Embedding-0.6B-GGUF</code> (revision <code>370f27d7</code>) nor <code>Qwen/Qwen3-Embedding-0.6B</code> (<code>97b0c614</code>) has a LICENSE file; both cards declare <code>apache-2.0</code>, which the owner accepted on 2026-09-26, so the card is pinned as the licence record (AGENTS.md §3).</p>
+</section>
+<section id="code">
+<h2>Code map</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>File</th><th>Symbols</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td><a href="../../images/memory/src/main.ts"><code>images/memory/src/main.ts</code></a></td><td>—</td><td>Entry point, wiring only: <code>MEMORY_ROOT = &#39;/memory&#39;</code></td></tr>
+<tr><td><a href="../../images/memory/src/agent.ts"><code>images/memory/src/agent.ts</code></a></td><td><code>memoryAgent</code>, <code>scopeOf</code>, <code>withMemory</code>, <code>responseOf</code>, <code>NAME</code>, <code>MAX_TOKENS</code>, <code>MAX_ROUNDS</code>, <code>MAX_CORRECTIONS</code></td><td>The agent graph; its role and tools come from its recipe <em>(corrected 2026-10-11: listed <code>PERSONA</code>, removed by collaborating-agents R1)</em></td></tr>
+<tr><td><a href="../../images/memory/src/memory/index.ts"><code>memory/index.ts</code></a></td><td><code>AgentMemory</code> (<code>recall</code>, <code>remember</code>, <code>settled</code>), <code>DEFAULT_POLICY</code></td><td>The module's public surface</td></tr>
+<tr><td><a href="../../images/memory/src/memory/session.ts"><code>memory/session.ts</code></a></td><td><code>currentSession</code>, <code>slide</code>, <code>episodeText</code></td><td>The time-bounded session</td></tr>
+<tr><td><a href="../../images/memory/src/memory/relevance.ts"><code>memory/relevance.ts</code></a></td><td><code>cosine</code>, <code>search</code></td><td>Recall with a hard cutoff</td></tr>
+<tr><td><a href="../../images/memory/src/memory/assemble.ts"><code>memory/assemble.ts</code></a></td><td><code>assemble</code></td><td>The <code># Memory</code> section</td></tr>
+<tr><td><a href="../../images/memory/src/memory/extract.ts"><code>memory/extract.ts</code></a></td><td><code>extractFacts</code>, <code>extractProcedures</code>, <code>SAVE_FACTS</code>, <code>SAVE_PROCEDURES</code></td><td>Semantic and procedural extraction</td></tr>
+<tr><td><a href="../../images/memory/src/memory/cache.ts"><code>memory/cache.ts</code></a></td><td><code>MemoryCache</code> (<code>get</code>, <code>update</code>, <code>settled</code>)</td><td>LRU cache, background saves</td></tr>
+<tr><td><a href="../../images/memory/src/memory/store.ts"><code>memory/store.ts</code></a></td><td><code>MemoryStore</code>, <code>scopeKey</code>, <code>parseDoc</code>, <code>jsonErrorPosition</code>, <code>MemoryFileInvalid</code>, <code>MemoryWriteCleanupFailed</code></td><td>Files, atomic writes, tolerant parsing; an invalid file named by position, never quoted</td></tr>
+<tr><td><a href="../../images/memory/src/memory/persisted.ts"><code>memory/persisted.ts</code></a></td><td><code>validateMemory</code>, <code>runEraseMode</code>, <code>eraseUser</code>, <code>parseEraseArgs</code></td><td>A persisted <code>/memory</code> checked at start; the <code>erase-user</code> mode</td></tr>
+<tr><td><a href="../../images/memory/src/memory/harness-embedder.ts"><code>memory/harness-embedder.ts</code></a></td><td><code>harnessEmbedder</code>, <code>EmbeddingFailed</code></td><td>Embedder over the harness route</td></tr>
+<tr><td><a href="../../images/memory/src/memory/types.ts"><code>memory/types.ts</code></a></td><td><code>Scope</code>, <code>Tier</code>, <code>Turn</code>, <code>Memory</code>, <code>Embedder</code></td><td>The shapes</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="tests">
+<h2>Tests</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Suite</th><th>Where</th><th>What</th></tr></thead>
+<tbody>
+<tr><td>Unit, with fakes for model and embedder</td><td><code>tests/unit/memory/</code>: <a href="../../tests/unit/memory/memory.test.ts"><code>memory.test.ts</code></a>, <a href="../../tests/unit/memory/store-cache.test.ts"><code>store-cache.test.ts</code></a>, <a href="../../tests/unit/memory/agent.test.ts"><code>agent.test.ts</code></a>, <a href="../../tests/unit/memory/harness-embedder.test.ts"><code>harness-embedder.test.ts</code></a>, <a href="../../tests/unit/memory/persisted.test.ts"><code>persisted.test.ts</code></a></td><td>Two users at once never see each other's memory; read-your-writes; a persisted agent acks only after <code>remember</code> settles; validation at start and the erase mode</td></tr>
+<tr><td>Agent suite, real models and containers</td><td><a href="../../tests/agents/memory-agent.test.ts"><code>memory-agent.test.ts</code></a></td><td>alice and bob: semantic, recall, privacy, procedural, past the window, identity through delegation</td></tr>
+<tr><td></td><td><a href="../../tests/agents/memory-tiers.test.ts"><code>memory-tiers.test.ts</code></a></td><td>Each tier, privacy and scope, lifecycle (kept across conversations, empty after a restart)</td></tr>
+<tr><td></td><td><a href="../../tests/agents/memory-crowd.test.ts"><code>memory-crowd.test.ts</code></a></td><td>Ten agents, one told, all asked: exactly one answer</td></tr>
+<tr><td></td><td><a href="../../tests/agents/persistence.test.ts"><code>persistence.test.ts</code></a></td><td>Persisted memory across <code>--stop</code>, a crash and an erase (agent-persistence A2, A7–A10, A12, A17): green in <code>npm run test:agents</code> at <code>302eb14</code> (2026-09-29: 30 files, 111 tests passed)</td></tr>
+</tbody>
+</table>
+</div>
+<p>A procedure is a technique that worked for a task, not a user preference such as &quot;answer in bullet points&quot;, which is a semantic fact (<a href="history.html#procedural">the owner's correction</a>).</p>
+</section>
+<footer class="page"><span>Source: <code>docs/architecture/memory.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

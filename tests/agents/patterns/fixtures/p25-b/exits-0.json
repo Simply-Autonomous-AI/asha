@@ -1,0 +1,125 @@
+{
+  "scenario": "p25-b",
+  "breaks": "the command exits 1",
+  "note": "The conversation settles on a reply and the command exits 0.",
+  "team": "restart",
+  "input": {
+    "user": "alice",
+    "to": "worker-1",
+    "text": "Please say: Hello World."
+  },
+  "recipients": [
+    "worker-1"
+  ],
+  "messages": [
+    {
+      "log": {
+        "level": "error",
+        "event": "agent.exited_unexpectedly",
+        "handle": "worker-1",
+        "container": "asha-main-worker-bbbbbb",
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "warn",
+        "event": "agent.restarting",
+        "handle": "worker-1",
+        "attempt": 1,
+        "max": 2,
+        "withinMs": 60000,
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "agent.starting",
+        "channel": "main",
+        "recipe": "worker",
+        "image": "hello-world",
+        "member": "worker",
+        "container": "asha-main-worker-cccccc"
+      }
+    },
+    {
+      "log": {
+        "level": "error",
+        "event": "agent.exited_unexpectedly",
+        "handle": "worker-1",
+        "container": "asha-main-worker-cccccc",
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "warn",
+        "event": "agent.restarting",
+        "handle": "worker-1",
+        "attempt": 2,
+        "max": 2,
+        "withinMs": 60000,
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "agent.starting",
+        "channel": "main",
+        "recipe": "worker",
+        "image": "hello-world",
+        "member": "worker",
+        "container": "asha-main-worker-dddddd"
+      }
+    },
+    {
+      "log": {
+        "level": "error",
+        "event": "agent.exited_unexpectedly",
+        "handle": "worker-1",
+        "container": "asha-main-worker-dddddd",
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "error",
+        "event": "agent.restart_limit",
+        "handle": "worker-1",
+        "restarts": 2,
+        "withinMs": 60000
+      }
+    },
+    {
+      "log": {
+        "level": "error",
+        "event": "channel.conversation_ended",
+        "channel": "main",
+        "conversation": "c1",
+        "reason": "restart_limit",
+        "detail": "worker-1 exited 3 times within 60 s; not restarted"
+      }
+    },
+    {
+      "from": "worker-1",
+      "kind": "output",
+      "text": "Hello World.",
+      "working": []
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "channel.left",
+        "channel": "main",
+        "handle": "worker-1",
+        "detail": "restart limit reached",
+        "abandoned": [
+          "c1"
+        ]
+      }
+    }
+  ],
+  "ms": 3000
+}

@@ -1,0 +1,41 @@
+{
+  "pattern": "P2",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:15:32.388Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p02-router",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 35200,
+  "bytes": 2075641,
+  "sha256": "ba6417bd8ab3935999bb177ed2a573b1d9133bbf7a9db7aa8ba2ba5ecd453b1e",
+  "frames": 703,
+  "framesPerSecond": 20,
+  "longestGapMs": 71,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P2 · Router (triage)",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5036,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p02-a",
+      "outcome": "pass"
+    },
+    {
+      "id": "p02-b",
+      "outcome": "pass"
+    },
+    {
+      "id": "p02-c",
+      "outcome": "pass"
+    }
+  ]
+}

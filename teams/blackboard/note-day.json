@@ -1,0 +1,25 @@
+{
+  "id": "note-day",
+  "image": "hello-world",
+  "description": "Knows the meeting's day.",
+  "prompt": "you know the day of the meeting, and you start the notice on the blackboard.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file",
+    "blackboard_post"
+  ],
+  "documents": [
+    {
+      "path": "note-day.md",
+      "fullText": true
+    }
+  ]
+}

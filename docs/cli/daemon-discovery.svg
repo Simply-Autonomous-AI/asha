@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 620" role="img" aria-labelledby="clidisc-t clidisc-d">
+  <title id="clidisc-t">How the CLI finds, or starts, the daemon</title>
+  <desc id="clidisc-d">findDaemon reads daemon.json under the harness home. No file means no daemon. A file that is not JSON, or whose pid, port or credential is missing or mistyped, is reported on stderr naming the file, exit 1. With a file, it asks GET /v1/health on 127.0.0.1 at the recorded port with the credential as a bearer token, bounded at 3 seconds. A 2xx answer means the daemon is used, with a warning on stderr if it runs a different build, except for --stop. A 401 means the file is not this daemon's: reported on stderr naming daemon.json, exit 1, and never taken as no daemon. A file with no credential is from a daemon that predates credentials: its health is asked without one, and on 2xx the CLI says so and that asha --stop replaces it, exit 1, while --stop stops it. No answer or another non-2xx answer means no daemon. With no daemon, --status and --stop print not running; a message, --launch or --watch spawn node dist/src/cli/main.js --server detached, logging to logs/server.log, then look again every 200 ms for up to 20 seconds. If found, it is used. If the new process died, the CLI looks once more, since another CLI may have won the race, and uses that daemon if found, otherwise fails with the daemon exited during startup, exit 1. After 20 seconds it fails with the daemon did not answer within 20000 ms, exit 1.</desc>
+  <defs><marker id="clidisc-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box" x="40" y="20" width="260" height="44" rx="6"/>
+  <text class="label mono" x="170" y="39" text-anchor="middle">read &lt;home&gt;/daemon.json</text>
+  <text class="label small" x="170" y="56" text-anchor="middle">DaemonFile {pid, port, credential}</text>
+
+  <rect class="box" x="470" y="10" width="270" height="78" rx="6"/>
+  <text class="label mono" x="605" y="28" text-anchor="middle">✗ on stderr · exit 1</text>
+  <text class="label small" x="605" y="45" text-anchor="middle">malformed: names daemon.json and the field</text>
+  <text class="label small" x="605" y="61" text-anchor="middle">401: the file is not this daemon's</text>
+  <text class="label small" x="605" y="77" text-anchor="middle">no credential: predates credentials (--stop stops it)</text>
+
+  <path class="edge" d="M300 34 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="383" y="28" text-anchor="middle">malformed</text>
+
+  <path class="edge" d="M40 42 H22 V222 H36" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="17" y="140" text-anchor="middle" transform="rotate(-90 17 140)">no file</text>
+
+  <path class="edge" d="M170 64 V106" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="178" y="90">file</text>
+
+  <rect class="box" x="40" y="110" width="260" height="44" rx="6"/>
+  <text class="label mono" x="170" y="129" text-anchor="middle">GET /v1/health on &lt;port&gt;</text>
+  <text class="label small" x="170" y="146" text-anchor="middle">Bearer &lt;credential&gt; · bounded 3 s</text>
+
+  <path class="edge" d="M300 118 H430 V70 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="365" y="112" text-anchor="middle">401 · no credential</text>
+
+  <path class="edge" d="M300 142 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="383" y="136" text-anchor="middle">2xx</text>
+
+  <rect class="box accent" x="470" y="104" width="270" height="56" rx="6"/>
+  <text class="label title" x="605" y="123" text-anchor="middle">use it</text>
+  <text class="label small" x="605" y="139" text-anchor="middle">⚠ on stderr if its build differs,</text>
+  <text class="label small" x="605" y="153" text-anchor="middle">--verbose or not (not for --stop)</text>
+
+  <path class="edge" d="M170 154 V196" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="178" y="180">no answer, or another non-2xx</text>
+
+  <rect class="box" x="40" y="200" width="260" height="44" rx="6"/>
+  <text class="label title" x="170" y="227" text-anchor="middle">no daemon</text>
+
+  <path class="edge" d="M300 222 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label mono" x="383" y="215" text-anchor="middle">--status, --stop</text>
+
+  <rect class="box" x="470" y="196" width="270" height="52" rx="6"/>
+  <text class="label mono" x="605" y="217" text-anchor="middle">not running (stdout)</text>
+  <text class="label small" x="605" y="236" text-anchor="middle">--status exits 1 · --stop exits 0</text>
+
+  <path class="edge" d="M170 244 V286" marker-end="url(#clidisc-arr)"/>
+  <text class="label mono" x="178" y="270">message, --launch, --watch</text>
+
+  <rect class="box" x="40" y="290" width="560" height="44" rx="6"/>
+  <text class="label mono" x="320" y="309" text-anchor="middle">spawn node dist/src/cli/main.js --server, detached</text>
+  <text class="label small" x="320" y="326" text-anchor="middle">stdout and stderr → &lt;home&gt;/logs/server.log · prints › started the asha daemon (pid …)</text>
+
+  <path class="edge" d="M170 334 V366" marker-end="url(#clidisc-arr)"/>
+
+  <rect class="box" x="40" y="370" width="260" height="44" rx="6"/>
+  <text class="label title" x="170" y="389" text-anchor="middle">every 200 ms: look again</text>
+  <text class="label small" x="170" y="406" text-anchor="middle">read daemon.json + /v1/health</text>
+
+  <path class="edge" d="M300 392 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="383" y="385" text-anchor="middle">found</text>
+
+  <rect class="box accent" x="470" y="370" width="270" height="44" rx="6"/>
+  <text class="label title" x="605" y="397" text-anchor="middle">use it</text>
+
+  <path class="edge" d="M170 414 V456" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="178" y="440">the new process died</text>
+
+  <rect class="box" x="40" y="460" width="260" height="44" rx="6"/>
+  <text class="label title" x="170" y="479" text-anchor="middle">look once more</text>
+  <text class="label small" x="170" y="496" text-anchor="middle">another CLI may have won the race</text>
+
+  <path class="edge" d="M300 468 H500 V418" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="400" y="462" text-anchor="middle">found</text>
+
+  <path class="edge" d="M300 496 H466" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="383" y="490" text-anchor="middle">none</text>
+
+  <rect class="box" x="470" y="476" width="270" height="48" rx="6"/>
+  <text class="label mono" x="605" y="496" text-anchor="middle">✗ the daemon exited during startup;</text>
+  <text class="label mono" x="605" y="514" text-anchor="middle">see &lt;server.log&gt; · exit 1</text>
+
+  <path class="edge" d="M40 392 H22 V582 H36" marker-end="url(#clidisc-arr)"/>
+  <text class="label small" x="17" y="487" text-anchor="middle" transform="rotate(-90 17 487)">after 20 s</text>
+
+  <rect class="box" x="40" y="558" width="370" height="48" rx="6"/>
+  <text class="label mono" x="225" y="578" text-anchor="middle">✗ the daemon did not answer within 20000 ms;</text>
+  <text class="label mono" x="225" y="596" text-anchor="middle">see &lt;server.log&gt; · exit 1</text>
+</svg>

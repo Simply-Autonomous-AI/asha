@@ -1,0 +1,24 @@
+{
+  "id": "courier-south",
+  "image": "hello-world",
+  "description": "Delivers parcels in the south.",
+  "prompt": "you deliver parcels in the south.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "courier-south.md",
+      "fullText": true
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "blackboard",
+  "description": "P11, blackboard: agents build the answer on the channel's shared board, never sending each other their work — a shopping list assembled from the items each contributor posts (p11-a), and a meeting notice each member reads from the board and extends (p11-b).",
+  "members": [
+    {
+      "name": "editor",
+      "recipe": "editor.json"
+    },
+    {
+      "name": "contrib-a",
+      "recipe": "contrib-a.json"
+    },
+    {
+      "name": "contrib-b",
+      "recipe": "contrib-b.json"
+    },
+    {
+      "name": "contrib-c",
+      "recipe": "contrib-c.json"
+    },
+    {
+      "name": "planner",
+      "recipe": "planner.json"
+    },
+    {
+      "name": "note-day",
+      "recipe": "note-day.json"
+    },
+    {
+      "name": "note-room",
+      "recipe": "note-room.json"
+    },
+    {
+      "name": "note-time",
+      "recipe": "note-time.json"
+    }
+  ]
+}

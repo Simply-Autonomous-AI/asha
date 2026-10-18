@@ -1,0 +1,70 @@
+{
+  "scenario": "p15-b",
+  "breaks": "clerk-1's output is an ask (channel.posted with asks), and command 1 printed \"? clerk-1 is waiting for your answer: …\"",
+  "note": "The request is a reply, not an ask: no asks, no waiting line.",
+  "team": "approval",
+  "input": {
+    "user": "alice",
+    "to": "clerk-1",
+    "text": "Post the announcement: Office closed Friday."
+  },
+  "recipients": [
+    "clerk-1"
+  ],
+  "messages": [
+    {
+      "model": {
+        "handle": "clerk-1",
+        "name": "ask_user",
+        "args": {
+          "text": "Approve posting \"Office closed Friday.\"? Answer yes or no."
+        }
+      }
+    },
+    {
+      "from": "clerk-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "clerk-1",
+      "kind": "output",
+      "text": "Approve posting \"Office closed Friday.\"? Answer yes or no."
+    }
+  ],
+  "next": [
+    {
+      "input": {
+        "user": "alice",
+        "to": "clerk-1",
+        "text": "no"
+      },
+      "recipients": [
+        "clerk-1"
+      ],
+      "messages": [
+        {
+          "model": {
+            "handle": "clerk-1",
+            "name": "reply",
+            "args": {
+              "text": "Not posted."
+            }
+          }
+        },
+        {
+          "from": "clerk-1",
+          "kind": "status",
+          "text": "ok"
+        },
+        {
+          "from": "clerk-1",
+          "kind": "output",
+          "text": "Not posted."
+        }
+      ],
+      "ms": 2500
+    }
+  ],
+  "ms": 3500
+}

@@ -1,0 +1,33 @@
+{
+  "pattern": "P18",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:34:41.931Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p18-agent-tool",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 19120,
+  "bytes": 1106113,
+  "sha256": "61d5eca48553ac7efc6144a5b7b2623fef5ef03f4ceca1497cc3aa9e6242e39b",
+  "frames": 380,
+  "framesPerSecond": 19.9,
+  "longestGapMs": 75,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P18 · Agent as tool (call and return)",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5027,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p18-a",
+      "outcome": "pass"
+    }
+  ]
+}

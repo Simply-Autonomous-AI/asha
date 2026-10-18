@@ -1,0 +1,24 @@
+{
+  "id": "keeper",
+  "image": "hello-world",
+  "description": "Keeps the files in its workspace: lists, reads and edits them when asked.",
+  "prompt": "you keep the files in your workspace. When asked, you list them, read them, and write or append to them, and reply with what you found or did.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "guides/keeping.md",
+      "fullText": true
+    }
+  ]
+}

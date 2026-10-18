@@ -1,0 +1,22 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+# Release evidence is a record the docs link to (brew-install A1–A8), not a run's scratch output.
+!tools/release/evidence/*.log
+.tmp/
+# The demo selector's temporary record, renamed to selection.json once written (docs/plans/demo-selector.md R8).
+tests/agents/results/.selection-*.json
+node_modules/
+dist/
+build/
+coverage/
+.playwright-mcp/
+# script(1)'s default log, and vitest's JSON reporter output: never committed (both were, once, in 194d79b).
+typescript
+.vitest/
+tests/agents/results
+
+# The combined demo video demos:reel writes: version-controlled where the website serves it (decision demo-reel-mp4).
+docs/patterns/videos/demos.webm

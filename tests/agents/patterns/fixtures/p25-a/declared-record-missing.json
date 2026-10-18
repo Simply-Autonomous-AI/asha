@@ -1,0 +1,85 @@
+{
+  "scenario": "p25-a",
+  "breaks": "every error-level record is declared: exactly one, agent.exited_unexpectedly for worker-1",
+  "note": "The declared record is missing: the exit logged agent.exited at info, as a stop the daemon began would be.",
+  "team": "restart",
+  "input": {
+    "user": "alice",
+    "to": "worker-1",
+    "text": "Please say: Hello World."
+  },
+  "recipients": [
+    "worker-1"
+  ],
+  "messages": [
+    {
+      "log": {
+        "level": "info",
+        "event": "agent.exited",
+        "handle": "worker-1",
+        "container": "asha-main-worker-aaaaaa",
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "warn",
+        "event": "agent.restarting",
+        "handle": "worker-1",
+        "attempt": 1,
+        "max": 2,
+        "withinMs": 60000,
+        "code": 137
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "agent.starting",
+        "channel": "main",
+        "recipe": "worker",
+        "image": "hello-world",
+        "member": "worker",
+        "container": "asha-main-worker-bbbbbb"
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "channel.rejoined",
+        "channel": "main",
+        "handle": "worker-1"
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "agent.restarted",
+        "handle": "worker-1",
+        "attempt": 1,
+        "ms": 612
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "channel.resumed",
+        "channel": "main",
+        "handle": "worker-1",
+        "attempt": 1,
+        "redelivered": 1
+      }
+    },
+    {
+      "from": "worker-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "worker-1",
+      "kind": "output",
+      "text": "Hello World."
+    }
+  ],
+  "ms": 4000
+}

@@ -1,0 +1,149 @@
+{
+  "scenario": "p19-a",
+  "breaks": null,
+  "note": "The passing conversation: lead-1 launches helper-1, which joins after the input; one call to it, answered marigold; lead-1 replies with the word; helper-1 is stopped once the conversation settles.",
+  "team": "spawner",
+  "input": {
+    "user": "alice",
+    "to": "lead-1",
+    "text": "Bring in a helper and tell me its word."
+  },
+  "recipients": [
+    "lead-1"
+  ],
+  "messages": [
+    {
+      "model": {
+        "handle": "lead-1",
+        "name": "launch_agent",
+        "args": {
+          "recipe": "helper"
+        }
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "channel.joined",
+        "channel": "main",
+        "handle": "helper-1"
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "agent.launched",
+        "by": "lead-1",
+        "handle": "helper-1",
+        "recipe": "helper",
+        "conversation": "c1",
+        "team": "spawner"
+      }
+    },
+    {
+      "model": {
+        "handle": "lead-1",
+        "name": "consult",
+        "args": {
+          "requests": [
+            {
+              "to": "helper-1",
+              "text": "What is your word?"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "from": "lead-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "channel.call_opened",
+        "channel": "main",
+        "conversation": "c1",
+        "call": "k1",
+        "caller": "lead-1",
+        "addressees": [
+          "helper-1"
+        ]
+      }
+    },
+    {
+      "from": "lead-1",
+      "to": "helper-1",
+      "kind": "internal",
+      "text": "What is your word?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "lead-1",
+        "helper-1"
+      ]
+    },
+    {
+      "from": "helper-1",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "marigold",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "Answers to lead-1's call: 1 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "lead-1",
+      "kind": "output",
+      "text": "The helper's word is marigold."
+    },
+    {
+      "log": {
+        "level": "info",
+        "event": "agent.stopping",
+        "handle": "helper-1",
+        "container": "asha-main-helper-abc123",
+        "reason": "the conversation c1 it was launched for settled",
+        "mode": "drain"
+      }
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "lead-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 4000
+    }
+  ],
+  "ms": 14000
+}

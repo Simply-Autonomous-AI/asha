@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asha portal</title>
+<link rel="icon" href="/portal/static/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/portal/static/portal.css">
+<script type="module" src="/portal/js/portal/app.js"></script>
+</head>
+<body>
+<header class="top">
+  <h1><span class="logo" aria-hidden="true"></span>asha <span class="sub">portal</span></h1>
+  <p id="daemon-line" class="muted">Connecting to the daemon…</p>
+</header>
+<p id="page-error" class="banner" hidden></p>
+<nav class="tabs" role="tablist" aria-label="Views">
+  <button id="tab-send" role="tab" type="button" aria-selected="true">Send</button>
+  <button id="tab-watch" role="tab" type="button" aria-selected="false">Watch</button>
+  <button id="tab-launch" role="tab" type="button" aria-selected="false">Launch</button>
+  <button id="tab-status" role="tab" type="button" aria-selected="false">Status</button>
+  <button id="tab-state" role="tab" type="button" aria-selected="false">State</button>
+  <button id="tab-help" role="tab" type="button" aria-selected="false">Help</button>
+</nav>
+<main id="views">
+
+<section id="view-send" class="view" role="tabpanel" aria-labelledby="tab-send">
+  <h2>Send a message</h2>
+  <p class="muted">Like <code>asha --interactive</code>: each message goes to the channel, and its replies show below it as a chat. The session stays open until you close the page.</p>
+  <form id="send-form" class="fields" autocomplete="off">
+    <label>Channel <input id="send-channel" value="main" spellcheck="false"></label>
+    <label>Recipe <select id="send-recipe"><option value="">none — the agents already on the channel</option></select></label>
+    <label>To <input id="send-to" placeholder="everyone" spellcheck="false"></label>
+    <label>Topic <input id="send-topic" placeholder="none" spellcheck="false"></label>
+    <label>Answers conversation <input id="send-conversation" placeholder="none: a new message" spellcheck="false"></label>
+    <label>User ID <input id="send-user" spellcheck="false"></label>
+    <label>Posts budget <input id="send-posts" inputmode="numeric" placeholder="32" spellcheck="false"></label>
+    <label>Tokens budget <input id="send-tokens" inputmode="numeric" placeholder="none" spellcheck="false"></label>
+    <label id="send-recipe-other-label" hidden>Recipe name <input id="send-recipe-other" placeholder="any recipe, as recipe= takes it" spellcheck="false"></label>
+    <label class="wide">Message <textarea id="send-text" rows="3"></textarea></label>
+    <label class="wide">Files <input id="send-files" type="file" multiple></label>
+    <p id="send-notice" class="notice wide">asha checks each file's name against its credential deny list, and refuses a file holding asha's own credential or model-server key. It cannot check which folder a file is in, since a browser does not say: a secret file with an ordinary name, such as .docker/config.json, would be sent. The command line's file= checks folders too.</p>
+    <div class="actions wide">
+      <button id="send-button" type="submit" class="primary">Send</button>
+      <label class="check"><input id="send-cli" type="checkbox"><span>Command-line view</span></label>
+      <label class="check"><input id="send-details" type="checkbox" disabled><span>Show details (<code>--verbose</code>, in the command-line view)</span></label>
+    </div>
+  </form>
+  <div id="send-log" class="session" aria-live="polite"></div>
+</section>
+
+<section id="view-watch" class="view" role="tabpanel" aria-labelledby="tab-watch" hidden>
+  <h2>Watch a channel</h2>
+  <form id="watch-form" class="inline" autocomplete="off">
+    <label>Channel <input id="watch-channel" value="main" spellcheck="false"></label>
+    <button id="watch-button" type="submit" class="primary">Watch</button>
+    <label class="check"><input id="watch-cli" type="checkbox"><span>Command-line view</span></label>
+    <label class="check"><input id="watch-details" type="checkbox" disabled><span>Show details (<code>--verbose</code>, in the command-line view)</span></label>
+  </form>
+  <form id="demo-form" class="inline" autocomplete="off">
+    <label class="grow">Pattern demo <select id="demo-select"><option value="">reading the demos…</option></select></label>
+    <button id="demo-run" type="submit" disabled>Run demo</button>
+    <button id="demo-stop" type="button" hidden>Stop demo</button>
+  </form>
+  <p id="watch-state" class="muted">Not watching.</p>
+  <div id="watch-teams" class="team-lines"></div>
+  <div class="watch-grid">
+    <figure class="scene-wrap">
+      <canvas id="scene" role="img" aria-label="The channel's agents as robots; the chat beside it says everything they do"></canvas>
+      <figcaption class="muted">Each robot is an agent online on the channel: what it says shows beside it, what it is working on above it, and what it has collected above that; its lamp glows amber while its model is writing. A dotted arc is a message; the figure on the dock stands for the users.</figcaption>
+    </figure>
+    <div class="thread-panel">
+      <div class="thread-inner">
+        <div id="watch-thread" class="thread" aria-live="polite"></div>
+        <div id="watch-output" class="watch-log" aria-live="polite" hidden></div>
+        <form id="compose-form" class="compose" autocomplete="off" hidden>
+          <label>To <select id="compose-to"><option value="">everyone</option></select></label>
+          <label class="grow">Message <textarea id="compose-text" rows="2" placeholder="Return sends; Shift+Return is a new line"></textarea></label>
+          <button id="compose-send" type="submit" class="primary">Send</button>
+          <p id="compose-as" class="muted"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+  <h3>Telemetry</h3>
+  <div class="table-wrap">
+    <table id="telemetry">
+      <thead><tr><th>Agent</th><th>Recipe</th><th>Team</th><th>Model</th><th>Deliveries</th><th>Model calls</th><th>Last call</th><th>In flight</th><th>Last error</th></tr></thead>
+      <tbody id="telemetry-rows"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="view-launch" class="view" role="tabpanel" aria-labelledby="tab-launch" hidden>
+  <h2>Launch an agent or a team</h2>
+  <form id="launch-form" class="inline" autocomplete="off">
+    <label>Launch <select id="launch-kind"><option value="recipe">recipe</option><option value="team">team</option></select></label>
+    <label class="grow">Name <select id="launch-name"><option value="">reading the recipes…</option></select></label>
+    <label id="launch-other-label" hidden>Other name <input id="launch-other" placeholder="any name, as --launch takes it" spellcheck="false"></label>
+    <label>Channel <input id="launch-channel" value="main" spellcheck="false"></label>
+    <button id="launch-button" type="submit" class="primary">Launch</button>
+    <label class="check"><input id="launch-details" type="checkbox"><span>Show details (<code>--verbose</code>)</span></label>
+  </form>
+  <p id="launch-detail" class="detail muted"></p>
+  <div id="launch-log" class="session" aria-live="polite"></div>
+  <h3>What can be launched</h3>
+  <div id="launch-list" class="catalog"></div>
+</section>
+
+<section id="view-status" class="view" role="tabpanel" aria-labelledby="tab-status" hidden>
+  <h2>Status</h2>
+  <p><button id="status-refresh" type="button">Refresh</button></p>
+  <div id="status-output"></div>
+  <h3>Stop the daemon</h3>
+  <p class="muted">Stops every agent the daemon runs, then the daemon itself, as <code>asha --stop</code> does.</p>
+  <p><button id="stop-button" type="button" class="danger">Stop the daemon…</button></p>
+  <div id="stop-confirm" class="confirm" hidden>
+    <p>Stop the daemon and every agent on every channel?</p>
+    <button id="stop-yes" type="button" class="danger">Yes, stop it</button>
+    <button id="stop-no" type="button">No</button>
+  </div>
+  <p id="stop-state" class="stop-state" aria-live="polite"></p>
+</section>
+
+<section id="view-state" class="view" role="tabpanel" aria-labelledby="tab-state" hidden>
+  <h2>Saved state</h2>
+  <p><button id="state-refresh" type="button">List saved state</button></p>
+  <div id="state-output"></div>
+  <h3>Reset saved state</h3>
+  <form id="reset-form" class="fields" autocomplete="off">
+    <label class="check wide"><input id="reset-all" type="checkbox"><span>Everything (<code>all</code>)</span></label>
+    <label>Channel <input id="reset-channel" spellcheck="false"></label>
+    <label>Name <input id="reset-name" placeholder="an agent (optional)" spellcheck="false"></label>
+    <label>Team <input id="reset-team" placeholder="its team (optional)" spellcheck="false"></label>
+    <label>User ID <input id="reset-user" placeholder="erase one user (optional)" spellcheck="false"></label>
+    <div class="actions wide"><button type="submit" class="danger">Reset…</button></div>
+  </form>
+  <div id="reset-output"></div>
+  <div id="reset-confirm" class="confirm" hidden>
+    <p>These go. Type <code>reset</code> to remove them:</p>
+    <input id="reset-typed" spellcheck="false" aria-label="Type reset">
+    <button id="reset-go" type="button" class="danger" disabled>Remove them</button>
+  </div>
+</section>
+
+<section id="view-help" class="view" role="tabpanel" aria-labelledby="tab-help" hidden>
+  <h2>Help</h2>
+  <p>Everything the command line does to the daemon, from this page. Each view prints exactly the lines its command prints.</p>
+  <div class="table-wrap">
+  <table class="help">
+    <thead><tr><th>Here</th><th>Command line</th></tr></thead>
+    <tbody>
+      <tr><td>Send: a message, with a recipe, an addressee and a user ID</td><td><code>asha [user=…] [recipe=…] [channel=…] [to=…] message=…</code></td></tr>
+      <tr><td>Send: Topic</td><td><code>topic=&lt;topic&gt;</code></td></tr>
+      <tr><td>Send: Answers conversation, or a block's Answer button</td><td><code>conversation=&lt;id&gt;</code></td></tr>
+      <tr><td>Send: Posts budget, Tokens budget</td><td><code>posts=&lt;n&gt;</code>, <code>tokens=&lt;n&gt;</code></td></tr>
+      <tr><td>Send: the session of messages</td><td><code>asha --interactive</code></td></tr>
+      <tr><td>Send: Files</td><td><code>file=&lt;path&gt;</code> (a path word has no counterpart: a browser never gives a page a path)</td></tr>
+      <tr><td>Send: Download a returned file</td><td>saving it to <code>./asha-files/&lt;channel&gt;/&lt;name&gt;</code></td></tr>
+      <tr><td>Watch</td><td><code>asha --watch channel=…</code>, and <code>/watch on</code></td></tr>
+      <tr><td>Watch: the message box under the chat</td><td><code>asha [to=…] channel=… message=…</code>, as your <code>asha --portal</code> user</td></tr>
+      <tr><td>Watch: Run demo</td><td>the demo page's commands: <code>asha --launch team=…</code>, then each scenario's messages</td></tr>
+      <tr><td>Command-line view</td><td>the lines the command prints</td></tr>
+      <tr><td>Show details</td><td><code>--verbose</code></td></tr>
+      <tr><td>Launch: recipe or team</td><td><code>asha --launch recipe=… | team=… [channel=…]</code></td></tr>
+      <tr><td>Status</td><td><code>asha --status</code></td></tr>
+      <tr><td>Status: Stop the daemon</td><td><code>asha --stop</code></td></tr>
+      <tr><td>State: List saved state</td><td><code>asha --list-state</code></td></tr>
+      <tr><td>State: Reset</td><td><code>asha --reset-state all | channel=… [name=… [team=…]]</code>, typing <code>reset</code> as it asks</td></tr>
+      <tr><td>State: Reset with a user ID</td><td><code>asha --reset-state channel=… [name=… [team=…]] user=…</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">Not here: <code>asha --server</code> (run the daemon in a terminal) and the command line's own <code>--help</code>. This page stops working when the daemon restarts, since its credential changes: run <code>asha --portal</code> to open one that works.</p>
+</section>
+
+</main>
+</body>
+</html>

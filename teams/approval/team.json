@@ -1,0 +1,10 @@
+{
+  "id": "approval",
+  "description": "P15, human approval gate: a clerk that posts an announcement to the board only after the user approves it.",
+  "members": [
+    {
+      "name": "clerk",
+      "recipe": "clerk.json"
+    }
+  ]
+}

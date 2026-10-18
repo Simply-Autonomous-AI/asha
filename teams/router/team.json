@@ -1,0 +1,22 @@
+{
+  "id": "router",
+  "description": "P2, router: a router sends each request to the one specialist whose description covers it.",
+  "members": [
+    {
+      "name": "router",
+      "recipe": "router.json"
+    },
+    {
+      "name": "desk-a",
+      "recipe": "desk-a.json"
+    },
+    {
+      "name": "desk-b",
+      "recipe": "desk-b.json"
+    },
+    {
+      "name": "desk-c",
+      "recipe": "desk-c.json"
+    }
+  ]
+}

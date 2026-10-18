@@ -1,0 +1,53 @@
+{
+  "scenario": "p02-a",
+  "breaks": "exactly one internal message, router-1 → desk-a-1, containing \"thank you\"",
+  "note": "router-1 sends the request to desk-b-1 as well.",
+  "team": "router",
+  "input": {
+    "user": "alice",
+    "to": "router-1",
+    "text": "Please translate 'thank you' into French."
+  },
+  "recipients": [
+    "router-1"
+  ],
+  "messages": [
+    {
+      "from": "router-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "router-1",
+      "kind": "internal",
+      "text": "Translate 'thank you' into French.",
+      "to": "desk-a-1",
+      "working": [
+        "router-1",
+        "desk-a-1"
+      ]
+    },
+    {
+      "from": "router-1",
+      "kind": "internal",
+      "text": "Translate 'thank you' into French.",
+      "to": "desk-b-1",
+      "working": [
+        "router-1",
+        "desk-a-1",
+        "desk-b-1"
+      ]
+    },
+    {
+      "from": "desk-a-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "desk-a-1",
+      "kind": "output",
+      "text": "Merci"
+    }
+  ],
+  "ms": 5000
+}

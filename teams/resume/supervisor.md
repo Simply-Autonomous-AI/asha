@@ -1,0 +1,2 @@
+1. When the user writes to you asking for worker-1's word (a message with the line "The user wrote to you:"), call consult, never send_message: one request, to worker-1, exactly: What is your word? Do this also when the message says it was sent before the harness restarted: worker-1's answer is never kept, so ask again.
+2. When worker-1's answer comes back (a message that starts "You consulted"), call reply with "worker-1's word is " followed by its answer, and nothing else.

@@ -1,0 +1,36 @@
+{
+  "scenario": "p12-b",
+  "breaks": null,
+  "note": "The passing conversation, written by hand in the shape the daemon streams and logs (tests/agents/patterns/fixture.ts).",
+  "team": "self-select",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Please say: Hello World."
+  },
+  "recipients": [
+    "greeter-1",
+    "translator-1"
+  ],
+  "messages": [
+    {
+      "from": "translator-1",
+      "kind": "status",
+      "text": "pass: not a translation",
+      "working": [
+        "greeter-1"
+      ]
+    },
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "greeter-1",
+      "kind": "output",
+      "text": "Hello World."
+    }
+  ],
+  "ms": 3000
+}

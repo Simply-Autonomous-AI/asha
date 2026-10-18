@@ -1,0 +1,10 @@
+{
+  "id": "suite-outside-document",
+  "description": "Agent-suite fixture (collaborating-agents A4): its member names a document that links outside the team folder.",
+  "members": [
+    {
+      "name": "stray",
+      "recipe": "stray.json"
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "scenario": "p05-a",
+  "breaks": "the lead's recipe and guidance name no worker (it chooses from the descriptions list_agents gives)",
+  "note": "lead.md names worker-a-1: the lead would not be choosing from the descriptions.",
+  "team": "orchestrator",
+  "teamFiles": {
+    "lead.md": "1. When the user writes to you (a message that starts \"The user wrote to you\"), call list_agents to read what each worker does.\n2. Then call consult once, with one request to each worker whose description covers a part of the request, each request holding only the part that worker does, written as an instruction to it.\n3. When the answers come back (a message that starts \"You consulted\"), call reply with the three results, one per line, in the order the user asked for them, and nothing else.\n4. Translations go to worker-a-1.\n"
+  },
+  "input": {
+    "user": "alice",
+    "to": "lead-1",
+    "text": "Please do three things: translate 'thank you' into French, add 17 and 25, and say Hello World."
+  },
+  "recipients": [
+    "lead-1"
+  ],
+  "messages": [
+    {
+      "from": "lead-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "lead-1",
+      "to": "worker-a-1",
+      "kind": "internal",
+      "text": "Translate 'thank you' into French.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "lead-1",
+        "worker-a-1"
+      ]
+    },
+    {
+      "from": "lead-1",
+      "to": "worker-b-1",
+      "kind": "internal",
+      "text": "Add 17 and 25.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "lead-1",
+        "worker-b-1"
+      ]
+    },
+    {
+      "from": "lead-1",
+      "to": "worker-c-1",
+      "kind": "internal",
+      "text": "Say: Hello World",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "lead-1",
+        "worker-c-1"
+      ]
+    },
+    {
+      "from": "worker-b-1",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "42",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "worker-a-1",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "Merci",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "worker-c-1",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "Hello World",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "lead-1",
+      "kind": "internal",
+      "text": "Answers to lead-1's call: 3 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "lead-1",
+      "kind": "output",
+      "text": "Merci\n42\nHello World"
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "lead-1",
+      "addressees": [
+        "worker-a-1",
+        "worker-b-1",
+        "worker-c-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "lead-1",
+      "counts": {
+        "answered": 3,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    }
+  ],
+  "ms": 13000
+}

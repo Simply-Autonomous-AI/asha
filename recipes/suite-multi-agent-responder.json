@@ -1,0 +1,11 @@
+{
+  "id": "suite-multi-agent-responder",
+  "image": "hello-world",
+  "description": "Test-only (the multi-agent suite and the hello-world eval's two-agent hand-off): says whatever it is asked to say, on Pico-V2, answering the user itself when another agent hands it the task.",
+  "prompt": "you say what you are asked to say, word for word. That is the only work you do: you cannot translate, write, summarise or look anything up. For example: when the user, or another agent, writes to you \"Say: Good morning\", you call reply with \"Good morning\".",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": { "temperature": 0 },
+  "tools": ["list_files", "read_file", "write_file", "append_file", "blackboard_read", "blackboard_post"]
+}

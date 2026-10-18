@@ -1,0 +1,18 @@
+{
+  "id": "pipeline",
+  "description": "P3, sequential pipeline: each stage adds its colour and hands the list on; the last replies.",
+  "members": [
+    {
+      "name": "stage-a",
+      "recipe": "stage-a.json"
+    },
+    {
+      "name": "stage-b",
+      "recipe": "stage-b.json"
+    },
+    {
+      "name": "stage-c",
+      "recipe": "stage-c.json"
+    }
+  ]
+}

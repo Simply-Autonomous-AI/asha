@@ -1,0 +1,142 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p05-orchestrator-workers.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orchestrator Workers Demo</title>
+<meta name="description" content="P5 · Orchestrator–workers: A lead splits a request into parts and gives each part to the worker whose description covers it, then combines their results. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Orchestrator Workers Demo</nav>
+<h1>P5 · Orchestrator–workers</h1>
+<p class="lede">A lead splits a request into parts and gives each part to the worker whose description covers it, then combines their results.</p>
+<div class="facts"><span>written 2026-09-29</span><span>status: <span class="badge built">built</span> 2026-09-29, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/orchestrator/team.json"><code>teams/orchestrator/</code></a></span><span>test: <a href="../../tests/agents/p05-orchestrator-workers.test.ts"><code>tests/agents/p05-orchestrator-workers.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-2.md</code></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p05-a</code>, as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>Built: its three recorded runs with every member on <code>qwen3-8b-q4_k_m</code> passed, then one under the bound they set, at <code>8745b1a</code> (runs (<code>docs/plans/patterns-phase-2.md</code>)); moved 2026-10-10 by <code>docs/plans/demo-model-pico.md</code> R3, with its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code>: three recorded runs passed at <code>6eed097</code> with the move, then one under the bound they set at <code>8dd3a26</code> (runs (<code>evals/probes/demo-model-pico-runs-2026-10-09/README.md</code>)); its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>lead</code> on <code>qwen3-8b-q4_k_m</code>; <code>worker-a</code>, <code>worker-b</code>, <code>worker-c</code> on <code>pico-v2-q8_0</code>.</li>
+<li>The workers have neutral names, so the lead chooses each part's worker only from the descriptions <code>list_agents</code> reports; its recipe names none of them, and the proof checks that.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p05-orchestrator-workers.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>pico-v2-q8_0</code> and <code>qwen3-8b-q4_k_m</code> (<a href="videos/p05-orchestrator-workers.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 29 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when one request holds several different kinds of work, each with a specialist, and the answer must combine them.</p>
+<p><strong>Do not use it</strong> when every agent gets the same question (fan-out, P4, or voting, P10), or when one request needs only one specialist (router, P2).</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 294" role="img" aria-labelledby="p05-t p05-d">
+  <title id="p05-t">P5 · Orchestrator–workers</title>
+  <desc id="p05-d">lead-1 reads the workers' descriptions, consults each with only its part in one call, gets the three answers in one gather, and replies with three lines.</desc>
+  <defs><marker id="p05-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="95" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M95 44 V288"/>
+  <rect class="box accent" x="210" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="285" y="32" text-anchor="middle">lead-1</text>
+  <path class="edge dim" d="M285 44 V288"/>
+  <rect class="box" x="400" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="475" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M475 44 V288"/>
+  <rect class="box accent" x="590" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="665" y="32" text-anchor="middle">worker-a-1, -b-1, -c-1</text>
+  <path class="edge dim" d="M665 44 V288"/>
+  <path class="edge" d="M95 80 H283" marker-end="url(#p05-a)"/>
+  <text class="label small" x="190" y="74" text-anchor="middle">translate …, add 17 and 25, say Hello World</text>
+  <text class="label small" x="293" y="114">list_agents, then consult (steps 1, 2)</text>
+  <path class="edge" d="M285 148 H663" marker-end="url(#p05-a)"/>
+  <text class="label small" x="475" y="142" text-anchor="middle">one part to each, in one call</text>
+  <path class="edge" d="M665 182 H287" marker-end="url(#p05-a)"/>
+  <text class="label small" x="475" y="176" text-anchor="middle">Merci · 42 · Hello World</text>
+  <path class="edge" d="M475 216 H287" marker-end="url(#p05-a)"/>
+  <text class="label small" x="380" y="210" text-anchor="middle">gather: 3 answered</text>
+  <path class="edge" d="M285 250 H97" marker-end="url(#p05-a)"/>
+  <text class="label small" x="190" y="244" text-anchor="middle">output: three lines, in the order asked</text>
+</svg>
+<figcaption>lead-1 reads the workers' descriptions, consults each with only its part in one call, gets the three answers in one gather, and replies with three lines.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 27,000 ms since 2026-10-10, set from its three recorded runs with its sub-agents on <code>pico-v2-q8_0</code> (<code>docs/plans/demo-model-pico.md</code> R3) — the largest request, p05-a's 17,503 ms in run 1 at <code>6eed097</code> with the move, times 1.5 (26,254.5), rounded up to a whole second; the cap is 45,000 ms. <em>Before, with every member on <code>qwen3-8b-q4_k_m</code>:</em> 27,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-2.md</code> R4) — the largest request, p05-a's 17,775 ms at <code>1a4605c</code>, times 1.5 (26,663), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=orchestrator
+# bound: 27000 ms
+# p05-a
+./asha to=lead-1 user=alice message=&quot;Please do three things: translate &#39;thank you&#39; into French, add 17 and 25, and say Hello World.&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>8dd3a26</code> (clean tree), <code>docs/plans/demo-model-pico.md</code>'s fourth run (R3 (d)), with its sub-agents on <code>pico-v2-q8_0</code>, from its results file <code>evals/probes/demo-model-pico-runs-2026-10-09/run-4/results/p05-orchestrator-workers.json</code>: each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' tool calls as they stream — lines such as <code>› &lt;handle&gt; &lt;tool&gt;: …</code>, one fragment each (D38) — are left out here; the results file holds them. The transcript before, with every member on <code>qwen3-8b-q4_k_m</code>, is in this page's history (<code>git show 8dd3a26:docs/patterns/p05-orchestrator-workers.md</code>).</p>
+<p><strong>p05-a</strong> — exit 0, 15,692 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=lead-1 user=alice message=&quot;Please do three things: translate &#39;thank you&#39; into French, add 17 and 25, and say Hello World.&quot;
+› alice → lead-1 on main: Please do three things: translate &#39;thank you&#39; into French, add 17 and 25, and say Hello World.
+› lead-1: ok
+› internal lead-1 → worker-a-1: Translate &#39;thank you&#39; into French.
+› internal lead-1 → worker-b-1: Add 17 and 25.
+› internal lead-1 → worker-c-1: Say: Hello World.
+› internal worker-b-1 → lead-1: 42
+› internal worker-c-1 → lead-1: Hello World.
+› internal worker-a-1 → lead-1: merci
+› internal asha → lead-1: Answers to lead-1&#39;s call: 3 answered.
+› lead-1: ok
+› output lead-1 → alice:
+The results are:
+1. Translation: merci
+2. Addition: 42
+3. Message: Hello World.
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/orchestrator/team.json"><code>teams/orchestrator/team.json</code></a>: the team — <code>lead</code>, <code>worker-a</code>, <code>worker-b</code>, <code>worker-c</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>.</li>
+<li><code>lead</code>: <a href="../../teams/orchestrator/lead.json"><code>lead.json</code></a>, its recipe, and <a href="../../teams/orchestrator/lead.md"><code>lead.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>worker-a</code>: <a href="../../teams/orchestrator/worker-a.json"><code>worker-a.json</code></a>, its recipe, and <a href="../../teams/orchestrator/worker-a.md"><code>worker-a.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>worker-b</code>: <a href="../../teams/orchestrator/worker-b.json"><code>worker-b.json</code></a>, its recipe, and <a href="../../teams/orchestrator/worker-b.md"><code>worker-b.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>worker-c</code>: <a href="../../teams/orchestrator/worker-c.json"><code>worker-c.json</code></a>, its recipe, and <a href="../../teams/orchestrator/worker-c.md"><code>worker-c.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><a href="../../tests/agents/p05-orchestrator-workers.test.ts"><code>tests/agents/p05-orchestrator-workers.test.ts</code></a>: launches the team and sends each scenario's message from this page, then asserts each scenario only through its checker, <code>P05_A</code> in <a href="../../tests/agents/patterns/phase-2.ts"><code>tests/agents/patterns/phase-2.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p05-a/pass.json"><code>tests/agents/patterns/fixtures/p05-a/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>With its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code> (demo-model-pico, 2026-10-10): its largest request took 17,503 ms in the three recorded runs and 15,692 ms in the fourth, under its bound of 27,000 ms. The limits after it were measured with every member on <code>qwen3-8b-q4_k_m</code>, before the move; one about a sub-agent was not measured again on <code>pico-v2-q8_0</code>.</li>
+<li>Measured in the premise probes (2026-09-29, <code>0be190f</code>), its chain of model turns took 11.0 s with cold prompts and 3.9 s warm (<code>docs/plans/patterns-phase-2.md</code>); the three workers answer in parallel.</li>
+<li>The split is the model's: a lead that sends each worker the whole request, or a part to the wrong worker, fails the proof, which checks each question's words.</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p05">agent test report, P5 · Orchestrator–workers</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p05-orchestrator-workers.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

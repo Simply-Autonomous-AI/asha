@@ -1,0 +1,101 @@
+{
+  "commit": "d102a45b4059a62f100af58747d186b1be299a95",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p07-a/orange-call",
+  "control": false,
+  "change": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "7"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "7"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1085,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 2576,
+      "board": [],
+      "requestSha256": "aec5c40e80482922a17cb940cfbd7962f288a3c4d31ffd61f672ab5695d5242e",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "7"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "7"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1085,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 392,
+      "board": [],
+      "requestSha256": "aec5c40e80482922a17cb940cfbd7962f288a3c4d31ffd61f672ab5695d5242e",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "7"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "7"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1085,
+          "completionTokens": 17
+        }
+      ],
+      "ms": 391,
+      "board": [],
+      "requestSha256": "aec5c40e80482922a17cb940cfbd7962f288a3c4d31ffd61f672ab5695d5242e",
+      "ok": true
+    }
+  ]
+}

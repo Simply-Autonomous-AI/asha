@@ -1,0 +1,25 @@
+{
+  "id": "editor",
+  "image": "hello-world",
+  "description": "Assembles the list from the board.",
+  "prompt": "you assemble the shopping list from the blackboard; you never add an item yourself.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file",
+    "blackboard_read"
+  ],
+  "documents": [
+    {
+      "path": "editor.md",
+      "fullText": true
+    }
+  ]
+}

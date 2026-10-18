@@ -1,0 +1,151 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p07-hierarchy.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hierarchical Teams Demo</title>
+<meta name="description" content="P7 · Hierarchical teams: A top supervisor calls sub-leads, each of which calls its own workers. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Hierarchical Teams Demo</nav>
+<h1>P7 · Hierarchical teams</h1>
+<p class="lede">A top supervisor calls sub-leads, each of which calls its own workers before answering.</p>
+<div class="facts"><span>written 2026-10-02</span><span>status: <span class="badge built">built</span> 2026-10-02, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/hierarchy/team.json"><code>teams/hierarchy/</code></a></span><span>test: <a href="../../tests/agents/p07-hierarchy.test.ts"><code>tests/agents/p07-hierarchy.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-3.md</code>, its runs</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenario: <code>p07-a</code>, as <code>docs/plans/orchestration-patterns.md</code> specifies it.</li>
+<li>Built: its three recorded runs with every member on <code>qwen3-8b-q4_k_m</code> passed, then one under the bound they set, at <code>7198bb0</code> (runs (<code>docs/plans/patterns-phase-3.md</code>)); moved 2026-10-10 by <code>docs/plans/demo-model-pico.md</code> R3, with its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code>: three recorded runs passed at <code>6eed097</code> with the move, then one under the bound they set at <code>8dd3a26</code> (runs (<code>evals/probes/demo-model-pico-runs-2026-10-09/README.md</code>)); its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>top</code>, <code>lead-warm</code>, <code>lead-cool</code> on <code>qwen3-8b-q4_k_m</code>; <code>red</code>, <code>orange</code>, <code>blue</code>, <code>violet</code> on <code>pico-v2-q8_0</code>.</li>
+<li>The two leads' recipes name <code>nestedCalls: true</code> (<a href="../architecture/channel.html#nested">nested calls</a>): asked by top-1 in a call, each consults its own workers first; their answers come back to it as a gather that is a call turn answering top-1.</li>
+<li>Each worker knows one colour's number, and no other file of the team holds it, so the right answer can only come through the hierarchy.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p07-hierarchy.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>pico-v2-q8_0</code> and <code>qwen3-8b-q4_k_m</code> (<a href="videos/p07-hierarchy.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 49 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when a task splits into parts that each split again, and each part has an agent that knows how to split it: the top agent need not know the workers.</p>
+<p><strong>Do not use it</strong> when one lead can ask every worker itself (fan-out, P4; orchestrator–workers, P5), or when the parts must be done in order (pipeline, P3). Calls nest one level only: a worker asked by a lead cannot consult in turn.</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-labelledby="p07-t p07-d">
+  <title id="p07-t">P7 · Hierarchical teams</title>
+  <desc id="p07-d">top-1 consults lead-warm-1 and lead-cool-1; each lead, asked in a call, consults its two workers; the workers answer their numbers; each lead's gather is a call turn in which it answers top-1 with its two numbers; top-1's gather holds both, and it replies warm: 4, 7; cool: 3, 2.</desc>
+  <defs><marker id="p07-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="255" y="10" width="130" height="34" rx="5"/>
+  <text class="label mono" x="320" y="32" text-anchor="middle">you</text>
+  <rect class="box accent" x="255" y="70" width="130" height="34" rx="5"/>
+  <text class="label mono" x="320" y="92" text-anchor="middle">top-1</text>
+  <rect class="box accent" x="95" y="140" width="150" height="34" rx="5"/>
+  <text class="label mono" x="170" y="162" text-anchor="middle">lead-warm-1</text>
+  <rect class="box accent" x="395" y="140" width="150" height="34" rx="5"/>
+  <text class="label mono" x="470" y="162" text-anchor="middle">lead-cool-1</text>
+  <rect class="box" x="20" y="230" width="110" height="34" rx="5"/>
+  <text class="label mono" x="75" y="252" text-anchor="middle">red-1: 4</text>
+  <rect class="box" x="160" y="230" width="120" height="34" rx="5"/>
+  <text class="label mono" x="220" y="252" text-anchor="middle">orange-1: 7</text>
+  <rect class="box" x="360" y="230" width="110" height="34" rx="5"/>
+  <text class="label mono" x="415" y="252" text-anchor="middle">blue-1: 3</text>
+  <rect class="box" x="500" y="230" width="120" height="34" rx="5"/>
+  <text class="label mono" x="560" y="252" text-anchor="middle">violet-1: 2</text>
+  <path class="edge" d="M320 44 V68" marker-end="url(#p07-a)"/>
+  <path class="edge" d="M300 104 L190 138" marker-end="url(#p07-a)"/>
+  <path class="edge" d="M340 104 L450 138" marker-end="url(#p07-a)"/>
+  <text class="label small" x="320" y="128" text-anchor="middle">consult (call)</text>
+  <path class="edge" d="M150 174 L85 228" marker-end="url(#p07-a)"/>
+  <path class="edge" d="M190 174 L215 228" marker-end="url(#p07-a)"/>
+  <path class="edge" d="M450 174 L420 228" marker-end="url(#p07-a)"/>
+  <path class="edge" d="M490 174 L555 228" marker-end="url(#p07-a)"/>
+  <text class="label small" x="320" y="205" text-anchor="middle">each lead's consult: a child of top-1's call</text>
+  <text class="label small" x="320" y="290" text-anchor="middle">answers come back up: 4, 7 · 3, 2 → warm: 4, 7; cool: 3, 2</text>
+</svg>
+<figcaption>top-1 consults lead-warm-1 and lead-cool-1; each lead, asked in a call, consults its two workers; the workers answer their numbers; each lead's gather is a call turn in which it answers top-1 with its two numbers; top-1's gather holds both, and it replies warm: 4, 7; cool: 3, 2.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send the scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 45,000 ms since 2026-10-10, set from its three recorded runs with its sub-agents on <code>pico-v2-q8_0</code> (<code>docs/plans/demo-model-pico.md</code> R3) — the largest request, p07-a's 37,804 ms in run 3 at <code>6eed097</code> with the move, times 1.5 (56,706, over the cap, so the cap); the cap is 45,000 ms. <em>Before, with every member on <code>qwen3-8b-q4_k_m</code>:</em> 45,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-3.md</code> R4) — the largest request, p07-a's 34,402 ms at <code>65e1fab</code>, times 1.5 (51,603) is over the cap, so the bound is the cap, 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=hierarchy
+# bound: 45000 ms
+# p07-a
+./asha to=top-1 user=alice message=&quot;Which numbers stand for the warm colours and for the cool colours?&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>8dd3a26</code> (clean tree), <code>docs/plans/demo-model-pico.md</code>'s fourth run (R3 (d)), with its sub-agents on <code>pico-v2-q8_0</code>, from its results file <code>evals/probes/demo-model-pico-runs-2026-10-09/run-4/results/p07-hierarchy.json</code>: each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' tool calls as they stream — lines such as <code>› &lt;handle&gt; &lt;tool&gt;: …</code>, one fragment each (D38) — are left out here; the results file holds them. The transcript before, with every member on <code>qwen3-8b-q4_k_m</code>, is in this page's history (<code>git show 8dd3a26:docs/patterns/p07-hierarchy.md</code>).</p>
+<p><strong>p07-a</strong> — exit 0, 32,555 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=top-1 user=alice message=&quot;Which numbers stand for the warm colours and for the cool colours?&quot;
+› alice → top-1 on main: Which numbers stand for the warm colours and for the cool colours?
+› top-1: ok
+› internal top-1 → lead-warm-1: What are your colours&#39; numbers?
+› internal top-1 → lead-cool-1: What are your colours&#39; numbers?
+› lead-warm-1: ok
+› internal lead-warm-1 → red-1: What is your number?
+› internal lead-warm-1 → orange-1: What is your number?
+› lead-cool-1: ok
+› internal lead-cool-1 → blue-1: What is your number?
+› internal lead-cool-1 → violet-1: What is your number?
+› internal red-1 → lead-warm-1: 4
+› internal orange-1 → lead-warm-1: 7
+› internal asha → lead-warm-1: Answers to lead-warm-1&#39;s call: 2 answered.
+› internal blue-1 → lead-cool-1: 3
+› internal violet-1 → lead-cool-1: 2
+› internal asha → lead-cool-1: Answers to lead-cool-1&#39;s call: 2 answered.
+› internal lead-warm-1 → top-1: 4, 7
+› internal lead-cool-1 → top-1: 3, 2
+› internal asha → top-1: Answers to top-1&#39;s call: 2 answered.
+› top-1: ok
+› output top-1 → alice:
+warm: 4, 7; cool: 3, 2
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/hierarchy/team.json"><code>teams/hierarchy/team.json</code></a>: the team — <code>top</code>, <code>lead-warm</code>, <code>lead-cool</code>, <code>red</code>, <code>orange</code>, <code>blue</code>, <code>violet</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>.</li>
+<li>Each member's recipe <code>&lt;name&gt;.json</code> and its guidance <code>&lt;name&gt;.md</code>, a full-text document in its system prompt: <a href="../../teams/hierarchy/top.json"><code>top.json</code></a>, <a href="../../teams/hierarchy/lead-warm.json"><code>lead-warm.json</code></a> and <a href="../../teams/hierarchy/lead-cool.json"><code>lead-cool.json</code></a> (each with <code>nestedCalls: true</code>), <a href="../../teams/hierarchy/red.json"><code>red.json</code></a>, <a href="../../teams/hierarchy/orange.json"><code>orange.json</code></a>, <a href="../../teams/hierarchy/blue.json"><code>blue.json</code></a>, <a href="../../teams/hierarchy/violet.json"><code>violet.json</code></a>.</li>
+<li><a href="../../tests/agents/p07-hierarchy.test.ts"><code>tests/agents/p07-hierarchy.test.ts</code></a>: launches the team and sends the scenario's message from this page, then asserts it only through its checker, <code>P07_A</code> in <a href="../../tests/agents/patterns/phase-3.ts"><code>tests/agents/patterns/phase-3.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p07-a/pass.json"><code>tests/agents/patterns/fixtures/p07-a/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>With its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code> (demo-model-pico, 2026-10-10): its largest request took 37,804 ms in the three recorded runs and 32,555 ms in the fourth, under its bound of 45,000 ms. The limits after it were measured with every member on <code>qwen3-8b-q4_k_m</code>, before the move; one about a sub-agent was not measured again on <code>pico-v2-q8_0</code>.</li>
+<li>Without <code>nestedCalls</code> a lead is offered no <code>consult</code> in its call turn, and cannot ask its workers (the plan's control C2, 0/3).</li>
+<li>Calls nest one level deep (<code>CALL_MAX_DEPTH</code> 2): the channel refuses a consult from a question of a nested call. The nested call's rules — its parent recorded, its outcomes, its close with its parent, both levels counted against the conversation's posts — are proven without a model in <a href="../../tests/unit/nested-calls.test.ts"><code>nested-calls.test.ts</code></a>.</li>
+<li>The seven members' ten turns take about 34 s a request in its recorded runs, every turn on the one model server — over the plan's estimate of about 20 s from the probes' single turns (runs (<code>docs/plans/patterns-phase-3.md</code>)) — so its bound is R4's cap, 45,000 ms.</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p07">agent test report, P7 · Hierarchical teams</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p07-hierarchy.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

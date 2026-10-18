@@ -1,0 +1,157 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p04-fan-out.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fan-Out Fan-In Demo</title>
+<meta name="description" content="P4 · Fan-out / fan-in (scatter-gather): One call asks many agents at once, and all their answers come back together, in one gather, to the agent that asked. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Fan-Out Fan-In Demo</nav>
+<h1>P4 · Fan-out / fan-in (scatter-gather)</h1>
+<p class="lede">One call asks many agents at once, and all their answers come back together, in one gather, to the agent that asked.</p>
+<div class="facts"><span>written 2026-09-29</span><span>status: <span class="badge built">built</span> 2026-09-29, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/rainbow/team.json"><code>teams/rainbow/</code></a></span><span>test: <a href="../../tests/agents/p04-fan-out.test.ts"><code>tests/agents/p04-fan-out.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-2.md</code></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p04-a</code>, as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>Built: its three recorded runs with every member on <code>qwen3-8b-q4_k_m</code> passed, then one under the bound they set, at <code>7a0536a</code> (runs (<code>docs/plans/patterns-phase-2.md</code>)); moved 2026-10-10 by <code>docs/plans/demo-model-pico.md</code> R3, with its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code>: three recorded runs passed at <code>6eed097</code> with the move, then one under the bound they set at <code>8dd3a26</code> (runs (<code>evals/probes/demo-model-pico-runs-2026-10-09/README.md</code>)); its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>supervisor</code> on <code>qwen3-8b-q4_k_m</code>; <code>fact-red</code>, <code>fact-orange</code>, <code>fact-yellow</code>, <code>fact-green</code>, <code>fact-blue</code>, <code>fact-indigo</code>, <code>fact-violet</code>, <code>fact-pink</code>, <code>fact-brown</code> on <code>pico-v2-q8_0</code>.</li>
+<li>The team is the rainbow of <code>docs/plans/collaborating-agents.md</code>: ten agents, a supervisor and nine members that each know one number and its colour; it passed three recorded runs and one under its bound there (runs (<code>docs/plans/collaborating-agents.md</code>)).</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p04-fan-out.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>pico-v2-q8_0</code> and <code>qwen3-8b-q4_k_m</code> (<a href="videos/p04-fan-out.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 59 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when one agent needs a piece of information from each of many agents and must combine them: the questions go out at once and the answers arrive in one turn, so the combining agent never has to remember an answer between turns.</p>
+<p><strong>Do not use it</strong> when each step needs the one before (a pipeline, P3), or when the parts differ in kind and the lead must choose who does what (orchestrator–workers, P5).</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 294" role="img" aria-labelledby="p04-t p04-d">
+  <title id="p04-t">P4 · Fan-out / fan-in (scatter-gather)</title>
+  <desc id="p04-d">supervisor-1 consults the nine fact members in one call; their nine answers go back to it only, as one gather; it replies with the rainbow's numbers.</desc>
+  <defs><marker id="p04-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="95" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M95 44 V288"/>
+  <rect class="box accent" x="210" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="285" y="32" text-anchor="middle">supervisor-1</text>
+  <path class="edge dim" d="M285 44 V288"/>
+  <rect class="box" x="400" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="475" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M475 44 V288"/>
+  <rect class="box accent" x="590" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="665" y="32" text-anchor="middle">fact-red-1 … fact-brown-1</text>
+  <path class="edge dim" d="M665 44 V288"/>
+  <path class="edge" d="M95 80 H283" marker-end="url(#p04-a)"/>
+  <text class="label small" x="190" y="74" text-anchor="middle">Which sequence of the numbers …?</text>
+  <text class="label small" x="293" y="114">consult, one call to all nine (step 1)</text>
+  <path class="edge" d="M285 148 H663" marker-end="url(#p04-a)"/>
+  <text class="label small" x="475" y="142" text-anchor="middle">nine questions, posted before any answer</text>
+  <path class="edge" d="M665 182 H287" marker-end="url(#p04-a)"/>
+  <text class="label small" x="475" y="176" text-anchor="middle">nine answers: number and colour each</text>
+  <path class="edge" d="M475 216 H287" marker-end="url(#p04-a)"/>
+  <text class="label small" x="380" y="210" text-anchor="middle">one gather: 9 answered</text>
+  <path class="edge" d="M285 250 H97" marker-end="url(#p04-a)"/>
+  <text class="label small" x="190" y="244" text-anchor="middle">output: red (4), orange (7), … violet (2)</text>
+</svg>
+<figcaption>supervisor-1 consults the nine fact members in one call; their nine answers go back to it only, as one gather; it replies with the rainbow's numbers.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 45,000 ms since 2026-10-10, set from its three recorded runs with its sub-agents on <code>pico-v2-q8_0</code> (<code>docs/plans/demo-model-pico.md</code> R3) — the largest request, p04-a's 37,076 ms in run 2 at <code>6eed097</code> with the move, times 1.5 (55,614, over the cap, so the cap); the cap is 45,000 ms. <em>Before, with every member on <code>qwen3-8b-q4_k_m</code>:</em> 45,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-2.md</code> R4) — the largest request, p04-a's 38,769 ms at <code>245104c</code>, times 1.5 (58,154, over the cap, so the cap), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=rainbow
+# bound: 45000 ms
+# p04-a
+./asha to=supervisor-1 user=alice message=&quot;Which sequence of the numbers lists their colours in rainbow order?&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>8dd3a26</code> (clean tree), <code>docs/plans/demo-model-pico.md</code>'s fourth run (R3 (d)), with its sub-agents on <code>pico-v2-q8_0</code>, from its results file <code>evals/probes/demo-model-pico-runs-2026-10-09/run-4/results/p04-fan-out.json</code>: each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' tool calls as they stream — lines such as <code>› &lt;handle&gt; &lt;tool&gt;: …</code>, one fragment each (D38) — are left out here; the results file holds them. The transcript before, with every member on <code>qwen3-8b-q4_k_m</code>, is in this page's history (<code>git show 8dd3a26:docs/patterns/p04-fan-out.md</code>).</p>
+<p><strong>p04-a</strong> — exit 0, 35,668 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=supervisor-1 user=alice message=&quot;Which sequence of the numbers lists their colours in rainbow order?&quot;
+› alice → supervisor-1 on main: Which sequence of the numbers lists their colours in rainbow order?
+› supervisor-1: ok
+› internal supervisor-1 → fact-blue-1: What number and colour do you know?
+› internal supervisor-1 → fact-brown-1: What number and colour do you know?
+› internal supervisor-1 → fact-green-1: What number and colour do you know?
+› internal supervisor-1 → fact-indigo-1: What number and colour do you know?
+› internal supervisor-1 → fact-orange-1: What number and colour do you know?
+› internal supervisor-1 → fact-pink-1: What number and colour do you know?
+› internal supervisor-1 → fact-red-1: What number and colour do you know?
+› internal supervisor-1 → fact-violet-1: What number and colour do you know?
+› internal supervisor-1 → fact-yellow-1: What number and colour do you know?
+› internal fact-violet-1 → supervisor-1: I know the number 2 stands for the colour violet.
+› internal fact-red-1 → supervisor-1: I know the number 4 stands for the colour red.
+› internal fact-brown-1 → supervisor-1: I know the number 8 stands for the colour brown.
+› internal fact-pink-1 → supervisor-1: I know the number 5 stands for the colour pink.
+› internal fact-green-1 → supervisor-1: I know the number 9 stands for the colour green.
+› internal fact-yellow-1 → supervisor-1: I know the number 1 stands for the colour yellow.
+› internal fact-indigo-1 → supervisor-1: I know the number 6 stands for the colour indigo.
+› internal fact-blue-1 → supervisor-1: I know the number 3 stands for the colour blue.
+› internal fact-orange-1 → supervisor-1: I know the number 7 stands for the colour orange.
+› internal asha → supervisor-1: Answers to supervisor-1&#39;s call: 9 answered.
+› supervisor-1: ok
+› output supervisor-1 → alice:
+The sequence of numbers that lists their colours in rainbow order is: red (4), orange (7), yellow (1), green (9), blue (3), indigo (6), violet (2).
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/rainbow/team.json"><code>teams/rainbow/team.json</code></a>: the team — <code>supervisor</code>, <code>fact-red</code>, <code>fact-orange</code>, <code>fact-yellow</code>, <code>fact-green</code>, <code>fact-blue</code>, <code>fact-indigo</code>, <code>fact-violet</code>, <code>fact-pink</code>, <code>fact-brown</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>.</li>
+<li><code>supervisor</code>: <a href="../../teams/rainbow/supervisor.json"><code>supervisor.json</code></a>, its recipe, and <a href="../../teams/rainbow/supervisor.md"><code>supervisor.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>fact-red</code>: <a href="../../teams/rainbow/fact-red.json"><code>fact-red.json</code></a>, its recipe, and <a href="../../teams/rainbow/fact-red.md"><code>fact-red.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>fact-orange</code>: <a href="../../teams/rainbow/fact-orange.json"><code>fact-orange.json</code></a>, its recipe, and <a href="../../teams/rainbow/fact-orange.md"><code>fact-orange.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>fact-yellow</code>: <a href="../../teams/rainbow/fact-yellow.json"><code>fact-yellow.json</code></a>, its recipe, and <a href="../../teams/rainbow/fact-yellow.md"><code>fact-yellow.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>fact-green</code>: <a href="../../teams/rainbow/fact-green.json"><code>fact-green.json</code></a>, its recipe, and <a href="../../teams/rainbow/fact-green.md"><code>fact-green.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>fact-blue</code>: <a href="../../teams/rainbow/fact-blue.json"><code>fact-blue.json</code></a>, its recipe, and <a href="../../teams/rainbow/fact-blue.md"><code>fact-blue.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>fact-indigo</code>: <a href="../../teams/rainbow/fact-indigo.json"><code>fact-indigo.json</code></a>, its recipe, and <a href="../../teams/rainbow/fact-indigo.md"><code>fact-indigo.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>fact-violet</code>: <a href="../../teams/rainbow/fact-violet.json"><code>fact-violet.json</code></a>, its recipe, and <a href="../../teams/rainbow/fact-violet.md"><code>fact-violet.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>fact-pink</code>: <a href="../../teams/rainbow/fact-pink.json"><code>fact-pink.json</code></a>, its recipe, and <a href="../../teams/rainbow/fact-pink.md"><code>fact-pink.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>fact-brown</code>: <a href="../../teams/rainbow/fact-brown.json"><code>fact-brown.json</code></a>, its recipe, and <a href="../../teams/rainbow/fact-brown.md"><code>fact-brown.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><a href="../../tests/agents/p04-fan-out.test.ts"><code>tests/agents/p04-fan-out.test.ts</code></a>: launches the team and sends each scenario's message from this page, then asserts each scenario only through its checker, <code>P04_A</code> in <a href="../../tests/agents/patterns/rainbow.ts"><code>tests/agents/patterns/rainbow.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p04-a/pass.json"><code>tests/agents/patterns/fixtures/p04-a/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>With its routers on <code>qwen3-8b-q4_k_m</code> and its sub-agents on <code>pico-v2-q8_0</code> (demo-model-pico, 2026-10-10): its largest request took 37,076 ms in the three recorded runs and 35,668 ms in the fourth, under its bound of 45,000 ms. The limits after it were measured with every member on <code>qwen3-8b-q4_k_m</code>, before the move; one about a sub-agent was not measured again on <code>pico-v2-q8_0</code>.</li>
+<li>The supervisor's first guidance, &quot;order the rest as the rainbow does&quot;, failed on <code>qwen3-8b-q4_k_m</code>; an explicit colour-by-colour lookup passed (D37, paid; runs (<code>docs/plans/collaborating-agents.md</code>)).</li>
+<li>Nine questions share four model-server slots, so the last waits for a slot while its delivery bound runs; every recipe's <code>messageTimeoutMs</code> is 51,000 ms, twice the longest delivery measured (collaborating-agents R13). The request took 36,941–38,137 ms in its recorded runs, under the 45,000 ms cap.</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p04">agent test report, P4 · Fan-out / fan-in (scatter-gather)</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p04-fan-out.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

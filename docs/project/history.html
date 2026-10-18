@@ -1,0 +1,141 @@
+<!doctype html>
+<!-- Generated from docs/project/history.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project History</title>
+<meta name="description" content="Dated records behind the asha project pages, newest first: guard proofs, corrections, and how asha was built.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="project">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha Project Details</a> / Project History</nav>
+<h1>Project history</h1>
+<p class="lede">How the <a href="index.html">project pages</a> got to what they say today. The durable pages say what is true now; this page keeps the dated evidence and corrections (PRINCIPLES §12).</p>
+<div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Every docs-guard check was broken on purpose and seen to fail on 2026-09-27; the breakage and the message for each are below.</li>
+<li>The HTML site replaced the Markdown docs in <code>5adbdba</code>, then became a render of Markdown sources (2026-09-27).</li>
+<li>asha was built in one day, 2026-09-26: 59 commits, AI-assisted.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#guard-proofs">2026-09-27: docs-guard proofs</a></li>
+<li><a href="#html-guard-proofs">2026-09-27: HTML-era guard proofs</a></li>
+<li><a href="#callout-colours">2026-09-27: correction, callout colours</a></li>
+<li><a href="#push">2026-09-27: push verified</a></li>
+<li><a href="#docs-site">2026-09-27: HTML site, then Markdown sources</a></li>
+<li><a href="#built">2026-09-26: built in one day</a></li>
+</ol>
+</nav>
+<section id="guard-proofs">
+<h2>2026-09-27: docs-guard proofs</h2>
+<p>Each check in <a href="documentation.html#guard">the guard</a> was broken on a scratch copy of the tree (never the working tree); the guard went red naming the offender, and the copy went green again once restored.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Check</th><th>Breakage</th><th>Failure named</th></tr></thead>
+<tbody>
+<tr><td>one summary</td><td>the summary callout of <code>portal/index.html</code> turned into a note</td><td><code>portal/index.html: 0 summaries in the header</code></td></tr>
+<tr><td>stylesheet hash</td><td>one byte appended to <code>docs/assets/docs.css</code></td><td>the stylesheet test, &quot;docs/assets/docs.css changed: re-copy it to the sibling repo and update the sha256 in both AGENTS.md&quot;</td></tr>
+<tr><td>stale render</td><td>a comment appended by hand to <code>cli/index.html</code></td><td><code>cli/index.html: differs from the render of its .md — run npm run docs, never edit the .html</code></td></tr>
+<tr><td>no source</td><td>a copy of a page as <code>cli/zz-orphan.html</code></td><td><code>cli/zz-orphan.html</code> (and, by the index check, <code>not linked from index.html or cli/index.html</code>)</td></tr>
+<tr><td>link to a source</td><td><code>href=&quot;guide.html&quot;</code> changed to <code>guide.md</code> in a render</td><td><code>cli/index.html: guide.md</code></td></tr>
+<tr><td>unique ids</td><td>a second element with <code>id=&quot;build-run&quot;</code></td><td><code>cli/index.html: id=&quot;build-run&quot;</code></td></tr>
+<tr><td>unused diagram</td><td><code>zz-unused.svg</code> referenced by no source</td><td><code>zz-unused.svg</code></td></tr>
+<tr><td>root fragment</td><td>AGENTS.md linking <code>workflows.html#zz-nope</code></td><td><code>AGENTS.md: ./docs/project/workflows.html#zz-nope (no id=&quot;zz-nope&quot;)</code></td></tr>
+<tr><td>plan status</td><td>portal's index row changed to <code>ready</code></td><td><code>plans/portal.md: status &quot;draft&quot; but its index row says otherwise</code></td></tr>
+<tr><td>checked off</td><td>portal's row marked ☑ while <code>draft</code></td><td><code>plans/portal.md: status &quot;draft&quot; but its index row is checked off</code></td></tr>
+<tr><td>renderer hash</td><td>one line appended to <code>render.mts</code></td><td>the hash test, &quot;tools/docs/render.mts changed: re-copy it to the sibling repo and update the sha256 in both AGENTS.md&quot;</td></tr>
+<tr><td>render error</td><td><code>titel:</code> in the front matter of <code>cli/index.md</code></td><td><code>DocsRenderError: cli/index.md: unknown front matter key &quot;titel&quot; (allowed: title, description)</code></td></tr>
+<tr><td>Node range</td><td><code>engines.node</code> set to <code>&gt;=22.12</code></td><td>the engines test, <code>expected &#39;&gt;=22.12&#39; to be &#39;^22.12.0 || ^24.0.0 || &gt;=26.0.0&#39;</code></td></tr>
+<tr><td>ignored target</td><td>a link to <code>../../dist/src/cli/main.js</code> (ignored by git) added to a render of <code>cli/index.html</code> (2026-09-27, control-api-auth; the check was added after a clean checkout failed on links to the ignored <code>tools/release/evidence/v0.1.1.log</code>)</td><td><code>cli/index.html: ../../dist/src/cli/main.js (ignored by git)</code></td></tr>
+<tr><td>Node floor</td><td>the installed Vitest's <code>engines</code> and <code>package.json</code> both rewritten to <code>^22.0.0 || &gt;=24</code>, then Vitest's to <code>&gt;=22.12</code> (restored byte-identical)</td><td><code>expected &#39;22.0&#39; to be &#39;22.12&#39;</code> (the floor must equal the <code>@types/node</code> major.minor), then <code>Vitest&#39;s engines does not start with a ^major.minor.patch floor</code></td></tr>
+<tr><td>hidden characters (2026-10-01)</td><td>none needed: the guard was written against <code>plans/extension-modules.md</code> at <code>ca06d90</code>, which held two raw U+202E and one raw U+200B, then the characters were replaced by their escapes</td><td><code>plans/extension-modules.md:520 U+202E</code>, <code>plans/extension-modules.md:1035 U+202E</code>, <code>plans/extension-modules.md:1035 U+200B</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>The renderer's unit tests (<code>tests/unit/docs-render.test.ts</code>) were proven by mutating <code>render.mts</code>; each mutation turned the named test red.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Mutation</th><th>Test that failed</th></tr></thead>
+<tbody>
+<tr><td><code>.md</code> links outside docs/ rewritten</td><td>rewrites .md links under docs/…; rewriteHref: a link resolving outside docs/ is unchanged</td></tr>
+<tr><td>TOC threshold 4 → 5</td><td>adds a table of contents at four sections</td></tr>
+<tr><td>duplicate-id check removed</td><td>fails on a duplicate id, naming it</td></tr>
+<tr><td>SVG <code>&lt;title&gt;</code> check removed</td><td>fails on an svg without <code>&lt;title&gt;</code></td></tr>
+<tr><td>raster-image check removed</td><td>fails on a local raster image</td></tr>
+<tr><td>wrap any <code>TODO:</code>, not only a literal one</td><td>renders a TODO: mention as text, not as a gap</td></tr>
+<tr><td>depth limit removed</td><td>refuses deep nesting</td></tr>
+<tr><td>no <code>lede</code> class</td><td>renders the exact head, breadcrumbs, lede, sections and footer</td></tr>
+<tr><td>captions not walked</td><td>rewrites .md links inside a diagram caption</td></tr>
+<tr><td>text escaped twice</td><td>keeps entities the author wrote, and escapes bare characters once</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="html-guard-proofs">
+<h2>2026-09-27: HTML-era guard proofs</h2>
+<p>Made against the hand-written HTML pages, before the Markdown sources, with scratch files that were then removed. The first six rows ran against the guard's first version; the rest against a copy of <code>docs/</code> and the root Markdown. The &quot;no Markdown&quot; check was later replaced by the no-source check.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Check</th><th>Breakage</th><th>Failure named</th></tr></thead>
+<tbody>
+<tr><td>links</td><td>a link to <code>zz-nope.html</code> and to <code>agent-tests.html#zz-no-such-id</code></td><td><code>testing/index.html: zz-nope.html (no such file)</code>; <code>…#zz-no-such-id (no id=&quot;zz-no-such-id&quot; in testing/agent-tests.html)</code></td></tr>
+<tr><td>stylesheet</td><td><code>href=&quot;assets/docs.css&quot;</code> (wrong relative path)</td><td><code>testing/zz-bad.html</code></td></tr>
+<tr><td>network</td><td>loads from <code>https://</code>, <code>//</code>, <code>http://</code>, <code>@import url()</code> and CSS <code>url()</code></td><td>six entries, each naming the tag or URL</td></tr>
+<tr><td>head</td><td>no doctype, title or viewport</td><td>three entries naming the file</td></tr>
+<tr><td>no Markdown</td><td><code>zz-notes.md</code></td><td><code>testing/zz-notes.md</code></td></tr>
+<tr><td>linked directly: top level</td><td>a valid <code>docs/zz-orphan.html</code> linked from nowhere</td><td><code>zz-orphan.html: not linked from index.html</code></td></tr>
+<tr><td>linked directly: section</td><td><code>cli/zz-deep.html</code> linked only from another cli page</td><td><code>cli/zz-deep.html: not linked from index.html or cli/index.html</code></td></tr>
+<tr><td>network: SVG</td><td><code>&lt;image href=&quot;https://e.com/1.png&quot;&gt;</code></td><td><code>zz-net.html: &lt;image href=&quot;https://e.com/1.png&quot;&gt;</code></td></tr>
+<tr><td>network: srcset</td><td><code>srcset=&quot;a.png 1x, https://e.com/2.png 2x&quot;</code></td><td><code>zz-net.html: &lt;img srcset=&quot;a.png 1x, https://e.com/2.png 2x&quot;&gt;</code></td></tr>
+<tr><td>network: object</td><td><code>&lt;object data=&quot;https://e.com/zz.svg&quot;&gt;</code></td><td><code>zz-net.html: &lt;object data=&quot;https://e.com/zz.svg&quot;&gt;</code></td></tr>
+<tr><td>root Markdown</td><td><code>[x](./docs/nope.html#frag)</code> appended to <code>README.md</code></td><td><code>README.md: ./docs/nope.html#frag (no such file)</code></td></tr>
+<tr><td>planned badge: not a link</td><td><code>&lt;span class=&quot;badge planned&quot;&gt;</code></td><td><code>zz-net.html: &lt;span class=&quot;badge planned&quot;&gt;</code></td></tr>
+<tr><td>planned badge: outside plans</td><td><code>&lt;a class=&quot;badge planned&quot; href=&quot;index.html&quot;&gt;</code></td><td><code>zz-net.html: &lt;a class=&quot;badge planned&quot; href=&quot;index.html&quot;&gt;</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="callout-colours">
+<h2>2026-09-27: correction, callout colours</h2>
+<p>The contract's class table said <code>.note</code> looks like an &quot;Amber bar&quot; and <code>.tip</code> a &quot;Teal bar&quot;. The stylesheet draws <code>.note</code> blue and <code>.tip</code> green, each with an icon (<code>.note</code>, <code>.tip</code> rules in <code>docs/assets/docs.css</code>); the descriptions predated the callout restyle in <code>cc82770</code>.</p>
+</section>
+<section id="push">
+<h2>2026-09-27: push verified</h2>
+<p><code>GIT_SSH_COMMAND=&quot;ssh -o ConnectTimeout=5&quot; git push origin main</code> was run in this repository after commit <code>fa414ac</code>, and in the company's two other repositories, and exited 0 each time.</p>
+</section>
+<section id="docs-site">
+<h2>2026-09-27: HTML site, then Markdown sources</h2>
+<ul>
+<li><code>5adbdba</code>: the Markdown docs under <code>docs/</code> were replaced by an HTML site (the owner's direction, now PRINCIPLES §17).</li>
+<li>The same day each hand-written page became a Markdown source, and the HTML a render of it by <code>tools/docs/render.mts</code> (the owner's decision).</li>
+</ul>
+</section>
+<section id="built">
+<h2>2026-09-26: built in one day</h2>
+<p>From <code>git log</code>, read on 2026-09-27: 59 commits up to <code>719dad4</code>, all dated 2026-09-26 from 17:48 to 23:35 (UTC−5), all by the owner. Development used Claude Code: the repo carries a <a href="../../CLAUDE.md">CLAUDE.md</a> for it, and every commit carries the trailer <code>Co-Authored-By: Claude Opus 5.5</code>.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Milestone</th><th>Commit</th><th>What it added</th></tr></thead>
+<tbody>
+<tr><td>The first slice</td><td><code>87e5885</code></td><td>A CLI then named <code>sah</code> and a daemon ran hello-world end to end: colima, a pinned Qwen3-0.6B GGUF downloaded and verified, served with <code>llama-server</code>, the agent image built and run. The commit records a hand-measured cold run of 12.4 s (the 640 MB download and the image build) and a warm run of 1.27 s, both on Qwen3-0.6B. Tests came later.</td></tr>
+<tr><td>Renamed to asha</td><td><code>4145b27</code></td><td>The agent channel, recipe-driven agents, and the auto-started daemon</td></tr>
+<tr><td>Tests for every layer</td><td><code>6ecd2e5</code></td><td>Tests that found races, then fixed, and a deterministic hello-world</td></tr>
+<tr><td>Two-agent hello world</td><td><code>426eecb</code></td><td>Delegation through <code>send_message(to)</code>, <code>--launch</code>, and the routing eval</td></tr>
+<tr><td>Memory tiers</td><td><code>f0620ca</code> design through <code>723dcb5</code></td><td>The <code>memory</code> recipe and a local embedding model</td></tr>
+<tr><td>Latest recorded result</td><td><code>719dad4</code></td><td>Agent suite 35/35 at <code>5b4e25c</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<footer class="page"><span>Source: <code>docs/project/history.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

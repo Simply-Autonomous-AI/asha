@@ -1,0 +1,39 @@
+{
+  "kind": "decider-base",
+  "id": "qwen3.5-2b-base",
+  "repo": "Qwen/Qwen3.5-2B-Base",
+  "revision": "b1485b2fa6dfa1287294f269f5fb618e03d52d7c",
+  "weights": "model.safetensors-00001-of-00001.safetensors",
+  "files": [
+    {
+      "path": "config.json",
+      "size": 2908,
+      "sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4"
+    },
+    {
+      "path": "model.safetensors-00001-of-00001.safetensors",
+      "size": 4548221488,
+      "sha256": "928acbf11878c32185bbd863514d191769285065ab9ea14fbfe431303f5fdf2d"
+    },
+    {
+      "path": "model.safetensors.index.json",
+      "size": 64460,
+      "sha256": "74d2ddfe79f10f35b27b498632f02b97b60dd9ec39b35d7c5a890c399284e319"
+    },
+    {
+      "path": "LICENSE",
+      "size": 11343,
+      "sha256": "50cbab8a892c5f2993b8c7351a99182507472def3b1374558308605d99b86b32"
+    },
+    {
+      "path": "README.md",
+      "size": 3721,
+      "sha256": "50ca45b87d976d9850de95ad00e76fba77e105c2cdef1093b8e3bb261d9a1787"
+    }
+  ],
+  "license": {
+    "id": "apache-2.0",
+    "source": "https://huggingface.co/Qwen/Qwen3.5-2B-Base/blob/b1485b2fa6dfa1287294f269f5fb618e03d52d7c/LICENSE",
+    "verified": "2026-10-03"
+  }
+}

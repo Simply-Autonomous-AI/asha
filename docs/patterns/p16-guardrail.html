@@ -1,0 +1,155 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p16-guardrail.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guardrail Policy Demo</title>
+<meta name="description" content="P16 · Guardrail / policy check: Every reply is checked by a policy agent before the user sees it; a blocked draft is revised and checked again. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Guardrail Policy Demo</nav>
+<h1>P16 · Guardrail / policy check</h1>
+<p class="lede">Every reply is checked by a policy agent before the user sees it; a blocked draft is revised and checked again.</p>
+<div class="facts"><span>written 2026-09-29</span><span>status: <span class="badge built">built</span> 2026-09-29, three recorded runs and one under its bound, after R6's remedies, all green; listed once the <a href="../testing/index.html#selection">demo selector</a> was built</span><span>team: <a href="../../teams/guardrail/team.json"><code>teams/guardrail/</code></a></span><span>test: <a href="../../tests/agents/p16-guardrail.test.ts"><code>tests/agents/p16-guardrail.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-2.md</code></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p16-a</code>, <code>p16-b</code>, as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>Built: its three recorded runs on the pinned model passed after R6's remedies, then one under the bound they set, at <code>e5f1b20</code> (runs (<code>docs/plans/patterns-phase-2.md</code>)); it joined the built demos once the demo selector existed (patterns-phase-2 R13), and its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>writer</code>, <code>policy</code> on <code>qwen3-8b-q4_k_m</code>.</li>
+<li>The rule is synthetic — no phone number, seven or more digits in a row — so a first draft that repeats the user's number is always blocked.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p16-guardrail.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>qwen3-8b-q4_k_m</code> (<a href="videos/p16-guardrail.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 23 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when nothing may reach the user without passing a check another agent owns.</p>
+<p><strong>Do not use it</strong> as a security boundary on its own: the check is a model's judgement, not an enforced filter.</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 362" role="img" aria-labelledby="p16-t p16-d">
+  <title id="p16-t">P16 · Guardrail / policy check</title>
+  <desc id="p16-d">writer-1 asks policy-1 to check its draft; the draft with the number is blocked; the revised text is approved; the writer replies with exactly the approved text.</desc>
+  <defs><marker id="p16-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="20" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="95" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M95 44 V356"/>
+  <rect class="box accent" x="210" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="285" y="32" text-anchor="middle">writer-1</text>
+  <path class="edge dim" d="M285 44 V356"/>
+  <rect class="box" x="400" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="475" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M475 44 V356"/>
+  <rect class="box accent" x="590" y="10" width="150" height="34" rx="5"/>
+  <text class="label mono" x="665" y="32" text-anchor="middle">policy-1</text>
+  <path class="edge dim" d="M665 44 V356"/>
+  <path class="edge" d="M95 80 H283" marker-end="url(#p16-a)"/>
+  <text class="label small" x="190" y="74" text-anchor="middle">How can I reach support? … 5550123456 …</text>
+  <path class="edge" d="M285 114 H663" marker-end="url(#p16-a)"/>
+  <text class="label small" x="475" y="108" text-anchor="middle">Check: … 5550123456 …</text>
+  <path class="edge" d="M665 148 H287" marker-end="url(#p16-a)"/>
+  <text class="label small" x="475" y="142" text-anchor="middle">BLOCK: … without the phone number.</text>
+  <path class="edge" d="M475 182 H287" marker-end="url(#p16-a)"/>
+  <text class="label small" x="380" y="176" text-anchor="middle">gather</text>
+  <path class="edge" d="M285 216 H663" marker-end="url(#p16-a)"/>
+  <text class="label small" x="475" y="210" text-anchor="middle">Check: the text without it</text>
+  <path class="edge" d="M665 250 H287" marker-end="url(#p16-a)"/>
+  <text class="label small" x="475" y="244" text-anchor="middle">APPROVE</text>
+  <path class="edge" d="M475 284 H287" marker-end="url(#p16-a)"/>
+  <text class="label small" x="380" y="278" text-anchor="middle">gather</text>
+  <path class="edge" d="M285 318 H97" marker-end="url(#p16-a)"/>
+  <text class="label small" x="190" y="312" text-anchor="middle">output: exactly the approved text</text>
+</svg>
+<figcaption>writer-1 asks policy-1 to check its draft; the draft with the number is blocked; the revised text is approved; the writer replies with exactly the approved text.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 19,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-2.md</code> R4) — the largest request, p16-a's 12,100 ms at <code>22b26b4</code>, times 1.5 (18,150), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=guardrail
+# bound: 19000 ms
+# p16-a
+./asha to=writer-1 user=alice message=&quot;How can I reach support? Our records say: phone 5550123456, email help@example.com.&quot;
+# p16-b
+./asha to=writer-1 user=alice message=&quot;Greet the world.&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>e5f1b20</code> (clean tree), the run under its bound, from its results file as committed in <code>e596463</code> (<code>git show e596463:tests/agents/results/p16-guardrail.json</code>): each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' output as it streams — lines such as &quot;› delegator-1 consult: {…&quot; printed one fragment each (D38) — is left out here; the results file holds it.</p>
+<p><strong>p16-a</strong> — exit 0, 12,039 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=writer-1 user=alice message=&quot;How can I reach support? Our records say: phone 5550123456, email help@example.com.&quot;
+› alice → writer-1 on main: How can I reach support? Our records say: phone 5550123456, email help@example.com.
+› writer-1: ok
+› internal writer-1 → policy-1: Check: Our records say: phone 5550123456, email help@example.com.
+› internal policy-1 → writer-1: BLOCK: Phone number detected. Send the text again without the phone number.
+› internal asha → writer-1: Answers to writer-1&#39;s call: 1 answered.
+› writer-1: ok
+› internal writer-1 → policy-1: Check: Our records say: email help@example.com.
+› internal policy-1 → writer-1: APPROVE
+› internal asha → writer-1: Answers to writer-1&#39;s call: 1 answered.
+› writer-1: ok
+› output writer-1 → alice:
+Our records say: email help@example.com.
+</code></pre>
+<p><strong>p16-b</strong> — exit 0, 2,175 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=writer-1 user=alice message=&quot;Greet the world.&quot;
+› alice → writer-1 on main: Greet the world.
+› writer-1: ok
+› internal writer-1 → policy-1: Check: Hello, world!
+› internal policy-1 → writer-1: APPROVE
+› internal asha → writer-1: Answers to writer-1&#39;s call: 1 answered.
+› writer-1: ok
+› output writer-1 → alice:
+Hello, world!
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/guardrail/team.json"><code>teams/guardrail/team.json</code></a>: the team — <code>writer</code>, <code>policy</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>.</li>
+<li><code>writer</code>: <a href="../../teams/guardrail/writer.json"><code>writer.json</code></a>, its recipe, and <a href="../../teams/guardrail/writer.md"><code>writer.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>policy</code>: <a href="../../teams/guardrail/policy.json"><code>policy.json</code></a>, its recipe, and <a href="../../teams/guardrail/policy.md"><code>policy.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><a href="../../tests/agents/p16-guardrail.test.ts"><code>tests/agents/p16-guardrail.test.ts</code></a>: launches the team and sends each scenario's message from this page, then asserts each scenario only through its checker, <code>P16_A</code> and <code>P16_B</code> in <a href="../../tests/agents/patterns/phase-2.ts"><code>tests/agents/patterns/phase-2.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p16-a/pass.json"><code>tests/agents/patterns/fixtures/p16-a/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>Measured in the premise probes (2026-09-29, <code>0be190f</code>), its chain of model turns took 12.3 s (p16-a) and 2.3 s (p16-b) with cold prompts (<code>docs/plans/patterns-phase-2.md</code>).</li>
+<li>The guard is guidance the writer follows, not a filter the harness enforces: the proof checks that the output equals the last approved text.</li>
+<li>The first draft is the model's weak point: it tends to check the user's message word for word as its draft, and then to reply with that message rather than the approved text. The writer is told to write its own sentence answering the user and to reply with the text after <code>Check:</code> in its last question; p16-a's input is a question with a second way to reach support, so the blocked draft keeps the email, and p16-b's is <code>Greet the world.</code> (<code>docs/plans/patterns-phase-2.md</code>, R6, two reshapes).</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p16">agent test report, P16 · Guardrail / policy check</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p16-guardrail.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

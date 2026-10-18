@@ -1,0 +1,40 @@
+{
+  "pattern": "P12",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:29:00.971Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p12-self-selection",
+  "models": [
+    "pico-v2-q8_0"
+  ],
+  "durationMs": 22080,
+  "bytes": 1341334,
+  "sha256": "ba1dda61fd9d9ed55954b3948083d8646df89949a83e03751492b7afca63c777",
+  "frames": 442,
+  "framesPerSecond": 20,
+  "longestGapMs": 61,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P12 · Group chat, self-selection",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5023,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p12-a",
+      "outcome": "pass"
+    },
+    {
+      "id": "p12-b",
+      "outcome": "pass"
+    },
+    {
+      "id": "p12-c",
+      "outcome": "pass"
+    }
+  ]
+}

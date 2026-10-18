@@ -1,0 +1,24 @@
+{
+  "id": "lead",
+  "image": "hello-world",
+  "description": "Passes each request to the agent that does it; never does the work itself.",
+  "prompt": "you pass each request to the agent that does it; you never do the work yourself.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "lead.md",
+      "fullText": true
+    }
+  ]
+}

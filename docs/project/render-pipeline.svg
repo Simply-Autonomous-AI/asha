@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 250" role="img" aria-labelledby="dc-rp-t dc-rp-d">
+  <title id="dc-rp-t">From Markdown source to committed HTML</title>
+  <desc id="dc-rp-d">The author edits a Markdown source, docs/section/page.md. npm run docs runs tools/docs/render.mts, which parses it with marked, inlines any .svg diagram beside it, and writes page.html next to the source. Both files are committed together. In npm test, tests/unit/docs.test.ts renders every source again in memory and compares: if a committed .html differs from its fresh render, the guard fails and names the file and the command npm run docs.</desc>
+  <defs><marker id="dc-rp-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+
+  <rect class="box accent" x="10" y="40" width="160" height="80" rx="6"/>
+  <text class="label title" x="90" y="66" text-anchor="middle">Markdown source</text>
+  <text class="label mono" x="90" y="86" text-anchor="middle">&lt;page&gt;.md</text>
+  <text class="label small" x="90" y="104" text-anchor="middle">+ &lt;diagram&gt;.svg beside it</text>
+
+  <rect class="box" x="220" y="40" width="200" height="80" rx="6"/>
+  <text class="label title" x="320" y="66" text-anchor="middle">npm run docs</text>
+  <text class="label mono" x="320" y="86" text-anchor="middle">tools/docs/render.mts</text>
+  <text class="label small" x="320" y="104" text-anchor="middle">marked 18.0.14; SVG inlined</text>
+
+  <rect class="box" x="470" y="40" width="160" height="80" rx="6"/>
+  <text class="label title" x="550" y="66" text-anchor="middle">Render</text>
+  <text class="label mono" x="550" y="86" text-anchor="middle">&lt;page&gt;.html</text>
+  <text class="label small" x="550" y="104" text-anchor="middle">never hand-edited</text>
+
+  <rect class="box host" x="660" y="40" width="90" height="80" rx="6"/>
+  <text class="label title" x="705" y="72" text-anchor="middle">git</text>
+  <text class="label small" x="705" y="92" text-anchor="middle">both, one</text>
+  <text class="label small" x="705" y="106" text-anchor="middle">commit</text>
+
+  <path class="edge" d="M170 80 H218" marker-end="url(#dc-rp-arr)"/>
+  <path class="edge" d="M420 80 H468" marker-end="url(#dc-rp-arr)"/>
+  <path class="edge" d="M630 80 H658" marker-end="url(#dc-rp-arr)"/>
+
+  <rect class="box" x="220" y="165" width="410" height="60" rx="6"/>
+  <text class="label mono" x="425" y="188" text-anchor="middle">tests/unit/docs.test.ts (npm test)</text>
+  <text class="label small" x="425" y="208" text-anchor="middle">re-renders every source in memory; a committed .html that differs fails</text>
+
+  <path class="edge dim" d="M90 120 V195 H218" marker-end="url(#dc-rp-arr)"/>
+  <path class="edge dim" d="M550 120 V163" marker-end="url(#dc-rp-arr)"/>
+  <text class="label small" x="130" y="185" text-anchor="middle">re-rendered</text>
+  <text class="label small" x="592" y="148" text-anchor="middle">compared</text>
+</svg>

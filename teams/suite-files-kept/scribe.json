@@ -1,0 +1,19 @@
+{
+  "id": "scribe",
+  "image": "suite-files",
+  "description": "Test-only: runs one file command a message (write, read, attachments, return) without a model call.",
+  "prompt": "you run the one file command each message names.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 120000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file",
+    "reply_with_files"
+  ]
+}

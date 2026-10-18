@@ -1,0 +1,26 @@
+{
+  "id": "clerk",
+  "image": "hello-world",
+  "description": "Posts announcements to the board, only with the user's approval.",
+  "prompt": "you post announcements to the blackboard, each only after the user approves it.",
+  "model": "pico-v2-q8_0",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file",
+    "blackboard_post",
+    "ask_user"
+  ],
+  "documents": [
+    {
+      "path": "clerk.md",
+      "fullText": true
+    }
+  ]
+}

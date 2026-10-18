@@ -1,0 +1,269 @@
+{
+  "scenario": "p11-a",
+  "breaks": "each of \"saffron\", \"quince jam\", \"rye flour\" appears in the files of exactly one member, and in no other file of the team folder",
+  "note": "Mutation: saffron in editor's document.",
+  "team": "blackboard",
+  "teamFiles": {
+    "editor.md": "1. When the user writes to you (a message that starts \"The user wrote to you\") asking for the shopping list, call consult once, with one request to each of contrib-a-1, contrib-b-1 and contrib-c-1, each request exactly: Post your item to the blackboard (saffron, for one).\n2. When the answers come back (a message that starts \"You consulted\"), call blackboard_read; then call reply with the item of every entry whose text starts with \"item:\" — the words after \"item: \" — one per line, in the blackboard's order, and nothing else.\n"
+  },
+  "input": {
+    "user": "alice",
+    "to": "editor-1",
+    "text": "Assemble the shopping list."
+  },
+  "recipients": [
+    "editor-1"
+  ],
+  "messages": [
+    {
+      "model": {
+        "handle": "editor-1",
+        "name": "consult",
+        "args": {
+          "requests": [
+            {
+              "to": "contrib-a-1",
+              "text": "Post your item to the blackboard."
+            },
+            {
+              "to": "contrib-b-1",
+              "text": "Post your item to the blackboard."
+            },
+            {
+              "to": "contrib-c-1",
+              "text": "Post your item to the blackboard."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "from": "editor-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "channel.call_opened",
+        "call": "k1",
+        "caller": "editor-1",
+        "addressees": [
+          "contrib-a-1",
+          "contrib-b-1",
+          "contrib-c-1"
+        ]
+      }
+    },
+    {
+      "from": "editor-1",
+      "kind": "internal",
+      "text": "Post your item to the blackboard.",
+      "to": "contrib-a-1",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "editor-1",
+        "contrib-a-1"
+      ]
+    },
+    {
+      "from": "editor-1",
+      "kind": "internal",
+      "text": "Post your item to the blackboard.",
+      "to": "contrib-b-1",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "editor-1",
+        "contrib-b-1"
+      ]
+    },
+    {
+      "from": "editor-1",
+      "kind": "internal",
+      "text": "Post your item to the blackboard.",
+      "to": "contrib-c-1",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "editor-1",
+        "contrib-c-1"
+      ]
+    },
+    {
+      "model": {
+        "handle": "contrib-a-1",
+        "name": "blackboard_post",
+        "args": {
+          "text": "item: saffron"
+        }
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "blackboard.posted",
+        "author": "contrib-a-1",
+        "id": 1,
+        "size": 13
+      }
+    },
+    {
+      "model": {
+        "handle": "contrib-b-1",
+        "name": "blackboard_post",
+        "args": {
+          "text": "item: quince jam"
+        }
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "blackboard.posted",
+        "author": "contrib-b-1",
+        "id": 2,
+        "size": 16
+      }
+    },
+    {
+      "model": {
+        "handle": "contrib-c-1",
+        "name": "blackboard_post",
+        "args": {
+          "text": "item: rye flour"
+        }
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "blackboard.posted",
+        "author": "contrib-c-1",
+        "id": 3,
+        "size": 15
+      }
+    },
+    {
+      "from": "contrib-a-1",
+      "kind": "internal",
+      "text": "posted",
+      "to": "editor-1",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "editor-1"
+      ]
+    },
+    {
+      "from": "contrib-b-1",
+      "kind": "internal",
+      "text": "posted",
+      "to": "editor-1",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "editor-1"
+      ]
+    },
+    {
+      "from": "contrib-c-1",
+      "kind": "internal",
+      "text": "posted",
+      "to": "editor-1",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "editor-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "kind": "internal",
+      "text": "Answers to editor-1's call: 3 answered.",
+      "to": "editor-1",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "editor-1"
+      ]
+    },
+    {
+      "model": {
+        "handle": "editor-1",
+        "name": "blackboard_read",
+        "args": {}
+      }
+    },
+    {
+      "model": {
+        "handle": "editor-1",
+        "name": "reply",
+        "args": {
+          "text": "The shopping list is as follows:\n\n- saffron\n- quince jam\n- rye flour"
+        }
+      }
+    },
+    {
+      "from": "editor-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "editor-1",
+      "kind": "output",
+      "text": "The shopping list is as follows:\n\n- saffron\n- quince jam\n- rye flour"
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "channel.call_gathered",
+        "call": "k1",
+        "caller": "editor-1",
+        "counts": {
+          "answered": 3,
+          "passed": 0,
+          "timed_out": 0,
+          "left": 0,
+          "unanswered": 0
+        },
+        "ms": 4000
+      }
+    }
+  ],
+  "board": [
+    {
+      "author": "contrib-a-1",
+      "text": "item: saffron"
+    },
+    {
+      "author": "contrib-b-1",
+      "text": "item: quince jam"
+    },
+    {
+      "author": "contrib-c-1",
+      "text": "item: rye flour"
+    }
+  ],
+  "ms": 15000
+}

@@ -1,0 +1,156 @@
+{
+  "id": "aws_cli",
+  "kind": "CommandTool",
+  "version": "2.37.8",
+  "entry": "Dockerfile",
+  "files": {
+    "Dockerfile": "62146c1bbe8a41656c97e6e9dab2bfa747e61f90e16c7ac4f9a44e1c0b18caad"
+  },
+  "licence": {
+    "id": "Apache-2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+    "read": "2026-10-01"
+  },
+  "hosts": [
+    "codepipeline.us-east-1.amazonaws.com",
+    "s3.us-east-1.amazonaws.com",
+    "*.s3.us-east-1.amazonaws.com"
+  ],
+  "secrets": [
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY"
+  ],
+  "cost": {
+    "model": "external-unmetered"
+  },
+  "executable": {
+    "name": "aws",
+    "version": "2.37.8",
+    "licence": {
+      "id": "Apache-2.0",
+      "url": "https://github.com/aws/aws-cli/blob/2.37.8/LICENSE.txt",
+      "read": "2026-10-01"
+    },
+    "signature": {
+      "method": "gpg --verify of each archive against its detached <url>.sig with the AWS CLI team's key block from the AWS CLI install guide (https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), in a throwaway node:22-alpine container with GnuPG 2.4.9; each archive's sha256 its pin; status: aarch64 VALIDSIG FB5DB77FD5C118B80511ADA8A6310ACC4672475C, x86_64 VALIDSIG FB5DB77FD5C118B80511ADA8A6310ACC4672475C; a copy with one byte appended BADSIG; the key expires 2027-07-01",
+      "fingerprint": "FB5D B77F D5C1 18B8 0511 ADA8 A631 0ACC 4672 475C",
+      "verifiedBy": "docs/plans/debt-paydown.md R6: evals/probes/debt-paydown-2026-10-03/r6-aws-cli-verify.out.txt",
+      "date": "2026-10-03"
+    },
+    "archives": {
+      "aarch64": {
+        "url": "https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.37.8.zip",
+        "sha256": "00c4bac1cac8624b728d991f821428d5de1e0cb56e3803045b85bff63bedee8b",
+        "file": "awscli-exe-linux-aarch64-2.37.8.zip"
+      },
+      "x86_64": {
+        "url": "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.37.8.zip",
+        "sha256": "6a2f98fee0901ff623ff9abb5c80f4d67c40e5c0ac5e2ad7afa2ba756a7d5088",
+        "file": "awscli-exe-linux-x86_64-2.37.8.zip"
+      }
+    },
+    "env": {
+      "AWS_CONFIG_FILE": "/dev/null",
+      "AWS_SHARED_CREDENTIALS_FILE": "/dev/null",
+      "AWS_PAGER": ""
+    }
+  },
+  "commands": [
+    {
+      "name": "codepipeline_get_state",
+      "description": "Read the state of a CodePipeline pipeline: each stage and its latest execution.",
+      "classes": [
+        "egress"
+      ],
+      "timeoutMs": 60000,
+      "prefix": [
+        "codepipeline",
+        "get-pipeline-state"
+      ],
+      "fixed": [
+        "--region",
+        "us-east-1",
+        "--output",
+        "json"
+      ],
+      "arguments": {
+        "pipeline": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9.@_-]{0,99}$",
+          "option": "--name",
+          "description": "The pipeline's name"
+        }
+      }
+    },
+    {
+      "name": "codepipeline_retry_stage",
+      "description": "Retry the failed actions of a pipeline stage. It changes the pipeline: the user approves each call before it is made.",
+      "classes": [
+        "egress",
+        "consequential"
+      ],
+      "timeoutMs": 60000,
+      "prefix": [
+        "codepipeline",
+        "retry-stage-execution"
+      ],
+      "fixed": [
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--retry-mode",
+        "FAILED_ACTIONS"
+      ],
+      "arguments": {
+        "pipeline": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9.@_-]{0,99}$",
+          "option": "--pipeline-name",
+          "description": "The pipeline's name"
+        },
+        "stage": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9.@_-]{0,99}$",
+          "option": "--stage-name",
+          "description": "The stage to retry"
+        },
+        "execution": {
+          "type": "string",
+          "pattern": "^[0-9a-f-]{36}$",
+          "option": "--pipeline-execution-id",
+          "description": "The pipeline execution's id"
+        }
+      }
+    },
+    {
+      "name": "s3_upload",
+      "description": "Upload a file from /channel or a named root to an S3 bucket whose name begins asha-demo-.",
+      "classes": [
+        "egress"
+      ],
+      "timeoutMs": 120000,
+      "prefix": [
+        "s3",
+        "cp"
+      ],
+      "fixed": [
+        "--region",
+        "us-east-1",
+        "--only-show-errors"
+      ],
+      "arguments": {
+        "source": {
+          "type": "path",
+          "mode": "read",
+          "description": "The file to upload"
+        },
+        "destination": {
+          "type": "remote",
+          "pattern": "^s3://asha-demo-[a-z0-9-]{1,40}/[A-Za-z0-9._/-]{1,200}$",
+          "description": "Where: s3://asha-demo-<name>/<key>"
+        }
+      }
+    }
+  ]
+}

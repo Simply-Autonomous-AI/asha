@@ -1,0 +1,18 @@
+{
+  "id": "critic-loop",
+  "description": "P8, generator–critic: a writer revises its sentence until its critic accepts it, at most three rounds.",
+  "members": [
+    {
+      "name": "writer",
+      "recipe": "writer.json"
+    },
+    {
+      "name": "critic",
+      "recipe": "critic.json"
+    },
+    {
+      "name": "strict-critic",
+      "recipe": "strict-critic.json"
+    }
+  ]
+}

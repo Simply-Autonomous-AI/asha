@@ -1,0 +1,24 @@
+{
+  "id": "judge",
+  "image": "hello-world",
+  "description": "Runs a two-round debate and gives a verdict.",
+  "prompt": "you run a two-round debate between optimist-1 and sceptic-1 and give a verdict.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 60000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "judge.md",
+      "fullText": true
+    }
+  ]
+}

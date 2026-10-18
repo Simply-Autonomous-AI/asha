@@ -1,0 +1,225 @@
+{
+  "scenario": "p13-a",
+  "breaks": "no courier posts an output",
+  "note": "courier-south-1 also answers the user.",
+  "team": "contract-net",
+  "input": {
+    "user": "alice",
+    "to": "manager-1",
+    "text": "Get parcel 17 delivered by the cheapest courier."
+  },
+  "recipients": [
+    "manager-1"
+  ],
+  "messages": [
+    {
+      "from": "manager-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "manager-1",
+      "to": "courier-north-1",
+      "kind": "internal",
+      "text": "Bid to deliver parcel 17: answer PRICE: <euros>.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "manager-1",
+        "courier-north-1"
+      ]
+    },
+    {
+      "from": "manager-1",
+      "to": "courier-south-1",
+      "kind": "internal",
+      "text": "Bid to deliver parcel 17: answer PRICE: <euros>.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "manager-1",
+        "courier-south-1"
+      ]
+    },
+    {
+      "from": "manager-1",
+      "to": "courier-east-1",
+      "kind": "internal",
+      "text": "Bid to deliver parcel 17: answer PRICE: <euros>.",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "manager-1",
+        "courier-east-1"
+      ]
+    },
+    {
+      "from": "courier-east-1",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "PRICE: 9",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "courier-north-1",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "PRICE: 12",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "courier-south-1",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "PRICE: 7",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "Answers to manager-1's call: 3 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "manager-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "manager-1",
+      "to": "courier-south-1",
+      "kind": "internal",
+      "text": "You won parcel 17 at 7 euros. Deliver it and answer with your confirmation code.",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "manager-1",
+        "courier-south-1"
+      ]
+    },
+    {
+      "from": "courier-south-1",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "S-2280",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "manager-1",
+      "kind": "internal",
+      "text": "Answers to manager-1's call: 1 answered.",
+      "call": {
+        "id": "k2",
+        "role": "gather"
+      },
+      "working": [
+        "manager-1"
+      ]
+    },
+    {
+      "from": "manager-1",
+      "kind": "output",
+      "text": "Awarded to courier-south-1 at 7 euros; confirmation S-2280."
+    },
+    {
+      "from": "courier-south-1",
+      "kind": "output",
+      "text": "S-2280"
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "manager-1",
+      "addressees": [
+        "courier-north-1",
+        "courier-south-1",
+        "courier-east-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "manager-1",
+      "counts": {
+        "answered": 3,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    },
+    {
+      "level": "info",
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k2",
+      "caller": "manager-1",
+      "addressees": [
+        "courier-south-1"
+      ]
+    },
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k2",
+      "caller": "manager-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 5000
+    }
+  ],
+  "ms": 15000
+}

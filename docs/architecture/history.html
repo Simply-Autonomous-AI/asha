@@ -1,0 +1,185 @@
+<!doctype html>
+<!-- Generated from docs/architecture/history.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture History</title>
+<meta name="description" content="Dated record of what the architecture pages used to say, the corrections made to them, earlier test and eval runs, and the background behind current designs.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="architecture">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">asha Architecture</a> / Architecture History</nav>
+<h1>Architecture history</h1>
+<p class="lede">The architecture pages describe the system as it is now. This page keeps what they no longer need to say: corrections, earlier runs and results, finished milestones, and background. Newest first.</p>
+<div class="facts"><span>started 2026-09-27</span><span>entries moved from the six architecture pages on 2026-09-27</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Every correction to these pages is here, with what was claimed, what is true and why the claim was wrong (PRINCIPLES §12).</li>
+<li>Earlier gate runs are here: the page at <code>a3fe9e4</code> (unit 453/453) and the 2026-09-26 run (unit 249). The current gate is on <a href="index.html#evidence">Architecture</a>.</li>
+<li>Earlier routing-eval runs, at <code>942eb7e</code> and <code>426eecb</code>, are here; the run at <code>b168dfe</code> (llama.cpp 8130) is summarized, and the latest, at <code>d8350f0</code> (0.5.0), is on <a href="models.html#choice">Models</a>.</li>
+<li>The owner's memory brief, the design it set out, and the memory build phases are here; <a href="memory.html">Agent memory</a> shows only what is built.</li>
+</ul>
+</div>
+</header>
+<section id="h-2026-09-27">
+<h2>2026-09-27</h2>
+<h3 id="forced-calls-correction">Correction: <code>tool_choice: &quot;required&quot;</code> and llama.cpp 0.5.0</h3>
+<ul>
+<li><strong>Claimed.</strong> <a href="models.html#gateway">Models</a> and <a href="channel.html#acting">Channel</a> said a turn with <code>requireToolCall</code> is sent as <code>tool_choice: &quot;required&quot;</code>, and so ends in a tool call.</li>
+<li><strong>True now.</strong> Homebrew upgraded llama.cpp from build 8130 (<code>ed4837891</code>) to 0.5.0 (build 11146, <code>7fe450e19</code>) on 2026-09-27 at 12:47 local (the Cellar's <code>INSTALL_RECEIPT.json</code>). 0.5.0 contains upstream <a href="https://github.com/ggml-org/llama.cpp/pull/22654">PR #22654</a>, &quot;common/autoparser: fixes for newline handling / forced tool calls&quot;, merged 2026-05-04T11:18:11Z as <code>a4701c98f72160144b101090596c7ea1ef0c1d7b</code>; its description says forced tool calls &quot;now allow for content before the tool call&quot;. 8130 does not contain it (the GitHub compare API: <code>ed4837891</code> is 890 commits behind it, <code>7fe450e19</code> 2,126 ahead). Read 2026-09-27. On 0.5.0, <code>qwen3-8b</code> at temperature 0 sometimes wrote text until <code>max_tokens</code> with no call, and the gateway returned it as <code>ok</code>, so the agent failed with &quot;answered with text instead of a tool call&quot; rather than the real cause. The <a href="models.html#qwen3-0.6b">Models</a> &quot;Thinking off&quot; row, which said &quot;verified against <code>llama-server</code> build 8130 with <code>--jinja</code>: the reply is <code>&quot;Hello, World!&quot;</code> with no <code>&lt;think&gt;</code> block&quot;, was re-verified on 0.5.0 the same day.</li>
+<li><strong>Why the claim failed.</strong> It described one llama.cpp build's grammar as a property of <code>tool_choice</code>, and the build is not pinned (debt D11).</li>
+<li><strong>Fixed.</strong> A chat entry's required <code>toolCallStart</code> (Qwen3: <code>&quot;&lt;tool_call&gt;\n&quot;</code>) opens the assistant turn when a call is required; a required call cut off by the token limit is the failure <code>truncated</code>.</li>
+<li><strong>A second effect.</strong> With the call forced from the first token, the pass rule (&quot;only take on work your role covers&quot;) also took a question about the agent's own role: the routing case <code>solo-question</code> went to 0/3 (a <code>list_agents</code> lookup, then <code>pass</code>, &quot;No agents available&quot;); 17/19 at <code>3ebb0c6</code> plus the uncommitted fix. One instruction line, &quot;A question about you or your role is always yours to answer, with your role exactly as given above.&quot;, restored 18/19, the <code>b168dfe</code> baseline, with both question cases replying with the role. Wordings without &quot;exactly as given above&quot; routed correctly but let the model describe itself as a general assistant.</li>
+</ul>
+<h3 id="evidence-a3fe9e4">Gate run while the pages were written</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Claim</th><th>Evidence</th><th>Date</th></tr></thead>
+<tbody>
+<tr><td><span class="badge pass">pass</span> <code>npm run check</code> green</td><td>at <code>a3fe9e4</code> (clean tree): unit 453/453, integration 41/41, agent suite 35/35, eval 10/10 (<a href="../testing/index.html#results">Testing</a>)</td><td>2026-09-27</td></tr>
+<tr><td>Agent suite 35/35</td><td>the latest recorded result then, at <code>5b4e25c</code> (commit <code>719dad4</code>'s message); transcripts in the <a href="../testing/agent-tests.html">agent test report</a></td><td>2026-09-27</td></tr>
+</tbody>
+</table>
+</div>
+<p>Superseded by the gate at <code>05555b1</code> (<a href="index.html#evidence">Architecture — evidence</a>).</p>
+<h3 id="memory-results">Memory results before the current gate</h3>
+<p>From the commit messages:</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Result</th><th>At</th><th>Commit</th></tr></thead>
+<tbody>
+<tr><td><code>memory-tiers</code> 12/12 (agent suite 32/32)</td><td><code>2e0783d</code></td><td><code>b6d9e4f</code></td></tr>
+<tr><td>the memory crowd 3/3</td><td><code>28b0d3f</code></td><td><code>7d9e670</code></td></tr>
+<tr><td>agent suite 35/35</td><td><code>5b4e25c</code></td><td><code>719dad4</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="corrections">Corrections made while migrating to <code>docs/architecture/</code></h3>
+<p>Each was found by reading the code on 2026-09-27.</p>
+<ul>
+<li><strong>API shapes.</strong> <code>docs/architecture.md</code> said the roster route returns <code>{handles}</code> and health <code>{ok, pid, version, agents}</code>. The code returns <code>{agents: [{handle, recipe, description}]}</code> (so agents can choose whom to delegate to by description), and health adds <code>build</code> and <code>startedAt</code>. The markdown was not updated when those fields were added.</li>
+<li><strong>The control API has no credential.</strong> The page said anything else that reaches the daemon's port is refused with a 401. That holds only for <code>/agent/</code> routes: the control routes are matched in <code>route()</code> <em>before</em> the token check. The reasoning that missed it read &quot;loopback-only&quot; as &quot;only the user&quot;, which a container that can reach loopback breaks. Tracked as debt D1. Fixed by the <code>docs/plans/control-api-auth.md</code> plan in <code>222a6c5</code> (2026-09-27): a control credential on every <code>/v1/</code> route, <code>Host</code> and <code>Origin</code> checks, a key on every <code>llama-server</code>, and a network rule confining agent containers to the daemon's port (<a href="index.html#token">the credential</a>).</li>
+<li><strong>Error events.</strong> <code>docs/architecture.md</code> listed six error events. Reading every <code>logger.error</code> call in <code>src/</code> found five more: <code>launch.failed</code>, <code>http.handler_failed</code>, <code>model.embed_failed</code>, <code>agent.container_failed</code> and <code>model_server.spawn_failed</code>. They were added with <code>--launch</code>, embeddings and the process adapters without the list being updated.</li>
+<li><strong>The roster lookup.</strong> <code>docs/architecture.md</code> said <code>decide()</code> fetches the roster and allows &quot;up to 3 rounds&quot;. In the code the handler fetches it before <code>decide()</code>, and the check <code>lookups &gt;= maxRounds</code> fails on the third lookup.</li>
+<li><strong>Acking an <code>output</code>.</strong> <code>docs/architecture.md</code> said the SDK acks a reply meant for the user (<code>output</code>) directly, without handing it to the handler. The channel never delivers an <code>output</code> to any agent (its recipient list is empty), so there is nothing for the SDK to skip or ack.</li>
+<li><strong>Which routing run the table came from.</strong> <code>docs/models.md</code> said both &quot;the table is from the run at commit <code>426eecb</code>&quot; and, a paragraph later, &quot;Results (2026-09-26), from the run at commit <code>942eb7e</code>&quot;. The table is the <code>942eb7e</code> run; <code>426eecb</code> was the previous run it was compared with. The first sentence was left over from before the re-run.</li>
+<li><strong>&quot;What still fails&quot; was stale.</strong> <code>docs/models.md</code> said both &quot;ignore&quot; cases fail on every model. That was true of <code>942eb7e</code>, but the recorded results in <code>evals/routing/results/</code> had since been replaced by the <code>b168dfe</code> run, in which 8B passes both. The page was not updated with the later runs.</li>
+<li><strong>Memory as built</strong> differed from its design in two points the page claimed (<a href="#memory-design">below</a>): our records are <code>{id, ts, text, embedding}</code> — no <code>kind</code> or <code>meta</code> — and the session tier holds <code>turns</code>, not <code>records</code> (<a href="../../images/memory/src/memory/types.ts"><code>types.ts</code></a>); and there is no version tag and no re-read-and-merge, because only the agent's own process writes its files, so <a href="../../images/memory/src/memory/store.ts"><code>store.ts</code></a> says &quot;there is no cross-process merge to do&quot;. The atomic temp-file-then-rename is built.</li>
+<li><strong>The procedural test line.</strong> The memory page listed &quot;a stated way of working (for example &quot;answer me in bullet points&quot;) shapes a later answer&quot; as a procedural test. It predates the owner's 2026-09-26 correction (<a href="#procedural">below</a>): that is a semantic fact. The agent suite tests the owner's definition instead — &quot;procedural: a task done with a technique that worked is recorded as a reusable procedure&quot; (<code>memory-agent.test.ts</code>) and &quot;records a technique from a worked task, then applies it to a new one without recording it twice&quot; (<code>memory-tiers.test.ts</code>).</li>
+<li><strong>The user-ID warning</strong> was added to the memory page on 2026-09-27: the identity the harness passes is the one the caller claimed with <code>user=</code> (debt D2).</li>
+</ul>
+</section>
+<section id="h-2026-09-26">
+<h2>2026-09-26</h2>
+<h3 id="evidence-2026-09-26">Evidence recorded in <code>docs/architecture.md</code></h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Claim</th><th>Evidence</th></tr></thead>
+<tbody>
+<tr><td><span class="badge pass">pass</span> <code>npm run check</code> was green</td><td>249 unit tests, 31 integration tests and 9 eval tests. The eval includes the real two-agent hello world, asserting the exact <code>internal</code> hand-off and the reply</td></tr>
+<tr><td>The eval also covered</td><td>starting from no daemon and asserting <code>Hello World!</code> exactly (then the reply of <code>qwen3-0.6b-q8_0</code>; with today's <code>qwen3-8b-q4_k_m</code> the eval asserts <code>Hello World.</code>); reuse of the online agent; <code>--watch</code> against a live conversation; <code>to=hewo-1</code>, where only that agent works; <code>channel=lab</code>, which brings up a second, separate <code>hewo-1</code>; <code>--status</code> listing both agents; <code>--stop</code>, after which no container of its own remains and nothing was logged above info level</td></tr>
+<tr><td>Integration: two agents on one channel</td><td><code>hewo-1</code>, <code>hewo-2</code>: <code>to=hewo-2</code> reaches only <code>hewo-2</code>, with exactly one model call</td></tr>
+<tr><td>Greedy decoding (<code>temperature: 0</code>, the hello-world recipe's override) is deterministic</td><td>with <code>qwen3-0.6b-q8_0</code>, 25 of 25 hello-world replies byte-identical, 5 of them across daemon restarts</td></tr>
+<tr><td>Reply variance at temperature 0.7</td><td>with <code>qwen3-0.6b-q8_0</code>, 31 replies to &quot;Please say: Hello World.&quot; — 25 &quot;Hello World!&quot;/&quot;Hello world!&quot;, 5 &quot;Hello! Welcome to … world …&quot;, 1 &quot;Hello!&quot;, measured through <code>asha</code></td></tr>
+<tr><td>Cold model download</td><td>the first run after a build, empty model cache and no image: 15.4 s, 19.2 s, 27.5 s and 34.4 s on different runs. Almost all of it is the 640 MB download of <code>qwen3-0.6b-q8_0</code>, the model pinned then; today's <code>qwen3-8b-q4_k_m</code> is larger. <span class="todo">TODO: a cold-download timing for qwen3-8b-q4_k_m.</span></td></tr>
+<tr><td><code>./asha</code>, run for real</td><td>with no <code>dist</code>, it exits 1 and names the build command, without running npm; after <code>npm install &amp;&amp; npm run build</code> (0.9 s from a fresh clone), it runs the CLI; it works through a symlink</td></tr>
+<tr><td>Containers reach the host's loopback</td><td>a listener bound only to <code>127.0.0.1</code> answered from a colima container</td></tr>
+<tr><td>colima needs no interaction</td><td>a fresh throwaway profile started with stdin closed: exited 0 in about 2 minutes 11 seconds, including the VM image download; logged &quot;Terminal is not available, proceeding without opening an editor&quot;; the profile was deleted afterwards</td></tr>
+<tr><td><code>brew install colima docker</code> is non-interactive</td><td>run as part of the same check</td></tr>
+<tr><td>Guard proofs (PRINCIPLES §3)</td><td>each broken on purpose, and its test went red: the channel's ack bookkeeping; the CLI's &quot;no reply&quot; failure; the server's connect-before-headers order; the model store's sha256 check; the gateway's <code>stream:false</code>; the model server's <code>--port 0</code>; the image's staged SDK</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="why-the-build-fingerprint-exists">Why the build fingerprint exists</h3>
+<p>A daemon started before a fix kept answering with the old behaviour, and nothing said so; the version was <code>0.1.0</code> in both. The fingerprint and the build warning followed (<a href="index.html#which-build">Architecture</a>).</p>
+<h3 id="reply-split-from-send-message"><code>reply</code> split from <code>send_message</code></h3>
+<p>Until then, <code>send_message</code> was the only tool, with <code>user</code> as one of its destinations. Through <code>./asha</code>, a user's <code>Hi</code> to everyone was answered with <code>Hi</code> posted to the channel, so the user got no reply. The routing eval reproduced it on every attempt. Choosing between two named tools replaced filling in a destination field. The <code>all-agents</code> destination was called <code>channel</code> until the same day, renamed because the user is on the channel too.</p>
+<h3 id="routing-942eb7e">Routing eval at <code>942eb7e</code> (clean tree)</h3>
+<p>The shared channel layer as it was then: <code>send_message</code> plus <code>list_agents</code> and <code>pass</code>; a tool call required on every turn; the recipe's <code>description</code> in the roster. Each cell is passes out of 3 runs.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Case</th><th>0.6B Q8_0</th><th>1.7B Q8_0</th><th>4B Q4_K_M</th><th>8B Q4_K_M</th></tr></thead>
+<tbody>
+<tr><td><code>solo-answer</code>: alone, a request to everyone is answered to the user</td><td>0/3</td><td>0/3</td><td>0/3</td><td>3/3</td></tr>
+<tr><td><code>solo-addressed</code>: alone, a request addressed to the agent is answered to the user</td><td>0/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>addressed-answer</code>: with another agent present, a request to the agent is answered to the user</td><td>3/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>broadcast-answer</code>: with another agent present, a request to everyone is answered to the user</td><td>3/3</td><td>3/3</td><td>0/3</td><td>3/3</td></tr>
+<tr><td><code>delegate</code>: &quot;ask hewo-2 to …&quot; goes to hewo-2 as a task</td><td>0/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>delegated</code>: a task from an agent is done, and the result goes to the user</td><td>3/3</td><td>3/3</td><td>0/3</td><td>3/3</td></tr>
+<tr><td><code>delegated-bare</code>: bare words from an agent are said to the user</td><td>0/3</td><td>3/3</td><td>0/3</td><td>3/3</td></tr>
+<tr><td><code>delegate-by-role</code>: &quot;the agent that translates&quot; is found through <code>list_agents</code> and gets the task</td><td>0/3</td><td>3/3</td><td>3/3</td><td>3/3</td></tr>
+<tr><td><code>claim</code>: asked &quot;which agent can …&quot;, tell the asker you'll take it</td><td>0/3</td><td>3/3</td><td>0/3</td><td>3/3</td></tr>
+<tr><td><code>ignore-agent-request</code>: an agent's request the role doesn't cover gets <code>pass</code></td><td>0/3</td><td>0/3</td><td>0/3</td><td>0/3</td></tr>
+<tr><td><code>ignore-user-request</code>: a user's request the role doesn't cover gets <code>pass</code></td><td>3/3</td><td>0/3</td><td>0/3</td><td>0/3</td></tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><strong>Why 8B then.</strong> It passed every case except the two &quot;ignore&quot; cases. In <code>delegate-by-role</code> it called <code>list_agents</code> once, then picked <code>trans-1</code> from the translator's description.</li>
+<li><strong>What still failed.</strong> Both &quot;ignore&quot; cases, on every model, the same way: after <code>list_agents</code>, the agent either offered to do work outside its role or forwarded it to an agent whose description doesn't cover it — even with an explicit rule, &quot;only take on work your role covers, and only pass work to an agent whose description covers it&quot;.</li>
+</ul>
+<p><strong>Compared with the previous run, at <code>426eecb</code></strong>, which had no <code>list_agents</code> or <code>pass</code> and allowed plain-text answers:</p>
+<ul>
+<li><strong>Required tool calls fixed the case that exposed the problem.</strong> A real <code>./asha</code> run with one agent addressed directly lost the reply: the model answered in text, and the eval missed it because its addressed case always had a second agent. Adding <code>solo-addressed</code> confirmed it; requiring a tool call fixed it.</li>
+<li><strong><code>claim</code> now passed on 8B</strong> (and on 1.7B).</li>
+<li><strong>The 0.6B model made real tool calls.</strong> Before, it only wrote them out as text; its &quot;ignore&quot; passes became real <code>pass</code> calls rather than vacuous.</li>
+</ul>
+<h3 id="model-size">Correction: model size and judgement</h3>
+<p>Earlier in this work it was said that small models were &quot;not reliable at general judgement tasks (broadcasts, claiming requests, avoiding unrelated work) at that size.&quot; That was a guess from ad-hoc spike scripts with hand-copied prompts, one run per case. The eval at <code>942eb7e</code> does not support it: 1.7B and 8B pass the broadcast case, and the judgement cases fail the same way at every size, which does not show a size limit.</p>
+<h3 id="built">Milestones built</h3>
+<ul>
+<li><span class="badge built">built</span> <strong>The two-agent hello world</strong> (<a href="channel.html#two-agent">now</a>). The owner's plan: two hello-world instances, <code>hewo-1</code> and <code>hewo-2</code>, on one channel. The user sends <code>to=hewo-1</code> a request to ask <code>hewo-2</code> to say Hello World; <code>hewo-1</code> delegates with an <code>internal</code> message addressed <code>to=hewo-2</code>, and <code>hewo-2</code> answers with <code>output</code>. Why: it shows the channel carrying agent-to-agent traffic, and addressing working at both levels, user to agent and agent to agent. It needed a second instance of a recipe on a channel, agents knowing who else is on the channel, and an agent turning a request into an addressed <code>internal</code> message.</li>
+<li><span class="badge built">built</span> <strong>Agent memory tiers</strong>, as the <code>memory</code> recipe (<a href="memory.html">now</a>). Memory lives in the agent's container (the owner's option A), keyed by (channel, user) from the harness-set <code>user</code>, so the per-run handle numbering doesn't matter.</li>
+<li><span class="badge built">built</span> <strong>Installing asha with Homebrew</strong> (<a href="index.html#homebrew-keg">now</a>). The owner's plan, 2026-09-26: <code>brew install</code> with no checkout and no build. Built 2026-09-27 from a local tap, with no public tap until the owner says so (plan (<code>docs/plans/brew-install.md</code>)).</li>
+<li><span class="badge built">built</span> <strong>Collaborating agents</strong> (<a href="recipes.html#documents">recipes</a>, <a href="recipes.html#team">teams</a>). The owner's target, 2026-09-27: agents specified by their recipes — prompt, tools and Markdown documents they can read and edit in <code>/workspace</code> — and teams in their own folders launched together with <code>--launch team=&lt;team&gt;</code>, each member under its team name. Built 2026-09-29 (<code>docs/plans/collaborating-agents.md</code>); its approved ten-agent scenario, the rainbow, runs on the model: a supervisor consults nine members in one call and orders their numbers by the rainbow from one gather (<a href="../testing/index.html#rainbow">Testing</a>).</li>
+</ul>
+<h3 id="brief">The owner's memory brief</h3>
+<p>A new agent image and recipe to test memory. Once running, the agent builds memory from its conversations on the channel, in four tiers:</p>
+<ol>
+<li><strong>Session</strong>: the current session, as a sliding window of recent turns.</li>
+<li><strong>Episodic</strong>: earlier turns — previous sessions, plus turns of the current session that have slid out of the window. Searchable.</li>
+<li><strong>Semantic</strong>: important facts extracted from the turns, including the user's preferences. Searchable.</li>
+<li><strong>Procedural</strong>: reusable techniques. When the agent determines that a technique was effective for accomplishing a task, it records the procedure for future use. Searchable.</li>
+</ol>
+<p>Each tier has a <strong>read</strong> (search) component and an <strong>async write</strong> component: relevant memory goes into the model's context <strong>before</strong> each model call; extraction happens <strong>after</strong> the agent has responded. Nothing from one user's memory may reach another user's context: mixing them would be a privacy failure. The harness passes the user's identity with every message as metadata the agent cannot change.</p>
+<p>The brief's tests: two users at once never see each other's memory (unit, integration and agent-suite tests); a fact told in one conversation is recalled in a later one, and not for another user; a turn that has slid out of the session window is still found by relevance; a stated way of working (for example &quot;answer me in bullet points&quot;) shapes a later answer (superseded, <a href="#corrections">above</a>); memory lasts exactly as long as the container; a delegated task keeps the user's identity end to end.</p>
+<h3 id="procedural">Correction: what &quot;procedural&quot; means</h3>
+<p>The first draft defined the procedural tier as &quot;learnings about how to do things well for this user&quot;, and it was built that way (extracting &quot;how to work with this user&quot; notes such as &quot;answer in bullet points&quot;). The owner corrected it: procedural memory is a reusable technique the agent determined was effective for accomplishing a task, recorded for future use. A preference like &quot;answer in bullet points&quot; is a fact about the user, so it belongs to the semantic tier. The extraction prompts, tool name (<code>save_procedures</code>) and tests now follow the owner's definition (commit <code>34abbb6</code>).</p>
+<h3 id="memory-design">The memory design</h3>
+<p>The design the first build set out to follow, 2026-09-26:</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Idea</th><th>The design</th></tr></thead>
+<tbody>
+<tr><td><strong>One JSON document per (user, agent, tier)</strong></td><td>Rewritten whole: <code>{schemaVersion, tier, updatedAt, records: [{id, ts, kind, text, meta, embedding}]}</code>. Tolerant parsing: a bad record is dropped, not the whole file.</td></tr>
+<tr><td><strong>Atomic writes</strong></td><td>Write to <code>&lt;file&gt;.tmp-&lt;ts&gt;-&lt;rand&gt;</code>, then rename over the target. The version tag is a sha256 of the content; a write whose file changed underneath it re-reads, merges and retries.</td></tr>
+<tr><td><strong>In-memory cache</strong></td><td>An LRU keyed by file path in front of the files. Writes change the cached document at once, then save in the background; saves for one file queue behind each other.</td></tr>
+<tr><td><strong>Recall</strong></td><td>Cosine similarity over vectors held in memory, with a hard cutoff (<code>minScore</code>). Nothing below it is included; no fallback to &quot;most recent&quot;.</td></tr>
+<tr><td><strong>A token budget with a reserved share per tier</strong></td><td>A greedy budget can starve one tier, so each tier keeps a share of its own.</td></tr>
+<tr><td><strong>Semantic extraction</strong></td><td>The model sees the existing facts and is asked for at most 3 <em>stable</em> new ones. A new fact with cosine ≥ 0.95 to an existing one is dropped, so paraphrases of a known fact do not pile up.</td></tr>
+<tr><td><strong>Identity is a parameter on every call</strong></td><td>Never a field on an object. Every cache and storage key includes the user. Any change to per-user data needs a test with two users at once.</td></tr>
+</tbody>
+</table>
+</div>
+<p>Choices of its own: embeddings are local (no hosted embedding service); the session tier is time-bounded rather than a stored conversation, because each <code>./asha message=…</code> is its own conversation, usually one turn (it continues while turns are less than <code>sessionIdleMinutes</code> apart, default 30, and shows the last <code>sessionWindow</code> turns, default 8); and old-turn summarisation isn't planned: the tiers drop the oldest records past a cap.</p>
+<h3 id="phases">Memory build phases</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>#</th><th>Phase</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>User identity on every conversation message</td><td><span class="badge built">built</span> 2026-09-26</td></tr>
+<tr><td>2</td><td><s>Memory mount</s>: not needed; memory stays in the container (owner's option A)</td><td>dropped</td></tr>
+<tr><td>3</td><td>Embedding model, server and route</td><td><span class="badge built">built</span> 2026-09-26, after the owner accepted Apache-2.0 declared only in the model card</td></tr>
+<tr><td>4</td><td>Memory library and agent graph in <code>images/memory</code>, with fakes for model and embedder</td><td><span class="badge built">built</span> 2026-09-26: 34 unit tests, incl. two users at once; the privacy and read-your-writes guards were each broken on purpose and caught</td></tr>
+<tr><td>5</td><td>Recipe, integration tests, agent-suite scenarios (single and multi agent, two users), report</td><td><span class="badge built">built</span> 2026-09-26. <code>tests/agents/memory-agent.test.ts</code>, 7 of 7 at <code>f0815ae</code>, passing on two consecutive runs; <code>npm run check</code> is green</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<footer class="page"><span>Source: <code>docs/architecture/history.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

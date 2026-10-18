@@ -1,0 +1,101 @@
+{
+  "commit": "d102a45b4059a62f100af58747d186b1be299a95",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p20-a/lead-gather",
+  "control": false,
+  "change": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "The helper's word is marigold."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "The helper's word is marigold."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1949,
+          "completionTokens": 25
+        }
+      ],
+      "ms": 753,
+      "board": [],
+      "requestSha256": "4442019201ee1e0f45b6fc510553faab562326b2a514a98f748d9021e2b068a5",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "The helper's word is marigold."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "The helper's word is marigold."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1949,
+          "completionTokens": 25
+        }
+      ],
+      "ms": 588,
+      "board": [],
+      "requestSha256": "4442019201ee1e0f45b6fc510553faab562326b2a514a98f748d9021e2b068a5",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "The helper's word is marigold."
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "The helper's word is marigold."
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1949,
+          "completionTokens": 25
+        }
+      ],
+      "ms": 586,
+      "board": [],
+      "requestSha256": "4442019201ee1e0f45b6fc510553faab562326b2a514a98f748d9021e2b068a5",
+      "ok": true
+    }
+  ]
+}

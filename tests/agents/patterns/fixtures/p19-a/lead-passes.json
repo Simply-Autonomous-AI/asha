@@ -1,0 +1,48 @@
+{
+  "scenario": "p19-a",
+  "breaks": "the command exits 0",
+  "note": "lead-1 passes: the harness answers and the command exits 1.",
+  "team": "spawner",
+  "input": {
+    "user": "alice",
+    "to": "lead-1",
+    "text": "Bring in a helper and tell me its word."
+  },
+  "recipients": [
+    "lead-1"
+  ],
+  "messages": [
+    {
+      "from": "lead-1",
+      "kind": "status",
+      "text": "pass: no helper",
+      "working": [
+        "lead-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "kind": "output",
+      "text": "No agent could answer this:\n- lead-1 passed: no helper",
+      "working": []
+    }
+  ],
+  "log": [
+    {
+      "level": "info",
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "lead-1",
+      "counts": {
+        "answered": 1,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 4000
+    }
+  ],
+  "ms": 14000
+}

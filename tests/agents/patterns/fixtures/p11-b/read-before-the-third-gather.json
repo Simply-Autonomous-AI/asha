@@ -1,0 +1,392 @@
+{
+  "scenario": "p11-b",
+  "breaks": "planner-1 calls blackboard_read after the third gather and before its output",
+  "note": "Mutation: planner-1's blackboard_read comes before the third gather, none after it.",
+  "team": "blackboard",
+  "input": {
+    "user": "alice",
+    "to": "planner-1",
+    "text": "Write the meeting notice."
+  },
+  "recipients": [
+    "planner-1"
+  ],
+  "messages": [
+    {
+      "model": {
+        "handle": "planner-1",
+        "name": "consult",
+        "args": {
+          "requests": [
+            {
+              "to": "note-day-1",
+              "text": "Add your part to the notice on the blackboard."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "from": "planner-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "channel.call_opened",
+        "call": "k1",
+        "caller": "planner-1",
+        "addressees": [
+          "note-day-1"
+        ]
+      }
+    },
+    {
+      "from": "planner-1",
+      "kind": "internal",
+      "text": "Add your part to the notice on the blackboard.",
+      "to": "note-day-1",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "planner-1",
+        "note-day-1"
+      ]
+    },
+    {
+      "model": {
+        "handle": "note-day-1",
+        "name": "blackboard_post",
+        "args": {
+          "text": "notice: meeting on Thursday"
+        }
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "blackboard.posted",
+        "author": "note-day-1",
+        "id": 1,
+        "size": 27
+      }
+    },
+    {
+      "from": "note-day-1",
+      "kind": "internal",
+      "text": "posted",
+      "to": "planner-1",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "kind": "internal",
+      "text": "Answers to planner-1's call: 1 answered.",
+      "to": "planner-1",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "channel.call_gathered",
+        "call": "k1",
+        "caller": "planner-1",
+        "counts": {
+          "answered": 1,
+          "passed": 0,
+          "timed_out": 0,
+          "left": 0,
+          "unanswered": 0
+        },
+        "ms": 4000
+      }
+    },
+    {
+      "model": {
+        "handle": "planner-1",
+        "name": "consult",
+        "args": {
+          "requests": [
+            {
+              "to": "note-room-1",
+              "text": "Add your part to the notice on the blackboard."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "from": "planner-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "channel.call_opened",
+        "call": "k2",
+        "caller": "planner-1",
+        "addressees": [
+          "note-room-1"
+        ]
+      }
+    },
+    {
+      "from": "planner-1",
+      "kind": "internal",
+      "text": "Add your part to the notice on the blackboard.",
+      "to": "note-room-1",
+      "call": {
+        "id": "k2",
+        "role": "question"
+      },
+      "working": [
+        "planner-1",
+        "note-room-1"
+      ]
+    },
+    {
+      "model": {
+        "handle": "note-room-1",
+        "name": "blackboard_read",
+        "args": {}
+      }
+    },
+    {
+      "model": {
+        "handle": "note-room-1",
+        "name": "blackboard_post",
+        "args": {
+          "text": "notice: meeting on Thursday, in the Juniper room"
+        }
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "blackboard.posted",
+        "author": "note-room-1",
+        "id": 2,
+        "size": 48
+      }
+    },
+    {
+      "from": "note-room-1",
+      "kind": "internal",
+      "text": "posted",
+      "to": "planner-1",
+      "call": {
+        "id": "k2",
+        "role": "answer"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "kind": "internal",
+      "text": "Answers to planner-1's call: 1 answered.",
+      "to": "planner-1",
+      "call": {
+        "id": "k2",
+        "role": "gather"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "channel.call_gathered",
+        "call": "k2",
+        "caller": "planner-1",
+        "counts": {
+          "answered": 1,
+          "passed": 0,
+          "timed_out": 0,
+          "left": 0,
+          "unanswered": 0
+        },
+        "ms": 4000
+      }
+    },
+    {
+      "model": {
+        "handle": "planner-1",
+        "name": "consult",
+        "args": {
+          "requests": [
+            {
+              "to": "note-time-1",
+              "text": "Add your part to the notice on the blackboard."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "from": "planner-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "channel.call_opened",
+        "call": "k3",
+        "caller": "planner-1",
+        "addressees": [
+          "note-time-1"
+        ]
+      }
+    },
+    {
+      "from": "planner-1",
+      "kind": "internal",
+      "text": "Add your part to the notice on the blackboard.",
+      "to": "note-time-1",
+      "call": {
+        "id": "k3",
+        "role": "question"
+      },
+      "working": [
+        "planner-1",
+        "note-time-1"
+      ]
+    },
+    {
+      "model": {
+        "handle": "note-time-1",
+        "name": "blackboard_read",
+        "args": {}
+      }
+    },
+    {
+      "model": {
+        "handle": "note-time-1",
+        "name": "blackboard_post",
+        "args": {
+          "text": "notice: meeting on Thursday, in the Juniper room, at 14:30"
+        }
+      }
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "blackboard.posted",
+        "author": "note-time-1",
+        "id": 3,
+        "size": 58
+      }
+    },
+    {
+      "from": "note-time-1",
+      "kind": "internal",
+      "text": "posted",
+      "to": "planner-1",
+      "call": {
+        "id": "k3",
+        "role": "answer"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "model": {
+        "handle": "planner-1",
+        "name": "blackboard_read",
+        "args": {}
+      }
+    },
+    {
+      "from": "asha",
+      "kind": "internal",
+      "text": "Answers to planner-1's call: 1 answered.",
+      "to": "planner-1",
+      "call": {
+        "id": "k3",
+        "role": "gather"
+      },
+      "working": [
+        "planner-1"
+      ]
+    },
+    {
+      "log": {
+        "level": "info",
+        "channel": "main",
+        "event": "channel.call_gathered",
+        "call": "k3",
+        "caller": "planner-1",
+        "counts": {
+          "answered": 1,
+          "passed": 0,
+          "timed_out": 0,
+          "left": 0,
+          "unanswered": 0
+        },
+        "ms": 4000
+      }
+    },
+    {
+      "model": {
+        "handle": "planner-1",
+        "name": "reply",
+        "args": {
+          "text": "The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30."
+        }
+      }
+    },
+    {
+      "from": "planner-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "planner-1",
+      "kind": "output",
+      "text": "The meeting notice is complete. The meeting is scheduled for Thursday in the Juniper room at 14:30."
+    }
+  ],
+  "board": [
+    {
+      "author": "note-day-1",
+      "text": "notice: meeting on Thursday"
+    },
+    {
+      "author": "note-room-1",
+      "text": "notice: meeting on Thursday, in the Juniper room"
+    },
+    {
+      "author": "note-time-1",
+      "text": "notice: meeting on Thursday, in the Juniper room, at 14:30"
+    }
+  ],
+  "ms": 30000
+}

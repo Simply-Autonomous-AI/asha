@@ -1,0 +1,450 @@
+{
+ "suite": "p05-orchestrator-workers",
+ "commit": "47fb901bea55b18a2b40ec0cd28b0e41ee9b0a9a",
+ "dirty": false,
+ "startedAt": "2026-10-16T02:49:01.233Z",
+ "finishedAt": "2026-10-16T02:49:27.781Z",
+ "modelCalls": [
+  {
+   "at": "2026-10-16T02:49:15.349Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "lead-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 4813,
+   "promptTokens": 1896,
+   "cachedTokens": 0
+  },
+  {
+   "at": "2026-10-16T02:49:17.547Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "lead-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 2192,
+   "promptTokens": 1993,
+   "cachedTokens": 1890
+  },
+  {
+   "at": "2026-10-16T02:49:24.973Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "worker-a-1",
+   "model": "pico-v2-q8_0",
+   "ms": 7411,
+   "promptTokens": 983,
+   "cachedTokens": 0
+  },
+  {
+   "at": "2026-10-16T02:49:24.974Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "worker-b-1",
+   "model": "pico-v2-q8_0",
+   "ms": 7413,
+   "promptTokens": 980,
+   "cachedTokens": 0
+  },
+  {
+   "at": "2026-10-16T02:49:25.108Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "worker-c-1",
+   "model": "pico-v2-q8_0",
+   "ms": 7546,
+   "promptTokens": 981,
+   "cachedTokens": 0
+  },
+  {
+   "at": "2026-10-16T02:49:26.455Z",
+   "event": "model.chat",
+   "channel": "main",
+   "handle": "lead-1",
+   "model": "qwen3-8b-q4_k_m",
+   "ms": 1336,
+   "promptTokens": 1978,
+   "cachedTokens": 1852
+  }
+ ],
+ "scenarios": [
+  {
+   "scenario": {
+    "id": "launch",
+    "title": "./asha --launch team=orchestrator",
+    "agents": [],
+    "expectation": "Every member comes online on channel main: lead-1, worker-a-1, worker-b-1, worker-c-1."
+   },
+   "runs": [
+    {
+     "args": [
+      "--verbose",
+      "--launch",
+      "team=orchestrator"
+     ],
+     "code": 0,
+     "stdout": "lead-1\nworker-a-1\nworker-b-1\nworker-c-1\n",
+     "stderr": "› started the asha daemon (pid 14156); log: $TMPDIR/asha-run-18545-ZWpzdz/asha-agents-p05-orchestrator-workers-isfAN6/logs/server.log\n› member lead (recipe lead)\n› container_runtime: ready\n› model: qwen3-8b-q4_k_m cached\n› model_server: qwen3-8b-q4_k_m serving\n› image: asha-image-hello-world current\n› lead-1: Hi\n› member worker-a (recipe worker-a)\n› container_runtime: ready\n› model: pico-v2-q8_0 cached\n› model_server: pico-v2-q8_0 serving\n› image: asha-image-hello-world current\n› worker-a-1: Hi\n› member worker-b (recipe worker-b)\n› container_runtime: ready\n› model: pico-v2-q8_0 cached\n› model_server: pico-v2-q8_0 serving\n› image: asha-image-hello-world current\n› worker-b-1: Hi\n› member worker-c (recipe worker-c)\n› container_runtime: ready\n› model: pico-v2-q8_0 cached\n› model_server: pico-v2-q8_0 serving\n› image: asha-image-hello-world current\n› worker-c-1: Hi\n",
+     "startedAt": "2026-10-16T02:49:01.234Z",
+     "ms": 9205,
+     "events": [
+      {
+       "type": "progress",
+       "text": "started the asha daemon (pid 14156); log: $TMPDIR/asha-run-18545-ZWpzdz/asha-agents-p05-orchestrator-workers-isfAN6/logs/server.log"
+      },
+      {
+       "type": "progress",
+       "text": "member lead (recipe lead)"
+      },
+      {
+       "type": "progress",
+       "text": "container_runtime: ready"
+      },
+      {
+       "type": "progress",
+       "text": "model: qwen3-8b-q4_k_m cached"
+      },
+      {
+       "type": "progress",
+       "text": "model_server: qwen3-8b-q4_k_m serving"
+      },
+      {
+       "type": "progress",
+       "text": "image: asha-image-hello-world current"
+      },
+      {
+       "type": "status",
+       "from": "lead-1",
+       "text": "Hi"
+      },
+      {
+       "type": "progress",
+       "text": "member worker-a (recipe worker-a)"
+      },
+      {
+       "type": "progress",
+       "text": "container_runtime: ready"
+      },
+      {
+       "type": "progress",
+       "text": "model: pico-v2-q8_0 cached"
+      },
+      {
+       "type": "progress",
+       "text": "model_server: pico-v2-q8_0 serving"
+      },
+      {
+       "type": "progress",
+       "text": "image: asha-image-hello-world current"
+      },
+      {
+       "type": "status",
+       "from": "worker-a-1",
+       "text": "Hi"
+      },
+      {
+       "type": "progress",
+       "text": "member worker-b (recipe worker-b)"
+      },
+      {
+       "type": "progress",
+       "text": "container_runtime: ready"
+      },
+      {
+       "type": "progress",
+       "text": "model: pico-v2-q8_0 cached"
+      },
+      {
+       "type": "progress",
+       "text": "model_server: pico-v2-q8_0 serving"
+      },
+      {
+       "type": "progress",
+       "text": "image: asha-image-hello-world current"
+      },
+      {
+       "type": "status",
+       "from": "worker-b-1",
+       "text": "Hi"
+      },
+      {
+       "type": "progress",
+       "text": "member worker-c (recipe worker-c)"
+      },
+      {
+       "type": "progress",
+       "text": "container_runtime: ready"
+      },
+      {
+       "type": "progress",
+       "text": "model: pico-v2-q8_0 cached"
+      },
+      {
+       "type": "progress",
+       "text": "model_server: pico-v2-q8_0 serving"
+      },
+      {
+       "type": "progress",
+       "text": "image: asha-image-hello-world current"
+      },
+      {
+       "type": "status",
+       "from": "worker-c-1",
+       "text": "Hi"
+      }
+     ]
+    }
+   ],
+   "state": "pass",
+   "errors": []
+  },
+  {
+   "scenario": {
+    "id": "p05-a",
+    "title": "p05-a: lead-1 gives each worker only its part",
+    "agents": [
+     "lead-1",
+     "worker-a-1",
+     "worker-b-1",
+     "worker-c-1"
+    ],
+    "expectation": "One call with a part per worker, chosen from their descriptions: the translation to worker-a-1, the sum to worker-b-1, the say to worker-c-1; three answers, one gather; then lead-1 replies Merci, 42 and Hello World, one per line, in that order."
+   },
+   "runs": [
+    {
+     "args": [
+      "--verbose",
+      "to=lead-1",
+      "user=alice",
+      "message=Please do three things: translate 'thank you' into French, add 17 and 25, and say Hello World."
+     ],
+     "code": 0,
+     "stdout": "The results are:\n1. Translation: merci\n2. Addition: 42\n3. Message: Hello World.\n",
+     "stderr": "› alice → lead-1 on main: Please do three things: translate 'thank you' into French, add 17 and 25, and say Hello World.\n› lead-1 list_agents: {}\n› lead-1 consult: {\"requests\": [{\"to\": \"worker-a-1\", \"text\": \"Translate 'thank you' into French.\"}, {\"to\": \"worker-b-1\", \"text\": \"Add 17 and 25.\"}, {\"to\": \"worker-c-1\", \"text\": \"Say: Hello World.\"}]}\n› lead-1: ok\n› internal lead-1 → worker-a-1: Translate 'thank you' into French.\n› internal lead-1 → worker-b-1: Add 17 and 25.\n› internal lead-1 → worker-c-1: Say: Hello World.\n› worker-a-1 reply: {\n› worker-b-1 reply: {\n› worker-c-1 reply: {\n› worker-a-1 reply: \"\n› worker-b-1 reply: \"\n› worker-c-1 reply: \"\n› worker-a-1 reply: text\n› worker-b-1 reply: text\n› worker-c-1 reply: text\n› worker-a-1 reply: \":\n› worker-b-1 reply: \":\n› worker-c-1 reply: \":\n› worker-a-1 reply:  \"\n› worker-b-1 reply:  \"\n› worker-c-1 reply:  \"\n› worker-a-1 reply: mer\n› worker-b-1 reply: 4\n› worker-c-1 reply: Hello\n› worker-a-1 reply: ci\n› worker-b-1 reply: 2\n› worker-c-1 reply:  World\n› worker-a-1 reply: \"}\n› worker-b-1 reply: \"}\n› worker-c-1 reply: .\"\n› internal worker-a-1 → lead-1: merci\n› internal worker-b-1 → lead-1: 42\n› worker-c-1 reply: }\n› internal worker-c-1 → lead-1: Hello World.\n› internal asha → lead-1: Answers to lead-1's call: 3 answered.\n› lead-1 reply: {\"text\": \"The results are:\\n1. Translation: merci\\n2. Addition: 42\\n3. Message: Hello World.\"}\n› lead-1: ok\n› output lead-1 → alice:\n",
+     "startedAt": "2026-10-16T02:49:10.441Z",
+     "ms": 16032,
+     "events": [
+      {
+       "type": "posted",
+       "from": "alice",
+       "to": "lead-1",
+       "text": "Please do three things: translate 'thank you' into French, add 17 and 25, and say Hello World."
+      },
+      {
+       "type": "progress",
+       "text": "lead-1 list_agents: {}"
+      },
+      {
+       "type": "progress",
+       "text": "lead-1 consult: {\"requests\": [{\"to\": \"worker-a-1\", \"text\": \"Translate 'thank you' into French.\"}, {\"to\": \"worker-b-1\", \"text\": \"Add 17 and 25.\"}, {\"to\": \"worker-c-1\", \"text\": \"Say: Hello World.\"}]}"
+      },
+      {
+       "type": "status",
+       "from": "lead-1",
+       "text": "ok"
+      },
+      {
+       "type": "internal",
+       "from": "lead-1",
+       "to": "worker-a-1",
+       "text": "Translate 'thank you' into French."
+      },
+      {
+       "type": "internal",
+       "from": "lead-1",
+       "to": "worker-b-1",
+       "text": "Add 17 and 25."
+      },
+      {
+       "type": "internal",
+       "from": "lead-1",
+       "to": "worker-c-1",
+       "text": "Say: Hello World."
+      },
+      {
+       "type": "progress",
+       "text": "worker-a-1 reply: {"
+      },
+      {
+       "type": "progress",
+       "text": "worker-b-1 reply: {"
+      },
+      {
+       "type": "progress",
+       "text": "worker-c-1 reply: {"
+      },
+      {
+       "type": "progress",
+       "text": "worker-a-1 reply: \""
+      },
+      {
+       "type": "progress",
+       "text": "worker-b-1 reply: \""
+      },
+      {
+       "type": "progress",
+       "text": "worker-c-1 reply: \""
+      },
+      {
+       "type": "progress",
+       "text": "worker-a-1 reply: text"
+      },
+      {
+       "type": "progress",
+       "text": "worker-b-1 reply: text"
+      },
+      {
+       "type": "progress",
+       "text": "worker-c-1 reply: text"
+      },
+      {
+       "type": "progress",
+       "text": "worker-a-1 reply: \":"
+      },
+      {
+       "type": "progress",
+       "text": "worker-b-1 reply: \":"
+      },
+      {
+       "type": "progress",
+       "text": "worker-c-1 reply: \":"
+      },
+      {
+       "type": "progress",
+       "text": "worker-a-1 reply:  \""
+      },
+      {
+       "type": "progress",
+       "text": "worker-b-1 reply:  \""
+      },
+      {
+       "type": "progress",
+       "text": "worker-c-1 reply:  \""
+      },
+      {
+       "type": "progress",
+       "text": "worker-a-1 reply: mer"
+      },
+      {
+       "type": "progress",
+       "text": "worker-b-1 reply: 4"
+      },
+      {
+       "type": "progress",
+       "text": "worker-c-1 reply: Hello"
+      },
+      {
+       "type": "progress",
+       "text": "worker-a-1 reply: ci"
+      },
+      {
+       "type": "progress",
+       "text": "worker-b-1 reply: 2"
+      },
+      {
+       "type": "progress",
+       "text": "worker-c-1 reply:  World"
+      },
+      {
+       "type": "progress",
+       "text": "worker-a-1 reply: \"}"
+      },
+      {
+       "type": "progress",
+       "text": "worker-b-1 reply: \"}"
+      },
+      {
+       "type": "progress",
+       "text": "worker-c-1 reply: .\""
+      },
+      {
+       "type": "internal",
+       "from": "worker-a-1",
+       "to": "lead-1",
+       "text": "merci"
+      },
+      {
+       "type": "internal",
+       "from": "worker-b-1",
+       "to": "lead-1",
+       "text": "42"
+      },
+      {
+       "type": "progress",
+       "text": "worker-c-1 reply: }"
+      },
+      {
+       "type": "internal",
+       "from": "worker-c-1",
+       "to": "lead-1",
+       "text": "Hello World."
+      },
+      {
+       "type": "internal",
+       "from": "asha",
+       "to": "lead-1",
+       "text": "Answers to lead-1's call: 3 answered."
+      },
+      {
+       "type": "progress",
+       "text": "lead-1 reply: {\"text\": \"The results are:\\n1. Translation: merci\\n2. Addition: 42\\n3. Message: Hello World.\"}"
+      },
+      {
+       "type": "status",
+       "from": "lead-1",
+       "text": "ok"
+      },
+      {
+       "type": "output",
+       "from": "lead-1",
+       "to": "alice"
+      }
+     ]
+    }
+   ],
+   "state": "pass",
+   "errors": [],
+   "proof": [
+    {
+     "claim": "one call, lead-1 → exactly worker-a-1, worker-b-1 and worker-c-1, one question each",
+     "evidence": "call a441a130ee1f3ff0 lead-1 → worker-a-1, worker-b-1, worker-c-1; worker-a-1: \"Translate 'thank you' into French.\"; worker-b-1: \"Add 17 and 25.\"; worker-c-1: \"Say: Hello World.\""
+    },
+    {
+     "claim": "worker-a-1's question contains \"thank you\" and neither 17 nor hello",
+     "evidence": "lead-1 → worker-a-1: \"Translate 'thank you' into French.\""
+    },
+    {
+     "claim": "worker-b-1's question contains 17 and 25 and neither thank nor hello",
+     "evidence": "lead-1 → worker-b-1: \"Add 17 and 25.\""
+    },
+    {
+     "claim": "worker-c-1's question matches /hello,? world/i and contains neither thank nor 17",
+     "evidence": "lead-1 → worker-c-1: \"Say: Hello World.\""
+    },
+    {
+     "claim": "three answered, and one gather to lead-1 (channel.call_gathered)",
+     "evidence": "worker-a-1: \"merci\"; worker-b-1: \"42\"; worker-c-1: \"Hello World.\"; \"Answers to lead-1's call: 3 answered.\""
+    },
+    {
+     "claim": "exactly one output, from lead-1, after the gather, whose lines match /merci/i, contain 42, and match /hello,? world/i, in that order",
+     "evidence": "› output lead-1 → alice: \"The results are:\\n1. Translation: merci\\n2. Addition: 42\\n3. Message: Hello World.\""
+    },
+    {
+     "claim": "no worker posts an output",
+     "evidence": "outputs from lead-1 only"
+    },
+    {
+     "claim": "the lead's recipe and guidance name no worker (it chooses from the descriptions list_agents gives)",
+     "evidence": "lead.json and lead.md hold no worker-a, worker-b or worker-c"
+    },
+    {
+     "claim": "the command exits 0",
+     "evidence": "exit 0"
+    },
+    {
+     "claim": "the request completes within the pattern's bound",
+     "evidence": "16032 ms of 27000 ms"
+    }
+   ]
+  }
+ ]
+}

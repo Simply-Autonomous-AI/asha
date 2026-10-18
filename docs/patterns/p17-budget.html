@@ -1,0 +1,164 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p17-budget.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Budgets Demo</title>
+<meta name="description" content="P17 · Budgets and circuit breaker: A conversation that would run for ever is ended by its post or token budget, given on its message; every agent post in it afterwards is refused. A harness control, not a collaboration pattern. Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Budgets Demo</nav>
+<h1>P17 · Budgets and circuit breaker</h1>
+<p class="lede">A conversation that would run for ever is ended by its post or token budget, given on its message; every agent post in it afterwards is refused. A harness control, not a collaboration pattern.</p>
+<div class="facts"><span>written 2026-10-02</span><span>status: <span class="badge built">built</span> 2026-10-02, three recorded runs and one under its bound, all green</span><span>team: <a href="../../teams/budget/team.json"><code>teams/budget/</code></a></span><span>test: <a href="../../tests/agents/p17-budget.test.ts"><code>tests/agents/p17-budget.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-3.md</code>, its runs</span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p17-a</code> (a post budget) and <code>p17-b</code> (a token budget), as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>Built: its three recorded runs with every member on <code>qwen3-8b-q4_k_m</code> passed, then one under the bound they set, at <code>95e3bab</code> (runs (<code>docs/plans/patterns-phase-3.md</code>)); moved 2026-10-10 by <code>docs/plans/demo-model-pico.md</code> R3, with every member on <code>pico-v2-q8_0</code> (it has no router): three recorded runs passed at <code>6eed097</code> with the move, then one under the bound they set at <code>8dd3a26</code> (runs (<code>evals/probes/demo-model-pico-runs-2026-10-09/README.md</code>)); its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>ping</code>, <code>pong</code> on <code>pico-v2-q8_0</code>.</li>
+<li>The budget is the message's, on its command: <code>posts=8</code> (1 to 32; 32 without it) and <code>tokens=6000</code> (1 to 1,000,000; none without it). The post past it, or the model call that takes the tokens past it, ends the conversation <code>budget_exceeded</code> (<a href="../architecture/channel.html#ended">the end of a conversation</a>).</li>
+<li><code>ping</code> and <code>pong</code> are built never to stop: each answers every message by messaging the other.</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p17-budget.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>pico-v2-q8_0</code> (<a href="videos/p17-budget.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 27 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when agents that hand work to each other could loop, and a conversation must stop at a known size or cost, whatever the agents decide.</p>
+<p><strong>Do not use it</strong> to stop one slow agent (watchdog, P14) or to end a conversation on the user's word (propagating cancellation, P26).</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" role="img" aria-labelledby="p17-t p17-d">
+  <title id="p17-t">P17 · Budgets and circuit breaker</title>
+  <desc id="p17-d">p17-a: ping-1 and pong-1 send ping and pong to each other; the eighth post is the budget's last; the ninth is refused, the conversation ends budget_exceeded, and the user's command prints the error. p17-b: the same with a budget of 6,000 tokens, ended after the call that passes it.</desc>
+  <defs><marker id="p17-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="8" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="76" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M76 44 V394"/>
+  <rect class="box" x="210" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="278" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M278 44 V394"/>
+  <rect class="box accent" x="412" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="480" y="32" text-anchor="middle">ping-1</text>
+  <path class="edge dim" d="M480 44 V394"/>
+  <rect class="box accent" x="614" y="10" width="136" height="34" rx="5"/>
+  <text class="label mono" x="682" y="32" text-anchor="middle">pong-1</text>
+  <path class="edge dim" d="M682 44 V394"/>
+  <path class="edge" d="M76 80 H478" marker-end="url(#p17-a)"/>
+  <text class="label small" x="277" y="74" text-anchor="middle">Start. (posts=8)</text>
+  <path class="edge" d="M480 112 H680" marker-end="url(#p17-a)"/>
+  <text class="label small" x="580" y="106" text-anchor="middle">ping (post 1)</text>
+  <path class="edge" d="M682 144 H482" marker-end="url(#p17-a)"/>
+  <text class="label small" x="580" y="138" text-anchor="middle">pong (post 2)</text>
+  <text class="label small" x="580" y="174" text-anchor="middle">… alternating …</text>
+  <path class="edge" d="M682 206 H482" marker-end="url(#p17-a)"/>
+  <text class="label small" x="580" y="200" text-anchor="middle">pong (post 8)</text>
+  <path class="edge" d="M480 238 H280" marker-end="url(#p17-a)"/>
+  <text class="label small" x="380" y="232" text-anchor="middle">ping (post 9): refused</text>
+  <text class="label small" x="200" y="266" text-anchor="end">ended: budget_exceeded</text>
+  <path class="edge" d="M278 290 H78" marker-end="url(#p17-a)"/>
+  <text class="label small" x="177" y="284" text-anchor="middle">error: budget_exceeded</text>
+  <text class="label small" x="16" y="334">p17-b: tokens=6000 — the call that takes the conversation</text>
+  <text class="label small" x="16" y="354">past 6,000 tokens ends it; that call's post is refused</text>
+</svg>
+<figcaption>p17-a: ping-1 and pong-1 send ping and pong to each other; the eighth post is the budget's last; the ninth is refused, the conversation ends budget_exceeded, and the user's command prints the error. p17-b: the same with a budget of 6,000 tokens, ended after the call that passes it.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 23,000 ms since 2026-10-10, set from its three recorded runs with its sub-agents on <code>pico-v2-q8_0</code> (<code>docs/plans/demo-model-pico.md</code> R3) — the largest request, p17-a's 15,272 ms in run 2 at <code>6eed097</code> with the move, times 1.5 (22,908), rounded up to a whole second; the cap is 45,000 ms. <em>Before, with every member on <code>qwen3-8b-q4_k_m</code>:</em> 21,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-3.md</code> R4) — the largest request, p17-a's 13,996 ms at <code>f38bbfa</code>, times 1.5 (20,994), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=budget
+# bound: 23000 ms
+# p17-a
+./asha to=ping-1 posts=8 user=alice message=&quot;Start.&quot;
+# p17-b
+./asha to=ping-1 tokens=6000 user=alice message=&quot;Start.&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>8dd3a26</code> (clean tree), <code>docs/plans/demo-model-pico.md</code>'s fourth run (R3 (d)), with its sub-agents on <code>pico-v2-q8_0</code>, from its results file <code>p17-budget.json</code> (<code>evals/probes/demo-model-pico-runs-2026-10-09/run-4/results/p18-budget.json</code>): each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' tool calls as they stream — lines such as <code>› &lt;handle&gt; &lt;tool&gt;: …</code>, one fragment each (D38) — are left out here; the results file holds them. The transcript before, with every member on <code>qwen3-8b-q4_k_m</code>, is in this page's history (<code>git show 8dd3a26:docs/patterns/p17-budget.md</code>).</p>
+<p><strong>p17-a</strong> — exit 1, 14,746 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=ping-1 posts=8 user=alice message=&quot;Start.&quot;
+› alice → ping-1 on main: Start.
+› ping-1: ok
+› internal ping-1 → pong-1: ping
+› pong-1: ok
+› internal pong-1 → ping-1: pong
+› ping-1: ok
+› internal ping-1 → pong-1: ping
+› pong-1: ok
+› internal pong-1 → ping-1: pong
+› ping-1: ok
+› internal ping-1 → pong-1: ping
+› pong-1: ok
+› internal pong-1 → ping-1: pong
+› ping-1: ok
+› internal ping-1 → pong-1: ping
+› pong-1: ok
+› internal pong-1 → ping-1: pong
+› ping-1: ok
+✗ budget_exceeded: conversation 039208e25279a41a reached its budget of 8 agent posts
+</code></pre>
+<p><strong>p17-b</strong> — exit 1, 3,153 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=ping-1 tokens=6000 user=alice message=&quot;Start.&quot;
+› alice → ping-1 on main: Start.
+› ping-1: ok
+› internal ping-1 → pong-1: ping
+› pong-1: ok
+› internal pong-1 → ping-1: pong
+› ping-1: ok
+› internal ping-1 → pong-1: ping
+✗ budget_exceeded: conversation 2288a2f6be669d78 used 6891 tokens of its budget of 6000
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/budget/team.json"><code>teams/budget/team.json</code></a>: the team — <code>ping</code>, <code>pong</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>.</li>
+<li><code>ping</code>: <a href="../../teams/budget/ping.json"><code>ping.json</code></a>, its recipe, and <a href="../../teams/budget/ping.md"><code>ping.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>pong</code>: <a href="../../teams/budget/pong.json"><code>pong.json</code></a>, its recipe, and <a href="../../teams/budget/pong.md"><code>pong.md</code></a>, its guidance.</li>
+<li><a href="../../tests/agents/p17-budget.test.ts"><code>tests/agents/p17-budget.test.ts</code></a>: launches the team and sends each scenario's message from this page, then asserts each scenario only through its checker, <code>P17_A</code> and <code>P17_B</code> in <a href="../../tests/agents/patterns/phase-3.ts"><code>tests/agents/patterns/phase-3.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p17-a/pass.json"><code>tests/agents/patterns/fixtures/p17-a/</code></a> and <a href="../../tests/agents/patterns/fixtures/p17-b/pass.json"><code>p17-b/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>With every member on <code>pico-v2-q8_0</code> (it has no router) (demo-model-pico, 2026-10-10): its largest request took 15,272 ms in the three recorded runs and 14,746 ms in the fourth, under its bound of 23,000 ms. The limits after it were measured with every member on <code>qwen3-8b-q4_k_m</code>, before the move; one about a sub-agent was not measured again on <code>pico-v2-q8_0</code>.</li>
+<li>The budget does not depend on the model: the harness counts the posts and the tokens. The model only has to keep the loop going, which the probes showed it does, 3/3 for each turn (<code>docs/plans/patterns-phase-3.md</code>).</li>
+<li>A token count is known only once a call ends, so the call that passes the budget is served, its result returned to its agent, and only its post is refused. Each ping or pong call costs about 1,800 tokens (the probes), so 6,000 ends p17-b at the fourth call.</li>
+<li>The refused agent's turn ends there, logged <code>post.refused</code> in its own log, and the agent stays online for the next message.</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p17">agent test report, P17 · Budgets and circuit breaker</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p17-budget.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

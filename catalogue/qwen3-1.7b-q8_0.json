@@ -1,0 +1,38 @@
+{
+  "kind": "chat",
+  "id": "qwen3-1.7b-q8_0",
+  "repo": "Qwen/Qwen3-1.7B-GGUF",
+  "revision": "90862c4b9d2787eaed51d12237eafdfe7c5f6077",
+  "weights": "Qwen3-1.7B-Q8_0.gguf",
+  "files": [
+    {
+      "path": "Qwen3-1.7B-Q8_0.gguf",
+      "size": 1834426016,
+      "sha256": "061b54daade076b5d3362dac252678d17da8c68f07560be70818cace6590cb1a"
+    },
+    {
+      "path": "LICENSE",
+      "size": 11544,
+      "sha256": "5de36594c10839788a8c589443a8ef9d8b8d17c65a1b5807206ae037fc36c6bd"
+    }
+  ],
+  "license": {
+    "id": "apache-2.0",
+    "source": "https://huggingface.co/Qwen/Qwen3-1.7B-GGUF/blob/90862c4b9d2787eaed51d12237eafdfe7c5f6077/LICENSE",
+    "verified": "2026-09-26"
+  },
+  "serve": {
+    "contextSize": 8192
+  },
+  "chat": {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "min_p": 0,
+    "presence_penalty": 1.5,
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    }
+  },
+  "toolCallStart": "<tool_call>\n"
+}

@@ -1,0 +1,324 @@
+{
+  "scenario": "p04-a",
+  "breaks": "no fact member posts an output",
+  "note": "fact-red-1 answers the user as well as the supervisor.",
+  "team": "rainbow",
+  "input": {
+    "user": "alice",
+    "to": "supervisor-1",
+    "text": "Which sequence of the numbers lists their colours in rainbow order?"
+  },
+  "recipients": [
+    "supervisor-1"
+  ],
+  "messages": [
+    {
+      "from": "supervisor-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "supervisor-1",
+      "to": "fact-blue-1",
+      "kind": "internal",
+      "text": "What number and colour do you know?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "supervisor-1",
+        "fact-blue-1"
+      ]
+    },
+    {
+      "from": "supervisor-1",
+      "to": "fact-brown-1",
+      "kind": "internal",
+      "text": "What number and colour do you know?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "supervisor-1",
+        "fact-brown-1"
+      ]
+    },
+    {
+      "from": "supervisor-1",
+      "to": "fact-green-1",
+      "kind": "internal",
+      "text": "What number and colour do you know?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "supervisor-1",
+        "fact-green-1"
+      ]
+    },
+    {
+      "from": "supervisor-1",
+      "to": "fact-indigo-1",
+      "kind": "internal",
+      "text": "What number and colour do you know?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "supervisor-1",
+        "fact-indigo-1"
+      ]
+    },
+    {
+      "from": "supervisor-1",
+      "to": "fact-orange-1",
+      "kind": "internal",
+      "text": "What number and colour do you know?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "supervisor-1",
+        "fact-orange-1"
+      ]
+    },
+    {
+      "from": "supervisor-1",
+      "to": "fact-pink-1",
+      "kind": "internal",
+      "text": "What number and colour do you know?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "supervisor-1",
+        "fact-pink-1"
+      ]
+    },
+    {
+      "from": "supervisor-1",
+      "to": "fact-red-1",
+      "kind": "internal",
+      "text": "What number and colour do you know?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "supervisor-1",
+        "fact-red-1"
+      ]
+    },
+    {
+      "from": "supervisor-1",
+      "to": "fact-violet-1",
+      "kind": "internal",
+      "text": "What number and colour do you know?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "supervisor-1",
+        "fact-violet-1"
+      ]
+    },
+    {
+      "from": "supervisor-1",
+      "to": "fact-yellow-1",
+      "kind": "internal",
+      "text": "What number and colour do you know?",
+      "call": {
+        "id": "k1",
+        "role": "question"
+      },
+      "working": [
+        "supervisor-1",
+        "fact-yellow-1"
+      ]
+    },
+    {
+      "from": "fact-brown-1",
+      "to": "supervisor-1",
+      "kind": "internal",
+      "text": "The number 8 stands for the colour brown.",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "supervisor-1"
+      ]
+    },
+    {
+      "from": "fact-blue-1",
+      "to": "supervisor-1",
+      "kind": "internal",
+      "text": "The number 3 stands for the colour blue.",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "supervisor-1"
+      ]
+    },
+    {
+      "from": "fact-indigo-1",
+      "to": "supervisor-1",
+      "kind": "internal",
+      "text": "The number 6 stands for the colour indigo.",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "supervisor-1"
+      ]
+    },
+    {
+      "from": "fact-green-1",
+      "to": "supervisor-1",
+      "kind": "internal",
+      "text": "The number 9 stands for the colour green.",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "supervisor-1"
+      ]
+    },
+    {
+      "from": "fact-pink-1",
+      "to": "supervisor-1",
+      "kind": "internal",
+      "text": "The number 5 stands for the colour pink.",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "supervisor-1"
+      ]
+    },
+    {
+      "from": "fact-orange-1",
+      "to": "supervisor-1",
+      "kind": "internal",
+      "text": "The number 7 stands for the colour orange.",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "supervisor-1"
+      ]
+    },
+    {
+      "from": "fact-violet-1",
+      "to": "supervisor-1",
+      "kind": "internal",
+      "text": "The number 2 stands for the colour violet.",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "supervisor-1"
+      ]
+    },
+    {
+      "from": "fact-red-1",
+      "to": "supervisor-1",
+      "kind": "internal",
+      "text": "The number 4 stands for the colour red.",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "supervisor-1"
+      ]
+    },
+    {
+      "from": "fact-yellow-1",
+      "to": "supervisor-1",
+      "kind": "internal",
+      "text": "The number 1 stands for the colour yellow.",
+      "call": {
+        "id": "k1",
+        "role": "answer"
+      },
+      "working": [
+        "supervisor-1"
+      ]
+    },
+    {
+      "from": "asha",
+      "to": "supervisor-1",
+      "kind": "internal",
+      "text": "Answers to supervisor-1's call: 9 answered.",
+      "call": {
+        "id": "k1",
+        "role": "gather"
+      },
+      "working": [
+        "supervisor-1"
+      ]
+    },
+    {
+      "from": "fact-red-1",
+      "kind": "output",
+      "text": "4 red",
+      "working": [
+        "supervisor-1"
+      ]
+    },
+    {
+      "from": "supervisor-1",
+      "kind": "output",
+      "text": "The sequence of numbers that lists their colours in rainbow order is: red (4), orange (7), yellow (1), green (9), blue (3), indigo (6), violet (2)."
+    }
+  ],
+  "log": [
+    {
+      "event": "channel.call_opened",
+      "channel": "main",
+      "call": "k1",
+      "caller": "supervisor-1",
+      "addressees": [
+        "fact-blue-1",
+        "fact-brown-1",
+        "fact-green-1",
+        "fact-indigo-1",
+        "fact-orange-1",
+        "fact-pink-1",
+        "fact-red-1",
+        "fact-violet-1",
+        "fact-yellow-1"
+      ]
+    },
+    {
+      "event": "channel.call_gathered",
+      "channel": "main",
+      "call": "k1",
+      "caller": "supervisor-1",
+      "counts": {
+        "answered": 9,
+        "passed": 0,
+        "timed_out": 0,
+        "left": 0,
+        "unanswered": 0
+      },
+      "ms": 20000
+    }
+  ],
+  "ms": 30000
+}

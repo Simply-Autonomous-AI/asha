@@ -1,0 +1,18 @@
+{
+  "id": "watchdog",
+  "description": "P14, watchdog and reassignment: a lead gives a task to a worker that stalls by design, and gives it to another once the first times out.",
+  "members": [
+    {
+      "name": "lead",
+      "recipe": "lead.json"
+    },
+    {
+      "name": "stuck",
+      "recipe": "stuck.json"
+    },
+    {
+      "name": "backup",
+      "recipe": "backup.json"
+    }
+  ]
+}

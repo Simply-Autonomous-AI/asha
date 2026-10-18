@@ -1,0 +1,27 @@
+{
+  "scenario": "p22-a",
+  "breaks": null,
+  "note": "The passing conversation, written by hand in the shape the daemon streams and logs (tests/agents/patterns/fixture.ts).",
+  "team": "escalation",
+  "input": {
+    "user": "alice",
+    "to": "helper-1",
+    "text": "Convert 3 metres to centimetres, then book a meeting room for 3 pm."
+  },
+  "recipients": [
+    "helper-1"
+  ],
+  "messages": [
+    {
+      "from": "helper-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "helper-1",
+      "kind": "output",
+      "text": "ESCALATE: done: 3 metres is 300 centimetres; left: book a meeting room for 3 pm"
+    }
+  ],
+  "ms": 4000
+}

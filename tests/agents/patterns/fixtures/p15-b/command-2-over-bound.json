@@ -1,0 +1,71 @@
+{
+  "scenario": "p15-b",
+  "breaks": "the request completes within the pattern's bound",
+  "note": "Command 2 one millisecond over the page's bound.",
+  "team": "approval",
+  "input": {
+    "user": "alice",
+    "to": "clerk-1",
+    "text": "Post the announcement: Office closed Friday."
+  },
+  "recipients": [
+    "clerk-1"
+  ],
+  "messages": [
+    {
+      "model": {
+        "handle": "clerk-1",
+        "name": "ask_user",
+        "args": {
+          "text": "Approve posting \"Office closed Friday.\"? Answer yes or no."
+        }
+      }
+    },
+    {
+      "from": "clerk-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "clerk-1",
+      "kind": "output",
+      "text": "Approve posting \"Office closed Friday.\"? Answer yes or no.",
+      "asks": true
+    }
+  ],
+  "next": [
+    {
+      "input": {
+        "user": "alice",
+        "to": "clerk-1",
+        "text": "no"
+      },
+      "recipients": [
+        "clerk-1"
+      ],
+      "messages": [
+        {
+          "model": {
+            "handle": "clerk-1",
+            "name": "reply",
+            "args": {
+              "text": "Not posted."
+            }
+          }
+        },
+        {
+          "from": "clerk-1",
+          "kind": "status",
+          "text": "ok"
+        },
+        {
+          "from": "clerk-1",
+          "kind": "output",
+          "text": "Not posted."
+        }
+      ],
+      "ms": "bound+1"
+    }
+  ],
+  "ms": 3500
+}

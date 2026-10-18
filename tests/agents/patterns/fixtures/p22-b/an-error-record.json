@@ -1,0 +1,67 @@
+{
+  "scenario": "p22-b",
+  "breaks": "no error-level record",
+  "note": "An error record in the conversation.",
+  "team": "escalation",
+  "input": {
+    "user": "alice",
+    "to": "helper-1",
+    "text": "Convert 3 metres to centimetres, then book a meeting room for 3 pm."
+  },
+  "recipients": [
+    "helper-1"
+  ],
+  "messages": [
+    {
+      "from": "helper-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "helper-1",
+      "kind": "output",
+      "text": "ESCALATE: done: 3 metres = 300 centimetres; left: book a meeting room for 3 pm",
+      "asks": true
+    }
+  ],
+  "next": [
+    {
+      "input": {
+        "user": "alice",
+        "to": "helper-1",
+        "text": "Also convert 5 metres to centimetres."
+      },
+      "recipients": [
+        "helper-1"
+      ],
+      "messages": [
+        {
+          "from": "helper-1",
+          "kind": "status",
+          "text": "pass: The user has answered the escalation",
+          "working": [
+            "helper-1"
+          ]
+        },
+        {
+          "log": {
+            "level": "error",
+            "event": "channel.delivery_timeout",
+            "channel": "main",
+            "handle": "helper-1",
+            "deliveryId": "d9",
+            "conversation": "c1"
+          }
+        },
+        {
+          "from": "asha",
+          "kind": "output",
+          "text": "No agent could answer this:\n- helper-1 passed: The user has answered the escalation",
+          "working": []
+        }
+      ],
+      "ms": 1500
+    }
+  ],
+  "ms": 4000
+}

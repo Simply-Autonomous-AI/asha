@@ -1,0 +1,101 @@
+{
+  "commit": "d102a45b4059a62f100af58747d186b1be299a95",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p20-a/helper-call",
+  "control": false,
+  "change": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "marigold"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "marigold"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1065,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 3018,
+      "board": [],
+      "requestSha256": "0d5c6922f3df9377314fac85d88fa4f0b08ea47b5c94539b64cdb266ffc91401",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "marigold"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "marigold"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1065,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 435,
+      "board": [],
+      "requestSha256": "0d5c6922f3df9377314fac85d88fa4f0b08ea47b5c94539b64cdb266ffc91401",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "marigold"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "marigold"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1065,
+          "completionTokens": 19
+        }
+      ],
+      "ms": 433,
+      "board": [],
+      "requestSha256": "0d5c6922f3df9377314fac85d88fa4f0b08ea47b5c94539b64cdb266ffc91401",
+      "ok": true
+    }
+  ]
+}

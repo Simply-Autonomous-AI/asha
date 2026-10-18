@@ -1,0 +1,1690 @@
+{
+  "base": "3d310b5",
+  "madeBy": "tests/helpers/request-corpus.ts corpusPrints, run by vitest from a detached worktree of 3d310b5 (clean but for the copied helper and its one-test generator), 2026-09-30 (agent-files A13)",
+  "prints": {
+    "routing/solo-answer": {
+      "messages": "4ba347f8c79bcc3457d7a8376b508472889ec9ebdbe0e18daced393f4c471457",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/solo-addressed": {
+      "messages": "cac0366242932f161f2c3c9a344ff0e9345008a3810368defaffa9d9a5d3f27f",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/addressed-answer": {
+      "messages": "37ed0f5de54532114a3bd38207d8965b479ca1eba2d7c6d62fe45cd27acbba78",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/broadcast-answer": {
+      "messages": "0474a325f32d6e2b293990d5959864e55d997fe5c7a94920d56eff03dd09172e",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/delegate": {
+      "messages": "e16d33a6e3cea15de1128b15f72d00280ead28f103a804880a60c433c1f469cb",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/delegated": {
+      "messages": "a10b37950352104cb62956516ca4cfa6efd860bcc2c910f9a58b8dd9324b99b8",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/delegated-bare": {
+      "messages": "4d9707524b63fc30522cd1159e8d5f13b61a7ac163fbddac45131836c3996fb2",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/delegate-by-role": {
+      "messages": "f035bab0b52d828ae6b25994bf781559e945a06def3fd4239835c23e7ef2b24b",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "6d4ee73eb5591f2b132a52cf8740630b878ac620e3788cb17f048e2a7592adca",
+        "consult": "ee71734c961ffcda0648ce8e82e8d32313db5d9e885a1504c783c0a75fc81b56",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/claim": {
+      "messages": "b01a6f9e46c9864a16485b99f887e72800cf861059de3a196d8b00a9fd688c91",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/ignore-agent-request": {
+      "messages": "b95065cbca10c5b8584813bc85b08b78ce99b1d41f7c7183f84ff4a6c2523f45",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/ignore-user-request": {
+      "messages": "32d9b0ee9b8c33d2155461792b436f20829668fad2a05757e263177075c16a74",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/solo-greeting": {
+      "messages": "81885e5a9e51de485a55d966af5b0cadf6978b62f63a12f67c17bfa13811af36",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/solo-greeting-addressed": {
+      "messages": "829232d4ec6a5445cc3569ee137070fd3dd3239d47aced6fc32c3f480252d3c6",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/solo-question": {
+      "messages": "8b3c0f87410e49326366cb40e92b36d9cd1999dcab0efce5d6b9f53e17cef9aa",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/solo-other-words": {
+      "messages": "46b4ec5da7001b3d8c3197361007e45e6898e05fea1836494e854c26d7c738f4",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/multi-greeting": {
+      "messages": "c0f27b43dde40b8ff772c7b46e02675fc42d16ebdfd97e6593a133cee72bdd76",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/multi-greeting-addressed": {
+      "messages": "d91443c2a5f1659bcdc8dba3a2378f1b7083e202f2a56be92a92a1465347ab4e",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/multi-question": {
+      "messages": "15f7adc80444a4ea76c89320919963c830eff38247cbbc3756252b57a1661006",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/agent-question": {
+      "messages": "e6f25f7accb709f7ae53801a261b179b5d8c059a9994186542a80870e2c8cb6f",
+      "tools": {
+        "reply": "83eeb5b5976ef6073571b6466c4018f9d59657c54ffb48ae49b89251617d68d7",
+        "pass": "63d1f62c2f97c7251ff29643f42c56f084397f479977a07a9cbe311ec3025041",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/ask-for-self": {
+      "messages": "84c1e65a8a6060249e5f520bbd562fe0bf81524eb120c877fedd512974a78702",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/ask-for-user": {
+      "messages": "65f3cb85c94efae5b2c2f95918bfbc7bfbfaf403565a342428329ce18b0b88f8",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/delegated-question": {
+      "messages": "8045c574b5cfb0b6618ab10977b5346d0c4aae38b0aeb547c554273059925f10",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/ask-memo-for-user": {
+      "messages": "a9e169f9aae42ed8fd5e8f0ad9acdd80efda0aaf476df2237d46ea591650e0e0",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "5b0dfe34c8c4580b1692c717677411c98858aa8122692e7e843922a370fee05a",
+        "consult": "5154053b3d5c9ccb2c7e5fc5913a67c60173c7618a9be588b1310d53b402c7a0",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/ask-two-for-self": {
+      "messages": "853358a84c19d932464ac21cb38a44d4a1725b3215dadbe0fcdcabb765db0693",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "7de502ff5a6f9ab7b3b44555da62d9fca403d9b0b2758f8aac9e81a891c85380",
+        "consult": "225645efb118e6f2219c442dcc3c5cab2a27d9a04d2e116dd9408686a9811862",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/call-and-return": {
+      "messages": "11113b946c02b100866bd124b59af04a79c2b187faaaf7629506aa5e4b90bf03",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/call-outside-role": {
+      "messages": "0c05b82cc3b13646fc8b93995006ed2e5e08ab775bc0a5b614a76bb416cb7fec",
+      "tools": {
+        "reply": "83eeb5b5976ef6073571b6466c4018f9d59657c54ffb48ae49b89251617d68d7",
+        "pass": "63d1f62c2f97c7251ff29643f42c56f084397f479977a07a9cbe311ec3025041",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/gather-three": {
+      "messages": "63abc73c5bb9a066558fe5cde14b12dbc5c83d01fe0ffb9aac58f32f449fead8",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "77c5b963c7c210ead8a5fc64ca429f68673e2e5fe8d2bc69996dd4828b1a6886",
+        "consult": "b01e14fb2a7fbf0b0b34f6175b195d42f82ffc23553ee3130d5501afaf565fd8",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "routing/gather-nine": {
+      "messages": "16052f1437fec8b4e7eca312f0139c4628eebb9dee433e6c41eb8c97d44422dd",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "aafe45354e21020fa36d3c46e7ffc0ab71f1d0a499c9417bd436ad1f2848ff20",
+        "consult": "9398bb3446536ed53032de41124ea80d211d153c414087ba25e004d0b0c42f3b",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-question-what-can-you-do": {
+      "messages": "a9a072f08ff036e3693f5e7d07b6e0a15af03645983d0f839d04c45e498a202e",
+      "tools": {
+        "reply": "83eeb5b5976ef6073571b6466c4018f9d59657c54ffb48ae49b89251617d68d7",
+        "pass": "63d1f62c2f97c7251ff29643f42c56f084397f479977a07a9cbe311ec3025041",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-question-other-asker": {
+      "messages": "103c9d48f09edd88c0e572f4d38bed65c91e4a00708b996fdba04019a6303902",
+      "tools": {
+        "reply": "daea9efc1c07f3566d9470a9ee741377977a27c12e393299ef95a1726c7c2625",
+        "pass": "63d1f62c2f97c7251ff29643f42c56f084397f479977a07a9cbe311ec3025041",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-question-kind-of-work": {
+      "messages": "27a7ebe36b67f990bde1919ee17c45aa8a76848bedff0fef359b40a4a530e8eb",
+      "tools": {
+        "reply": "41eb3337b4f48070ead11ea65e5952039555f31abfef9dda79a157cf85b260cd",
+        "pass": "63d1f62c2f97c7251ff29643f42c56f084397f479977a07a9cbe311ec3025041",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-question-handle": {
+      "messages": "1eeb7dd8ed330b6518f1b2d28ca13d78eb7f213a5dc4646b4d11c29d7ab22026",
+      "tools": {
+        "reply": "d951d9ea413839e0c0548344ea439deaaa848d1149702d243ba1ae1945c788aa",
+        "pass": "63d1f62c2f97c7251ff29643f42c56f084397f479977a07a9cbe311ec3025041",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-question-one-sentence": {
+      "messages": "076bc282fbb061de82fc0d94f512100a5680547c16170e303476c2afe3a179c1",
+      "tools": {
+        "reply": "7ea9ef0e5002120d883ca361b580565d9a3e570385d7642a992e5e4c5872a32b",
+        "pass": "63d1f62c2f97c7251ff29643f42c56f084397f479977a07a9cbe311ec3025041",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-question-translate-or-say": {
+      "messages": "06b13f81677355a0dca118e689f69ac8730296579b10ad5c59ebc69c6b5a338a",
+      "tools": {
+        "reply": "daea9efc1c07f3566d9470a9ee741377977a27c12e393299ef95a1726c7c2625",
+        "pass": "63d1f62c2f97c7251ff29643f42c56f084397f479977a07a9cbe311ec3025041",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-task-good-evening": {
+      "messages": "96ac1f2b77adeef21835e275d1fe0704bf2e082700a8572e43915501268d28e0",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-task-roster": {
+      "messages": "84dc64f305635aacdeedd279ab9885dfb3f682d990a693e5617b85aab7afcab5",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "6d4ee73eb5591f2b132a52cf8740630b878ac620e3788cb17f048e2a7592adca",
+        "consult": "ee71734c961ffcda0648ce8e82e8d32313db5d9e885a1504c783c0a75fc81b56",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-task-third-agent": {
+      "messages": "69b9458888e0b4cf8af13ae9db770791e58bbbc8de16a8ff26735e79a2f00b7e",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "7de502ff5a6f9ab7b3b44555da62d9fca403d9b0b2758f8aac9e81a891c85380",
+        "consult": "225645efb118e6f2219c442dcc3c5cab2a27d9a04d2e116dd9408686a9811862",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-ask-for-self": {
+      "messages": "e7627423a5e4ffdc6c2891cf675fd2b101701ef752e544845125e7edfcc48315",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "6d4ee73eb5591f2b132a52cf8740630b878ac620e3788cb17f048e2a7592adca",
+        "consult": "ee71734c961ffcda0648ce8e82e8d32313db5d9e885a1504c783c0a75fc81b56",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-ask-for-user": {
+      "messages": "ba46d6028711b6817afad93dc027fd38ab8f7662676d37a99ac60c50b68be36d",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "6d4ee73eb5591f2b132a52cf8740630b878ac620e3788cb17f048e2a7592adca",
+        "consult": "ee71734c961ffcda0648ce8e82e8d32313db5d9e885a1504c783c0a75fc81b56",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-delegate": {
+      "messages": "097fc213146b8fb175a3bae09779d53d05df68897d046eed164f8daf19c25e91",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-task-question": {
+      "messages": "4c255ea370fdd97dc0446f3bef12f197f369f7e9ce3b6e60b352627205375aef",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-handoff-could-you-ask": {
+      "messages": "07264677e8ed398d5dadb3a1a791de1fc8a5fe8fb60a7a905732205314349ca3",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "6d4ee73eb5591f2b132a52cf8740630b878ac620e3788cb17f048e2a7592adca",
+        "consult": "ee71734c961ffcda0648ce8e82e8d32313db5d9e885a1504c783c0a75fc81b56",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-handoff-tell": {
+      "messages": "237b24c8b8e99df7d1b5dd0497b927dbfdb1856f1693f2121f7f4a2e45952cc8",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "7de502ff5a6f9ab7b3b44555da62d9fca403d9b0b2758f8aac9e81a891c85380",
+        "consult": "225645efb118e6f2219c442dcc3c5cab2a27d9a04d2e116dd9408686a9811862",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-handoff-scout": {
+      "messages": "bc9615b4f6a5f4d310a8fa7430e4468892e9cc3bdc0db4639097c1dc648404c5",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "a1ddddde720c135db116c547ecb60277da9cc7b1d2d90b849601412b95072e38",
+        "consult": "25b13e15278ae3a1c049563f9fe36dc7f9389efdcef6e62227fdfe04e3bff34d",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-self-let-me-know": {
+      "messages": "809e09308df30428c8de050a5987cb737ab596ba75610551458495fc552c07a7",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "7de502ff5a6f9ab7b3b44555da62d9fca403d9b0b2758f8aac9e81a891c85380",
+        "consult": "225645efb118e6f2219c442dcc3c5cab2a27d9a04d2e116dd9408686a9811862",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-self-scout": {
+      "messages": "d8e65fe26be561fb78e0c6e8e35e3fc73aa1cde49932f545e270d134f25de770",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "c3f3e900106fdd7961f7e75db655b6bf986f91c503be9f9bd2d146cf000b747a",
+        "consult": "083935a06b1e51c904546d804d1350f1ae576b3ed72cb9afc28d37ea5846198d",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-self-task-have": {
+      "messages": "db49e2fe400b80a9bf22e1468ad6f2858561a60817cbccdb985a3696239f9cbe",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "7de502ff5a6f9ab7b3b44555da62d9fca403d9b0b2758f8aac9e81a891c85380",
+        "consult": "225645efb118e6f2219c442dcc3c5cab2a27d9a04d2e116dd9408686a9811862",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "held-out/held-self-task-report": {
+      "messages": "a51a90ceaf9f2437e3deec9f1eaaab966fc5f14f9562c748b0a85fc3d153911f",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "rainbow/rainbow-gather-red-first": {
+      "messages": "c5f95fd7632c30c8bb4f3f37cd5274f08fb031f80390cbd7ef23e6108789a475",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "27cc47cd4182398d7afc2ea818c5c39bc2aec12af911dd36b54ffe3ff7c9e2a8",
+        "consult": "202c87a096a298525d73ff5ad1a9d88260b7e22bbb0f7fcef44aeca1ede32b36",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "rainbow/rainbow-gather-orange-first": {
+      "messages": "93e5da63376742dd7c63e23d86ca79252f1558d02f851f16d69afd96d58b8469",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "27cc47cd4182398d7afc2ea818c5c39bc2aec12af911dd36b54ffe3ff7c9e2a8",
+        "consult": "202c87a096a298525d73ff5ad1a9d88260b7e22bbb0f7fcef44aeca1ede32b36",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "rainbow/rainbow-gather-yellow-first": {
+      "messages": "9742da295d0d8a160ed4d50c8877a7368a544d67af4094fc99404f408c4d8994",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "27cc47cd4182398d7afc2ea818c5c39bc2aec12af911dd36b54ffe3ff7c9e2a8",
+        "consult": "202c87a096a298525d73ff5ad1a9d88260b7e22bbb0f7fcef44aeca1ede32b36",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "rainbow/rainbow-gather-green-first": {
+      "messages": "b52476da60a7e9ded12c8e4af70c6a291a2f5dbf9c00a885d50780b8e32586bf",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "27cc47cd4182398d7afc2ea818c5c39bc2aec12af911dd36b54ffe3ff7c9e2a8",
+        "consult": "202c87a096a298525d73ff5ad1a9d88260b7e22bbb0f7fcef44aeca1ede32b36",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "rainbow/rainbow-gather-blue-first": {
+      "messages": "61e664a2c83127c270d7bbbfb769da04138db4955c9d951f498734cc714ccb70",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "27cc47cd4182398d7afc2ea818c5c39bc2aec12af911dd36b54ffe3ff7c9e2a8",
+        "consult": "202c87a096a298525d73ff5ad1a9d88260b7e22bbb0f7fcef44aeca1ede32b36",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "rainbow/rainbow-gather-indigo-first": {
+      "messages": "c4172cd48cb7ba82edec2ebaf4165b096c11da3de158540d7a68b0bb0949ced0",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "27cc47cd4182398d7afc2ea818c5c39bc2aec12af911dd36b54ffe3ff7c9e2a8",
+        "consult": "202c87a096a298525d73ff5ad1a9d88260b7e22bbb0f7fcef44aeca1ede32b36",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "rainbow/rainbow-gather-violet-first": {
+      "messages": "b9e9ef709074c32db1640449164a01b88e268e4aaa11b05d78e6327f5a654479",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "27cc47cd4182398d7afc2ea818c5c39bc2aec12af911dd36b54ffe3ff7c9e2a8",
+        "consult": "202c87a096a298525d73ff5ad1a9d88260b7e22bbb0f7fcef44aeca1ede32b36",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "rainbow/rainbow-gather-pink-first": {
+      "messages": "faa936c3d7690dfc62af077003307987febadba18ad1bde8cf18e5c78f56f076",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "27cc47cd4182398d7afc2ea818c5c39bc2aec12af911dd36b54ffe3ff7c9e2a8",
+        "consult": "202c87a096a298525d73ff5ad1a9d88260b7e22bbb0f7fcef44aeca1ede32b36",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "rainbow/rainbow-gather-brown-first": {
+      "messages": "2921054bf2d25de1a4861d1a27bb2967949426e3ea0ca0dc9d3f677b5c07994f",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "27cc47cd4182398d7afc2ea818c5c39bc2aec12af911dd36b54ffe3ff7c9e2a8",
+        "consult": "202c87a096a298525d73ff5ad1a9d88260b7e22bbb0f7fcef44aeca1ede32b36",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "eval-say": {
+      "messages": "4ba347f8c79bcc3457d7a8376b508472889ec9ebdbe0e18daced393f4c471457",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "eval-say-to": {
+      "messages": "cac0366242932f161f2c3c9a344ff0e9345008a3810368defaffa9d9a5d3f27f",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    },
+    "eval-ask-other": {
+      "messages": "e16d33a6e3cea15de1128b15f72d00280ead28f103a804880a60c433c1f469cb",
+      "tools": {
+        "reply": "daa0060d2dcf82a66a0b50b3bc2adececff5b1273737a444fa688af64aeb4e5b",
+        "send_message": "2c86ed5a4c3d611cbd740e91e5583b5d9fea288336ece2cf9c92fb5b14d5c606",
+        "consult": "c6d69c8638998d9ac2719552c98daf62d5d2f95f26763b0ef5935c6c73b26715",
+        "list_agents": "0fc2963f597545d922b3c947d74ee3b19c80e39f5b7d2f94feb8bc718f85c934",
+        "pass": "813dd6de10ef62a7b8ae62e73d406ebf1730b67f3a83b6409065e66a49137c9e",
+        "list_files": "ae1c1fab7259a1a949495f378d37585bd3859892d274ba6e2f757fc1f70adf12",
+        "read_file": "25b8b87cf6ea602ca806c3a72f60685007e750da8e9c05ff00a2ad472a483304",
+        "write_file": "93bdcc03e6a7fca7ed27aed815745e5d5eb358adb83e00723cb5d6c1612e8da1",
+        "append_file": "4e82ad7a2f3bf353c77e27907ad993b1822611356eeaaacab0b100f80224a477",
+        "blackboard_read": "f0deef5e3c6af572b92216ff2dd2822806ee7315970c2b3ae82f20d45ee18d18",
+        "blackboard_post": "5185d3b3e4026b5ee55fa8297bc2e813f9f533773a5a4bd9e0ae883b9a657699"
+      },
+      "toolOrder": [
+        "reply",
+        "send_message",
+        "consult",
+        "list_agents",
+        "pass",
+        "list_files",
+        "read_file",
+        "write_file",
+        "append_file",
+        "blackboard_read",
+        "blackboard_post"
+      ],
+      "rest": "de3bcc3b54a281ee1fc82a4cbcb9b548d5667b6c047bab21cba56f608ffe7fc5"
+    }
+  }
+}

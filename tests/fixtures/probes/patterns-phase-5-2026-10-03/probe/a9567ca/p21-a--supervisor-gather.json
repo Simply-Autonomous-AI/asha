@@ -1,0 +1,110 @@
+{
+  "commit": "a9567ca9b7d7eb9cdec133f9a1120e105cdccc77",
+  "dirty": false,
+  "version": "version: 0.5.0 (build 11146, commit 7fe450e19)",
+  "id": "p21-a/supervisor-gather",
+  "control": false,
+  "doc": null,
+  "passes": 3,
+  "attempts": [
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "worker-1's word is marigold"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "worker-1's word is marigold"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1901,
+          "completionTokens": 25
+        }
+      ],
+      "ms": 746,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "worker-1's word is marigold",
+      "requestSha256": "5a6956f602611005674ffa1da05de1c84a7d2b877e588e5f523853bea670819e",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "worker-1's word is marigold"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "worker-1's word is marigold"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1901,
+          "completionTokens": 25
+        }
+      ],
+      "ms": 584,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "worker-1's word is marigold",
+      "requestSha256": "5a6956f602611005674ffa1da05de1c84a7d2b877e588e5f523853bea670819e",
+      "ok": true
+    },
+    {
+      "calls": [
+        {
+          "name": "reply",
+          "arguments": {
+            "text": "worker-1's word is marigold"
+          }
+        }
+      ],
+      "problem": null,
+      "rounds": [
+        {
+          "calls": [
+            {
+              "name": "reply",
+              "arguments": {
+                "text": "worker-1's word is marigold"
+              }
+            }
+          ],
+          "text": "",
+          "promptTokens": 1901,
+          "completionTokens": 25
+        }
+      ],
+      "ms": 585,
+      "files": {
+        "tasks.json": null
+      },
+      "reply": "worker-1's word is marigold",
+      "requestSha256": "5a6956f602611005674ffa1da05de1c84a7d2b877e588e5f523853bea670819e",
+      "ok": true
+    }
+  ]
+}

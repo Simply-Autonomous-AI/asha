@@ -1,0 +1,24 @@
+{
+  "id": "supervisor",
+  "image": "hello-world",
+  "description": "Finds the rainbow order of the numbers its team's members know.",
+  "prompt": "you find which sequence of your team's numbers lists their colours in rainbow order. You know no number yourself: each other member knows one.",
+  "model": "qwen3-8b-q4_k_m",
+  "startupTimeoutMs": 60000,
+  "messageTimeoutMs": 51000,
+  "chat": {
+    "temperature": 0
+  },
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "append_file"
+  ],
+  "documents": [
+    {
+      "path": "supervisor.md",
+      "fullText": true
+    }
+  ]
+}

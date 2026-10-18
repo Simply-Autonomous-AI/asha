@@ -1,0 +1,251 @@
+/* The asha portal's one stylesheet (docs/plans/portal.md). Light theme; the scene's colours are the web site's robot
+   crew's (site/styles.css in the web repo at e960b4f), but for --scene-failure, the harness's own (demo-scene-refresh R8).
+   Nothing loads from the network (R3). */
+
+:root {
+  --ink: #0e1b3d;
+  --muted: #5a6788;
+  --line: #d6def0;
+  --bg: #f6f8fd;
+  --panel: #ffffff;
+  --accent: #2f6bff;
+  --accent-dark: #1f58e6;
+  --ok: #157f3b;
+  --warn: #9a5b00;
+  --bad: #b3261e;
+  --scene-floor: #d3e0fb;
+  --scene-shell: #2f6bff;
+  --scene-shell-2: #4a7eff;
+  --scene-shell-3: #1f58e6;
+  --scene-visor: #0e1b3d;
+  --scene-eyes: #ffffff;
+  --scene-tread: #173a8c;
+  --scene-signal: #1f4fd8;
+  --scene-shadow: rgb(14 27 61 / 0.18);
+  --scene-amber: #ffb000;
+  --scene-card: rgb(255 255 255 / 0.94);
+  --scene-failure: #d62828;
+  --bubble-agent: #eef2fb;
+  --bubble-internal: #f4f6fb;
+  --bubble-output: #e8f6ee;
+  --bubble-offline: #fdecea;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+/* The hidden attribute always hides, whatever display a rule gives the element (a label is display: flex). */
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+code, pre, .mono { font-family: var(--mono); font-size: 13px; }
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+  padding: 14px 20px 6px;
+  background: var(--panel);
+}
+.top h1 { margin: 0; font-size: 22px; display: flex; align-items: center; gap: 8px; }
+.top h1 .sub { color: var(--accent); font-weight: 600; }
+.logo {
+  width: 22px; height: 22px; border-radius: 7px; display: inline-block;
+  background: var(--accent);
+  box-shadow: inset 0 -6px 0 var(--accent-dark);
+}
+.top p { margin: 0; }
+.muted { color: var(--muted); }
+
+.banner {
+  margin: 0; padding: 10px 20px;
+  background: #fdecea; color: var(--bad);
+  font-family: var(--mono); font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+
+.tabs {
+  display: flex; flex-wrap: wrap; gap: 4px;
+  padding: 0 16px; background: var(--panel); border-bottom: 1px solid var(--line);
+}
+.tabs button {
+  border: 0; background: none; padding: 10px 12px; font: inherit; color: var(--muted); cursor: pointer;
+  border-bottom: 3px solid transparent;
+}
+.tabs button[aria-selected="true"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--accent); }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+main { padding: 16px 20px 40px; max-width: 1240px; margin: 0 auto; }
+main.locked { opacity: 0.4; pointer-events: none; }
+.view h2 { margin: 4px 0 6px; font-size: 19px; }
+.view h3 { margin: 22px 0 8px; font-size: 16px; }
+
+.fields {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 14px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px;
+}
+.fields .wide { grid-column: 1 / -1; }
+.inline { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 14px; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); min-width: 0; }
+label.check { flex-direction: row; align-items: center; gap: 6px; color: var(--ink); }
+input, textarea, select {
+  font: inherit; color: var(--ink); background: #fff; min-width: 0; width: 100%;
+  border: 1px solid var(--line); border-radius: 7px; padding: 7px 9px;
+}
+input[type="checkbox"] { width: auto; }
+input[type="file"] { padding: 5px; }
+textarea { resize: vertical; }
+input:focus, textarea:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+
+button {
+  font: inherit; border: 1px solid var(--line); background: #fff; color: var(--ink);
+  border-radius: 7px; padding: 7px 14px; cursor: pointer;
+}
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+button.primary:hover { background: var(--accent-dark); }
+button.danger { color: var(--bad); border-color: #e7b4ae; }
+button.danger:hover { background: #fdecea; }
+button:disabled { opacity: 0.5; cursor: default; }
+button.download { padding: 2px 10px; font-size: 13px; }
+
+.notice {
+  margin: 0; padding: 8px 10px; font-size: 13px; color: var(--warn);
+  background: #fff8e6; border: 1px solid #f3dca4; border-radius: 7px;
+}
+
+.session { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+.message {
+  background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--line);
+  border-radius: 10px; padding: 10px 14px; min-width: 0;
+}
+.message[data-state="sending"] { border-left-color: var(--accent); }
+.message[data-state="done"] { border-left-color: var(--ok); }
+.message[data-state="failed"] { border-left-color: var(--bad); }
+.message[data-state="stopping"] { border-left-color: var(--warn); }
+.message header { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; font-size: 13px; color: var(--muted); }
+.message h3 { margin: 0 0 4px; font: 600 13px var(--mono); }
+.message .text { margin: 4px 0 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.state { font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.04em; }
+.message[data-state="done"] .state { color: var(--ok); }
+.message[data-state="failed"] .state { color: var(--bad); }
+
+pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+pre:empty { display: none; }
+.replies { font-size: 14px; color: var(--ink); }
+.errors { color: var(--bad); }
+.details { display: none; color: var(--muted); border-top: 1px dashed var(--line); margin-top: 6px; padding-top: 6px; }
+.verbose .details { display: block; }
+.verbose .details:empty { display: none; }
+.lines { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.file-line { margin: 4px 0 0; font: 13px var(--mono); overflow-wrap: anywhere; }
+
+/* The scene's panel and the thread's panel share one height (portal-scene-chat R5a): the grid stretches both to its
+   row, whose height is the scene's panel's; the thread's content is laid inside an absolutely placed box, so it adds
+   no height of its own and scrolls inside. */
+.watch-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 14px; align-items: stretch; }
+.scene-wrap { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px; min-width: 0; }
+#scene { display: block; width: 100%; height: 420px; border-radius: 6px; background: var(--scene-floor); }
+.scene-wrap figcaption { font-size: 12px; margin-top: 6px; }
+.thread-panel { position: relative; min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.thread-inner { position: absolute; inset: 0; display: flex; flex-direction: column; min-height: 0; }
+.thread, .watch-log { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 10px; }
+.watch-log[hidden], .thread[hidden] { display: none; }
+.watch-log .replies { font-size: 12.5px; }
+.thread { display: flex; flex-direction: column; gap: 6px; }
+.team-lines { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0 0 8px; font-size: 13px; }
+.team-lines p { margin: 0; }
+.team-lines .kind { color: var(--muted); }
+
+/* Chat bubbles and notes (R8, R10). */
+.chat-msg { align-self: flex-start; max-width: 88%; padding: 6px 10px 7px; border-radius: 12px 12px 12px 4px; background: var(--bubble-agent); min-width: 0; }
+.chat-msg header { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; font-size: 11.5px; color: var(--muted); }
+.chat-msg header .who { font-weight: 600; color: var(--ink); }
+.chat-msg .text { margin: 2px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; }
+.chat-msg.from-user { align-self: flex-end; border-radius: 12px 12px 4px 12px; background: var(--accent); color: #fff; }
+.chat-msg.from-user header, .chat-msg.from-user header .who { color: #e6edff; }
+.chat-msg.kind-internal { background: var(--bubble-internal); border: 1px dashed var(--line); }
+.chat-msg.kind-output { background: var(--bubble-output); }
+/* An agent's status the harness marks `failure`, outside a conversation: it is down — its failure status, and the
+   supervisor's restarting, restart-failed and restart-limit lines while it is (docs/plans/demo-scene-refresh.md R7, R16). */
+.chat-msg.agent-offline { background: var(--bubble-offline); border: 1px solid var(--bad); }
+.chat-msg.agent-offline .text { color: var(--bad); font-weight: 600; }
+.chat-label { font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em; color: var(--accent-dark); }
+.note { align-self: center; max-width: 94%; text-align: center; font-size: 12px; color: var(--muted); }
+.note p { margin: 0; overflow-wrap: anywhere; }
+.note.gather { background: #f2f6ff; border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px; text-align: left; }
+.note.failure { color: var(--bad); }
+.note.warning { color: var(--warn); background: #fff8e6; border: 1px solid #f3dca4; border-radius: 8px; padding: 3px 10px; }
+.writing { margin: 0; font-size: 12px; font-style: italic; color: var(--muted); }
+.writing-lines { display: flex; flex-direction: column; gap: 2px; }
+
+/* The message box under the thread (R15). */
+.compose { flex: none; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 6px 8px; padding: 8px 10px; border-top: 1px solid var(--line); }
+.compose[hidden] { display: none; }
+.compose label { flex: 0 0 auto; }
+.compose label.grow { flex: 1 1 12em; }
+.compose textarea { resize: none; }
+.compose p { margin: 0; flex-basis: 100%; font-size: 12px; }
+label.grow { flex: 1 1 16em; }
+
+/* The send view's exchanges (R9, R10): the chat, or the command-line view's lines — the send view's only (the launch
+   view's log is a session too, and always shows its lines). The block's own copy of the text is the chat's bubble. */
+.exchange { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+#send-log.cli .exchange { display: none; }
+#send-log:not(.cli) .lines { display: none; }
+#send-log:not(.cli) > article > p.text { display: none; }
+
+/* The launch view's details and list (R14). */
+.detail { margin: 8px 0 0; }
+.catalog { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.catalog article { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.catalog h4 { margin: 0; font: 600 14px var(--mono); }
+.catalog p { margin: 4px 0; font-size: 13px; }
+.catalog .problem { color: var(--bad); }
+.catalog button { padding: 3px 12px; font-size: 13px; }
+
+.table-wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; white-space: nowrap; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tbody tr:last-child td { border-bottom: 0; }
+table.help td:first-child { width: 40%; }
+
+.confirm {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  background: #fff8e6; border: 1px solid #f3dca4; border-radius: 10px; padding: 10px 14px; margin: 8px 0;
+}
+.confirm[hidden] { display: none; }
+.confirm p { margin: 0; flex-basis: 100%; }
+.confirm input { width: 12em; }
+.stop-state { font: 600 14px var(--mono); color: var(--warn); }
+#status-output, #state-output, #reset-output {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px; min-height: 2.5em;
+}
+
+@media (max-width: 760px) {
+  main { padding: 12px 12px 32px; }
+  .top { padding: 12px 12px 4px; }
+  .tabs { padding: 0 6px; }
+  .tabs button { padding: 9px 8px; }
+  .fields { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 12px; }
+  .watch-grid { grid-template-columns: minmax(0, 1fr); }
+  #scene { height: 300px; }
+  .thread-panel { height: 360px; }
+  /* The telemetry table as one card per agent, each value labelled: nothing scrolls out of view. */
+  #telemetry thead { display: none; }
+  #telemetry tr { display: block; border-bottom: 1px solid var(--line); padding: 6px 0; }
+  #telemetry tbody tr:last-child { border-bottom: 0; }
+  #telemetry td { display: flex; justify-content: space-between; gap: 12px; border: 0; padding: 3px 12px; text-align: right; }
+  #telemetry td::before { content: attr(data-label); color: var(--muted); font-weight: 600; text-align: left; }
+}

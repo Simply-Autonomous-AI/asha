@@ -1,0 +1,28 @@
+{
+  "scenario": "p12-b",
+  "breaks": "translator-1 posts exactly one \"pass: …\" status",
+  "note": "translator-1 posts nothing.",
+  "team": "self-select",
+  "input": {
+    "user": "alice",
+    "to": null,
+    "text": "Please say: Hello World."
+  },
+  "recipients": [
+    "greeter-1",
+    "translator-1"
+  ],
+  "messages": [
+    {
+      "from": "greeter-1",
+      "kind": "status",
+      "text": "ok"
+    },
+    {
+      "from": "greeter-1",
+      "kind": "output",
+      "text": "Hello World."
+    }
+  ],
+  "ms": 3000
+}

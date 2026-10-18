@@ -1,0 +1,36 @@
+{
+  "pattern": "P24",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:41:14.176Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p24-group-chat",
+  "models": [
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 37600,
+  "bytes": 2402467,
+  "sha256": "89f26461fb23715097552111a782cb99d90da213a2a79ab6e8683a77933a4f2c",
+  "frames": 751,
+  "framesPerSecond": 20,
+  "longestGapMs": 68,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P24 · Managed group chat",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5017,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p24-a",
+      "outcome": "pass"
+    },
+    {
+      "id": "p24-b",
+      "outcome": "pass"
+    }
+  ]
+}

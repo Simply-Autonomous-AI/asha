@@ -1,0 +1,10 @@
+{
+  "id": "suite-remember-other",
+  "description": "Agent-suite fixture (agent-persistence A2): the same persisted memory recipe under another member name, so another identity that holds none of suite-remember's state.",
+  "members": [
+    {
+      "name": "other",
+      "recipe": "keeper.json"
+    }
+  ]
+}

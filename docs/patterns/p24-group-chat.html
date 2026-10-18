@@ -1,0 +1,184 @@
+<!doctype html>
+<!-- Generated from docs/patterns/p24-group-chat.md by tools/docs/render.mts. Edit the Markdown, then run npm run docs. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Managed Group Chat Demo</title>
+<meta name="description" content="P24 · Managed group chat: A manager chooses who speaks next, one participant at a time, each turn a call carrying the thread so far: in a fixed order (round robin), or by who holds the fact the next step needs (selector). Its team, how to run it, its message flow and its test.">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body data-section="patterns">
+<main>
+<header class="page">
+<nav class="crumbs"><a href="../index.html">asha Documentation</a> / <a href="index.html">Pattern Demos</a> / Managed Group Chat Demo</nav>
+<h1>P24 · Managed group chat</h1>
+<p class="lede">A manager chooses who speaks next, one participant at a time, each turn a call carrying the thread so far: in a fixed order (round robin), or by who holds the fact the next step needs (selector).</p>
+<div class="facts"><span>written 2026-09-29</span><span>status: <span class="badge built">built</span> 2026-09-29, three recorded runs and one under its bound, after R6's remedies, all green; listed once the <a href="../testing/index.html#selection">demo selector</a> was built</span><span>team: <a href="../../teams/group-chat/team.json"><code>teams/group-chat/</code></a></span><span>test: <a href="../../tests/agents/p24-group-chat.test.ts"><code>tests/agents/p24-group-chat.test.ts</code></a></span><span>plan: <code>docs/plans/patterns-phase-2.md</code></span></div><div class="callout summary">
+<p class="callout-title">In short</p>
+<ul>
+<li>Scenarios: <code>p24-a</code>, <code>p24-b</code>, as <code>docs/plans/orchestration-patterns.md</code> specifies them.</li>
+<li>Built: its three recorded runs on the pinned model passed after R6's remedies, then one under the bound they set, at <code>e50be16</code> (runs (<code>docs/plans/patterns-phase-2.md</code>)); it joined the built demos once the demo selector existed (patterns-phase-2 R13), and its checker's every claim is also unit-tested on fixtures.</li>
+<li>Models: <code>manager</code>, <code>alpha</code>, <code>beta</code>, <code>gamma</code> on <code>qwen3-8b-q4_k_m</code>.</li>
+<li>Round robin (p24-a) follows <code>team.json</code>'s order; the selector (p24-b) reads each participant's role from <code>list_agents</code> to ask the keeper of the first digit, then asks the keeper each answer names next (<code>5. Next: alpha-1.</code>), never knowing a digit itself — a reshape for the pinned model, which chose the wrong second keeper from the roles (<code>docs/plans/patterns-phase-2.md</code>; the <code>list_agents</code> step shown in every run, not asserted: D42).</li>
+</ul>
+</div>
+</header>
+<nav class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<ol>
+<li><a href="#watch">Watch it run</a></li>
+<li><a href="#use">What it is for</a></li>
+<li><a href="#flow">How the messages flow</a></li>
+<li><a href="#run">Run it</a></li>
+<li><a href="#transcript">A real transcript</a></li>
+<li><a href="#team">The team and the test</a></li>
+<li><a href="#limits">Limits on a local model</a></li>
+<li><a href="#report">Its report</a></li>
+</ol>
+</nav>
+<section id="watch">
+<h2>Watch it run</h2>
+<p><video controls preload="metadata" src="videos/p24-group-chat.webm"></video></p>
+<p>Recorded at <code>fb3d995</code> on 2026-10-16, its team on <code>qwen3-8b-q4_k_m</code> (<a href="videos/p24-group-chat.json">sidecar</a>): the portal's scene and chat as the demo's agent-suite run went, 38 s, every scenario passed. How it is recorded: <a href="../testing/index.html#videos">Testing</a>.</p>
+</section>
+<section id="use">
+<h2>What it is for</h2>
+<p><strong>Use it</strong> when a conversation among several agents needs one agent to decide, turn by turn, who contributes next.</p>
+<p><strong>Do not use it</strong> when each agent can decide for itself whether to act (self-selection, P12), or when all can answer at once (fan-out, P4).</p>
+</section>
+<section id="flow">
+<h2>How the messages flow</h2>
+<figure class="diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 498" role="img" aria-labelledby="p24-t p24-d">
+  <title id="p24-t">P24 · Managed group chat</title>
+  <desc id="p24-d">For the vault code, manager-1 reads the roles, asks beta-1, then alpha-1, then gamma-1, one call each, each question carrying the digits so far, and replies 528.</desc>
+  <defs><marker id="p24-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e6b66"/></marker></defs>
+  <rect class="box" x="7.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="63" y="32" text-anchor="middle">you</text>
+  <path class="edge dim" d="M63 44 V492"/>
+  <rect class="box accent" x="134.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="190" y="32" text-anchor="middle">manager-1</text>
+  <path class="edge dim" d="M190 44 V492"/>
+  <rect class="box" x="261.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="317" y="32" text-anchor="middle">asha</text>
+  <path class="edge dim" d="M317 44 V492"/>
+  <rect class="box accent" x="387.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="443" y="32" text-anchor="middle">beta-1</text>
+  <path class="edge dim" d="M443 44 V492"/>
+  <rect class="box accent" x="514.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="570" y="32" text-anchor="middle">alpha-1</text>
+  <path class="edge dim" d="M570 44 V492"/>
+  <rect class="box accent" x="641.5" y="10" width="111" height="34" rx="5"/>
+  <text class="label mono" x="697" y="32" text-anchor="middle">gamma-1</text>
+  <path class="edge dim" d="M697 44 V492"/>
+  <path class="edge" d="M63 80 H188" marker-end="url(#p24-a)"/>
+  <text class="label small" x="127" y="74" text-anchor="middle">Find the vault code.</text>
+  <text class="label small" x="198" y="114">list_agents, then consult</text>
+  <path class="edge" d="M190 148 H441" marker-end="url(#p24-a)"/>
+  <text class="label small" x="317" y="142" text-anchor="middle">Digits so far: none.</text>
+  <path class="edge" d="M443 182 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="317" y="176" text-anchor="middle">5. Next: alpha-1.</text>
+  <path class="edge" d="M317 216 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="254" y="210" text-anchor="middle">gather</text>
+  <path class="edge" d="M190 250 H568" marker-end="url(#p24-a)"/>
+  <text class="label small" x="380" y="244" text-anchor="middle">Digits so far: 5.</text>
+  <path class="edge" d="M570 284 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="380" y="278" text-anchor="middle">2. Next: gamma-1.</text>
+  <path class="edge" d="M317 318 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="254" y="312" text-anchor="middle">gather</text>
+  <path class="edge" d="M190 352 H695" marker-end="url(#p24-a)"/>
+  <text class="label small" x="444" y="346" text-anchor="middle">Digits so far: 5, 2.</text>
+  <path class="edge" d="M697 386 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="444" y="380" text-anchor="middle">8. Next: none.</text>
+  <path class="edge" d="M317 420 H192" marker-end="url(#p24-a)"/>
+  <text class="label small" x="254" y="414" text-anchor="middle">gather</text>
+  <path class="edge" d="M190 454 H65" marker-end="url(#p24-a)"/>
+  <text class="label small" x="127" y="448" text-anchor="middle">output: 528</text>
+</svg>
+<figcaption>For the vault code, manager-1 reads the roles and asks beta-1, the keeper of the first digit; each keeper answers with its digit and the keeper of the next, so the manager asks alpha-1, then gamma-1, one call each, each question carrying the digits so far, and replies 528.</figcaption>
+</figure>
+</section>
+<section id="run">
+<h2>Run it</h2>
+<p>Launch the team, then send a scenario's message: exactly the commands below, which the demo's agent-suite file reads from this page and runs. The <code># bound</code> line is the most a request may take (<code>docs/plans/orchestration-patterns.md</code> R8): 32,000 ms, set from its first three recorded runs (<code>docs/plans/patterns-phase-2.md</code> R4) — the largest request, p24-a's 20,805 ms at <code>83ba716</code>, times 1.5 (31,208), rounded up to a whole second; the cap is 45,000 ms.</p>
+<pre><code class="language-asha-run">./asha --launch team=group-chat
+# bound: 32000 ms
+# p24-a
+./asha to=manager-1 user=alice message=&quot;Write a three-line poem about rain, one line from each participant.&quot;
+# p24-b
+./asha to=manager-1 user=alice message=&quot;Find the vault code.&quot;
+</code></pre>
+</section>
+<section id="transcript">
+<h2>A real transcript</h2>
+<p>Recorded at <code>e50be16</code> (clean tree), the run under its bound, from its results file as committed in <code>3e2b8cd</code> (<code>git show 3e2b8cd:tests/agents/results/p24-group-chat.json</code>): each scenario's command as the suite ran it (it adds <code>--verbose</code>, which prints the <code>›</code> progress lines), its stderr, then its stdout. The models' output as it streams — lines such as &quot;› delegator-1 consult: {…&quot; printed one fragment each (D38) — is left out here; the results file holds it.</p>
+<p><strong>p24-a</strong> — exit 0, 22,184 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=manager-1 user=alice message=&quot;Write a three-line poem about rain, one line from each participant.&quot;
+› alice → manager-1 on main: Write a three-line poem about rain, one line from each participant.
+› manager-1: ok
+› internal manager-1 → alpha-1: Poem so far: (none yet). Add one line.
+› internal alpha-1 → manager-1: The moon whispers secrets to the night.
+› internal asha → manager-1: Answers to manager-1&#39;s call: 1 answered.
+› manager-1: ok
+› internal manager-1 → beta-1: Poem so far: The moon whispers secrets to the night. Add one line.
+› internal beta-1 → manager-1: Stars blink in silent agreement.
+› internal asha → manager-1: Answers to manager-1&#39;s call: 1 answered.
+› manager-1: ok
+› internal manager-1 → gamma-1: Poem so far: The moon whispers secrets to the night. Stars blink in silent agreement. Add one line.
+› internal gamma-1 → manager-1: The wind carries their tales through the shadows.
+› internal asha → manager-1: Answers to manager-1&#39;s call: 1 answered.
+› manager-1: ok
+› output manager-1 → alice:
+The moon whispers secrets to the night.
+Stars blink in silent agreement.
+The wind carries their tales through the shadows.
+</code></pre>
+<p><strong>p24-b</strong> — exit 0, 7,003 ms:</p>
+<pre><code class="language-text">$ ./asha --verbose to=manager-1 user=alice message=&quot;Find the vault code.&quot;
+› alice → manager-1 on main: Find the vault code.
+› manager-1: ok
+› internal manager-1 → beta-1: Digits so far: none. What is your digit?
+› internal beta-1 → manager-1: 5. Next: alpha-1.
+› internal asha → manager-1: Answers to manager-1&#39;s call: 1 answered.
+› manager-1: ok
+› internal manager-1 → alpha-1: Digits so far: 5. What is your digit?
+› internal alpha-1 → manager-1: 2. Next: gamma-1.
+› internal asha → manager-1: Answers to manager-1&#39;s call: 1 answered.
+› manager-1: ok
+› internal manager-1 → gamma-1: Digits so far: 5, 2. What is your digit?
+› internal gamma-1 → manager-1: 8. Next: none.
+› internal asha → manager-1: Answers to manager-1&#39;s call: 1 answered.
+› manager-1: ok
+› output manager-1 → alice:
+The vault code is 528.
+</code></pre>
+</section>
+<section id="team">
+<h2>The team and the test</h2>
+<ul>
+<li><a href="../../teams/group-chat/team.json"><code>teams/group-chat/team.json</code></a>: the team — <code>manager</code>, <code>alpha</code>, <code>beta</code>, <code>gamma</code>, launched in that order, each joining as <code>&lt;name&gt;-1</code>.</li>
+<li><code>manager</code>: <a href="../../teams/group-chat/manager.json"><code>manager.json</code></a>, its recipe, and <a href="../../teams/group-chat/manager.md"><code>manager.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>alpha</code>: <a href="../../teams/group-chat/alpha.json"><code>alpha.json</code></a>, its recipe, and <a href="../../teams/group-chat/alpha.md"><code>alpha.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>beta</code>: <a href="../../teams/group-chat/beta.json"><code>beta.json</code></a>, its recipe, and <a href="../../teams/group-chat/beta.md"><code>beta.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><code>gamma</code>: <a href="../../teams/group-chat/gamma.json"><code>gamma.json</code></a>, its recipe, and <a href="../../teams/group-chat/gamma.md"><code>gamma.md</code></a>, its guidance, a full-text document in its system prompt.</li>
+<li><a href="../../tests/agents/p24-group-chat.test.ts"><code>tests/agents/p24-group-chat.test.ts</code></a>: launches the team and sends each scenario's message from this page, then asserts each scenario only through its checker, <code>P24_A</code> and <code>P24_B</code> in <a href="../../tests/agents/patterns/phase-2.ts"><code>tests/agents/patterns/phase-2.ts</code></a>, and records the checker's proof for the report.</li>
+<li>The checker's fixtures, one passing conversation, one per mutation the plan lists and one breaking every other claim: <a href="../../tests/agents/patterns/fixtures/p24-a/pass.json"><code>tests/agents/patterns/fixtures/p24-a/</code></a>, run by <a href="../../tests/unit/pattern-proofs.test.ts"><code>tests/unit/pattern-proofs.test.ts</code></a> in <code>npm test</code>.</li>
+</ul>
+</section>
+<section id="limits">
+<h2>Limits on a local model</h2>
+<ul>
+<li>Measured in the premise probes (2026-09-29, <code>0be190f</code>), its chain of model turns took 21.2 s (p24-a) and 10.1 s (p24-b) with cold prompts (<code>docs/plans/patterns-phase-2.md</code>).</li>
+<li>Each gather shows only its own call, so the manager carries the thread in each question it writes; one that drops an earlier line or digit fails the proof.</li>
+<li>The selector's second choice was the model's weak point: after beta-1's first digit the manager, choosing again from <code>list_agents</code> in a turn that sees only the latest call, asked gamma-1, in the probes under seven wordings and in the first recorded run. Reshaped (R6): each keeper names the next keeper in its answer, and the manager asks whom the answer names (<code>docs/plans/patterns-phase-2.md</code>); the order is still not <code>team.json</code>'s, and no digit is in the manager's files.</li>
+</ul>
+</section>
+<section id="report">
+<h2>Its report</h2>
+<p>Each run's proof — every claim with the transcript line or log record that shows it — and every repeat's time: <a href="../testing/agent-tests.html#pattern-p24">agent test report, P24 · Managed group chat</a>.</p>
+</section>
+<footer class="page"><span>Source: <code>docs/patterns/p24-group-chat.md</code></span><span>Rendered by tools/docs/render.mts — edit the Markdown, not this file.</span><span>Copyright © 2026 SimplyAutonomous.AI, LLC. All rights reserved, except as the repository's LICENSE grants.</span></footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,3 @@
+1. When the user writes to you (a message that starts "The user wrote to you") asking you to post an announcement, call ask_user with this text, both of its sentences: Approve posting "<the announcement>"? Answer yes or no. Call nothing else in that turn: an announcement is never posted before the user answers yes.
+2. When the user's answer comes back (a message that starts "The user answered") and it is yes, call blackboard_post with the announcement from your question, word for word; once it is posted, call reply with "Posted." and nothing else.
+3. When the answer is no, call reply with "Not posted." and nothing else; never call blackboard_post.

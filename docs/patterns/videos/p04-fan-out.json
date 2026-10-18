@@ -1,0 +1,33 @@
+{
+  "pattern": "P4",
+  "commit": "fb3d9953eebb64aeeb0116077c9895b3a2664f36",
+  "startedAt": "2026-10-16T12:17:42.446Z",
+  "runFolder": "<tmp>/asha-record-iohZSZ/p04-fan-out",
+  "models": [
+    "pico-v2-q8_0",
+    "qwen3-8b-q4_k_m"
+  ],
+  "durationMs": 58960,
+  "bytes": 5075987,
+  "sha256": "67e56534e561e54ca8d76bb1ace3c514207acf06b7f4971c7fead82dc308ded4",
+  "frames": 1168,
+  "framesPerSecond": 19.8,
+  "longestGapMs": 92,
+  "frameSize": {
+    "width": 2560,
+    "height": 1440
+  },
+  "title": "P4 · Fan-out / fan-in (scatter-gather)",
+  "restartsFollowed": 0,
+  "afterLastLineMs": 5058,
+  "scenarios": [
+    {
+      "id": "launch",
+      "outcome": "pass"
+    },
+    {
+      "id": "p04-a",
+      "outcome": "pass"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "self-select",
+  "description": "P12, group chat with self-selection: a message to everyone, and only the agent whose role covers it acts.",
+  "members": [
+    {
+      "name": "greeter",
+      "recipe": "greeter.json"
+    },
+    {
+      "name": "translator",
+      "recipe": "translator.json"
+    }
+  ]
+}
