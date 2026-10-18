@@ -27,7 +27,7 @@ What asha is, what it is for, and the rules every change follows. Procedures are
 
 | Fact | Value | Source |
 |---|---|---|
-| Package | `asha` 0.2.2 (named `simplyautonomous-ai-harness` until 2026-10-16, `docs/plans/oss-release.md` R27), `"private": true`, `"license": "SEE LICENSE IN LICENSE"`, `"author": "SimplyAutonomous.AI, LLC"` | [package.json](../../package.json) |
+| Package | `asha` 0.2.3 (named `simplyautonomous-ai-harness` until 2026-10-16, `docs/plans/oss-release.md` R27), `"private": true`, `"license": "SEE LICENSE IN LICENSE"`, `"author": "SimplyAutonomous.AI, LLC"` | [package.json](../../package.json) |
 | Runtime | Node.js `^22.13.0 \|\| ^24.0.0 \|\| >=26.0.0` (the range both Vitest 5 and ESLint 10 support, needed for `npm install`; product code stops at `@types/node` 22.13 and `lib` ES2024, [Quality](../quality/index.md#typecheck)), TypeScript 6.0.3 | [package.json](../../package.json) |
 | Status | First slice: single- and multi-agent hello world, and the `memory` recipe with four memory tiers | [AGENTS.md](../../AGENTS.md) §1 |
 | Remote | A private server, only sometimes reachable (`git remote get-url origin`) | [AGENTS.md](../../AGENTS.md) §2 |

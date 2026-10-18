@@ -16,7 +16,8 @@ npm install && npm run build
 ## Test
 
 - **What the tests need:** gitleaks 8.30.1 or later below 9 (`brew install gitleaks`), for the secret scan and its
-  tests, and Playwright's pinned browsers (`npx playwright install chromium`), for the portal's tests.
+  tests, and Playwright's pinned browsers (`npx playwright-core install --no-remove chromium-headless-shell firefox`),
+  for the portal's tests.
 - **What continuous integration runs** on every push and pull request, on macOS: the typecheck, `npm test` (the unit
   tests), `npm run test:integration` and `npm run scan:secrets`. They need no GPU and no model.
 - **What only a Mac with its GPU runs:** the whole gate, `npm run check`, which also runs the linter and the format

@@ -30,6 +30,7 @@ jobs:
       - run: brew install gitleaks
       - run: npm run typecheck
       - run: npm test
-      - run: npx playwright install chromium
+      # playwright-core's pinned headless Chromium and Firefox, as tests/helpers/browser.ts names them
+      - run: npx playwright-core install --no-remove chromium-headless-shell firefox
       - run: npm run test:integration
       - run: npm run scan:secrets

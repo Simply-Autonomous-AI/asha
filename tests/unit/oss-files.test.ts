@@ -14,6 +14,7 @@ import { describe, expect, it } from 'vitest';
 import { present } from '../../src/shared/assert-present.js';
 import { byCodeUnit } from '../../src/shared/order.js';
 import { statusRows } from '../../tools/oss/pre-push.mjs';
+import { INSTALL_STEP } from '../helpers/browser.js';
 
 const ROOT = join(import.meta.dirname, '..', '..');
 const read = (path: string): string => readFileSync(join(ROOT, path), 'utf8');
@@ -134,7 +135,7 @@ function workflowProblems(workflow: string): string[] {
     'brew install gitleaks',
     'npm run typecheck',
     'npm test',
-    'npx playwright install chromium',
+    INSTALL_STEP,
     'npm run test:integration',
     'npm run scan:secrets',
   ])
@@ -162,6 +163,19 @@ describe('the CI workflow (oss-release R26, A20)', () => {
     expect(workflowProblems(workflow.replace('      - run: brew install gitleaks\n', ''))).toEqual([
       'no step: brew install gitleaks',
     ]);
+  });
+
+  it('installs the browsers the browser tests check for, as README.md and CONTRIBUTING.md tell a contributor to', () => {
+    // v0.2.2's CI ran `npx playwright install chromium`: the latest playwright's full Chromium, not playwright-core's
+    // pinned headless shell and Firefox, so every browser test failed (2026-10-18).
+    expect(workflowProblems(workflow.replace(INSTALL_STEP, 'npx playwright install chromium'))).toEqual([
+      `no step: ${INSTALL_STEP}`,
+    ]);
+    for (const file of ['README.md', 'CONTRIBUTING.md']) {
+      const text = read(file).replace(/\n\s*/g, ' ');
+      expect(text, file).toContain(`(\`${INSTALL_STEP}\`)`);
+      expect(text, file).not.toMatch(/npx playwright install/);
+    }
   });
 });
 

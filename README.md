@@ -44,7 +44,7 @@ pinned by revision and checked by sha256 before it is used.
   quickstart, and the sub-agents of 18 demo teams) and `qwen3-8b-q4_k_m` (5,027,783,488 bytes; the demos' routers and
   the rest); the memory agents' embedding model, `qwen3-embedding-0.6b-q8_0`, is 639,150,592 bytes more.
 - For the tests only: gitleaks 8.30.1 or later below 9 (`brew install gitleaks`) and Playwright's pinned browsers
-  (`npx playwright install chromium`).
+  (`npx playwright-core install --no-remove chromium-headless-shell firefox`).
 - **Tested on:** an Apple M4 Pro with 48 GiB of memory, macOS 26.5.2. No minimum memory, disk or macOS version has
   been measured.
 
