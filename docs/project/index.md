@@ -13,7 +13,7 @@ What asha is, what it is for, and the rules every change follows. Procedures are
 > - asha is one CLI and one daemon that run agents in local containers on local models, at $0 recurring cost.
 > - Objectives: local first, every multi-agent pattern demonstrated, drop-in modules, enterprise grade; patterns, modules and the enterprise targets have plans.
 > - PRINCIPLES.md governs; AGENTS.md adds this repo's rules. The gate is `npm run check`; there is no deploy path.
-> - Copyright © 2026 SimplyAutonomous.AI, LLC. Licensed under PolyForm Noncommercial 1.0.0 or PolyForm Small Business 1.0.0, at the user's choice; any other use needs a licence agreement signed with the company. Published on GitHub as `SimplyAutonomous-AI/asha` from 0.2.0 (2026-10-18), with its Terms of Service, Privacy Policy and contributor licence agreement.
+> - Copyright © 2026 SimplyAutonomous.AI, LLC. Licensed under PolyForm Noncommercial 1.0.0 or PolyForm Small Business 1.0.0, at the user's choice; any other use needs a licence agreement signed with the company. Published on GitHub as `Simply-Autonomous-AI/asha` from 0.2.0 (2026-10-18; moved there the same day from `SimplyAutonomous-AI/asha`, which redirects to it), with its Terms of Service, Privacy Policy and contributor licence agreement.
 > - The [Terms of Service](../../TERMS.md), the [Privacy Policy](../../PRIVACY.md) and the [contributor licence agreement](../../CLA.md) are drafts, not reviewed by counsel, published as they are at the owner's direction (2026-10-18, `docs/plans/oss-release.md`, gate G3).
 
 ## Summary {#summary}
@@ -27,7 +27,7 @@ What asha is, what it is for, and the rules every change follows. Procedures are
 
 | Fact | Value | Source |
 |---|---|---|
-| Package | `asha` 0.2.3 (named `simplyautonomous-ai-harness` until 2026-10-16, `docs/plans/oss-release.md` R27), `"private": true`, `"license": "SEE LICENSE IN LICENSE"`, `"author": "SimplyAutonomous.AI, LLC"` | [package.json](../../package.json) |
+| Package | `asha` 0.2.4 (named `simplyautonomous-ai-harness` until 2026-10-16, `docs/plans/oss-release.md` R27), `"private": true`, `"license": "SEE LICENSE IN LICENSE"`, `"author": "SimplyAutonomous.AI, LLC"` | [package.json](../../package.json) |
 | Runtime | Node.js `^22.13.0 \|\| ^24.0.0 \|\| >=26.0.0` (the range both Vitest 5 and ESLint 10 support, needed for `npm install`; product code stops at `@types/node` 22.13 and `lib` ES2024, [Quality](../quality/index.md#typecheck)), TypeScript 6.0.3 | [package.json](../../package.json) |
 | Status | First slice: single- and multi-agent hello world, and the `memory` recipe with four memory tiers | [AGENTS.md](../../AGENTS.md) §1 |
 | Remote | A private server, only sometimes reachable (`git remote get-url origin`) | [AGENTS.md](../../AGENTS.md) §2 |

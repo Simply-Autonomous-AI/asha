@@ -141,7 +141,7 @@ npm run --silent release
 </section>
 <section id="publish">
 <h2>Publishing</h2>
-<p>asha 0.2.0 was published on 2026-10-18 with gates G1–G3 waived in part by the owner, each row saying what stands in its place (<code>docs/plans/oss-release.md</code>). asha is published only by these manual commands, and only once the release plan's Status table (<code>docs/plans/oss-release.md</code>, internal) records the three owner-side gates — <code>gate G1</code>, the company filed and the code assigned to it; <code>gate G2</code>, the GitHub organization <code>SimplyAutonomous-AI</code> and the name-holding <code>simplyautonomous</code>; <code>gate G3</code>, the Terms of Service, the Privacy Policy and the contributor licence agreement reviewed — each dated, with its evidence (R33). Each outward step below waits for the owner's explicit consent to that step, given in conversation and recorded in that table with its date; the export repository's pre-push hook refuses a push until a <code>publish consent</code> row dated that day names the version (R35).</p>
+<p>asha 0.2.0 was published on 2026-10-18 with gates G1–G3 waived in part by the owner, each row saying what stands in its place (<code>docs/plans/oss-release.md</code>). The same day the repository moved to the owner's organization, <code>Simply-Autonomous-AI/asha</code>; GitHub redirects every link to its first address, <code>SimplyAutonomous-AI/asha</code>, web and git alike, for as long as no repository or fork named <code>asha</code> is made again under the <code>SimplyAutonomous-AI</code> account. asha is published only by these manual commands, and only once the release plan's Status table (<code>docs/plans/oss-release.md</code>, internal) records the three owner-side gates — <code>gate G1</code>, the company filed and the code assigned to it; <code>gate G2</code>, the GitHub organization (the owner's is <code>Simply-Autonomous-AI</code>, created 2026-10-18) and the name-holding <code>simplyautonomous</code>; <code>gate G3</code>, the Terms of Service, the Privacy Policy and the contributor licence agreement reviewed — each dated, with its evidence (R33). Each outward step below waits for the owner's explicit consent to that step, given in conversation and recorded in that table with its date; the export repository's pre-push hook refuses a push until a <code>publish consent</code> row dated that day names the version (R35).</p>
 <p><strong>Before it, that day,</strong> in this repository at the commit to publish, clean:</p>
 <pre><code class="language-sh">ASHA_OSS_MARKERS=&lt;the owner&#39;s markers file&gt; npm run oss:check -- &lt;commit&gt;
 </code></pre>
@@ -149,7 +149,7 @@ npm run --silent release
 <p><strong>The first release:</strong></p>
 <pre><code class="language-sh">npm run oss:export -- &lt;commit&gt; ../asha-public          # a new repository: one commit, tagged v&lt;version&gt;, no remote
 cd ../asha-public
-gh repo create SimplyAutonomous-AI/asha --public --source . --remote origin    # consent: creating the repository
+gh repo create Simply-Autonomous-AI/asha --public --source . --remote origin   # consent: creating the repository
 git push origin main v&lt;version&gt;                         # consent: the push (the hook checks it)
 gh release create v&lt;version&gt; &lt;the tarball and its sha256 from oss:check&#39;s run&gt; --title &quot;asha &lt;version&gt;&quot;   # consent: the release
 </code></pre>

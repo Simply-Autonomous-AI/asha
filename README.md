@@ -26,7 +26,7 @@ LLC; it is before version 1.0, so nothing it offers is yet a promise of compatib
 On a Mac with Apple silicon, [Homebrew](https://brew.sh) and Node.js `^22.13.0 || ^24.0.0 || >=26.0.0`:
 
 ```sh
-git clone https://github.com/SimplyAutonomous-AI/asha.git
+git clone https://github.com/Simply-Autonomous-AI/asha.git
 cd asha
 npm install && npm run build
 ./asha recipe=hello-world message="Please say: Hello World."

@@ -196,6 +196,14 @@ describe('package.json (oss-release R27, A21)', () => {
     if (gate('gate G2') === undefined && existsSync(PLAN))
       expect(['repository', 'homepage', 'bugs'].filter((k) => k in pkg)).toEqual([]);
   });
+
+  it("names one repository in its repository, homepage and bugs, and the README's clone command clones it", () => {
+    // The repository moved to the owner's organization on 2026-10-18; each of these named the old address until then.
+    const repo = String(pkg['repository']);
+    expect(repo).toMatch(/^https:\/\/github\.com\/[\w.-]+\/asha$/);
+    expect([pkg['homepage'], pkg['bugs']]).toEqual([`${repo}#readme`, `${repo}/issues`]);
+    expect(read('README.md')).toContain(`git clone ${repo}.git\n`);
+  });
 });
 
 describe('THIRD_PARTY_LICENSES.md (oss-release R29, A22)', () => {
