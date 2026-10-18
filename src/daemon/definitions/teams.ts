@@ -23,7 +23,7 @@ import { DefinitionError, parseRecipe, parseRoots, type Recipe, type RootSpec } 
 /** A team's members are at most this many (R11). */
 const TEAM_MAX_MEMBERS = 10;
 
-export interface TeamMember {
+interface TeamMember {
   /** Its channel base name: the member joins as `<name>-<n>` whatever name its image asks for. */
   readonly name: string;
   /**

@@ -1,8 +1,9 @@
 // npm run oss:check -- <commit> (docs/plans/oss-release.md R8, R16; A7, A13): the published tree checked as a stranger
 // gets it, stopping at the first failure. In a new run folder: the commit exported (R1); the marker scan (R9) and both
 // secret scans — every commit of the export and its tree (R8); no shipped file model weights or over 5 MB; then a
-// `git clone` of the export into a folder with nothing beside it, where `npm ci`, the build, the unit and integration
-// tests, `npm run scan:secrets` and `npm run release` run, and the release's tarball must hold what R30 names. Each
+// `git clone` of the export into a folder with nothing beside it, where `npm ci`, every other npm step CI runs (the
+// linters, the formatter, the typecheck, the unit and integration tests, the secret scan), the build and
+// `npm run release` run, and the release's tarball must hold what R30 names. Each
 // step's command, exit status, time and output go to the run's log, with the internal commit, whether its tree was
 // dirty, and the gitleaks, Node and npm versions; the run folder is printed.
 
@@ -72,6 +73,22 @@ export function runSteps(steps: readonly Step[], log: (record: StepRecord) => vo
   }
   return records;
 }
+
+/**
+ * The npm commands the fresh clone runs after `npm ci`, in order, each with its bound in minutes: every npm step of CI
+ * (`.github/workflows/check.yml`), so a published tree that would fail CI fails here first, and the build. The first
+ * public push ran only the tests and the build here, and CI failed on `lint:unused` (2026-10-18, PRINCIPLES §21).
+ */
+export const CLONE_COMMANDS: readonly { readonly args: readonly string[]; readonly minutes: number }[] = [
+  { args: ['run', 'lint'], minutes: 15 },
+  { args: ['run', 'lint:unused'], minutes: 15 },
+  { args: ['run', 'format:check'], minutes: 15 },
+  { args: ['run', 'typecheck'], minutes: 15 },
+  { args: ['run', 'build'], minutes: 15 },
+  { args: ['test'], minutes: 30 },
+  { args: ['run', 'test:integration'], minutes: 30 },
+  { args: ['run', 'scan:secrets'], minutes: 15 },
+];
 
 /** A command run in `cwd`, bounded; its output appended to the log; a non-zero exit or a timeout throws. */
 function command(cwd: string, logFile: string, program: string, args: readonly string[], boundMs: number): string {
@@ -179,10 +196,10 @@ export function ossCheck(
       },
     },
     { name: 'npm ci', run: () => command(clone, logFile, 'npm', ['ci', '--no-audit', '--no-fund'], 20 * MINUTES) },
-    { name: 'build', run: () => command(clone, logFile, 'npm', ['run', 'build'], 15 * MINUTES) },
-    { name: 'unit tests', run: () => command(clone, logFile, 'npm', ['test'], 30 * MINUTES) },
-    { name: 'integration tests', run: () => command(clone, logFile, 'npm', ['run', 'test:integration'], 30 * MINUTES) },
-    { name: 'scan:secrets', run: () => command(clone, logFile, 'npm', ['run', 'scan:secrets'], 15 * MINUTES) },
+    ...CLONE_COMMANDS.map(({ args, minutes }) => ({
+      name: `npm ${args.join(' ')}`,
+      run: () => command(clone, logFile, 'npm', args, minutes * MINUTES),
+    })),
     {
       name: 'release',
       run: () => {

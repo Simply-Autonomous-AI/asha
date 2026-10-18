@@ -2,9 +2,13 @@
 // 5 MB named, the tarball's missing files named, and the steps run in order until the first that fails, each recorded
 // with its time and detail. The whole check runs for real in step 6 (npm run oss:check), its log kept.
 
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { describe, expect, it } from 'vitest';
 
 import {
+  CLONE_COMMANDS,
   MAX_FILE_BYTES,
   TARBALL_HOLDS,
   runSteps,
@@ -14,6 +18,21 @@ import {
 } from '../../tools/oss/check.mjs';
 
 describe("oss:check's decisions (oss-release R16, R30; A7, A13)", () => {
+  it("runs in the fresh clone every npm step CI runs, in CI's order, and the build", () => {
+    // The first public push ran only the tests and the build in the clone, and CI failed on lint:unused (2026-10-18).
+    const RUN_NPM = '- run: npm ';
+    const workflow = readFileSync(join(import.meta.dirname, '..', '..', '.github', 'workflows', 'check.yml'), 'utf8');
+    const ci = workflow
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l.startsWith(RUN_NPM))
+      .map((l) => l.slice(RUN_NPM.length))
+      .filter((c) => c !== 'ci');
+    const clone = CLONE_COMMANDS.map((c) => c.args.join(' '));
+    expect(clone.filter((c) => c !== 'run build')).toEqual(ci);
+    expect(clone).toContain('run build');
+  });
+
   it('names each file that is model weights or over 5 MB, and passes the rest', () => {
     expect(MAX_FILE_BYTES).toBe(5_242_880);
     expect(

@@ -125,26 +125,6 @@ export function requireProgress(run: Pick<Run, 'args' | 'stderr'>): void {
 }
 
 /**
- * The invented users the suites send as — the only user IDs the committed results and agent-tests.html may carry, so
- * they never name whoever ran them (agent-persistence R15; A14, guarded by tests/unit/agent-results-users.test.ts).
- */
-export const INVENTED_USERS: readonly string[] = [
-  'alice',
-  'bob',
-  'ivy',
-  'jack',
-  'kim',
-  'liam',
-  'mia',
-  'noah',
-  'olive',
-  'pia',
-  'sam',
-  'tess',
-  'tom',
-];
-
-/**
  * A message send must name its user: without user= the CLI sends the machine's login name (cli-interactive R16),
  * which would then be written into the committed results. Throws before anything runs; a --launch needs none.
  */
