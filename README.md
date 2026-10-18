@@ -63,6 +63,11 @@ downloaded from Hugging Face. The whole picture: [Architecture](./docs/architect
 
 ## The demos
 
+[![Watch the pattern demos on YouTube: the video's title card, ASHA - Autonomous Simple Harness for Agents, Demo: Multi-Agent Orchestration Patterns, with a play button](assets/demo-video.jpg)](https://www.youtube.com/watch?v=4QG465Mp5Hw)
+
+*Twenty-four of the demos below in one video, 10 min 27 s (P25 is not in it):
+[watch it on YouTube](https://www.youtube.com/watch?v=4QG465Mp5Hw).*
+
 Every built pattern demo, as its page runs it: launch its team, then send its message. Each page explains the
 pattern, shows a real transcript and its recorded video, and says what limits it.
 

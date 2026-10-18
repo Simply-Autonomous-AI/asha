@@ -102,6 +102,26 @@ describe('the README (oss-release R18–R21; A15–A17)', () => {
     expect(shot).toBeGreaterThan(README.indexOf('\n# asha — '));
     const between = README.slice(README.indexOf('\n', shot), README.indexOf('\n## What asha is'));
     expect(between.trim()).toMatch(/^\*The portal's Watch tab[^*]*\*$/);
+    // The demos open with the combined video's title card, linking the video on YouTube, and a caption whose figures
+    // are the committed sidecar's (the owner, 2026-10-18).
+    const video = 'https://www.youtube.com/watch?v=4QG465Mp5Hw';
+    const demos = section(README, 'The demos').replace('\n## The demos\n', '').trimStart();
+    const [image = '', , ...rest] = demos.split('\n');
+    expect(image).toBe(
+      `[![Watch the pattern demos on YouTube: the video's title card, ASHA - Autonomous Simple Harness for Agents, Demo: Multi-Agent Orchestration Patterns, with a play button](assets/demo-video.jpg)](${video})`,
+    );
+    const caption = rest.slice(0, rest.indexOf('')).join(' ');
+    const reel = JSON.parse(readFileSync(resolve(ROOT, 'docs/patterns/videos/demos.json'), 'utf8')) as {
+      parts: unknown[];
+      durationMs: number;
+      leftOut: string[];
+    };
+    const seconds = Math.round(reel.durationMs / 1000);
+    expect(reel.parts).toHaveLength(24); // "Twenty-four": a new reel changes this line and the caption's word together
+    expect(caption).toBe(
+      `*Twenty-four of the demos below in one video, ${String(Math.floor(seconds / 60))} min ${String(seconds % 60)} s ` +
+        `(${reel.leftOut.join(', ')} is not in it): [watch it on YouTube](${video}).*`,
+    );
     const why = section(README, 'Why it exists');
     for (const phrase of [
       'locally, with open-weight models, at no',
